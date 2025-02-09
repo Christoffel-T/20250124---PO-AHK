@@ -85,7 +85,7 @@ start() {
         }
         MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
         sleep 100
-        if ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], '*10 payout.png') {
+        if ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
             ocr1 := OCR.FromRect(coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], , 10)
             payout := 92
             break
