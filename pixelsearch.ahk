@@ -20,8 +20,8 @@ coords['coin_top']  := StrSplit(IniRead(settings_file, 'General', "coords['coin_
 coords['empty_area']  := StrSplit(IniRead(settings_file, 'General', "coords['empty_area']"), ',', ' ')
 
 colors := Map()
-colors['green'] := IniRead(settings_file, 'General', 'colors[green]')
-colors['red'] := IniRead(settings_file, 'General', 'colors[red]')
+colors['green'] := IniRead(settings_file, 'General', "colors['green']")
+colors['red'] := IniRead(settings_file, 'General', "colors['red']")
 
 Hotkey('F1', main.Bind(), 'On')
 ToolTip('Ready. Press F1 to start', 5, 5, 1)
