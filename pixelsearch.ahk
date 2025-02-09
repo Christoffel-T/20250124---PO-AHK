@@ -85,7 +85,7 @@ start() {
         }
         MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
         sleep 100
-        if ImageSearch(&outx, &outx, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], '*50 payout.png') {
+        if ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], '*10 payout.png') {
             ocr1 := OCR.FromRect(coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], , 10)
             payout := 92
             break
@@ -102,6 +102,7 @@ start() {
         }
     }
 
+    MouseMove(outx, outy)
     MsgBox payout
 
     ps2 := false
