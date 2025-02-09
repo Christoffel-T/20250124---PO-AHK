@@ -139,16 +139,16 @@ start() {
         if (new_balance <= current_balance + 0.5) {
             current_balance := new_balance
             amount := 2*amount + 1
-            if Mod(count_p_or_l, -5)=0
-                amount := default_amount + Floor(current_balance/1000)
-            set_amount(amount)
             if count_p_or_l > 0
                 count_p_or_l := 0
             count_p_or_l--
+            if (Mod(count_p_or_l, -5)=0)
+                amount := default_amount + Floor(current_balance/1000)
+            set_amount(amount)
             losses++
         } else if (new_balance > current_balance) {
             current_balance := new_balance
-            amount := default_amount
+            amount := default_amount + Floor(current_balance/1000)
             set_amount(amount)
             if count_p_or_l < 0
                 count_p_or_l := 0
@@ -207,7 +207,7 @@ update_log() {
                 direction ',' 
                 current_balance ',' 
                 format('{:.2f}', amount) ',' 
-                payout '% (' coin_name ')' ',' 
+                payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                 count_p_or_l ' (' wins '|' losses '|' win_rate '%)' ',' 
                 debug_str '`n',
                 log_file
