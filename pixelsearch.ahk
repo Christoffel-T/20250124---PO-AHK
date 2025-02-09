@@ -78,6 +78,32 @@ start() {
         reload
     }
 
+    Loop {
+        if !WinActive(wtitle) {
+            WinActivate(wtitle)
+            sleep 100
+        }
+        MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
+        sleep 100
+        if ImageSearch(&outx, &outx, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], '*50 payout.png') {
+            ocr1 := OCR.FromRect(coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], , 10)
+            payout := 92
+            break
+        } else {
+            direction := ''
+            ToolTip('Waiting for payout to be 92 or higher...', 500, 5, 12)
+            MouseClick('L', coords['coin'][1] + Random(-2, 2), coords['coin'][2] + Random(-2, 2), 1, 2)
+            sleep 500
+            MouseClick('L', coords['coin_top'][1] + Random(-2, 2), coords['coin_top'][2] + Random(-2, 2), 1, 2)
+            sleep 500
+            Send '{Escape}'
+            sleep 1000
+            coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 30).Text
+        }
+    }
+
+    MsgBox payout
+
     ps2 := false
     try
         ps1 := PixelSearch(&outx1, &outy1, coords_area[1], coords_area[2], coords_area[3], coords_area[4], colors['green'], 5)
@@ -156,39 +182,6 @@ start() {
                 direction := 'SELL'
                 main_sub1(direction)
             }
-
-            Loop {
-                try {
-                    ocr1 := OCR.FromRect(coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], , 10)
-                    RegExMatch(ocr1.Text, '(\d+)\.?(\d+)', &match)
-                    num := float(match[1] match[2])/100
-                    payout := num
-                } catch as e {
-                    ToolTip('OCR ERROR... ' ocr1.Text, 500, 5, 12)
-                    if !WinActive(wtitle) {
-                        WinActivate(wtitle)
-                        sleep 100
-                    }
-                    MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
-                    sleep 500
-                }
-                
-                if payout/(min(amount, current_balance)) >= 1.92 {
-                    ToolTip(,,, 12)
-                    break
-                } else {
-                    direction := ''
-                    ToolTip('Waiting for payout to be 92 or higher...', 500, 5, 12)
-                    MouseClick('L', coords['coin'][1] + Random(-2, 2), coords['coin'][2] + Random(-2, 2), 1, 2)
-                    sleep 500
-                    MouseClick('L', coords['coin_top'][1] + Random(-2, 2), coords['coin_top'][2] + Random(-2, 2), 1, 2)
-                    sleep 500
-                    Send '{Escape}'
-                    sleep 1000
-                    coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 30).Text
-                    break
-                }
-            }        
         }
 
     }
