@@ -102,9 +102,6 @@ start() {
         }
     }
 
-    MouseMove(outx, outy)
-    MsgBox payout
-
     ps2 := false
     try
         ps1 := PixelSearch(&outx1, &outy1, coords_area[1], coords_area[2], coords_area[3], coords_area[4], colors['green'], 5)
