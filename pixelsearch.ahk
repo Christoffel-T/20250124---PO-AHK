@@ -53,12 +53,12 @@ main(hk:='') {
     amount := default_amount + Floor(current_balance/1000)
     _time := 15
     _time += 2
-    payout := 1.92
+    payout := 92
     datetime := A_NowUTC
     datetime := DateAdd(datetime, -5, 'h')
     date := FormatTime(datetime, 'MM/dd')
     time := FormatTime(datetime, 'HH:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
-    coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 30).Text
+    coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 40).Text
     marked_time_refresh := A_TickCount
 
     if !FileExist(log_file) {
@@ -86,7 +86,6 @@ start() {
         MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
         sleep 100
         if ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
-            ocr1 := OCR.FromRect(coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], , 10)
             payout := 92
             break
         } else {
@@ -98,9 +97,9 @@ start() {
             sleep 500
             Send '{Escape}'
             sleep 1000
-            coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 30).Text
         }
     }
+    coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 40).Text
 
     ps2 := false
     try
@@ -207,7 +206,7 @@ update_log() {
                 direction ',' 
                 current_balance ',' 
                 format('{:.2f}', amount) ',' 
-                format('{:.2f}', payout) ' (' coin_name ')' ',' 
+                payout '% (' coin_name ')' ',' 
                 count_p_or_l ' (' wins '|' losses '|' win_rate '%)' ',' 
                 debug_str '`n',
                 log_file
