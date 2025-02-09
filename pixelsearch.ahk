@@ -75,7 +75,7 @@ start() {
     if A_TickCount > marked_time_refresh + 2*60*60*1000 {
         marked_time_refresh := A_TickCount
         reload_website()
-        reload
+        ; reload
     }
 
     Loop {
@@ -99,8 +99,6 @@ start() {
             sleep 1000
         }
     }
-
-    coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
 
     ps2 := false
     try
@@ -180,6 +178,7 @@ start() {
                 direction := 'SELL'
                 main_sub1(direction)
             }
+            coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
         }
 
     }
