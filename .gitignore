@@ -1,4 +1,5 @@
 /.idea
+/.venv
 /keys.json
 /log.csv
 /settings.ini
