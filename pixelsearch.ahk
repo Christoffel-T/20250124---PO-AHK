@@ -197,7 +197,6 @@ update_log() {
     }
     err := 0
     loop {
-        ToolTip('Appending new row. Errors: ' err, 500, 5, 12)
         try {
             FileAppend(
                 date ',' 
@@ -216,8 +215,9 @@ update_log() {
                 exitapp
             }
             break
-        } catch {
+        } catch as e {
             err++
+            ToolTip('Appending new row. Errors: ' err '`n' e.Message, 500, 5, 12)
             sleep 100
             continue
         }
