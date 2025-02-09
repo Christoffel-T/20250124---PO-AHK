@@ -58,7 +58,7 @@ main(hk:='') {
     datetime := DateAdd(datetime, -5, 'h')
     date := FormatTime(datetime, 'MM/dd')
     time := FormatTime(datetime, 'HH:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
-    coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 40).Text
+    ; coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 40).Text
     marked_time_refresh := A_TickCount
 
     if !FileExist(log_file) {
@@ -99,7 +99,8 @@ start() {
             sleep 1000
         }
     }
-    coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 40).Text
+
+    coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
 
     ps2 := false
     try
