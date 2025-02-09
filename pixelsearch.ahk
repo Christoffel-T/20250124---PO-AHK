@@ -6,7 +6,7 @@ SendMode('Event')
 #Include OCR.ahk
 
 settings_file := 'settings.ini'
-
+hai
 wtitle := IniRead(settings_file, 'General', 'wtitle')
 
 coords_area := StrSplit(IniRead(settings_file, 'General', 'coords_area'), ',', ' ')
@@ -17,6 +17,7 @@ coords['SELL'] := StrSplit(IniRead(settings_file, 'General', "coords['SELL']"), 
 coords['Payout']  := StrSplit(IniRead(settings_file, 'General', "coords['Payout']"), ',', ' ')
 coords['coin']  := StrSplit(IniRead(settings_file, 'General', "coords['coin']"), ',', ' ')
 coords['coin_top']  := StrSplit(IniRead(settings_file, 'General', "coords['coin_top']"), ',', ' ')
+coords['empty_area']  := StrSplit(IniRead(settings_file, 'General', "coords['empty_area']"), ',', ' ')
 
 colors := Map()
 colors['green'] := IniRead(settings_file, 'General', 'colors[green]')
@@ -48,11 +49,11 @@ main(hk:='') {
     wins := 0
     losses := 0
 
-    default_amount := 2 + Floor(current_balance/1000)
-    amount := default_amount
+    default_amount := 2
+    amount := default_amount + Floor(current_balance/1000)
     _time := 15
     _time += 2
-    payout := 92
+    payout := 1.92
     datetime := A_NowUTC
     datetime := DateAdd(datetime, -5, 'h')
     date := FormatTime(datetime, 'MM/dd')
@@ -64,7 +65,7 @@ main(hk:='') {
         FileAppend('date,time,active_trade,direction,balance,amount,payout,P/L (win_rate),debug`n', log_file)
     }
     set_amount(amount)
-    MouseClick('l', A_ScreenWidth/2, A_ScreenHeight/2,1,2)
+    MouseClick('l', coords['empty_area'][1], coords['empty_area'][2],1,2)
     SetTimer(start, 100)
 }
 
@@ -114,8 +115,8 @@ start() {
         if (new_balance <= current_balance + 0.5) {
             current_balance := new_balance
             amount := 2*amount + 1
-            if Mod(countdown_close, -5)=0
-                amount := default_amount
+            if Mod(count_p_or_l, -5)=0
+                amount := default_amount + Floor(current_balance/1000)
             set_amount(amount)
             if count_p_or_l > 0
                 count_p_or_l := 0
@@ -158,9 +159,9 @@ start() {
 
             Loop {
                 try {
-                    ocr1 := OCR.FromRect(coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], , 2)
-                    RegExMatch(ocr1.Text, '\d+', &match)
-                    num := Integer(match[])
+                    ocr1 := OCR.FromRect(coords['Payout'][1], coords['Payout'][2], coords['Payout'][3], coords['Payout'][4], , 10)
+                    RegExMatch(ocr1.Text, '(\d+)\.?(\d+)', &match)
+                    num := float(match[1] match[2])/100
                     payout := num
                 } catch as e {
                     ToolTip('OCR ERROR... ' ocr1.Text, 500, 5, 12)
@@ -168,12 +169,11 @@ start() {
                         WinActivate(wtitle)
                         sleep 100
                     }
-                    MouseClick('L', 1380, 562, 1, 1)
+                    MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
                     sleep 500
                 }
-        
-        
-                if payout >= 92 {
+                
+                if payout/(min(amount, current_balance)) >= 1.92 {
                     ToolTip(,,, 12)
                     break
                 } else {
@@ -216,11 +216,15 @@ update_log() {
                 direction ',' 
                 current_balance ',' 
                 format('{:.2f}', amount) ',' 
-                payout ' (' coin_name ')' ',' 
+                format('{:.2f}', payout) ' (' coin_name ')' ',' 
                 count_p_or_l ' (' wins '|' losses '|' win_rate '%)' ',' 
                 debug_str '`n',
                 log_file
             )
+            if current_balance < 1 {
+                MsgBox('0 Balance.')
+                exitapp
+            }
             break
         } catch {
             err++
@@ -236,7 +240,7 @@ main_sub1(action) {
     condition := count_p_or_l <= -2 ? true : (not tickcount_last_reverse[1])
 
     ; if true {
-    if condition and payout >= 92 {
+    if condition {
         tickcount_last_reverse := [false, A_TickCount]
         if !WinActive(wtitle) {
             WinActivate(wtitle)
