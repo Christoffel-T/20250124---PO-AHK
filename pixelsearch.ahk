@@ -6,7 +6,7 @@ SendMode('Event')
 #Include OCR.ahk
 
 settings_file := 'settings.ini'
-hai
+
 wtitle := IniRead(settings_file, 'General', 'wtitle')
 
 coords_area := StrSplit(IniRead(settings_file, 'General', 'coords_area'), ',', ' ')
