@@ -244,7 +244,7 @@ main_sub1(action) {
     global
 
     ; condition := count_p_or_l <= -2 ? true : (not tickcount_last_reverse[1])
-    condition := not tickcount_last_reverse[1]
+    condition := not tickcount_last_reverse[1] and not paused[1]
 
     ; if true {
     if condition {
