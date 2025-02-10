@@ -10,6 +10,7 @@ settings_file := 'settings.ini'
 wtitle := IniRead(settings_file, 'General', 'wtitle')
 
 coords_area := StrSplit(IniRead(settings_file, 'General', 'coords_area'), ',', ' ')
+min_x := coords_area[1] - 50
 coords := Map()
 coords['BUY']  := StrSplit(IniRead(settings_file, 'General', "coords['BUY']"), ',', ' ')
 coords['SELL'] := StrSplit(IniRead(settings_file, 'General', "coords['SELL']"), ',', ' ')
@@ -20,8 +21,10 @@ coords['coin_top']  := StrSplit(IniRead(settings_file, 'General', "coords['coin_
 coords['empty_area']  := StrSplit(IniRead(settings_file, 'General', "coords['empty_area']"), ',', ' ')
 
 colors := Map()
-colors['green'] := IniRead(settings_file, 'General', "colors['green']")
+colors['blue'] := IniRead(settings_file, 'General', "colors['blue']")
+colors['orange'] := IniRead(settings_file, 'General', "colors['orange']")
 colors['red'] := IniRead(settings_file, 'General', "colors['red']")
+colors['green'] := IniRead(settings_file, 'General', "colors['green']")
 
 Hotkey('F1', main.Bind(), 'On')
 ToolTip('Ready. Press F1 to start', 5, 5, 1)
@@ -104,7 +107,7 @@ start() {
 
     ps2 := false
     try
-        ps1 := PixelSearch(&outx1, &outy1, coords_area[1], coords_area[2], coords_area[3], coords_area[4], colors['green'], 5)
+        ps1 := PixelSearch(&outx1, &outy1, coords_area[1], coords_area[2], coords_area[3], coords_area[4], colors['blue'], 5)
     catch as e {
         ToolTip('Error: PixelSearch failed`n' e.Message, 500, 5, 15)
         coords_area[1] := max(coords_area[1] - 1, 100)
@@ -114,13 +117,20 @@ start() {
     }
 
     if ps1 {
-        ps2 := PixelSearch(&outx2, &outy2, outx1+1, coords_area[2], outx1-1, coords_area[4], colors['red'], 5)
+        ps2 := PixelSearch(&outx2, &outy2, outx1+1, coords_area[2], outx1-1, coords_area[4], colors['orange'], 5)
+        ps3 := PixelSearch(&outx3, &outy3, outx1+3, coords_area[2], outx1+4, coords_area[4], colors['green'], 5)
+        ps4 := PixelSearch(&outx4, &outy4, outx1+3, coords_area[2], outx1+4, coords_area[4], colors['red'], 5)
         coords_area[1] := min(coords_area[1] + 1, A_ScreenWidth*0.95)
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
+        debug_str := (ps2 and ps3 ? outy1 - outy3 : 0) ' | ' (ps2 and ps4 ? outy4 - outy2 : 0) ' | ' debug_str
         ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent direction: ' direction '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
     } else {
         coords_area[1] := max(coords_area[1] - 1, 100)
+        if coords_area[1] < min_x {
+            coords_area[1] := min_x
+            reload_website()
+        }
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
         ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent direction: ' direction '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
@@ -162,10 +172,14 @@ start() {
     date := FormatTime(datetime, 'MM/dd')
     time := FormatTime(datetime, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
     if ps1 and ps2 {
-        ToolTip('Green', outx1+100, outy1, 2)
-        ToolTip('Red', outx2+100, outy2, 3)
-        ToolTip('Green', outx1, outy1-200, 4)
-        ToolTip('Red', outx2, outy2-200, 5)
+        ToolTip('blue', outx1+100, outy1, 2)
+        ToolTip('orange', outx2+100, outy2, 3)
+        ToolTip('blue', outx1, outy1-200, 4)
+        ToolTip('orange', outx2, outy2-200, 5)
+        if ps3
+            ToolTip('green', outx3+150, outy3, 6)
+        if ps4
+            ToolTip('red', outx4+150, outy4, 7)
         if (direction='') {
             direction := outy2 < outy1 ? 'SELL' : 'BUY'
         }
@@ -173,15 +187,6 @@ start() {
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
         if Mod(A_Sec, 15) = 14 {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
-            if (direction='SELL' and outy2 > outy1) {
-                crossovers_arr.Push(A_TickCount)
-                direction := 'BUY'
-                main_sub1(direction)
-            } else if (direction='BUY' and outy2 < outy1) {
-                direction := 'SELL'
-                crossovers_arr.Push(A_TickCount)
-                main_sub1(direction)
-            }
             if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2] <= 45000) {
                 if paused[1]
                     paused := [true, A_TickCount+30000]
@@ -193,13 +198,38 @@ start() {
             }
             if crossovers_arr.Length > 10
                 crossovers_arr.RemoveAt(1)
+            scenario1()
+            scenario2()
             coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
         }
+        
 
     }
 
     update_log()
     sleep 100
+    scenario1() {
+        condition := not tickcount_last_reverse[1] and not paused[1]
+        if (direction='SELL' and outy2 > outy1) {
+            crossovers_arr.Push(A_TickCount)
+            direction := 'BUY'
+            if condition        
+                main_sub1(direction)
+        } else if (direction='BUY' and outy2 < outy1) {
+            direction := 'SELL'
+            crossovers_arr.Push(A_TickCount)
+            if condition
+                main_sub1(direction)
+        }
+    }
+    scenario2() {
+        condition := not paused[1] and ps3 and ps4
+        if (outy2 > outy1 and outy4 - outy2 > 0) {
+            main_sub1('SELL')
+        } else if (outy2 < outy1 and outy1 - outy3 > 0) {
+            main_sub1('BUY')
+        }
+    }
 }
 
 update_log() {
@@ -242,35 +272,27 @@ update_log() {
 
 main_sub1(action) {
     global
-
-    ; condition := count_p_or_l <= -2 ? true : (not tickcount_last_reverse[1])
-    condition := not tickcount_last_reverse[1] and not paused[1]
-
-    ; if true {
-    if condition {
-        tickcount_last_reverse := [false, A_TickCount]
-        if !WinActive(wtitle) {
-            WinActivate(wtitle)
-            sleep 100
-        }
-        sleep 50
-        MouseClick('L', coords[action][1] + Random(-5, 5), coords[action][2] + Random(-5, 5), 1, 2)
-        sleep 30
-        while check_balance() = current_balance {
-            ToolTip('Waiting balance change...', 500, 5, 12)
-            sleep 50
-            if (a_index>100) {
-                direction := action
-                ToolTip(,,, 12)
-                return 
-            }
-        }
-        ToolTip(,,, 12)
-        tickcount_last_reverse[1] := true
-        current_balance := check_balance()
-        active_trade := action
+    tickcount_last_reverse := [false, A_TickCount]
+    if !WinActive(wtitle) {
+        WinActivate(wtitle)
+        sleep 100
     }
-    direction := action
+    sleep 50
+    MouseClick('L', coords[action][1] + Random(-5, 5), coords[action][2] + Random(-5, 5), 1, 2)
+    sleep 30
+    while check_balance() = current_balance {
+        ToolTip('Waiting balance change...', 500, 5, 12)
+        sleep 50
+        if (a_index>100) {
+            direction := action
+            ToolTip(,,, 12)
+            return 
+        }
+    }
+    ToolTip(,,, 12)
+    tickcount_last_reverse[1] := true
+    current_balance := check_balance()
+    active_trade := action
 }
 
 reload_website() {
