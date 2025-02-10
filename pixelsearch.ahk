@@ -40,9 +40,9 @@ main(hk:='') {
     }
 
     log_file := 'log.csv'
-    tickcount_last_reverse := [false, A_TickCount]
+    trade_opened := [false, A_TickCount]
     crossovers_arr := []
-    direction := ''
+    last_trade := ''
     active_trade := ''
     countdown_close := 0
     countdown_close_str := ''
@@ -67,7 +67,7 @@ main(hk:='') {
     marked_time_refresh := A_TickCount
 
     if !FileExist(log_file) {
-        FileAppend('date,time,active_trade,direction,balance,amount,payout,P/L (win_rate),debug`n', log_file)
+        FileAppend('date,time,active_trade,last_trade,balance,amount,payout,P/L (win_rate),debug`n', log_file)
     }
     set_amount(amount)
     MouseClick('l', coords['empty_area'][1], coords['empty_area'][2],1,2)
@@ -94,7 +94,7 @@ start() {
             payout := 92
             break
         } else {
-            direction := ''
+            last_trade := ''
             ToolTip('Waiting for payout to be 92 or higher...', 500, 5, 12)
             MouseClick('L', coords['coin'][1] + Random(-2, 2), coords['coin'][2] + Random(-2, 2), 1, 2)
             sleep 500
@@ -118,13 +118,13 @@ start() {
 
     if ps1 {
         ps2 := PixelSearch(&outx2, &outy2, outx1+1, coords_area[2], outx1-1, coords_area[4], colors['orange'], 5)
-        ps3 := PixelSearch(&outx3, &outy3, outx1+3, coords_area[2], outx1+4, coords_area[4], colors['green'], 5)
-        ps4 := PixelSearch(&outx4, &outy4, outx1+3, coords_area[2], outx1+4, coords_area[4], colors['red'], 5)
+        ps3 := PixelSearch(&outx3, &outy3, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['green'], 5)
+        ps4 := PixelSearch(&outx4, &outy4, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 5)
         coords_area[1] := min(coords_area[1] + 1, A_ScreenWidth*0.95)
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
         debug_str := (ps2 and ps3 ? outy1 - outy3 : 0) ' | ' (ps2 and ps4 ? outy4 - outy2 : 0) ' | ' debug_str
-        ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent direction: ' direction '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
+        ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
     } else {
         coords_area[1] := max(coords_area[1] - 1, 100)
         if coords_area[1] < min_x {
@@ -133,7 +133,7 @@ start() {
         }
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
-        ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent direction: ' direction '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
+        ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
         return
     }
     
@@ -142,9 +142,9 @@ start() {
 
     ToolTip(,,, 12)
 
-    if (tickcount_last_reverse[1] and countdown_close < 0) {
+    if (trade_opened[1] and countdown_close < 0) {
         active_trade := ''
-        tickcount_last_reverse[1] := false
+        trade_opened[1] := false
         new_balance := check_balance()
         if (new_balance <= current_balance + 0.5) {
             current_balance := new_balance
@@ -180,14 +180,17 @@ start() {
             ToolTip('green', outx3+150, outy3, 6)
         if ps4
             ToolTip('red', outx4+150, outy4, 7)
-        if (direction='') {
-            direction := outy2 < outy1 ? 'SELL' : 'BUY'
-        }
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
         if Mod(A_Sec, 15) = 14 {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
-            if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2] <= 45000) {
+            if (crossovers_arr[-1].direction != 'BUY' and outy2 > outy1) {
+                crossovers_arr.Push([{direction: 'BUY', time: A_TickCount}])
+            } else if (crossovers_arr[-1].direction != 'SELL' and outy2 < outy1) {
+                crossovers_arr.Push([{direction: 'SELL', time: A_TickCount}])
+            }
+            
+            if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
                 if paused[1]
                     paused := [true, A_TickCount+30000]
                 else
@@ -198,7 +201,7 @@ start() {
             }
             if crossovers_arr.Length > 10
                 crossovers_arr.RemoveAt(1)
-            scenario1()
+            ; scenario1()
             scenario2()
             coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
         }
@@ -208,36 +211,45 @@ start() {
 
     update_log()
     sleep 100
+
     scenario1() {
-        condition := not tickcount_last_reverse[1] and not paused[1]
-        if (direction='SELL' and outy2 > outy1) {
-            crossovers_arr.Push(A_TickCount)
-            direction := 'BUY'
-            if condition        
-                main_sub1(direction)
-        } else if (direction='BUY' and outy2 < outy1) {
-            direction := 'SELL'
-            crossovers_arr.Push(A_TickCount)
-            if condition
-                main_sub1(direction)
+        condition := not trade_opened[1] and not paused[1]
+        if not condition
+            return false
+        if (last_trade='SELL' and outy2 > outy1) {
+            last_trade := 'BUY'
+            if condition {
+                trade_opened := [true, A_TickCount]
+                main_sub1(last_trade)
+            }    
+        } else if (last_trade='BUY' and outy2 < outy1) {
+            last_trade := 'SELL'
+            if condition {
+                trade_opened := [true, A_TickCount]
+                main_sub1(last_trade)
+            }    
         }
     }
     scenario2() {
-        condition := not paused[1] and ps3 and ps4
+        condition := not trade_opened[1] and not paused[1] and ps3 and ps4
         if not condition
             return false
-        if (outy2 > outy1 and outy4 - outy2 > 0) {
-            main_sub1('SELL')
-        } else if (outy2 < outy1 and outy1 - outy3 > 0) {
-            main_sub1('BUY')
+        if (last_trade != 'SELL' and outy2 > outy1 and outy4 - outy2 > 0) {
+            trade_opened := [true, A_TickCount]
+            last_trade := 'SELL'
+            main_sub1(last_trade)
+        } else if (last_trade != 'BUY' and outy2 < outy1 and outy2 - outy3 > 0) {
+            trade_opened := [true, A_TickCount]
+            last_trade := 'BUY'
+            main_sub1(last_trade)
         }
     }
 }
 
 update_log() {
     global
-    if tickcount_last_reverse[1] {
-        countdown_close := (tickcount_last_reverse[2] + _time*1000 - A_TickCount)/1000
+    if trade_opened[1] {
+        countdown_close := (trade_opened[2] + _time*1000 - A_TickCount)/1000
         countdown_close_str := ' (' format('{:.2f}', countdown_close) ')'
     } else {
         countdown_close_str := ''
@@ -250,7 +262,7 @@ update_log() {
                 date ',' 
                 time ',' 
                 active_trade countdown_close_str ',' 
-                direction ',' 
+                last_trade ',' 
                 current_balance ',' 
                 format('{:.2f}', amount) ',' 
                 paused_str ' ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
@@ -274,7 +286,6 @@ update_log() {
 
 main_sub1(action) {
     global
-    tickcount_last_reverse := [false, A_TickCount]
     if !WinActive(wtitle) {
         WinActivate(wtitle)
         sleep 100
@@ -286,13 +297,12 @@ main_sub1(action) {
         ToolTip('Waiting balance change...', 500, 5, 12)
         sleep 50
         if (a_index>100) {
-            direction := action
+            last_trade := action
             ToolTip(,,, 12)
             return 
         }
     }
     ToolTip(,,, 12)
-    tickcount_last_reverse[1] := true
     current_balance := check_balance()
     active_trade := action
 }
