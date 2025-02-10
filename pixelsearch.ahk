@@ -210,7 +210,7 @@ update_log() {
     } else {
         countdown_close_str := ''
     }
-    paused_str := paused[1] ? 'Paused (' Format('{:.1f}', (paused[2] - A_TickCount)/1000) ')' : ''
+    paused_str := paused[1] ? 'Paused (' Format('{:.1f}', (paused[2] - A_TickCount)/1000) ')' : '()'
     err := 0
     loop {
         try {
@@ -221,7 +221,7 @@ update_log() {
                 direction ',' 
                 current_balance ',' 
                 format('{:.2f}', amount) ',' 
-                payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
+                paused_str ' ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                 count_p_or_l ' (' wins '|' losses '|' win_rate '%)' ',' 
                 debug_str '`n',
                 log_file
