@@ -23,8 +23,8 @@ coords['empty_area']  := StrSplit(IniRead(settings_file, 'General', "coords['emp
 colors := Map()
 colors['blue'] := IniRead(settings_file, 'General', "colors['blue']")
 colors['orange'] := IniRead(settings_file, 'General', "colors['orange']")
-colors['red'] := IniRead(settings_file, 'General', "colors['red']")
 colors['green'] := IniRead(settings_file, 'General', "colors['green']")
+colors['red'] := IniRead(settings_file, 'General', "colors['red']")
 
 Hotkey('F1', main.Bind(), 'On')
 ToolTip('Ready. Press F1 to start', 5, 5, 1)
@@ -118,8 +118,8 @@ start() {
 
     if ps1 {
         ps2 := PixelSearch(&outx2, &outy2, outx1+1, coords_area[2], outx1-1, coords_area[4], colors['orange'], 5)
-        ps3 := PixelSearch(&outx3, &outy3, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['green'], 5)
-        ps4 := PixelSearch(&outx4, &outy4, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 5)
+        ps3 := PixelSearch(&outx3, &outy3, outx1+4, coords_area[2], outx1-11, coords_area[4], colors['green'], 5)
+        ps4 := PixelSearch(&outx4, &outy4, outx1+4, coords_area[2], outx1-11, coords_area[4], colors['red'], 5)
         coords_area[1] := min(coords_area[1] + 1, A_ScreenWidth*0.95)
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
