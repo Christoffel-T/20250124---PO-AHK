@@ -38,6 +38,7 @@ main(hk:='') {
 
     log_file := 'log.csv'
     tickcount_last_reverse := [false, A_TickCount]
+    crossovers_arr := []
     direction := ''
     active_trade := ''
     countdown_close := 0
@@ -48,6 +49,7 @@ main(hk:='') {
     count_p_or_l := 0
     wins := 0
     losses := 0
+    paused := [false, A_TickCount]
 
     default_amount := 2
     amount := default_amount + Floor(current_balance/1000)
@@ -172,12 +174,25 @@ start() {
         if Mod(A_Sec, 15) = 14 {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if (direction='SELL' and outy2 > outy1) {
+                crossovers_arr.Push(A_TickCount)
                 direction := 'BUY'
                 main_sub1(direction)
             } else if (direction='BUY' and outy2 < outy1) {
                 direction := 'SELL'
+                crossovers_arr.Push(A_TickCount)
                 main_sub1(direction)
             }
+            if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2] <= 45000) {
+                if paused[1]
+                    paused := [true, A_TickCount+30000]
+                else
+                    paused := [true, A_TickCount+45000]
+            }
+            if paused[1] and A_TickCount > paused[2] {
+                paused := [false, A_TickCount]
+            }
+            if crossovers_arr.Length > 10
+                crossovers_arr.RemoveAt(1)
             coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
         }
 
@@ -195,6 +210,7 @@ update_log() {
     } else {
         countdown_close_str := ''
     }
+    paused_str := paused[1] ? 'Paused (' Format('{:.1f}', (paused[2] - A_TickCount)/1000) ')' : ''
     err := 0
     loop {
         try {
