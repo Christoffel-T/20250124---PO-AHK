@@ -224,6 +224,8 @@ start() {
     }
     scenario2() {
         condition := not paused[1] and ps3 and ps4
+        if not condition
+            return false
         if (outy2 > outy1 and outy4 - outy2 > 0) {
             main_sub1('SELL')
         } else if (outy2 < outy1 and outy1 - outy3 > 0) {
