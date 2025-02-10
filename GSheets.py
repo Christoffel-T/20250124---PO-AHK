@@ -90,6 +90,7 @@ def monitor_log(file_path):
 
         except FileNotFoundError:
             print(f"{datetime.now()} | Waiting for log file...")
+            last_size = 0
             time.sleep(5)  # Adjust as needed
             continue
         except PermissionError:

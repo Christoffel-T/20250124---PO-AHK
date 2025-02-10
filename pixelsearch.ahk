@@ -123,7 +123,7 @@ start() {
         coords_area[1] := min(coords_area[1] + 1, A_ScreenWidth*0.95)
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
-        debug_str := (ps2 and ps3 ? outy2 - outy3 : 0) ' | ' (ps2 and ps4 ? outy4 - outy2 : 0) ' | ' debug_str
+        debug_str := 'G: ' (ps2 and ps3 ? outy2 - outy3 : 0) ' | R: ' (ps2 and ps4 ? outy4 - outy2 : 0) ' | ' debug_str
         ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
     } else {
         coords_area[1] := max(coords_area[1] - 1, 100)
