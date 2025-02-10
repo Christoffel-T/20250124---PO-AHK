@@ -185,9 +185,9 @@ start() {
         if Mod(A_Sec, 15) = 14 {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((crossovers_arr.Length = 0 || crossovers_arr[-1].direction != 'BUY') and outy2 > outy1) {
-                crossovers_arr.Push([{direction: 'BUY', time: A_TickCount}])
+                crossovers_arr.Push({direction: 'BUY', time: A_TickCount})
             } else if ((crossovers_arr.Length = 0 || crossovers_arr[-1].direction != 'SELL') and outy2 < outy1) {
-                crossovers_arr.Push([{direction: 'SELL', time: A_TickCount}])
+                crossovers_arr.Push({direction: 'SELL', time: A_TickCount})
             }
             
             if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
