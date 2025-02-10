@@ -179,7 +179,7 @@ start() {
         if ps3
             ToolTip('green', outx3+150, outy3, 6)
         if ps4
-            ToolTip('red', outx4+150, outy4, 7)
+            ToolTip('red', outx4+150, outy4, 6)
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
         if Mod(A_Sec, 15) = 14 {
