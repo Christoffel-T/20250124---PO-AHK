@@ -123,7 +123,7 @@ start() {
         coords_area[1] := min(coords_area[1] + 1, A_ScreenWidth*0.95)
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
-        debug_str := (ps2 and ps3 ? outy1 - outy3 : 0) ' | ' (ps2 and ps4 ? outy4 - outy2 : 0) ' | ' debug_str
+        debug_str := (ps2 and ps3 ? outy2 - outy3 : 0) ' | ' (ps2 and ps4 ? outy4 - outy2 : 0) ' | ' debug_str
         ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
     } else {
         coords_area[1] := max(coords_area[1] - 1, 100)
@@ -231,16 +231,16 @@ start() {
         }
     }
     scenario2() {
-        condition := not trade_opened[1] and not paused[1] and ps3 and ps4
+        condition := not trade_opened[1] and not paused[1]
         if not condition
             return false
-        if (last_trade != 'SELL' and outy2 > outy1 and outy4 - outy2 > 0) {
-            trade_opened := [true, A_TickCount]
-            last_trade := 'SELL'
-            main_sub1(last_trade)
-        } else if (last_trade != 'BUY' and outy2 < outy1 and outy2 - outy3 > 0) {
+        if (ps3 and last_trade != 'BUY' and outy2 < outy1 and outy2 - outy3 > 0) {
             trade_opened := [true, A_TickCount]
             last_trade := 'BUY'
+            main_sub1(last_trade)
+        } else if (ps4 and last_trade != 'SELL' and outy2 > outy1 and outy4 - outy2 > 0) {
+            trade_opened := [true, A_TickCount]
+            last_trade := 'SELL'
             main_sub1(last_trade)
         }
     }
