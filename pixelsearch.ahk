@@ -258,6 +258,11 @@ update_log() {
     err := 0
     loop {
         try {
+            file_size := FileGetSize(log_file)
+            max_size := 5 * 1024 * 1024 ; 10 MB
+            if file_size > max_size
+                FileDelete(log_file)
+
             FileAppend(
                 date ',' 
                 time ',' 
