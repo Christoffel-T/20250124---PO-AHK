@@ -54,7 +54,7 @@ main(hk:='') {
     losses := 0
     paused := [false, A_TickCount]
 
-    default_amount := 2
+    default_amount := 3
     amount := default_amount + Floor(current_balance/1000)
     _time := 15
     _time += 2
