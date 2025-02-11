@@ -148,12 +148,12 @@ start() {
         new_balance := check_balance()
         if (new_balance <= current_balance + 0.5) {
             current_balance := new_balance
-            amount := (default_amount + Floor(current_balance/1000)) * (-countdown_close+1) + (-countdown_close+1) * 1.5
+            amount := (default_amount + Floor(current_balance/1000)) * (-count_p_or_l+1) + (-count_p_or_l+1) * 1.5
             if count_p_or_l > 0
                 count_p_or_l := 0
             count_p_or_l--
-            if (Mod(count_p_or_l, -5)=0)
-                amount := default_amount + Floor(current_balance/1000)
+            ; if (Mod(count_p_or_l, -5)=0)
+            ;     amount := default_amount + Floor(current_balance/1000)
             set_amount(amount)
             losses++
         } else if (new_balance > current_balance) {
