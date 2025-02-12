@@ -74,6 +74,7 @@ def monitor_log(file_path):
                 last_size = f.tell()  # Get current file size
             
             if os.path.getsize(file_path) < last_file_size:
+                last_file_size = os.path.getsize(file_path)
                 # File has been cleared, reset last_size
                 print(f"{datetime.now()} | File has been cleared, resetting last_size")
                 last_size = 0
