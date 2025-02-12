@@ -259,7 +259,7 @@ update_log() {
     loop {
         try {
             file_size := FileGetSize(log_file)
-            max_size := 5 * 1024 * 1024 ; 10 MB
+            max_size := 5 * 1024 * 1024 ; 5 MB
             if file_size > max_size
                 FileDelete(log_file)
 
