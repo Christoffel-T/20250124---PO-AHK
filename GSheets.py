@@ -71,15 +71,13 @@ def monitor_log(file_path):
             with open(file_path, "r") as f:
                 f.seek(last_size)  # Move to last read position
                 new_data = f.read()
-                current_size = f.tell()  # Get current file size
+                last_size = f.tell()  # Get current file size
             
             if os.path.getsize(file_path) < last_file_size:
                 # File has been cleared, reset last_size
                 print(f"{datetime.now()} | File has been cleared, resetting last_size")
                 last_size = 0
                 continue
-
-            last_size = current_size  # Update last read position
 
             if new_data:
                 data_to_output = new_data.strip()
