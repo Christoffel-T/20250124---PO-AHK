@@ -1,3 +1,4 @@
+import os
 import time
 import gspread
 from google.oauth2 import service_account
@@ -63,14 +64,16 @@ def monitor_log(file_path):
         print(f'Error setting header:\n{e}')
         return
 
+    last_file_size = os.path.getsize(file_path)
+    
     while True:
         try:
             with open(file_path, "r") as f:
                 f.seek(last_size)  # Move to last read position
                 new_data = f.read()
                 current_size = f.tell()  # Get current file size
-
-            if current_size < last_size:
+            
+            if os.path.getsize(file_path) < last_file_size:
                 # File has been cleared, reset last_size
                 print(f"{datetime.now()} | File has been cleared, resetting last_size")
                 last_size = 0
