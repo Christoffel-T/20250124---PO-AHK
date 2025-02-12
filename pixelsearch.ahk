@@ -151,7 +151,7 @@ start() {
             if count_p_or_l > 0
                 count_p_or_l := 0
             count_p_or_l--
-            amount := (default_amount + Floor(current_balance/1000)) * (-count_p_or_l+1) + (-count_p_or_l+1) * 1.5
+            amount := (default_amount + Floor(current_balance/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
             ; if (Mod(count_p_or_l, -5)=0)
             ;     amount := default_amount + Floor(current_balance/1000)
             set_amount(amount)
