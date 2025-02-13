@@ -151,9 +151,9 @@ start() {
             if count_p_or_l > 0
                 count_p_or_l := 0
             count_p_or_l--
-            amount := (default_amount + Floor(current_balance/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
-            ; if (Mod(count_p_or_l, -5)=0)
-            ;     amount := default_amount + Floor(current_balance/1000)
+            amount := 2*(amount) + 1 ; (default_amount + Floor(current_balance/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
+            if (Mod(count_p_or_l, -3)=0)
+                amount := default_amount + Floor(current_balance/1000)
             set_amount(amount)
             losses++
         } else if (new_balance > current_balance) {
@@ -190,7 +190,7 @@ start() {
                 crossovers_arr.Push({direction: 'SELL', time: A_TickCount})
             }
             
-            ; if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
+            ; if (crossovers_arr.Length >= 2 and A_TickCount - cTHarossovers_arr[-2].time <= 45000) {
             ;     if paused[1]
             ;         paused := [true, A_TickCount+30000]
             ;     else
@@ -203,7 +203,7 @@ start() {
             if crossovers_arr.Length > 10
                 crossovers_arr.RemoveAt(1)
             scenario1()
-            scenario2()
+            ; scenario2()
             coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
         }
         
@@ -218,13 +218,13 @@ start() {
 
         if not condition
             return false
-        if (last_trade='SELL' and outy2 > outy1) {
+        if (last_trade='SELL' and outy2 > outy1 + 3) {
             last_trade := 'BUY'
             if condition {
                 trade_opened := [true, A_TickCount]
                 main_sub1(last_trade)
             }    
-        } else if (last_trade='BUY' and outy2 < outy1) {
+        } else if (last_trade='BUY' and outy1 > outy2 + 3) {
             last_trade := 'SELL'
             if condition {
                 trade_opened := [true, A_TickCount]
