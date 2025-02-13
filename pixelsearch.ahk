@@ -182,7 +182,7 @@ start() {
             ToolTip('red', outx4+150, outy4, 6)
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
-        if Mod(A_Sec, 15) = 14 {
+        if (Mod(A_Sec, 15) = 14 and A_MSec >= 250) {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((crossovers_arr.Length = 0 || crossovers_arr[-1].direction != 'BUY') and outy2 > outy1) {
                 crossovers_arr.Push({direction: 'BUY', time: A_TickCount})
