@@ -218,13 +218,13 @@ start() {
 
         if not condition
             return false
-        if (last_trade='SELL' and outy2 > outy1 + 3) {
+        if (last_trade!='BUY' and outy2 > outy1 + 3) {
             last_trade := 'BUY'
             if condition {
                 trade_opened := [true, A_TickCount]
                 main_sub1(last_trade)
             }    
-        } else if (last_trade='BUY' and outy1 > outy2 + 3) {
+        } else if (last_trade!='SELL' and outy1 > outy2 + 3) {
             last_trade := 'SELL'
             if condition {
                 trade_opened := [true, A_TickCount]
