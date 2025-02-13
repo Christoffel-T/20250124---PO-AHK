@@ -248,11 +248,11 @@ start() {
 
         if not condition
             return false
-        if (ps3 and last_trade != 'BUY' and outy2 < outy1 and outy3 > outy2 and condition_buy) {
+        if (ps3 and outy2 < outy1 and outy3 > outy2 and condition_buy) {
             trade_opened := [true, A_TickCount]
             last_trade := 'BUY'
             main_sub1(last_trade)
-        } else if (ps4 and last_trade != 'SELL' and outy2 > outy1 and outy4 < outy2 and condition_sell) {
+        } else if (ps4 and outy2 > outy1 and outy4 < outy2 and condition_sell) {
             trade_opened := [true, A_TickCount]
             last_trade := 'SELL'
             main_sub1(last_trade)
