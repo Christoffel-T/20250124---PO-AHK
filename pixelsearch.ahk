@@ -185,7 +185,11 @@ start() {
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 250) {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((crossovers_arr.Length = 0 || crossovers_arr[-1].direction != 'BUY') and outy2 > outy1) {
+                if last_trade=''
+                    last_trade := 'BUY'
                 crossovers_arr.Push({direction: 'BUY', time: A_TickCount})
+                if last_trade=''
+                    last_trade := 'SELL'
             } else if ((crossovers_arr.Length = 0 || crossovers_arr[-1].direction != 'SELL') and outy2 < outy1) {
                 crossovers_arr.Push({direction: 'SELL', time: A_TickCount})
             }
@@ -218,13 +222,13 @@ start() {
 
         if not condition
             return false
-        if (last_trade!='BUY' and outy2 > outy1 + 3) {
+        if (last_trade='SELL' and outy2 > outy1 + 3) {
             last_trade := 'BUY'
             if condition {
                 trade_opened := [true, A_TickCount]
                 main_sub1(last_trade)
             }    
-        } else if (last_trade!='SELL' and outy1 > outy2 + 3) {
+        } else if (last_trade='BUY' and outy1 > outy2 + 3) {
             last_trade := 'SELL'
             if condition {
                 trade_opened := [true, A_TickCount]
