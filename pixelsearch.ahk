@@ -234,21 +234,21 @@ start() {
     }
     scenario2() {
         ps5 := PixelSearch(&outx5, &outy5, outx1+4, outy1+2, outx1+1, outy1-2, colors['green'], 5)
-        ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+2, outx1+1, outy1-2, colors['green'], 5)
+        ; ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+2, outx1+1, outy1-2, colors['green'], 5)
         ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+2, outx1+1, outy1-2, colors['red'], 5)
-        ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+2, outx1+1, outy1-2, colors['red'], 5)
+        ; ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+2, outx1+1, outy1-2, colors['red'], 5)
 
         condition := not trade_opened[1] and not paused[1]
-        condition_buy := ps5 and ps6
-        condition_sell := ps7 and ps8
+        condition_buy := ps5 
+        condition_sell := ps7 
 
         if not condition
             return false
-        if (ps3 and last_trade != 'BUY' and outy2 < outy1 and outy2 - outy3 > 0 and condition_buy) {
+        if (ps3 and last_trade != 'BUY' and outy2 < outy1 and outy3 > outy2 and condition_buy) {
             trade_opened := [true, A_TickCount]
             last_trade := 'BUY'
             main_sub1(last_trade)
-        } else if (ps4 and last_trade != 'SELL' and outy2 > outy1 and outy4 - outy2 > 0 and condition_sell) {
+        } else if (ps4 and last_trade != 'SELL' and outy2 > outy1 and outy2 > outy4 and condition_sell) {
             trade_opened := [true, A_TickCount]
             last_trade := 'SELL'
             main_sub1(last_trade)
