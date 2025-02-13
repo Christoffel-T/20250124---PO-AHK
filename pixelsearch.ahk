@@ -206,8 +206,8 @@ start() {
 
             if crossovers_arr.Length > 10
                 crossovers_arr.RemoveAt(1)
-            scenario1()
-            ; scenario2()
+            ; scenario1()
+            scenario2()
             coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
         }
         
@@ -252,7 +252,7 @@ start() {
             trade_opened := [true, A_TickCount]
             last_trade := 'BUY'
             main_sub1(last_trade)
-        } else if (ps4 and last_trade != 'SELL' and outy2 > outy1 and outy2 > outy4 and condition_sell) {
+        } else if (ps4 and last_trade != 'SELL' and outy2 > outy1 and outy4 < outy2 and condition_sell) {
             trade_opened := [true, A_TickCount]
             last_trade := 'SELL'
             main_sub1(last_trade)
