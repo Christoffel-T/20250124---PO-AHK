@@ -74,13 +74,13 @@ def monitor_log(file_path):
                 last_size = f.tell()  # Get current file size
             
             if os.path.getsize(file_path) < last_file_size:
-                last_file_size = os.path.getsize(file_path)
                 # File has been cleared, reset last_size
                 print(f"{datetime.now()} | File has been cleared, resetting last_size")
                 last_size = 0
                 continue
 
             if new_data:
+                last_file_size = os.path.getsize(file_path)
                 data_to_output = new_data.strip()
                 # Reverse the order of the new data
                 reversed_data = "\n".join(data_to_output.split("\n")[::-1])
