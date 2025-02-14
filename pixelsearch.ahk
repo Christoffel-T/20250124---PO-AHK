@@ -214,6 +214,9 @@ start() {
         
 
     }
+    debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
+    debug_str := 'G: ' (ps2 and ps3 ? outy3 - outy2 : 0) ' | R: ' (ps2 and ps4 ? outy2 - outy4 : 0) ' | ' debug_str
+    debug_str := crossovers_arr.Length > 0 ? 'last CO: ' crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - crossovers_arr[-1].time)/1000) ')' ' | ' debug_str : debug_str
 
     update_log()
     sleep 100
