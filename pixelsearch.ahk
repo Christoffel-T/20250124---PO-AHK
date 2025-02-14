@@ -124,7 +124,7 @@ start() {
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
         debug_str := 'G: ' (ps2 and ps3 ? outy3 - outy2 : 0) ' | R: ' (ps2 and ps4 ? outy2 - outy4 : 0) ' | ' debug_str
-        debug_str := crossovers_arr.Length > 0 ? 'last CO: ' crossovers_arr[-1].direction '(' Format('{:.1f}', A_TickCount - crossovers_arr[-1].time) ')' ' | ' debug_str : debug_str
+        debug_str := crossovers_arr.Length > 0 ? 'last CO: ' crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - crossovers_arr[-1].time)/1000) ')' ' | ' debug_str : debug_str
         ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
     } else {
         coords_area[1] := max(coords_area[1] - 1, 100)
@@ -225,23 +225,19 @@ start() {
         ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+2, outx1+1, outy1-2, colors['red'], 5)
 
         condition := not paused[1] ; not trade_opened[1] and not paused[1]
-        condition_buy := ps5 and ps6 and crossovers_arr[-1].direction = 'BUY' and A_TickCount < crossovers_arr[-1].time + 30000
-        condition_sell := ps7 and ps8 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000
+        condition_buy  := ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
+        condition_sell := ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
 
         if not condition
             return false
         if (condition_buy) {
             last_trade := 'BUY'
-            if condition {
-                trade_opened := [true, A_TickCount]
-                main_sub1(last_trade)
-            }    
+            trade_opened := [true, A_TickCount]
+            main_sub1(last_trade)
         } else if (condition_sell) {
             last_trade := 'SELL'
-            if condition {
-                trade_opened := [true, A_TickCount]
-                main_sub1(last_trade)
-            }    
+            trade_opened := [true, A_TickCount]
+            main_sub1(last_trade)
         }
     }
     scenario2() {
