@@ -187,10 +187,10 @@ start() {
             ToolTip('red', outx4+150, outy4, 6)
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
-        ps5 := PixelSearch(&outx5, &outy5, outx1+4, outy1+2, outx1+2, outy1-2, colors['green'], 5)
-        ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+2, outx1+2, outy1-2, colors['green'], 5)
-        ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+2, outx1+2, outy1-2, colors['red'], 5)
-        ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+2, outx1+2, outy1-2, colors['red'], 5)
+        ps5 := PixelSearch(&outx5, &outy5, outx1+4, outy1+10, outx1+2, outy1-10, colors['green'], 5)
+        ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+10, outx1+2, outy1-10, colors['green'], 5)
+        ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+10, outx1+2, outy1-10, colors['red'], 5)
+        ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+10, outx1+2, outy1-10, colors['red'], 5)
         scenario1()
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 250) {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
