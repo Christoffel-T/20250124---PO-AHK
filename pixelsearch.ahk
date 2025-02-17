@@ -39,6 +39,10 @@ main(hk:='') {
         sleep 500
     }
 
+    ps5 := ''
+    ps6 := ''
+    ps7 := ''
+    ps8 := ''
     log_file := 'log.csv'
     trade_opened := [false, A_TickCount]
     crossovers_arr := []
