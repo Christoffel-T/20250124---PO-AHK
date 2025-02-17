@@ -236,6 +236,7 @@ start() {
     sleep 100
 
     scenario1() {
+        global
         condition := not paused[1] ; not trade_opened[1] and not paused[1]
         condition_buy  := outy2 > outy1 + 7 and ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
         condition_sell := outy1 > outy2 + 7 and ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
