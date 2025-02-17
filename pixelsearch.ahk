@@ -39,10 +39,6 @@ main(hk:='') {
         sleep 500
     }
 
-    ps5 := ''
-    ps6 := ''
-    ps7 := ''
-    ps8 := ''
     log_file := 'log.csv'
     trade_opened := [false, A_TickCount]
     crossovers_arr := []
@@ -129,7 +125,8 @@ start() {
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
         ; debug_str := 'G: ' (ps2 and ps3 ? outy3 - outy2 : 0) ' | R: ' (ps2 and ps4 ? outy2 - outy4 : 0) ' | ' debug_str
-        debug_str := '2lines: ' ps5 and ps6 ? 'BUY' : ps7 and ps8 ? 'SELL' : '' ' | ' debug_str
+        _a := ps5 and ps6 ? '2lines: BUY' : ps7 and ps8 ? '2lines: SELL' : ''
+        debug_str := _a ' | ' debug_str
         debug_str := crossovers_arr.Length > 0 ? 'last CO: ' crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - crossovers_arr[-1].time)/1000) ')' ' | ' debug_str : debug_str
         ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
     } else {
@@ -195,6 +192,11 @@ start() {
             ToolTip('red', outx4+150, outy4, 6)
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
+        ps5 := ''
+        ps6 := ''
+        ps7 := ''
+        ps8 := ''
+    
         ps5 := PixelSearch(&outx5, &outy5, outx1+4, outy1+4, outx1+2, outy1-4, colors['green'], 5)
         ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+4, outx1+2, outy1-4, colors['green'], 5)
         ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+4, outx1+2, outy1-4, colors['red'], 5)
