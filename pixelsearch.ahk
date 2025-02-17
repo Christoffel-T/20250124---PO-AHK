@@ -50,12 +50,13 @@ main(hk:='') {
     debug_str := ''
     current_balance := check_balance()
     count_p_or_l := 0
+    lose_streak := {max: count_p_or_l, repeat: 1}
     wins := 0
     losses := 0
     paused := [false, A_TickCount]
 
-    default_amount := 3
-    amount := default_amount + Floor(current_balance/1000)
+    default_amount := 1
+    amount := max(default_amount, default_amount + Floor(current_balance/1000) - 2)
     _time := 15
     _time += 2
     payout := 92
@@ -149,9 +150,15 @@ start() {
             if count_p_or_l > 0
                 count_p_or_l := 0
             count_p_or_l--
-            amount := amount + 1 ; (default_amount + Floor(current_balance/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
-            if (Mod(count_p_or_l, -2)=0)
-                amount := default_amount + Floor(current_balance/1000)
+            if (count_p_or_l = lose_streak.max)
+                lose_streak.repeat++
+            else if (count_p_or_l < lose_streak.max) {
+                lose_streak.max := count_p_or_l
+                lose_streak.repeat := 1
+            }
+            amount := 2*(amount) + 1 ; (default_amount + Floor(current_balance/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
+            ; if (Mod(count_p_or_l, -2)=0)
+            ;     amount := default_amount + Floor(current_balance/1000)
             set_amount(amount)
             losses++
         } else if (new_balance > current_balance) {
@@ -180,6 +187,7 @@ start() {
             ToolTip('red', outx4+150, outy4, 6)
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
+        scenario1()
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 250) {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((crossovers_arr.Length = 0 || crossovers_arr[-1].direction != 'BUY') and outy2 > outy1) {
@@ -216,14 +224,14 @@ start() {
     sleep 100
 
     scenario1() {
-        ps5 := PixelSearch(&outx5, &outy5, outx1+4, outy1+2, outx1+1, outy1-2, colors['green'], 5)
-        ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+2, outx1+1, outy1-2, colors['green'], 5)
-        ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+2, outx1+1, outy1-2, colors['red'], 5)
-        ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+2, outx1+1, outy1-2, colors['red'], 5)
+        ps5 := PixelSearch(&outx5, &outy5, outx1+4, outy1+2, outx1+2, outy1-2, colors['green'], 5)
+        ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+2, outx1+2, outy1-2, colors['green'], 5)
+        ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+2, outx1+2, outy1-2, colors['red'], 5)
+        ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+2, outx1+2, outy1-2, colors['red'], 5)
 
         condition := not paused[1] ; not trade_opened[1] and not paused[1]
-        condition_buy  := ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
-        condition_sell := ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
+        condition_buy  := outy2 > outy1 + 7 ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
+        condition_sell := outy1 > outy2 + 7 ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
 
         if not condition
             return false
@@ -270,7 +278,8 @@ update_log() {
         countdown_close_str := ''
     }
     debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
-    debug_str := 'G: ' (ps2 and ps3 ? outy3 - outy2 : 0) ' | R: ' (ps2 and ps4 ? outy2 - outy4 : 0) ' | ' debug_str
+    ; debug_str := 'G: ' (ps2 and ps3 ? outy3 - outy2 : 0) ' | R: ' (ps2 and ps4 ? outy2 - outy4 : 0) ' | ' debug_str
+    debug_str := '2lines: ' ps5 and ps6 ? 'BUY' : ps7 and ps8 ? 'SELL' : '' ' | ' debug_str
     debug_str := crossovers_arr.Length > 0 ? 'last CO: ' crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - crossovers_arr[-1].time)/1000) ')' ' | ' debug_str : debug_str
 
     paused_str := paused[1] ? 'Paused (' Format('{:.1f}', (paused[2] - A_TickCount)/1000) ')' : '()'
@@ -289,7 +298,7 @@ update_log() {
                 last_trade ',' 
                 current_balance ',' 
                 format('{:.2f}', amount) ',' 
-                paused_str ' ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
+                lose_streak.max '(' lose_streak.repeat ') | ' paused_str ' ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                 count_p_or_l ' (' wins '|' losses '|' win_rate '%)' ',' 
                 debug_str '`n',
                 log_file
