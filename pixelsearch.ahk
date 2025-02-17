@@ -187,6 +187,10 @@ start() {
             ToolTip('red', outx4+150, outy4, 6)
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
+        ps5 := PixelSearch(&outx5, &outy5, outx1+4, outy1+2, outx1+2, outy1-2, colors['green'], 5)
+        ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+2, outx1+2, outy1-2, colors['green'], 5)
+        ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+2, outx1+2, outy1-2, colors['red'], 5)
+        ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+2, outx1+2, outy1-2, colors['red'], 5)
         scenario1()
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 250) {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
@@ -212,7 +216,7 @@ start() {
 
             if crossovers_arr.Length > 10
                 crossovers_arr.RemoveAt(1)
-            scenario1()
+            ; scenario1()
             ; scenario2()
             coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
         }
@@ -224,11 +228,6 @@ start() {
     sleep 100
 
     scenario1() {
-        ps5 := PixelSearch(&outx5, &outy5, outx1+4, outy1+2, outx1+2, outy1-2, colors['green'], 5)
-        ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+2, outx1+2, outy1-2, colors['green'], 5)
-        ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+2, outx1+2, outy1-2, colors['red'], 5)
-        ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+2, outx1+2, outy1-2, colors['red'], 5)
-
         condition := not paused[1] ; not trade_opened[1] and not paused[1]
         condition_buy  := outy2 > outy1 + 7 ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
         condition_sell := outy1 > outy2 + 7 ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
