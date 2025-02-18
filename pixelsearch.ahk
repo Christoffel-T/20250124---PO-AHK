@@ -51,12 +51,11 @@ main(hk:='') {
     current_balance := check_balance()
     count_p_or_l := 0
     lose_streak := {max: count_p_or_l, repeat: 1}
-    wins := 0
-    losses := 0
+    stats := {win: 0, loss: 0, draw: 0}
     paused := [false, A_TickCount]
+    amounts_tresholds := [[4000, 2], [3060, 1]]
 
-    default_amount := 1
-    amount := max(default_amount, default_amount + Floor(current_balance/1000) - 2)
+    amount := get_amount(current_balance)
     _time := 15
     _time += 2
     payout := 92
@@ -73,6 +72,14 @@ main(hk:='') {
     set_amount(amount)
     MouseClick('l', coords['empty_area'][1], coords['empty_area'][2],1,2)
     SetTimer(start, 100)
+}
+
+get_amount(val) {
+    for tresh in amounts_tresholds {
+        if val >= tresh[1]
+            return tresh[2]
+        return 1
+    }
 }
 
 start() {
@@ -136,7 +143,7 @@ start() {
         return
     }
     
-    win_rate := wins+losses > 0 ? wins/(wins+losses)*100 : 0
+    win_rate := stats.win > 0 ? stats.win/(stats.win+stats.loss+stats.draw)*100 : 0
     win_rate := Format('{:.1f}', win_rate)
 
     ToolTip(,,, 12)
@@ -160,16 +167,19 @@ start() {
             ; if (Mod(count_p_or_l, -2)=0)
             ;     amount := default_amount + Floor(current_balance/1000)
             set_amount(amount)
-            losses++
-        } else if (new_balance > current_balance) {
+            stats.loss++
+        } else if (new_balance > current_balance + amount*1.2) {
             current_balance := new_balance
             if count_p_or_l < 0
                 count_p_or_l := 0
-            amount := default_amount + Floor(current_balance/1000)
+            amount := get_amount(current_balance)
             set_amount(amount)
             count_p_or_l++
-            wins++
-        }
+            stats.win++
+        } else {
+            current_balance := new_balance
+            stats.draw++
+        } 
     }
 
     datetime := A_NowUTC
@@ -191,6 +201,16 @@ start() {
         ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+4, outx1+2, outy1-4, colors['green'], 5)
         ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+4, outx1+2, outy1-4, colors['red'], 5)
         ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+4, outx1+2, outy1-4, colors['red'], 5)
+        if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
+            if paused[1]
+                paused := [true, A_TickCount+30000]
+            else
+                paused := [true, A_TickCount+45000]
+        }
+        if paused[1] and A_TickCount > paused[2] {
+            paused := [false, A_TickCount]
+        }
+
         scenario1()
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 250) {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
@@ -203,17 +223,6 @@ start() {
                     last_trade := 'SELL'
                 crossovers_arr.Push({direction: 'SELL', time: A_TickCount})
             }
-            
-            ; if (crossovers_arr.Length >= 2 and A_TickCount - cTHarossovers_arr[-2].time <= 45000) {
-            ;     if paused[1]
-            ;         paused := [true, A_TickCount+30000]
-            ;     else
-            ;         paused := [true, A_TickCount+45000]
-            ; }
-            ; if paused[1] and A_TickCount > paused[2] {
-            ;     paused := [false, A_TickCount]
-            ; }
-
             if crossovers_arr.Length > 10
                 crossovers_arr.RemoveAt(1)
             ; scenario1()
@@ -230,8 +239,8 @@ start() {
     scenario1() {
         global
         condition := not paused[1] ; not trade_opened[1] and not paused[1]
-        condition_buy  := outy2 > outy1 + 7 and ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
-        condition_sell := outy1 > outy2 + 7 and ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
+        condition_buy  := outy2 > outy1 + 5 and ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
+        condition_sell := outy1 > outy2 + 5 and ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
 
         if not condition
             return false
@@ -301,7 +310,7 @@ update_log() {
                 current_balance ',' 
                 format('{:.2f}', amount) ',' 
                 lose_streak.max '(' lose_streak.repeat ') | ' paused_str ' ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
-                count_p_or_l ' (' wins '|' losses '|' win_rate '%)' ',' 
+                count_p_or_l ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
                 debug_str '`n',
                 log_file
             )
