@@ -67,7 +67,7 @@ main(hk:='') {
     marked_time_refresh := A_TickCount
 
     if !FileExist(log_file) {
-        FileAppend('date,time,active_trade,last_trade,balance,amount,payout,P/L (win_rate),debug`n', log_file)
+        FileAppend('date,time,active_trade,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),debug`n', log_file)
     }
     set_amount(amount)
     MouseClick('l', coords['empty_area'][1], coords['empty_area'][2],1,2)
