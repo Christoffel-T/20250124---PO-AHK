@@ -247,7 +247,7 @@ start() {
 
     check_paused() {
         key := '2cr'
-        if not blockers.HasKey(key)
+        if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
         if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
             blockers[key] := {state: true, tick_count: A_TickCount}
@@ -257,7 +257,7 @@ start() {
         }
 
         key := '3G3R'
-        if not blockers.HasKey(key)
+        if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
         if (candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
             blockers[key] := {state: false, tick_count: A_TickCount}
