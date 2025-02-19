@@ -48,14 +48,16 @@ main(hk:='') {
     countdown_close_str := ''
     win_rate := ''
     debug_str := ''
-    current_balance := check_balance()
+    balance := {current: 0, min: 999999999, max: 0}
+    balance := check_balance(balance)
+    
     count_p_or_l := 0
     lose_streak := {max: count_p_or_l, repeat: 1}
     stats := {win: 0, loss: 0, draw: 0}
     paused := [false, A_TickCount]
     amounts_tresholds := [[4000, 2], [3060, 1]]
 
-    amount := get_amount(current_balance)
+    amount := get_amount(balance.current)
     _time := 15
     _time += 2
     payout := 92
@@ -130,7 +132,7 @@ start() {
         ps4 := PixelSearch(&outx4, &outy4, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
         coords_area[1] := min(coords_area[1] + 1, A_ScreenWidth*0.95)
         coords_area[3] := coords_area[1] - 2
-        ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
+        ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', balance.current), 5, 5, 11)
     } else {
         coords_area[1] := max(coords_area[1] - 1, 100)
         if coords_area[1] < min_x {
@@ -139,7 +141,7 @@ start() {
         }
         coords_area[3] := coords_area[1] - 2
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
-        ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', current_balance), 5, 5, 11)
+        ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', balance.current), 5, 5, 11)
         return
     }
     
@@ -151,9 +153,9 @@ start() {
     if (trade_opened[1] and countdown_close < 0) {
         active_trade := ''
         trade_opened[1] := false
-        new_balance := check_balance()
-        if (new_balance <= current_balance + 0.5) {
-            current_balance := new_balance
+        new_balance := check_balance(balance)
+        if (new_balance.current <= balance.current + 0.5) {
+            balance := new_balance
             if count_p_or_l > 0
                 count_p_or_l := 0
             count_p_or_l--
@@ -163,21 +165,21 @@ start() {
                 lose_streak.max := count_p_or_l
                 lose_streak.repeat := 1
             }
-            amount := 2*(amount) + 1 ; (default_amount + Floor(current_balance/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
+            amount := 2*(amount) + 1 ; (default_amount + Floor(balance.current/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
             ; if (Mod(count_p_or_l, -2)=0)
-            ;     amount := default_amount + Floor(current_balance/1000)
+            ;     amount := default_amount + Floor(balance.current/1000)
             set_amount(amount)
             stats.loss++
-        } else if (new_balance > current_balance + amount*1.2) {
-            current_balance := new_balance
+        } else if (new_balance.current > balance.current + amount*1.2) {
+            balance := new_balance
             if count_p_or_l < 0
                 count_p_or_l := 0
-            amount := get_amount(current_balance)
+            amount := get_amount(balance.current)
             set_amount(amount)
             count_p_or_l++
             stats.win++
         } else {
-            current_balance := new_balance
+            balance := new_balance
             stats.draw++
         } 
     }
@@ -255,11 +257,6 @@ start() {
         }
     }
     scenario2() {
-        ps5 := PixelSearch(&outx5, &outy5, outx1+4, outy1+2, outx1+1, outy1-2, colors['green'], 5)
-        ; ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+2, outx1+1, outy1-2, colors['green'], 5)
-        ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+2, outx1+1, outy1-2, colors['red'], 5)
-        ; ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+2, outx1+1, outy1-2, colors['red'], 5)
-
         condition := not trade_opened[1] and not paused[1]
         condition_buy := ps5 
         condition_sell := ps7 
@@ -307,14 +304,14 @@ update_log() {
                 time ',' 
                 active_trade countdown_close_str ',' 
                 last_trade ',' 
-                current_balance ',' 
+                balance.current ' (' balance.min ' | ' balance.max ')' ',' 
                 format('{:.2f}', amount) ',' 
                 lose_streak.max '(' lose_streak.repeat ') | ' paused_str ' ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                 count_p_or_l ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
                 debug_str '`n',
                 log_file
             )
-            if current_balance < 1 {
+            if balance.current < 1 {
                 MsgBox('0 Balance.')
                 exitapp
             }
@@ -337,7 +334,7 @@ main_sub1(action) {
     sleep 50
     MouseClick('L', coords[action][1] + Random(-5, 5), coords[action][2] + Random(-5, 5), 1, 2)
     sleep 30
-    while check_balance() = current_balance {
+    while check_balance(balance).current = balance.current {
         ToolTip('Waiting balance change...', 500, 5, 12)
         sleep 50
         if (a_index>100) {
@@ -347,7 +344,7 @@ main_sub1(action) {
         }
     }
     ToolTip(,,, 12)
-    current_balance := check_balance()
+    balance := check_balance(balance)
     active_trade := action
 }
 
@@ -359,7 +356,7 @@ reload_website() {
     sleep 80
     Send('^r')
     sleep 5000
-    check_balance()
+    check_balance(balance)
     sleep 2000
     return
 }
@@ -392,7 +389,7 @@ set_amount(amount) {
     return
 }
 
-check_balance() {
+check_balance(balance) {
     Loop {
         A_Clipboard := ''
         if !WinActive(wtitle) {
@@ -414,7 +411,12 @@ check_balance() {
             continue
         }
         ToolTip
-        balance := StrReplace(match[], ',', '')
+        cur_bal := StrReplace(match[], ',', '')
+        balance.current := cur_bal
+        if cur_bal < balance.min 
+            balance.min := cur_bal
+        if cur_bal > balance.max
+            balance.max := cur_bal
         return balance
     }
 }
