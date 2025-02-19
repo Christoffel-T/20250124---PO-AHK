@@ -258,16 +258,16 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
-        key := 'not_3G3R'
-        if not blockers.Has(key)
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        if (candle_colors.Length >=3 and candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else if candle_colors.Length < 3 {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
-            blockers[key] := {state: true, tick_count: A_TickCount}
-        }
+        ; key := 'not_3G3R'
+        ; if not blockers.Has(key)
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if (candle_colors.Length >=3 and candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else if candle_colors.Length < 3 {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else {
+        ;     blockers[key] := {state: true, tick_count: A_TickCount}
+        ; }
 
         for k, v in blockers {
             if v.state
@@ -277,8 +277,8 @@ start() {
     }
 
     scenario1() {
-        condition_buy  := outy2 > outy1 + 5 and ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
-        condition_sell := outy1 > outy2 + 5 and ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
+        condition_buy  := outy2 > outy1 + 4 and ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
+        condition_sell := outy1 > outy2 + 4 and ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
 
         if paused
             return false
@@ -352,7 +352,7 @@ update_log() {
                 time ',' 
                 active_trade countdown_close_str ' | ' paused_str ',' 
                 last_trade ',' 
-                balance.current ' (' balance.min ' | ' balance.max ')' ',' 
+                balance.current ' (' balance.max ' | ' balance.min ')' ',' 
                 format('{:.2f}', amount) ',' 
                 lose_streak.max '(' lose_streak.repeat ') | ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                 count_p_or_l ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
@@ -437,7 +437,7 @@ set_amount(amount) {
     return
 }
 
-check_balance(balance) {
+check_balance(_balance) {
     Loop {
         A_Clipboard := ''
         if !WinActive(wtitle) {
@@ -460,12 +460,12 @@ check_balance(balance) {
         }
         ToolTip
         cur_bal := StrReplace(match[], ',', '')
-        balance.current := cur_bal
-        if cur_bal < balance.min 
-            balance.min := cur_bal
-        if cur_bal > balance.max
-            balance.max := cur_bal
-        return balance
+        _balance.current := cur_bal
+        if cur_bal < _balance.min 
+            _balance.min := cur_bal
+        if cur_bal > _balance.max
+            _balance.max := cur_bal
+        return _balance
     }
 }
 
