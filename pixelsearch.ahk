@@ -460,12 +460,13 @@ check_balance(_balance) {
         }
         ToolTip
         cur_bal := StrReplace(match[], ',', '')
-        _balance.current := cur_bal
+        _balnew := {current: cur_bal, max: cur_bal, min: cur_bal}
+        _balnew.current := cur_bal
         if cur_bal < _balance.min 
-            _balance.min := cur_bal
+            _balnew.min := cur_bal
         if cur_bal > _balance.max
-            _balance.max := cur_bal
-        return _balance
+            _balnew.max := cur_bal
+        return _balnew
     }
 }
 
