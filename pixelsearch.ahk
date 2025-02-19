@@ -258,16 +258,16 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
-        ; key := 'not_3G3R'
-        ; if not blockers.Has(key)
-        ;     blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if (candle_colors.Length >=3 and candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
-        ;     blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else if candle_colors.Length < 3 {
-        ;     blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else {
-        ;     blockers[key] := {state: true, tick_count: A_TickCount}
-        ; }
+        key := 'not_3G3R'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if (candle_colors.Length >=3 and candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        } else if candle_colors.Length < 3 {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        }
 
         for k, v in blockers {
             if v.state
