@@ -220,7 +220,7 @@ start() {
         scenario1()
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
             _timeframe := get_timeframe()
-            if _timeframe != candle_colors[1].time {
+            if _timeframe != candle_colors[1].timeframe {
                 _color := ps3 ? 'G' : ps4 ? 'R' : '?'
                 candle_colors.InsertAt(1, {color: _color, timeframe: _timeframe})
                 while candle_colors.Length > 5
