@@ -31,6 +31,15 @@ ToolTip('Ready. Press F1 to start', 5, 5, 1)
 start_time := A_TickCount
 main()
 
+get_timeframe(interval := 15) {
+    datetime := A_NowUTC
+    datetime := DateAdd(datetime, -5, 'h')
+    seconds := SubStr(datetime, -2)
+    rounded_seconds := Floor(seconds / interval) * interval
+    rounded_time := SubStr(datetime, 1, -2) Format("{:02}", rounded_seconds)
+    return rounded_time
+}
+
 main(hk:='') {
     global
     ToolTip('Running...', 5, 5, 1)
@@ -50,11 +59,14 @@ main(hk:='') {
     debug_str := ''
     balance := {current: 0, min: 999999999, max: 0}
     balance := check_balance(balance)
+    candle_colors := [{color: '?', timeframe: get_timeframe()}]
     
     count_p_or_l := 0
     lose_streak := {max: count_p_or_l, repeat: 1}
     stats := {win: 0, loss: 0, draw: 0}
-    paused := [false, A_TickCount]
+    paused := false
+    blockers := Map()
+
     amounts_tresholds := [[4000, 2], [3060, 1]]
 
     amount := get_amount(balance.current)
@@ -203,18 +215,17 @@ start() {
         ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+4, outx1+2, outy1-4, colors['green'], 5)
         ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+4, outx1+2, outy1-4, colors['red'], 5)
         ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+4, outx1+2, outy1-4, colors['red'], 5)
-        if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
-            if paused[1]
-                paused := [true, A_TickCount+30000]
-            else
-                paused := [true, A_TickCount+45000]
-        }
-        if paused[1] and A_TickCount > paused[2] {
-            paused := [false, A_TickCount]
-        }
-
+        
+        paused := check_paused()
         scenario1()
-        if (Mod(A_Sec, 15) = 14 and A_MSec >= 250) {
+        if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
+            _timeframe := get_timeframe()
+            if _timeframe != candle_colors[-1].time {
+                _color := ps3 ? 'G' : ps4 ? 'R' : '?'
+                candle_colors.InsertAt(1, {color: _color, timeframe: _timeframe})
+                while candle_colors.Length > 5
+                    candle_colors.Pop()
+            }
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((crossovers_arr.Length = 0 || crossovers_arr[-1].direction != 'BUY') and outy2 > outy1) {
                 if last_trade=''
@@ -227,24 +238,39 @@ start() {
             }
             if crossovers_arr.Length > 10
                 crossovers_arr.RemoveAt(1)
-            ; scenario1()
-            ; scenario2()
             coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
         }
-        
-
     }
 
     update_log()
     sleep 100
 
+    check_paused() {
+        if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
+            blockers['2cr'] := {state: true, tick_count: A_TickCount}
+        }
+        if blockers['2cr'].state and A_TickCount > blockers['2cr'].tick_count + 45000 {
+            blockers['2cr'] := {state: false, tick_count: A_TickCount}
+        }
+
+        if (candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
+            blockers['3G3R'] := {state: false, tick_count: A_TickCount}
+        } else {
+            blockers['3G3R'] := {state: true, tick_count: A_TickCount}
+        }
+
+        for k, v in blockers {
+            if v.state
+                return true
+        }
+        return false
+    }
+
     scenario1() {
-        global
-        condition := not paused[1] ; not trade_opened[1] and not paused[1]
         condition_buy  := outy2 > outy1 + 5 and ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
         condition_sell := outy1 > outy2 + 5 and ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
 
-        if not condition
+        if paused
             return false
         if (condition_buy) {
             last_trade := 'BUY'
@@ -257,11 +283,10 @@ start() {
         }
     }
     scenario2() {
-        condition := not trade_opened[1] and not paused[1]
         condition_buy := ps5 
         condition_sell := ps7 
 
-        if not condition
+        if trade_opened[1] and paused
             return false
         if (ps3 and outy2 < outy1 and outy3 > outy2 and condition_buy) {
             trade_opened := [true, A_TickCount]
@@ -289,8 +314,21 @@ update_log() {
     _a := ps5 and ps6 ? '2lines: BUY' : ps7 and ps8 ? '2lines: SELL' : ''
     debug_str := _a ' | ' debug_str
     debug_str := crossovers_arr.Length > 0 ? 'last CO: ' crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - crossovers_arr[-1].time)/1000) ')' ' | ' debug_str : debug_str
-
-    paused_str := paused[1] ? 'Paused (' Format('{:.1f}', (paused[2] - A_TickCount)/1000) ')' : '()'
+    _ := ''
+    for val in candle_colors {
+        if A_Index > 3 {
+            _ := RTrim(_, '|')
+            break
+        }
+        _ .= val.color '(' SubStr(val.timeframe, -2) ')|'
+    }
+    debug_str := _ ' | ' debug_str
+    
+    _pauser := ''
+    for k, v in blockers {
+        _pauser .= k ':' v.state '|'
+    }
+    paused_str := paused ? 'Paused (' _pauser ')' : '()'
     err := 0
     loop {
         try {
@@ -302,11 +340,11 @@ update_log() {
             FileAppend(
                 date ',' 
                 time ',' 
-                active_trade countdown_close_str ',' 
+                active_trade countdown_close_str ' | ' paused_str ',' 
                 last_trade ',' 
                 balance.current ' (' balance.min ' | ' balance.max ')' ',' 
                 format('{:.2f}', amount) ',' 
-                lose_streak.max '(' lose_streak.repeat ') | ' paused_str ' ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
+                lose_streak.max '(' lose_streak.repeat ') | ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                 count_p_or_l ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
                 debug_str '`n',
                 log_file
