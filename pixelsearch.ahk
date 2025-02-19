@@ -220,7 +220,7 @@ start() {
         scenario1()
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
             _timeframe := get_timeframe()
-            if _timeframe != candle_colors[-1].time {
+            if _timeframe != candle_colors[1].time {
                 _color := ps3 ? 'G' : ps4 ? 'R' : '?'
                 candle_colors.InsertAt(1, {color: _color, timeframe: _timeframe})
                 while candle_colors.Length > 5
@@ -259,7 +259,7 @@ start() {
         key := '3G3R'
         if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
-        if (candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
+        if (candle_colors.Length >=3 and candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
             blockers[key] := {state: false, tick_count: A_TickCount}
         } else {
             blockers[key] := {state: true, tick_count: A_TickCount}
