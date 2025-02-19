@@ -249,6 +249,8 @@ start() {
         if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
             blockers['2cr'] := {state: true, tick_count: A_TickCount}
         }
+        if not blockers['2cr']
+            blockers['2cr'] := {state: false, tick_count: A_TickCount}
         if blockers['2cr'].state and A_TickCount > blockers['2cr'].tick_count + 45000 {
             blockers['2cr'] := {state: false, tick_count: A_TickCount}
         }
