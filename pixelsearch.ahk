@@ -216,16 +216,14 @@ start() {
         ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+4, outx1+2, outy1-4, colors['red'], 5)
         ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+4, outx1+2, outy1-4, colors['red'], 5)
         
-        paused := check_paused()
-        scenario1()
+        _timeframe := get_timeframe()
+        if _timeframe != candle_colors[1].timeframe {
+            _color := ps3 ? 'G' : ps4 ? 'R' : '?'
+            candle_colors.InsertAt(1, {color: _color, timeframe: _timeframe})
+            while candle_colors.Length > 5
+                candle_colors.Pop()
+        }
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
-            _timeframe := get_timeframe()
-            if _timeframe != candle_colors[1].timeframe {
-                _color := ps3 ? 'G' : ps4 ? 'R' : '?'
-                candle_colors.InsertAt(1, {color: _color, timeframe: _timeframe})
-                while candle_colors.Length > 5
-                    candle_colors.Pop()
-            }
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((crossovers_arr.Length = 0 || crossovers_arr[-1].direction != 'BUY') and outy2 > outy1) {
                 if last_trade=''
@@ -240,6 +238,9 @@ start() {
                 crossovers_arr.RemoveAt(1)
             coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
         }
+        paused := check_paused()
+        scenario1()
+
     }
 
     update_log()
