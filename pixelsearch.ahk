@@ -246,19 +246,23 @@ start() {
     sleep 100
 
     check_paused() {
+        key := '2cr'
+        if not blockers.HasKey(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
         if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
-            blockers['2cr'] := {state: true, tick_count: A_TickCount}
+            blockers[key] := {state: true, tick_count: A_TickCount}
         }
-        if not blockers['2cr']
-            blockers['2cr'] := {state: false, tick_count: A_TickCount}
-        if blockers['2cr'].state and A_TickCount > blockers['2cr'].tick_count + 45000 {
-            blockers['2cr'] := {state: false, tick_count: A_TickCount}
+        if blockers[key].state and A_TickCount > blockers[key].tick_count + 45000 {
+            blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
+        key := '3G3R'
+        if not blockers.HasKey(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
         if (candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
-            blockers['3G3R'] := {state: false, tick_count: A_TickCount}
+            blockers[key] := {state: false, tick_count: A_TickCount}
         } else {
-            blockers['3G3R'] := {state: true, tick_count: A_TickCount}
+            blockers[key] := {state: true, tick_count: A_TickCount}
         }
 
         for k, v in blockers {
