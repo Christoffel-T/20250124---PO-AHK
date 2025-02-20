@@ -465,7 +465,7 @@ check_balance(_balance) {
         }
         ToolTip
         cur_bal := StrReplace(match[], ',', '')
-        _balnew := {current: cur_bal, max: max(cur_bal, _balance.max), min: min(cur_bal, _balance.min)}
+        _balnew := {current: cur_bal, max: Format('{:.2f}', max(cur_bal, _balance.max)), min: Format('{:.2f}', min(cur_bal, _balance.min))}
         return _balnew
     }
 }
