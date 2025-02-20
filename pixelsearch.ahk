@@ -116,6 +116,11 @@ start() {
             payout := 92
             break
         } else {
+            ToolTip(,,,2)
+            ToolTip(,,,3)
+            ToolTip(,,,4)
+            ToolTip(,,,5)
+            ToolTip(,,,6)
             last_trade := ''
             ToolTip('Waiting for payout to be 92 or higher...', 500, 5, 12)
             MouseClick('L', coords['coin'][1] + Random(-2, 2), coords['coin'][2] + Random(-2, 2), 1, 2)
@@ -460,12 +465,7 @@ check_balance(_balance) {
         }
         ToolTip
         cur_bal := StrReplace(match[], ',', '')
-        _balnew := {current: cur_bal, max: cur_bal, min: cur_bal}
-        _balnew.current := cur_bal
-        if cur_bal < _balance.min 
-            _balnew.min := cur_bal
-        if cur_bal > _balance.max
-            _balnew.max := cur_bal
+        _balnew := {current: cur_bal, max: max(cur_bal, _balance.max), min: min(cur_bal, _balance.min)}
         return _balnew
     }
 }
