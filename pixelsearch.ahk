@@ -48,6 +48,17 @@ main(hk:='') {
         sleep 500
     }
 
+    amount_arr := []
+    amount_arr.Push([1,3,7,15,31,66,135,281,586,1223])
+    Loop 10 {
+        _index := A_Index
+        if amount_arr.Length < A_Index
+            amount_arr.Push([A_Index])
+        while amount_arr[_index].Length < 20 {
+            amount_arr[_index].Push(amount_arr[_index][-1]*2+1)
+        }
+    }    
+
     log_file := 'log.csv'
     trade_opened := [false, A_TickCount]
     crossovers_arr := []
@@ -182,7 +193,7 @@ start() {
                 lose_streak.max := count_p_or_l
                 lose_streak.repeat := 1
             }
-            amount := 2*(amount) + 1 ; (default_amount + Floor(balance.current/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
+            amount := amount_arr[get_amount(balance.current)][-count_p_or_l+1] ; (default_amount + Floor(balance.current/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
             ; if (Mod(count_p_or_l, -2)=0)
             ;     amount := default_amount + Floor(balance.current/1000)
             set_amount(amount)
