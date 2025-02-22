@@ -110,13 +110,12 @@ get_amount(val) {
 start() {
     global
 
-    if A_TickCount > marked_time_refresh + 2*60*60*1000 {
-        marked_time_refresh := A_TickCount
-        reload_website()
-        ; reload
-    }
-
     Loop {
+        if A_TickCount > marked_time_refresh + 2*60*60*1000 {
+            marked_time_refresh := A_TickCount
+            reload_website()
+            ; reload
+        }    
         if !WinActive(wtitle) {
             WinActivate(wtitle)
             sleep 100
