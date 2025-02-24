@@ -72,9 +72,8 @@ main(hk:='') {
     balance := check_balance(balance)
     candle_colors := [{color: '?', timeframe: get_timeframe()}]
     
-    count_p_or_l := 0
-    lose_streak := {max: count_p_or_l, repeat: 1}
-    stats := {win: 0, loss: 0, draw: 0}
+    stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
+    lose_streak := {max: stats.streak, repeat: 1}
     paused := false
     blockers := Map()
 
@@ -86,6 +85,7 @@ main(hk:='') {
     payout := 92
     datetime := A_NowUTC
     datetime := DateAdd(datetime, -5, 'h')
+    stats.reset_date := SubStr(datetime, 1, -6)
     date := FormatTime(datetime, 'MM/dd')
     time := FormatTime(datetime, 'HH:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
     coin_name := OCR.FromRect(coords['coin'][1] - 15, coords['coin'][2] - 15, 130, 40).Text
@@ -183,27 +183,27 @@ start() {
         new_balance := check_balance(balance)
         if (new_balance.current <= balance.current + 0.5) {
             balance := new_balance
-            if count_p_or_l > 0
-                count_p_or_l := 0
-            count_p_or_l--
-            if (count_p_or_l = lose_streak.max)
+            if stats.streak > 0
+                stats.streak := 0
+            stats.streak--
+            if (stats.streak = lose_streak.max)
                 lose_streak.repeat++
-            else if (count_p_or_l < lose_streak.max) {
-                lose_streak.max := count_p_or_l
+            else if (stats.streak < lose_streak.max) {
+                lose_streak.max := stats.streak
                 lose_streak.repeat := 1
             }
-            amount := amount_arr[get_amount(balance.current)][-count_p_or_l+1] ; (default_amount + Floor(balance.current/1000)) * (-count_p_or_l) + (-count_p_or_l-1) * 1.5
-            ; if (Mod(count_p_or_l, -2)=0)
+            amount := amount_arr[get_amount(balance.current)][-stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
+            ; if (Mod(stats.streak, -2)=0)
             ;     amount := default_amount + Floor(balance.current/1000)
             set_amount(amount)
             stats.loss++
         } else if (new_balance.current > balance.current + amount*1.2) {
             balance := new_balance
-            if count_p_or_l < 0
-                count_p_or_l := 0
+            if stats.streak < 0
+                stats.streak := 0
             amount := get_amount(balance.current)
             set_amount(amount)
-            count_p_or_l++
+            stats.streak++
             stats.win++
         } else {
             balance := new_balance
@@ -211,8 +211,11 @@ start() {
         } 
     }
 
-    datetime := A_NowUTC
-    datetime := DateAdd(datetime, -5, 'h')
+    datetime := DateAdd(A_NowUTC, -5, 'h')
+    if stats.reset_date != SubStr(datetime, 1, -6)
+        stats := {streak: 0, win: 0, loss: 0, draw: 0}
+    stats.reset_date := SubStr(datetime, 1, -6)
+
     date := FormatTime(datetime, 'MM/dd')
     time := FormatTime(datetime, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
     if ps1 and ps2 {
@@ -273,15 +276,51 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
-        key := 'not_3G3R'
+        ; key := 'not_3G3R'
+        ; if not blockers.Has(key)
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if (candle_colors.Length >=3 and candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else if candle_colors.Length < 3 {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else {
+        ;     blockers[key] := {state: true, tick_count: A_TickCount}
+        ; }
+
+        key := 'GRRG'
         if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
-        if (candle_colors.Length >=3 and candle_colors[1].color = candle_colors[2].color and candle_colors[1].color = candle_colors [3].color) {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else if candle_colors.Length < 3 {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
+        if (candle_colors.Length >=3 and candle_colors[4].color = 'G' and candle_colors[3].color = 'R' and candle_colors[2].color = 'R' and candle_colors[1].color = 'G') {
             blockers[key] := {state: true, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
+        key := 'RGGR'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if (candle_colors.Length >=3 and candle_colors[4].color = 'R' and candle_colors[3].color = 'G' and candle_colors[2].color = 'G' and candle_colors[1].color = 'R') {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
+        key := 'GRG'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if (candle_colors.Length >=3 and candle_colors[3].color = 'G' and candle_colors[2].color = 'R' and candle_colors[1].color = 'G') {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
+        key := 'RGR'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if (candle_colors.Length >=3 and candle_colors[3].color = 'R' and candle_colors[2].color = 'G' and candle_colors[1].color = 'R') {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
         for k, v in blockers {
@@ -292,7 +331,7 @@ start() {
     }
 
     scenario1() {
-        if count_p_or_l <= -4 {
+        if stats.streak <= -4 {
             _pheight := 3
         } else {
             _pheight := 4
@@ -375,7 +414,7 @@ update_log() {
                 balance.current ' (' balance.max ' | ' balance.min ')' ',' 
                 format('{:.2f}', amount) ',' 
                 lose_streak.max '(' lose_streak.repeat ') | ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
-                count_p_or_l ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
+                stats.streak ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
                 debug_str '`n',
                 log_file
             )
