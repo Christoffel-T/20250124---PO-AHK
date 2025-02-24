@@ -290,7 +290,7 @@ start() {
         key := 'GRRG'
         if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
-        if (candle_colors.Length >=3 and candle_colors[4].color = 'G' and candle_colors[3].color = 'R' and candle_colors[2].color = 'R' and candle_colors[1].color = 'G') {
+        if (candle_colors.Length >=4 and candle_colors[4].color = 'G' and candle_colors[3].color = 'R' and candle_colors[2].color = 'R' and candle_colors[1].color = 'G') {
             blockers[key] := {state: true, tick_count: A_TickCount}
         } else {
             blockers[key] := {state: false, tick_count: A_TickCount}
@@ -299,7 +299,7 @@ start() {
         key := 'RGGR'
         if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
-        if (candle_colors.Length >=3 and candle_colors[4].color = 'R' and candle_colors[3].color = 'G' and candle_colors[2].color = 'G' and candle_colors[1].color = 'R') {
+        if (candle_colors.Length >=4 and candle_colors[4].color = 'R' and candle_colors[3].color = 'G' and candle_colors[2].color = 'G' and candle_colors[1].color = 'R') {
             blockers[key] := {state: true, tick_count: A_TickCount}
         } else {
             blockers[key] := {state: false, tick_count: A_TickCount}
