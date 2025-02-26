@@ -255,7 +255,10 @@ start() {
             }
             if crossovers_arr.Length > 10
                 crossovers_arr.RemoveAt(1)
-            coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
+            try 
+                coin_name := OCR.FromRect(coords['coin'][1] - 25, coords['coin'][2] - 25, 150, 50,, 3).Text
+            catch  
+                coin_name := '???'
         }
         paused := check_paused()
         scenario1()
