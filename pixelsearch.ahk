@@ -50,6 +50,7 @@ main(hk:='') {
 
     amount_arr := []
     amount_arr.Push([1,3,7,15,31,66,135,281,586,1223])
+    amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2000])
     Loop 10 {
         _index := A_Index
         if amount_arr.Length < A_Index
@@ -77,7 +78,7 @@ main(hk:='') {
     paused := false
     blockers := Map()
 
-    amounts_tresholds := [[4000, 2], [3060, 1]]
+    amounts_tresholds := [[4350, 2], [3060, 1]]
 
     amount := get_amount(balance.current)
     _time := 15
@@ -243,8 +244,8 @@ start() {
                 candle_colors.Pop()
         }
         _color := ps3 ? 'G' : ps4 ? 'R' : '?'
-        candle_colors[1] := {color: _color, timeframe: _timeframe}
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
+            candle_colors[1] := {color: _color, timeframe: _timeframe}
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((crossovers_arr.Length = 0 || crossovers_arr[-1].direction != 'BUY') and outy2 > outy1) {
                 if last_trade=''
@@ -274,7 +275,7 @@ start() {
         key := '2cr'
         if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
-        if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 45000) {
+        if (crossovers_arr.Length >= 2 and A_TickCount - crossovers_arr[-2].time <= 30000) {
             blockers[key] := {state: true, tick_count: A_TickCount}
         }
         if blockers[key].state and A_TickCount > blockers[key].tick_count + 45000 {
@@ -341,8 +342,8 @@ start() {
         } else {
             _pheight := 4
         }
-        condition_buy  := outy2 > outy1 + _pheight and ps5 and ps6 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'BUY'  and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
-        condition_sell := outy1 > outy2 + _pheight and ps7 and ps8 and crossovers_arr.Length >= 2 and crossovers_arr[-1].direction = 'SELL' and A_TickCount < crossovers_arr[-1].time + 30000 and last_trade != crossovers_arr[-1].direction 
+        condition_buy  := outy2 > outy1 + _pheight and ps5 and ps6 and crossovers_arr.Length >= 2 and last_trade != 'BUY'
+        condition_sell := outy1 > outy2 + _pheight and ps7 and ps8 and crossovers_arr.Length >= 2 and last_trade != 'SELL'
 
         if paused
             return false
