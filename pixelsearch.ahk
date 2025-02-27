@@ -247,7 +247,7 @@ start() {
         if Mod(A_Sec, 15) >= 12 {
             _timeframe := get_timeframe()
             if _timeframe != candle_colors2[1].timeframe and (ps3 or ps4) {
-                candle_colors2.InsertAt(1, candle_colors[1])
+                candle_colors2.InsertAt(1, candle_colors2[1])
                 while candle_colors2.Length > 2
                     candle_colors2.Pop()
             }
