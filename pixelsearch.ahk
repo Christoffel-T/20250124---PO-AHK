@@ -378,8 +378,8 @@ start() {
         } else {
             _pheight := 4
         }
-        condition_buy  := outy2 > outy1 + _pheight and ps5 and ps6 and crossovers_arr.Length >= 2 and last_trade != 'BUY'
-        condition_sell := outy1 > outy2 + _pheight and ps7 and ps8 and crossovers_arr.Length >= 2 and last_trade != 'SELL'
+        condition_buy  := outy2 > outy1 + _pheight and ps5 and ps6 and crossovers_arr.Length >= 2 and last_trade != 'BUY'  and not trade_opened[1]
+        condition_sell := outy1 > outy2 + _pheight and ps7 and ps8 and crossovers_arr.Length >= 2 and last_trade != 'SELL' and not trade_opened[1]
 
         if paused
             return false
@@ -395,8 +395,8 @@ start() {
     }
 
     scenario3() {
-        condition_buy  := ps3 and outy3 < outy1 - 1 and Mod(A_Sec, 15) >= 10 and candle_colors[4] = 'R' and candle_colors[3] = 'R' and candle_colors[2] = 'R' and candle_colors[1] = 'G'
-        condition_sell := ps4 and outy4 > outy1 + 1 and Mod(A_Sec, 15) >= 10 and candle_colors[4] = 'G' and candle_colors[3] = 'G' and candle_colors[2] = 'G' and candle_colors[1] = 'R'
+        condition_buy  := ps3 and outy3 < outy1 - 1 and Mod(A_Sec, 15) >= 10 and candle_colors[4] = 'R' and candle_colors[3] = 'R' and candle_colors[2] = 'R' and candle_colors[1] = 'G' and not trade_opened[1]
+        condition_sell := ps4 and outy4 > outy1 + 1 and Mod(A_Sec, 15) >= 10 and candle_colors[4] = 'G' and candle_colors[3] = 'G' and candle_colors[2] = 'G' and candle_colors[1] = 'R' and not trade_opened[1]
 
         if paused
             return false
