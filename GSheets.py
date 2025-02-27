@@ -54,7 +54,7 @@ def append_to_google_sheets(data, row):
             sheet.delete_rows(20001, len(all_values))
 
 def monitor_log(file_path):
-    header = ["date","time","active_trade","last_trade","balance","amount","payout (coin)","Streak (W|D|L|win_rate)","debug"]  # Adjust as needed
+    header = ["date","time","active_trade","amount","balance","last_trade","payout (coin)","Streak (W|D|L|win_rate)","debug"]  # Adjust as needed
     last_size = 0
 
     # Ensure the header is set before starting the loop

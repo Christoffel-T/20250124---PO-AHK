@@ -212,8 +212,10 @@ start() {
     }
 
     datetime := DateAdd(A_NowUTC, -5, 'h')
-    if stats.reset_date != SubStr(datetime, 1, -6)
+    if stats.reset_date != SubStr(datetime, 1, -6) {
         stats := {streak: 0, win: 0, loss: 0, draw: 0}
+        lose_streak := {max: 0, repeat: 1}
+    }
     stats.reset_date := SubStr(datetime, 1, -6)
 
     date := FormatTime(datetime, 'MM/dd')
@@ -413,9 +415,9 @@ update_log() {
                 date ',' 
                 time ',' 
                 active_trade countdown_close_str ' | ' paused_str ',' 
-                last_trade ',' 
-                balance.current ' (' balance.max ' | ' balance.min ')' ',' 
                 format('{:.2f}', amount) ',' 
+                balance.current ' (' balance.max ' | ' balance.min ')' ',' 
+                last_trade ',' 
                 lose_streak.max '(' lose_streak.repeat ') | ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                 stats.streak ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
                 debug_str '`n',
