@@ -4,7 +4,6 @@ CoordMode('Pixel', 'Screen')
 CoordMode('ToolTip', 'Screen')
 SendMode('Event')
 #Include OCR.ahk
-
 settings_file := 'settings.ini'
 
 wtitle := IniRead(settings_file, 'General', 'wtitle')
@@ -30,6 +29,13 @@ Hotkey('F1', main.Bind(), 'On')
 ToolTip('Ready. Press F1 to start', 5, 5, 1)
 start_time := A_TickCount
 main()
+
+isAllSame(arr) {
+    for i, v in arr
+        if (v != arr[1])  ; Compare each value with the first element
+            return false
+    return true
+}
 
 get_timeframe(interval := 15) {
     datetime := A_NowUTC
@@ -72,6 +78,7 @@ main(hk:='') {
     balance := {current: 0, min: 999999999, max: 0}
     balance := check_balance(balance)
     candle_colors := [{color: '?', timeframe: get_timeframe()}]
+    candle_colors2 := [{colors: ['?'], timeframe: get_timeframe()}]
     
     stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
     lose_streak := {max: stats.streak, repeat: 1}
@@ -236,7 +243,18 @@ start() {
         ps6 := PixelSearch(&outx6, &outy6, outx2+4, outy2+4, outx1+2, outy1-4, colors['green'], 5)
         ps7 := PixelSearch(&outx7, &outy7, outx1+4, outy1+4, outx1+2, outy1-4, colors['red'], 5)
         ps8 := PixelSearch(&outx8, &outy8, outx2+4, outy2+4, outx1+2, outy1-4, colors['red'], 5)
-        
+
+        if Mod(A_Sec, 15) >= 12 {
+            _timeframe := get_timeframe()
+            if _timeframe != candle_colors2[1].timeframe and (ps3 or ps4) {
+                candle_colors2.InsertAt(1, candle_colors[1])
+                while candle_colors2.Length > 2
+                    candle_colors2.Pop()
+            }
+            _color := ps3 ? 'G' : ps4 ? 'R' : '?'    
+            candle_colors2[1].colors.Push(_color)
+        }
+
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
             _timeframe := get_timeframe()
             if _timeframe != candle_colors[1].timeframe and (ps3 or ps4) {
@@ -264,6 +282,7 @@ start() {
         }
         paused := check_paused()
         scenario1()
+        scenario3()
 
     }
 
@@ -328,6 +347,24 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
+        key := '3sCc'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if not isAllSame(candle_colors2[1].colors) {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
+        key := '2px'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if ps1 and ps2 and Abs(outy2 - outy1) <= 2 {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
         for k, v in blockers {
             if v.state
                 return true
@@ -356,6 +393,24 @@ start() {
             main_sub1(last_trade)
         }
     }
+
+    scenario3() {
+        condition_buy  := ps3 and outy3 < outy1 - 1 and Mod(A_Sec, 15) >= 10 and candle_colors[4] = 'R' and candle_colors[3] = 'R' and candle_colors[2] = 'R' and candle_colors[1] = 'G'
+        condition_sell := ps4 and outy4 > outy1 + 1 and Mod(A_Sec, 15) >= 10 and candle_colors[4] = 'G' and candle_colors[3] = 'G' and candle_colors[2] = 'G' and candle_colors[1] = 'R'
+
+        if paused
+            return false
+        if (condition_buy) {
+            ; last_trade := 'BUY'
+            trade_opened := [true, A_TickCount]
+            main_sub1(last_trade)
+        } else if (condition_sell) {
+            ; last_trade := 'SELL'
+            trade_opened := [true, A_TickCount]
+            main_sub1(last_trade)
+        }
+    }
+
     scenario2() {
         condition_buy := ps5 
         condition_sell := ps7 
