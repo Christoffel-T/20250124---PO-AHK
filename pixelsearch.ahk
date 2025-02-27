@@ -78,7 +78,7 @@ main(hk:='') {
     balance := {current: 0, min: 999999999, max: 0}
     balance := check_balance(balance)
     candle_colors := [{color: '?', timeframe: get_timeframe()}]
-    candle_colors2 := [{colors: ['?'], timeframe: get_timeframe()}]
+    candle_colors2 := [{colors: [], timeframe: get_timeframe()}]
     
     stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
     lose_streak := {max: stats.streak, repeat: 1}
@@ -248,6 +248,7 @@ start() {
             _timeframe := get_timeframe()
             if _timeframe != candle_colors2[1].timeframe and (ps3 or ps4) {
                 candle_colors2.InsertAt(1, candle_colors2[1])
+                candle_colors2[1].colors := []
                 while candle_colors2.Length > 2
                     candle_colors2.Pop()
             }
@@ -361,6 +362,8 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         if ps1 and ps2 and Abs(outy2 - outy1) <= 2 {
             blockers[key] := {state: true, tick_count: A_TickCount}
+        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 45000 {
+            blockers[key] := {state: false, tick_count: A_TickCount}
         } else {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
