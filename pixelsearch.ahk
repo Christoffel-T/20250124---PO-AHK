@@ -444,7 +444,7 @@ update_log() {
     }
 
     streaks_str := ':'
-    if lose_streak.repeat.Length > 0
+    if lose_streak.repeat.Count > 0
         lose_streak_str := lose_streak.max '(' lose_streak.repeat[lose_streak.max] ')'
     else
         lose_streak_str := 0 '(' 0 ')'
