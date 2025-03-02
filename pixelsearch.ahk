@@ -471,7 +471,7 @@ update_log() {
     paused_str := paused ? 'Paused (' _pauser ')' : '()'
     err := 0
     loop {
-        try {
+        ; try {
             file_size := FileGetSize(log_file)
             max_size := 5 * 1024 * 1024 ; 5 MB
             if file_size > max_size
@@ -495,12 +495,12 @@ update_log() {
                 exitapp
             }
             break
-        } catch as e {
-            err++
-            ToolTip('Appending new row. Errors: ' err '`n' e.Message, 500, 5, 12)
-            sleep 100
-            continue
-        }
+        ; } catch as e {
+        ;     err++
+        ;     ToolTip('Appending new row. Errors: ' err '`n' e.Message, 500, 5, 12)
+        ;     sleep 100
+        ;     continue
+        ; }
     }
 }
 
