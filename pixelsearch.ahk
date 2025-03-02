@@ -443,7 +443,7 @@ update_log() {
         countdown_close_str := ''
     }
 
-    streaks_str := ' '
+    streaks_str := ':'
 
     for k, v in lose_streak.repeat {
         streaks_str .= k '[' v ']'
