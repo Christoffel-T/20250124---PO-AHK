@@ -444,7 +444,10 @@ update_log() {
     }
 
     streaks_str := ':'
-
+    if lose_streak.repeat.Length > 0
+        lose_streak_str := lose_streak.max '(' lose_streak.repeat[lose_streak.max] ')'
+    else
+        lose_streak_str := 0 '(' 0 ')'
     for k, v in lose_streak.repeat {
         streaks_str .= k '[' v ']'
     }
@@ -471,7 +474,7 @@ update_log() {
     paused_str := paused ? 'Paused (' _pauser ')' : '()'
     err := 0
     loop {
-        ; try {
+        try {
             file_size := FileGetSize(log_file)
             max_size := 5 * 1024 * 1024 ; 5 MB
             if file_size > max_size
@@ -484,7 +487,7 @@ update_log() {
                 format('{:.2f}', amount) ',' 
                 balance.current ' (' balance.max ' | ' balance.min ')' ',' 
                 last_trade ',' 
-                lose_streak.max '(' lose_streak.repeat[lose_streak.max] ') | ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
+                ' | ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                 stats.streak ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
                 streaks_str ',' 
                 debug_str '`n',
@@ -495,12 +498,12 @@ update_log() {
                 exitapp
             }
             break
-        ; } catch as e {
-        ;     err++
-        ;     ToolTip('Appending new row. Errors: ' err '`n' e.Message, 500, 5, 12)
-        ;     sleep 100
-        ;     continue
-        ; }
+        } catch as e {
+            err++
+            ToolTip('Appending new row. Errors: ' err '`n' e.Message, 500, 5, 12)
+            sleep 100
+            continue
+        }
     }
 }
 
