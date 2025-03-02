@@ -81,7 +81,7 @@ main(hk:='') {
     candle_colors2 := [{colors: [], timeframe: get_timeframe()}]
     
     stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-    lose_streak := {max: stats.streak, repeat: 1}
+    lose_streak := {max: stats.streak, repeat: Map()}
     paused := false
     blockers := Map()
 
@@ -195,12 +195,14 @@ start() {
                 stats.streak := 0
             stats.streak--
             if (stats.streak = lose_streak.max)
-                lose_streak.repeat++
+                lose_streak.repeat[stats.streak]++
             else if (stats.streak < lose_streak.max) {
                 lose_streak.max := stats.streak
-                lose_streak.repeat := 1
+                lose_streak.repeat[stats.streak] := 1
+            } else {
+                lose_streak.repeat[stats.streak]++
             }
-            amount := amount_arr[get_amount(balance.current)][-stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
+            amount := amount_arr[get_amount(balance.current+amount*2.2)][-stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
             ; if (Mod(stats.streak, -2)=0)
             ;     amount := default_amount + Floor(balance.current/1000)
             set_amount(amount)
@@ -222,7 +224,7 @@ start() {
     datetime := DateAdd(A_NowUTC, -5, 'h')
     if stats.reset_date != SubStr(datetime, 1, -6) {
         stats := {streak: 0, win: 0, loss: 0, draw: 0}
-        lose_streak := {max: 0, repeat: 1}
+        lose_streak := {max: 0, repeat: Map()}
     }
     stats.reset_date := SubStr(datetime, 1, -6)
 
@@ -398,8 +400,8 @@ start() {
     }
 
     scenario3() {
-        condition_buy  := ps3 and outy3 < outy1 - 1 and Mod(A_Sec, 15) >= 10 and candle_colors.Length >=4 and candle_colors[4] = 'R' and candle_colors[3] = 'R' and candle_colors[2] = 'R' and candle_colors[1] = 'G' and not trade_opened[1]
-        condition_sell := ps4 and outy4 > outy1 + 1 and Mod(A_Sec, 15) >= 10 and candle_colors.Length >=4 and candle_colors[4] = 'G' and candle_colors[3] = 'G' and candle_colors[2] = 'G' and candle_colors[1] = 'R' and not trade_opened[1]
+        condition_buy  := ps3 and outy3 < outy1 - 1 and Mod(A_Sec, 15) >= 9 and candle_colors.Length >=4 and candle_colors[4] = 'R' and candle_colors[3] = 'R' and candle_colors[2] = 'R' and candle_colors[1] = 'G' and not trade_opened[1]
+        condition_sell := ps4 and outy4 > outy1 + 1 and Mod(A_Sec, 15) >= 9 and candle_colors.Length >=4 and candle_colors[4] = 'G' and candle_colors[3] = 'G' and candle_colors[2] = 'G' and candle_colors[1] = 'R' and not trade_opened[1]
 
         if paused
             return false
@@ -440,6 +442,12 @@ update_log() {
     } else {
         countdown_close_str := ''
     }
+
+    streaks_str := ''
+
+    for k, v in lose_streak.repeat {
+        streaks_str .= k '[' v ']'
+    }
     
     debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
     ; debug_str := 'G: ' (ps2 and ps3 ? outy3 - outy2 : 0) ' | R: ' (ps2 and ps4 ? outy2 - outy4 : 0) ' | ' debug_str
@@ -476,8 +484,9 @@ update_log() {
                 format('{:.2f}', amount) ',' 
                 balance.current ' (' balance.max ' | ' balance.min ')' ',' 
                 last_trade ',' 
-                lose_streak.max '(' lose_streak.repeat ') | ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
+                lose_streak.max '(' lose_streak.repeat[lose_streak.max] ') | ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                 stats.streak ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
+                streaks_str ',' 
                 debug_str '`n',
                 log_file
             )
