@@ -449,7 +449,7 @@ update_log() {
     else
         lose_streak_str := 0 '(' 0 ')'
     for k, v in lose_streak.repeat {
-        streaks_str .= k '[' v ']'
+        streaks_str .= k '[' v '] '
     }
     
     debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
