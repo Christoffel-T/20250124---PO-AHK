@@ -151,7 +151,8 @@ start() {
             ToolTip(,,, 15)
             return
         }
-
+        psGc := ''
+        psRc := ''
         if ps1 {
             ps2 := PixelSearch(&outx2, &outy2, outx1+1, coords_area[2], outx1-1, coords_area[4], colors['orange'], 5)
             psGc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['green'], 5)
