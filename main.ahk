@@ -159,19 +159,20 @@ start() {
                 psRc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
             if psGc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['green'], 5)
-                psh := PixelSearch(&outxh, &outyh, outx1+2, coords_area[2], outx1-2, coords_area[4], colors['green'], 5)
-                psl := PixelSearch(&outxl, &outyl, outx1+2, coords_area[4], outx1-2, coords_area[2], colors['green'], 5)
+                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, coords_area[4], colors['green'], 5)
+                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, coords_area[2], colors['green'], 5)
             } else if psRc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 5)
-                psh := PixelSearch(&outxh, &outyh, outx1+2, coords_area[4], outx1-2, coords_area[2], colors['red'], 5)
-                psl := PixelSearch(&outxl, &outyl, outx1+2, coords_area[2], outx1-2, coords_area[4], colors['red'], 5)
+                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, coords_area[4], colors['red'], 5)
+                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, coords_area[2], colors['red'], 5)
             }
             if psGc or psRc {
                 candle_data[1].O := outyo
                 candle_data[1].H := outyh
                 candle_data[1].L := outyl
                 candle_data[1].C := outyc
-                candle_data[1].size := Abs(outyc - outyo)
+                if outyc and outyo
+                    candle_data[1].size := Abs(outyc - outyo)
             }
 
             coords_area[1] := min(coords_area[1] + 1, A_ScreenWidth*0.95)
