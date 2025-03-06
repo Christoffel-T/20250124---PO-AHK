@@ -128,6 +128,11 @@ start() {
     }
     stats.reset_date := SubStr(datetime, 1, -6)
 
+    ps_gtouchblue   := ''
+    ps_gtouchorange := ''
+    ps_rtouchblue   := ''
+    ps_rtouchorange := ''
+
     if ps1 and ps2 {
         both_lines_detected()
     }
