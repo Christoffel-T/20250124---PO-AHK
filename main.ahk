@@ -453,6 +453,7 @@ start() {
     update_log() {
         global
 
+        str_ohlc := '?'
         if candle_data.HasOwnProp('O') and candle_data.HasOwnProp('H') and candle_data.HasOwnProp('L') and candle_data.HasOwnProp('C') 
             str_ohlc := candle_data[1].O ' | ' candle_data[1].H ' | ' candle_data[1].L ' | ' candle_data[1].C
 
