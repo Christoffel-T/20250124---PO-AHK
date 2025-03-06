@@ -406,9 +406,9 @@ start() {
             ToolTip('greenC', outxc+150, outyc, 6)
         if psRc
             ToolTip('redC', outxc+150, outyc, 6)
-        ToolTip('OPEN', outxo+150, outyo, 6)
-        ToolTip('HIGH', outxh+150, outyh, 6)
-        ToolTip('LOW ', outxl+150, outyl, 6)
+        ToolTip('OPEN', outxo+150, outyo, 7)
+        ToolTip('HIGH', outxh+150, outyh, 8)
+        ToolTip('LOW ', outxl+150, outyl, 9)
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
         ps_gtouchblue := PixelSearch(&outx5, &outy5, outx1+4, outy1+4, outx1+2, outy1-4, colors['green'], 5)
