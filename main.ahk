@@ -99,7 +99,7 @@ main(hk:='') {
     marked_time_refresh := A_TickCount
 
     if !FileExist(log_file) {
-        FileAppend('date,time,active_trade,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,debug`n', log_file)
+        FileAppend('date,time,active_trade,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', log_file)
     }
     set_amount(amount)
     MouseClick('l', coords['empty_area'][1], coords['empty_area'][2],1,2)
@@ -453,7 +453,8 @@ start() {
     update_log() {
         global
 
-        str_ohlc := candle_data[1].O ' | ' candle_data[1].H ' | ' candle_data[1].L ' | ' candle_data[1].C
+        if candle_data.HasOwnProp('O') and candle_data.HasOwnProp('H') and candle_data.HasOwnProp('L') and candle_data.HasOwnProp('C') 
+            str_ohlc := candle_data[1].O ' | ' candle_data[1].H ' | ' candle_data[1].L ' | ' candle_data[1].C
 
         date := FormatTime(datetime, 'MM/dd')
         time := FormatTime(datetime, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
@@ -514,6 +515,7 @@ start() {
                     ' | ' payout '%=' format('{:.2f}', amount*1.92) ' (' coin_name ')' ',' 
                     stats.streak ' (' stats.win '|' stats.draw '|' stats.loss '|' win_rate '%)' ',' 
                     streaks_str ',' 
+                    str_ohlc ',' 
                     debug_str '`n',
                     log_file
                 )
