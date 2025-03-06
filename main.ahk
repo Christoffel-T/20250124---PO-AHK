@@ -160,12 +160,12 @@ start() {
                 psRc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
             if psGc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['green'], 5)
-                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, outyc, colors['green'], 15)
-                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, outyo, colors['green'], 15)
+                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, outyc-1, colors['green'], 35)
+                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, outyo+1, colors['green'], 35)
             } else if psRc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 5)
-                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, outyo, colors['red'], 15)
-                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, outyc, colors['red'], 15)
+                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, outyo-1, colors['red'], 35)
+                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, outyc+1, colors['red'], 35)
             }
             if psGc or psRc {
                 candle_data[1].O := outyo
@@ -350,11 +350,9 @@ start() {
                 payout := 92
                 break
             } else {
-                ToolTip(,,,2)
-                ToolTip(,,,3)
-                ToolTip(,,,4)
-                ToolTip(,,,5)
-                ToolTip(,,,6)
+                Loop 19 {
+                    ToolTip(,,,A_Index+1)
+                }
                 last_trade := ''
                 ToolTip('Waiting for payout to be 92 or higher...', 500, 5, 12)
                 MouseClick('L', coords['coin'][1] + Random(-2, 2), coords['coin'][2] + Random(-2, 2), 1, 2)
@@ -416,9 +414,9 @@ start() {
             if outxo
                 ToolTip('OPEN', outxo+150, outyo, 7)
             if outxh
-                ToolTip('HIGH', outxh+200, outyh, 8)
+                ToolTip('HIGH', outxh+100, outyh, 8)
             if outxl
-                ToolTip('LOW ', outxl+200, outyl, 9)
+                ToolTip('LOW ', outxl+100, outyl, 9)
         }
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
