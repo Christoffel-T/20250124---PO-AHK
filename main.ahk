@@ -299,7 +299,7 @@ start() {
         key := 'small_body'
         if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
-        if candle_data.Length >= 2 and abs(candle_data[3].O - candle_data[3].C)/abs(candle_data[3].H - candle_data[3].L) <= 0.1 and abs(candle_data[2].O - candle_data[2].C)/abs(candle_data[2].H - candle_data[2].L) <= 0.1 {
+        if candle_data.Length >= 3 and abs(candle_data[3].O - candle_data[3].C)/abs(candle_data[3].H - candle_data[3].L) <= 0.1 and abs(candle_data[2].O - candle_data[2].C)/abs(candle_data[2].H - candle_data[2].L) <= 0.1 {
             blockers[key] := {state: true, tick_count: A_TickCount}
         } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
             blockers[key] := {state: false, tick_count: A_TickCount}
