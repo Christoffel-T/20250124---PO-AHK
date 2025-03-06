@@ -77,7 +77,7 @@ main(hk:='') {
     debug_str := ''
     balance := {current: 0, min: 999999999, max: 0}
     balance := check_balance(balance)
-    candle_data := [{color: '?', colors: [], timeframe: get_timeframe()}]
+    candle_data := [{color: '?', colors: [], color_changes: [], timeframe: get_timeframe()}]
     
     stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
     lose_streak := {max: stats.streak, repeat: Map()}
@@ -274,6 +274,61 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
+        key := 'candle_engulfed'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if candle_data.Length >= 3 and candle_data[2].H > candle_data[3].H and candle_data[2].L < candle_data[3].L {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
+        key := '2candle_diff'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if candle_data.Length >= 3 and candle_data[2].color != candle_data[3].color and outy2 < min(candle_data[1].H, candle_data[1].L) and outy1 > max(candle_data[1].H, candle_data[1].L) {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 30000 {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
+        key := 'small_body'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if candle_data.Length >= 2 and abs(candle_data[3].O - candle_data[3].C)/abs(candle_data[3].H - candle_data[3].L) <= 0.1 and abs(candle_data[2].O - candle_data[2].C)/abs(candle_data[2].H - candle_data[2].L) <= 0.1 {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
+        key := '5losses'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if stats.streak <= -5 {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else if blockers[key].state and candle_data.Length >= 3 and candle_data[2].color = candle_data[3].color and candle_data[1].color = candle_data[4].color {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
+        key := 'color_ch3'
+        if not blockers.Has(key)
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        if candle_data[1].color_changes.Length > 3 {
+            blockers[key] := {state: true, tick_count: A_TickCount}
+        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 45000 {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        } else {
+            blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
         for k, v in blockers {
             if v.state
                 return true
@@ -346,7 +401,7 @@ start() {
             }
             MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
             sleep 100
-            if ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
+            if stats.streak != -5 and ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
                 payout := 92
                 break
             } else {
@@ -427,11 +482,13 @@ start() {
         if Mod(A_Sec, 15) >= 12 {
             candle_data[1].colors.Push(_color)
         }
+        if _color != candle_data[1].color_changes[-1]
+            candle_data[1].color_changes.Push(_color)
 
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
             _timeframe := get_timeframe()
             if _timeframe != candle_data[1].timeframe and (psGc or psRc) {
-                candle_data.InsertAt(1, {color: _color, timeframe: _timeframe, colors: [_color], H: candle_data[1].C, L: candle_data[1].C})
+                candle_data.InsertAt(1, {color: _color, timeframe: _timeframe, colors: [_color], color_changes: [_color], H: candle_data[1].C, L: candle_data[1].C})
                 while candle_data.Length > 5
                     candle_data.Pop()
             }
@@ -498,7 +555,8 @@ start() {
         
         _pauser := ''
         for k, v in blockers {
-            _pauser .= k ':' v.state '|'
+            if v.state
+                _pauser .= k ':' v.state '|'
         }
         paused_str := paused ? 'Paused (' _pauser ')' : '()'
         err := 0
