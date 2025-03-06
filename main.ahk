@@ -405,12 +405,14 @@ start() {
         ToolTip('blue', outx1, outy1-200, 4)
         ToolTip('orange', outx2, outy2-200, 5)
         if psGc
-            ToolTip('greenC', outxc+150, outyc, 6)
+            ToolTip('CLOSE-green', outxc+150, outyc, 6)
         if psRc
-            ToolTip('redC', outxc+150, outyc, 6)
-        ToolTip('OPEN', outxo+150, outyo, 7)
-        ToolTip('HIGH', outxh+200, outyh, 8)
-        ToolTip('LOW ', outxl+200, outyl, 9)
+            ToolTip('CLOSE-red', outxc+150, outyc, 6)
+        if candle_data[1].HasOwnProp('O') and candle_data[1].HasOwnProp('H') and candle_data[1].HasOwnProp('L') and candle_data[1].HasOwnProp('C') {
+            ToolTip('OPEN', outxo+150, outyo, 7)
+            ToolTip('HIGH', outxh+200, outyh, 8)
+            ToolTip('LOW ', outxl+200, outyl, 9)
+        }
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
         ps_gtouchblue := PixelSearch(&outx5, &outy5, outx1+4, outy1+4, outx1+2, outy1-4, colors['green'], 5)
@@ -455,7 +457,7 @@ start() {
         global
 
         str_ohlc := '?'
-        if candle_data.HasOwnProp('O') and candle_data.HasOwnProp('H') and candle_data.HasOwnProp('L') and candle_data.HasOwnProp('C') 
+        if candle_data[1].HasOwnProp('O') and candle_data[1].HasOwnProp('H') and candle_data[1].HasOwnProp('L') and candle_data[1].HasOwnProp('C') 
             str_ohlc := candle_data[1].O ' | ' candle_data[1].H ' | ' candle_data[1].L ' | ' candle_data[1].C
 
         date := FormatTime(datetime, 'MM/dd')
