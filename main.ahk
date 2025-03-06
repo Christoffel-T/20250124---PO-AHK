@@ -77,7 +77,7 @@ main(hk:='') {
     debug_str := ''
     balance := {current: 0, min: 999999999, max: 0}
     balance := check_balance(balance)
-    candle_data := [{color: '?', colors: [], color_changes: [], timeframe: get_timeframe()}]
+    candle_data := [{color: '?', colors: [], color_changes: ['?'], timeframe: get_timeframe()}]
     
     stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
     lose_streak := {max: stats.streak, repeat: Map()}
