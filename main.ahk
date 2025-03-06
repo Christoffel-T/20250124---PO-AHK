@@ -164,12 +164,9 @@ start() {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 5)
             }
             if psGc or psRc {
-                if not (candle_data[1].HasOwnProp('O') and candle_data[1].HasOwnProp('H') and candle_data[1].HasOwnProp('L') and candle_data[1].HasOwnProp('C')) {
-                    candle_data[1] := {O: outyc, H: outyc, L: outyc, C: outyc, size: 0}
-                }
                 candle_data[1].O := outyo
-                candle_data[1].H := max(outyc, candle_data[1].H)
-                candle_data[1].L := min(outyc, candle_data[1].L)
+                candle_data[1].H := candle_data[1].HasOwnProp('H') ? max(outyc, candle_data[1].H) : outyc
+                candle_data[1].L := candle_data[1].HasOwnProp('L') ? min(outyc, candle_data[1].L) : outyc
                 candle_data[1].C := outyc
                 if outyc and outyo
                     candle_data[1].size := Abs(outyc - outyo)
