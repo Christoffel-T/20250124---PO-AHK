@@ -160,12 +160,12 @@ start() {
                 psRc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
             if psGc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['green'], 5)
-                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, coords_area[4], colors['green'], 5)
-                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, coords_area[2], colors['green'], 5)
+                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, outyc, colors['green'], 15)
+                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, outyo, colors['green'], 15)
             } else if psRc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 5)
-                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, coords_area[4], colors['red'], 5)
-                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, coords_area[2], colors['red'], 5)
+                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, outyo, colors['red'], 15)
+                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, outyc, colors['red'], 15)
             }
             if psGc or psRc {
                 candle_data[1].O := outyo
