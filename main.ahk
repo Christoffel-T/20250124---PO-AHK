@@ -77,7 +77,7 @@ main(hk:='') {
     debug_str := ''
     balance := {current: 0, min: 999999999, max: 0}
     balance := check_balance(balance)
-    candle_data := [{color: '?', colors: [], timeframe: get_timeframe(), O: 0, H: 0, L: 0, C: 0, size: 0}]
+    candle_data := [{color: '?', colors: [], timeframe: get_timeframe()}]
     
     stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
     lose_streak := {max: stats.streak, repeat: Map()}
@@ -160,22 +160,14 @@ start() {
                 psRc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
             if psGc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['green'], 5)
-                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, outyc-1, colors['green'], 35)
-                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, outyo+1, colors['green'], 35)
             } else if psRc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 5)
-                psh := PixelSearch(&outxh, &outyh, outx1-4, coords_area[2], outx1+2, outyo-1, colors['red'], 35)
-                psl := PixelSearch(&outxl, &outyl, outx1-4, coords_area[4], outx1+2, outyc+1, colors['red'], 35)
             }
             if psGc or psRc {
                 candle_data[1].O := outyo
-                candle_data[1].H := outyh
-                candle_data[1].L := outyl
+                candle_data[1].H := max(outyc, candle_data[1].H)
+                candle_data[1].L := min(outyc, candle_data[1].L)
                 candle_data[1].C := outyc
-                if not outyh
-                    candle_data[1].H := psGc ? outyc : outyo
-                if not outyl
-                    candle_data[1].L := psGc ? outyo : outyc
                 if outyc and outyo
                     candle_data[1].size := Abs(outyc - outyo)
             }
@@ -411,12 +403,10 @@ start() {
         if psRc
             ToolTip('CLOSE-red', outxc+150, outyc, 6)
         if candle_data[1].HasOwnProp('O') and candle_data[1].HasOwnProp('H') and candle_data[1].HasOwnProp('L') and candle_data[1].HasOwnProp('C') {
-            if outxo
-                ToolTip('OPEN', outxo+150, outyo, 7)
-            if outxh
-                ToolTip('HIGH', outxh+100, outyh, 8)
-            if outxl
-                ToolTip('LOW ', outxl+100, outyl, 9)
+            if candle_data[1].O
+                ToolTip('OPEN', outxc+150, candle_data[1].O, 7)
+            ToolTip('HIGH', outxc+100, candle_data[1].H, 8)
+            ToolTip('LOW ', outxc+100, candle_data[1].L, 9)
         }
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
