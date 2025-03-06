@@ -404,9 +404,9 @@ start() {
             ToolTip('CLOSE-red', outxc-250, outyc, 6)
         if candle_data[1].HasOwnProp('O') and candle_data[1].HasOwnProp('H') and candle_data[1].HasOwnProp('L') and candle_data[1].HasOwnProp('C') {
             if candle_data[1].O
-                ToolTip('OPEN', outxc-250, candle_data[1].O, 7)
-            ToolTip('HIGH', outxc-200, candle_data[1].H, 8)
-            ToolTip('LOW ', outxc-200, candle_data[1].L, 9)
+                ToolTip('OPEN', outx1-250, candle_data[1].O, 7)
+            ToolTip('HIGH', outx1-200, candle_data[1].H, 8)
+            ToolTip('LOW ', outx1-200, candle_data[1].L, 9)
         }
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
