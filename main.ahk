@@ -149,8 +149,8 @@ start() {
 
         if ps1 {
             ps2 := PixelSearch(&outx2, &outy2, outx1+1, coords_area[2], outx1-1, coords_area[4], colors['orange'], 5)
-            psGc := PixelSearch(&outxGc, &outyGc, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['green'], 5)
-            psRc := PixelSearch(&outxRc, &outyRc, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
+            psGc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['green'], 5)
+            psRc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
             if psGc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['green'], 5)
                 psh := PixelSearch(&outxh, &outyh, outx1+2, coords_area[2], outx1-2, coords_area[4], colors['green'], 5)
@@ -283,8 +283,8 @@ start() {
         }
     }
     scenario3() {
-        condition_buy  := psGc and outygc < outy1 - 1 and Mod(A_Sec, 15) >= 9 and candle_data.Length >=4 and candle_data[4] = 'R' and candle_data[3] = 'R' and candle_data[2] = 'R' and candle_data[1] = 'G' and not trade_opened[1]
-        condition_sell := psRc and outyrc > outy1 + 1 and Mod(A_Sec, 15) >= 9 and candle_data.Length >=4 and candle_data[4] = 'G' and candle_data[3] = 'G' and candle_data[2] = 'G' and candle_data[1] = 'R' and not trade_opened[1]
+        condition_buy  := psGc and outyc < outy1 - 1 and Mod(A_Sec, 15) >= 9 and candle_data.Length >=4 and candle_data[4] = 'R' and candle_data[3] = 'R' and candle_data[2] = 'R' and candle_data[1] = 'G' and not trade_opened[1]
+        condition_sell := psRc and outyc > outy1 + 1 and Mod(A_Sec, 15) >= 9 and candle_data.Length >=4 and candle_data[4] = 'G' and candle_data[3] = 'G' and candle_data[2] = 'G' and candle_data[1] = 'R' and not trade_opened[1]
 
         if paused
             return false
@@ -304,11 +304,11 @@ start() {
 
         if trade_opened[1] and paused
             return false
-        if (psGc and outy2 < outy1 and outygc > outy2 and condition_buy) {
+        if (psGc and outy2 < outy1 and outyc > outy2 and condition_buy) {
             trade_opened := [true, A_TickCount]
             last_trade := 'BUY'
             main_sub1(last_trade)
-        } else if (psRc and outy2 > outy1 and outyrc < outy2 and condition_sell) {
+        } else if (psRc and outy2 > outy1 and outyc < outy2 and condition_sell) {
             trade_opened := [true, A_TickCount]
             last_trade := 'SELL'
             main_sub1(last_trade)
@@ -390,9 +390,9 @@ start() {
         ToolTip('blue', outx1, outy1-200, 4)
         ToolTip('orange', outx2, outy2-200, 5)
         if psGc
-            ToolTip('green', outxgc+150, outygc, 6)
+            ToolTip('green', outxc+150, outyc, 6)
         if psRc
-            ToolTip('red', outxrc+150, outyrc, 6)
+            ToolTip('red', outxc+150, outyc, 6)
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
         ps_gtouchblue := PixelSearch(&outx5, &outy5, outx1+4, outy1+4, outx1+2, outy1-4, colors['green'], 5)
@@ -436,7 +436,7 @@ start() {
     update_log() {
         global
 
-        str_ohlc := 
+        str_ohlc := outyo ' | ' outyh ' | ' outyl ' | ' outyc
 
         date := FormatTime(datetime, 'MM/dd')
         time := FormatTime(datetime, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
@@ -457,7 +457,7 @@ start() {
         }
         
         debug_str := 'ps: ' ps1 ' ' ps2 ' | diff: ' (ps1 and ps2 ? outy2 - outy1 : 0) ' | '
-        ; debug_str := 'G: ' (ps2 and psGc ? outygc - outy2 : 0) ' | R: ' (ps2 and psRc ? outy2 - outyrc : 0) ' | ' debug_str
+        ; debug_str := 'G: ' (ps2 and psGc ? outyc - outy2 : 0) ' | R: ' (ps2 and psRc ? outy2 - outyc : 0) ' | ' debug_str
         _a := ps_gtouchblue and ps_gtouchorange ? '2lines: BUY' : ps_rtouchblue and ps_rtouchorange ? '2lines: SELL' : ''
         debug_str := _a ' | ' debug_str
         debug_str := crossovers_arr.Length > 0 ? 'last CO: ' crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - crossovers_arr[-1].time)/1000) ')' ' | ' debug_str : debug_str
