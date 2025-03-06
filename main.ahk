@@ -444,7 +444,7 @@ start() {
     update_log() {
         global
 
-        str_ohlc := outyo ' | ' outyh ' | ' outyl ' | ' outyc
+        str_ohlc := candle_data[1].O ' | ' candle_data[1].H ' | ' candle_data[1].L ' | ' candle_data[1].C
 
         date := FormatTime(datetime, 'MM/dd')
         time := FormatTime(datetime, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
