@@ -165,9 +165,9 @@ start() {
             }
             if psGc or psRc {
                 candle_data[1].O := outyo
-                candle_data[1].H := candle_data[1].HasOwnProp('H') ? min(outyc, candle_data[1].H) : outyc
-                candle_data[1].L := candle_data[1].HasOwnProp('L') ? max(outyc, candle_data[1].L) : outyc
                 candle_data[1].C := outyc
+                candle_data[1].H := candle_data[1].HasOwnProp('H') ? min(outyc, candle_data[1].H, candle_data[1].O) : psGc ? outyc : outyo
+                candle_data[1].L := candle_data[1].HasOwnProp('L') ? max(outyc, candle_data[1].L, candle_data[1].O) : psRc ? outyc : outyo
                 if outyc and outyo
                     candle_data[1].size := Abs(outyc - outyo)
             }
