@@ -431,7 +431,7 @@ start() {
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
             _timeframe := get_timeframe()
             if _timeframe != candle_data[1].timeframe and (psGc or psRc) {
-                candle_data.InsertAt(1, {color: _color, timeframe: _timeframe, colors: [_color]})
+                candle_data.InsertAt(1, {color: _color, timeframe: _timeframe, colors: [_color], H: candle_data[1].C, L: candle_data[1].C})
                 while candle_data.Length > 5
                     candle_data.Pop()
             }
