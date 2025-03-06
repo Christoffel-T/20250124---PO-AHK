@@ -155,7 +155,8 @@ start() {
         if ps1 {
             ps2 := PixelSearch(&outx2, &outy2, outx1+1, coords_area[2], outx1-1, coords_area[4], colors['orange'], 5)
             psGc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['green'], 5)
-            psRc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
+            if not psGc
+                psRc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
             if psGc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['green'], 5)
                 psh := PixelSearch(&outxh, &outyh, outx1+2, coords_area[2], outx1-2, coords_area[4], colors['green'], 5)
