@@ -161,11 +161,13 @@ start() {
                 psh := PixelSearch(&outxh, &outyh, outx1+2, coords_area[4], outx1-2, coords_area[2], colors['red'], 5)
                 psl := PixelSearch(&outxl, &outyl, outx1+2, coords_area[2], outx1-2, coords_area[4], colors['red'], 5)
             }
-            candle_data[1].O := outyo
-            candle_data[1].H := outyh
-            candle_data[1].L := outyl
-            candle_data[1].C := outyc
-            candle_data[1].size := Abs(outyc - outyo)
+            if psGc or psRc {
+                candle_data[1].O := outyo
+                candle_data[1].H := outyh
+                candle_data[1].L := outyl
+                candle_data[1].C := outyc
+                candle_data[1].size := Abs(outyc - outyo)
+            }
 
             coords_area[1] := min(coords_area[1] + 1, A_ScreenWidth*0.95)
             coords_area[3] := coords_area[1] - 2
