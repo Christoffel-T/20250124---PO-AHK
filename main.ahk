@@ -172,6 +172,10 @@ start() {
                 candle_data[1].H := outyh
                 candle_data[1].L := outyl
                 candle_data[1].C := outyc
+                if not outyh
+                    candle_data[1].H := psGc ? outyc : outyo
+                if not outyl
+                    candle_data[1].L := psGc ? outyo : outyc
                 if outyc and outyo
                     candle_data[1].size := Abs(outyc - outyo)
             }
@@ -409,9 +413,12 @@ start() {
         if psRc
             ToolTip('CLOSE-red', outxc+150, outyc, 6)
         if candle_data[1].HasOwnProp('O') and candle_data[1].HasOwnProp('H') and candle_data[1].HasOwnProp('L') and candle_data[1].HasOwnProp('C') {
-            ToolTip('OPEN', outxo+150, outyo, 7)
-            ToolTip('HIGH', outxh+200, outyh, 8)
-            ToolTip('LOW ', outxl+200, outyl, 9)
+            if outxo
+                ToolTip('OPEN', outxo+150, outyo, 7)
+            if outxh
+                ToolTip('HIGH', outxh+200, outyh, 8)
+            if outxl
+                ToolTip('LOW ', outxl+200, outyl, 9)
         }
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
