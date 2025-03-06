@@ -161,8 +161,7 @@ start() {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['green'], 5)
                 psh := PixelSearch(&outxh, &outyh, outx1+2, coords_area[2], outx1-2, coords_area[4], colors['green'], 5)
                 psl := PixelSearch(&outxl, &outyl, outx1+2, coords_area[4], outx1-2, coords_area[2], colors['green'], 5)
-            }
-            if psRc {
+            } else if psRc {
                 pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 5)
                 psh := PixelSearch(&outxh, &outyh, outx1+2, coords_area[4], outx1-2, coords_area[2], colors['red'], 5)
                 psl := PixelSearch(&outxl, &outyl, outx1+2, coords_area[2], outx1-2, coords_area[4], colors['red'], 5)
