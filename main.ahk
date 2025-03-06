@@ -159,9 +159,17 @@ start() {
             if not psGc
                 psRc := PixelSearch(&outxc, &outyc, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['red'], 5)
             if psGc {
-                pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['green'], 5)
+                Loop {
+                    pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[4], outx1+1, coords_area[2], colors['green'], 15)
+                    if pso
+                        break
+                }
             } else if psRc {
-                pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 5)
+                Loop {
+                    pso := PixelSearch(&outxo, &outyo, outx1+4, coords_area[2], outx1+1, coords_area[4], colors['red'], 15)
+                    if pso
+                        break
+                }
             }
             if psGc or psRc {
                 candle_data[1].O := outyo
