@@ -394,19 +394,19 @@ start() {
         }
     }
     both_lines_detected() {
-        ToolTip('blue', outx1+100, outy1, 2)
-        ToolTip('orange', outx2+100, outy2, 3)
+        ToolTip('blue', outx1-200, outy1, 2)
+        ToolTip('orange', outx2-200, outy2, 3)
         ToolTip('blue', outx1, outy1-200, 4)
         ToolTip('orange', outx2, outy2-200, 5)
         if psGc
-            ToolTip('CLOSE-green', outxc+150, outyc, 6)
+            ToolTip('CLOSE-green', outxc-250, outyc, 6)
         if psRc
-            ToolTip('CLOSE-red', outxc+150, outyc, 6)
+            ToolTip('CLOSE-red', outxc-250, outyc, 6)
         if candle_data[1].HasOwnProp('O') and candle_data[1].HasOwnProp('H') and candle_data[1].HasOwnProp('L') and candle_data[1].HasOwnProp('C') {
             if candle_data[1].O
-                ToolTip('OPEN', outxc+150, candle_data[1].O, 7)
-            ToolTip('HIGH', outxc+100, candle_data[1].H, 8)
-            ToolTip('LOW ', outxc+100, candle_data[1].L, 9)
+                ToolTip('OPEN', outxc-250, candle_data[1].O, 7)
+            ToolTip('HIGH', outxc-200, candle_data[1].H, 8)
+            ToolTip('LOW ', outxc-200, candle_data[1].L, 9)
         }
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
