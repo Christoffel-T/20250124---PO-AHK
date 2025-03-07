@@ -527,9 +527,12 @@ start() {
     update_log() {
         global
 
-        str_ohlc := '?'
-        if candle_data[1].HasOwnProp('O') and candle_data[1].HasOwnProp('H') and candle_data[1].HasOwnProp('L') and candle_data[1].HasOwnProp('C') 
-            str_ohlc := candle_data[1].O ' | ' candle_data[1].H ' | ' candle_data[1].L ' | ' candle_data[1].C
+        str_ohlc := ''
+            
+        str_ohlc .= candle_data[1].HasOwnProp('O') ? candle_data[1].O ' | ' : '? | '
+        str_ohlc .= candle_data[1].HasOwnProp('H') ? candle_data[1].H ' | ' : '? | '
+        str_ohlc .= candle_data[1].HasOwnProp('L') ? candle_data[1].L ' | ' : '? | '
+        str_ohlc .= candle_data[1].HasOwnProp('C') ? candle_data[1].C ' | ' : '? | '
 
         date := FormatTime(datetime, 'MM/dd')
         time := FormatTime(datetime, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
