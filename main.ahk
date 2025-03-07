@@ -411,7 +411,9 @@ start() {
                 last_trade := ''
                 ToolTip('Waiting for payout to be 92 or higher...', 500, 5, 12)
                 MouseClick('L', coords['coin'][1] + Random(-2, 2), coords['coin'][2] + Random(-2, 2), 1, 2)
-                sleep 500
+                sleep 300
+                MouseClick('L', coords['coin_top'][1] + Random(-2, 2), coords['coin_top'][2] + Random(-2, 2), 1, 2)
+                sleep 300
                 MouseClick('L', coords['coin_top'][1] + Random(-2, 2), coords['coin_top'][2] + Random(-2, 2), 1, 2)
                 sleep 500
                 Send '{Escape}'
