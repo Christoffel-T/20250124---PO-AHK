@@ -16,6 +16,8 @@ coords['SELL'] := StrSplit(IniRead(settings_file, 'General', "coords['SELL']"), 
 
 coords['Payout']  := StrSplit(IniRead(settings_file, 'General', "coords['Payout']"), ',', ' ')
 coords['coin']  := StrSplit(IniRead(settings_file, 'General', "coords['coin']"), ',', ' ')
+coords['cryptocurrencies']  := StrSplit(IniRead(settings_file, 'General', "coords['cryptocurrencies']"), ',', ' ')
+coords['stocks']  := StrSplit(IniRead(settings_file, 'General', "coords['stocks']"), ',', ' ')
 coords['coin_top']  := StrSplit(IniRead(settings_file, 'General', "coords['coin_top']"), ',', ' ')
 coords['empty_area']  := StrSplit(IniRead(settings_file, 'General', "coords['empty_area']"), ',', ' ')
 
