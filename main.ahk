@@ -401,10 +401,15 @@ start() {
             }
             MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
             sleep 100
-            if stats.streak != -5 and ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
+            if not streak5_state and stats.streak != -5
+                streak5_state := true
+
+            if (stats.streak != -5 or not streak5_state) and ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
                 payout := 92
                 break
             } else {
+                if streak5_state and stats.streak = -5
+                    streak5_state := false
                 Loop 19 {
                     ToolTip(,,,A_Index+1)
                 }
@@ -412,12 +417,13 @@ start() {
                 ToolTip('Waiting for payout to be 92 or higher...', 500, 5, 12)
                 MouseClick('L', coords['coin'][1] + Random(-2, 2), coords['coin'][2] + Random(-2, 2), 1, 2)
                 sleep 300
-                MouseClick('L', coords['coin_top'][1] + Random(-2, 2), coords['coin_top'][2] + Random(-2, 2), 1, 2)
+                MouseClick('L', coords['cryptocurrencies'][1] + Random(-2, 2), coords['cryptocurrencies'][2] + Random(-2, 2), 1, 2)
                 sleep 300
                 MouseClick('L', coords['coin_top'][1] + Random(-2, 2), coords['coin_top'][2] + Random(-2, 2), 1, 2)
                 sleep 500
                 Send '{Escape}'
                 sleep 1000
+
             }
         }
     }
