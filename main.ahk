@@ -87,7 +87,8 @@ main(hk:='') {
     blockers := Map()
 
     amounts_tresholds := [[4350, 2], [3060, 1]]
-    streak5_state := false
+    state_streak5 := false
+    state_5loss := false
 
     amount := get_amount(balance.current)
     _time := 15
@@ -310,12 +311,17 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
+        if state_5loss and stats.streak != -5
+            state_5loss := false
+
         key := '5losses'
         if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
-        if stats.streak <= -5 {
+        if stats.streak := -5 and not state_5loss {
+            state_5loss := true
             blockers[key] := {state: true, tick_count: A_TickCount}
         } else if blockers[key].state and candle_data.Length >= 3 and candle_data[2].color = candle_data[3].color and candle_data[1].color = candle_data[4].color {
+            state_5loss := true
             blockers[key] := {state: false, tick_count: A_TickCount}
         } else {
             blockers[key] := {state: false, tick_count: A_TickCount}
@@ -404,15 +410,15 @@ start() {
             }
             MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
             sleep 100
-            if not streak5_state and stats.streak != -5
-                streak5_state := true
+            if not state_streak5 and stats.streak != -5
+                state_streak5 := true
 
-            if (stats.streak != -5 or not streak5_state) and ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
+            if (stats.streak != -5 or not state_streak5) and ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
                 payout := 92
                 break
             } else {
-                if streak5_state and stats.streak = -5
-                    streak5_state := false
+                if state_streak5 and stats.streak = -5
+                    state_streak5 := false
                 Loop 19 {
                     ToolTip(,,,A_Index+1)
                 }
