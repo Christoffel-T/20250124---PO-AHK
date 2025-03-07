@@ -85,6 +85,7 @@ main(hk:='') {
     blockers := Map()
 
     amounts_tresholds := [[4350, 2], [3060, 1]]
+    streak5_state := false
 
     amount := get_amount(balance.current)
     _time := 15
