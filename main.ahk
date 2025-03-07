@@ -317,7 +317,7 @@ start() {
         key := '5losses'
         if not blockers.Has(key)
             blockers[key] := {state: false, tick_count: A_TickCount}
-        if stats.streak := -5 and not state_5loss {
+        if stats.streak = -5 and not state_5loss {
             state_5loss := true
             blockers[key] := {state: true, tick_count: A_TickCount}
         } else if blockers[key].state and candle_data.Length >= 3 and candle_data[2].color = candle_data[3].color and candle_data[1].color = candle_data[4].color {
