@@ -127,7 +127,9 @@ start() {
     
     datetime := DateAdd(A_NowUTC, -5, 'h')
     if stats.reset_date != SubStr(datetime, 1, -6) {
-        stats := {win: 0, loss: 0, draw: 0}
+        stats.win := 0
+        stats.loss := 0
+        stats.draw := 0
         lose_streak := {max: 0, repeat: Map()}
     }
     stats.reset_date := SubStr(datetime, 1, -6)
