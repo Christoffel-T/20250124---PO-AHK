@@ -4,9 +4,6 @@ CoordMode('Pixel', 'Screen')
 CoordMode('ToolTip', 'Screen')
 SendMode('Event')
 #Include OCR.ahk
-loop {
-    MsgBox Random(0,3)
-}
 settings_file := 'settings.ini'
 
 wtitle := IniRead(settings_file, 'General', 'wtitle')
