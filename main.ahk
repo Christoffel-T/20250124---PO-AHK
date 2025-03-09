@@ -348,7 +348,7 @@ start() {
     }
     scenario1() {
         if stats.streak <= -4 {
-            _pheight := 3
+            _pheight := 2.75
         } else {
             _pheight := 4
         }
