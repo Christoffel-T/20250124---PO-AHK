@@ -4,6 +4,9 @@ CoordMode('Pixel', 'Screen')
 CoordMode('ToolTip', 'Screen')
 SendMode('Event')
 #Include OCR.ahk
+loop {
+    MsgBox Random(0,3)
+}
 settings_file := 'settings.ini'
 
 wtitle := IniRead(settings_file, 'General', 'wtitle')
@@ -87,7 +90,7 @@ main(hk:='') {
     blockers := Map()
 
     amounts_tresholds := [[4350, 2], [3060, 1]]
-    state_streak5 := false
+    state_coin_change_streak := false
     state_5loss := false
 
     amount := get_amount(balance.current)
@@ -348,7 +351,7 @@ start() {
     }
     scenario1() {
         if stats.streak <= -4 {
-            _pheight := 2.75
+            _pheight := 4
         } else {
             _pheight := 4
         }
@@ -368,8 +371,8 @@ start() {
         }
     }
     scenario3() {
-        condition_buy  := psGc and outyc < outy1 - 1 and Mod(A_Sec, 15) >= 9 and candle_data.Length >=4 and candle_data[4] = 'R' and candle_data[3] = 'R' and candle_data[2] = 'R' and candle_data[1] = 'G' and not trade_opened[1]
-        condition_sell := psRc and outyc > outy1 + 1 and Mod(A_Sec, 15) >= 9 and candle_data.Length >=4 and candle_data[4] = 'G' and candle_data[3] = 'G' and candle_data[2] = 'G' and candle_data[1] = 'R' and not trade_opened[1]
+        condition_buy  := psGc and outyc < outy1 - 1 and Mod(A_Sec, 15) >= 12 and candle_data.Length >=4 and candle_data[4] = 'R' and candle_data[3] = 'R' and candle_data[2] = 'R' and candle_data[1] = 'G' and not trade_opened[1]
+        condition_sell := psRc and outyc > outy1 + 1 and Mod(A_Sec, 15) >= 12 and candle_data.Length >=4 and candle_data[4] = 'G' and candle_data[3] = 'G' and candle_data[2] = 'G' and candle_data[1] = 'R' and not trade_opened[1]
 
         if paused
             return false
@@ -412,15 +415,16 @@ start() {
             }
             MouseClick('L', coords['empty_area'][1], coords['empty_area'][2], 1, 1)
             sleep 100
-            if not state_streak5 and stats.streak != -5
-                state_streak5 := true
+            coin_change_streak := -4
+            if not state_coin_change_streak and stats.streak != coin_change_streak
+                state_coin_change_streak := true
 
-            if (stats.streak != -5 or not state_streak5) and ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
+            if (stats.streak != coin_change_streak or not state_coin_change_streak) and ImageSearch(&outx, &outy, coords['Payout'][1], coords['Payout'][2], coords['Payout'][3]+coords['Payout'][1], coords['Payout'][4]+coords['Payout'][2], '*10 payout.png') {
                 payout := 92
                 break
             } else {
-                if state_streak5 and stats.streak = -5
-                    state_streak5 := false
+                if state_coin_change_streak and stats.streak = coin_change_streak
+                    state_coin_change_streak := false
                 Loop 19 {
                     ToolTip(,,,A_Index+1)
                 }
@@ -430,7 +434,10 @@ start() {
                 sleep 300
                 MouseClick('L', coords['cryptocurrencies'][1] + Random(-2, 2), coords['cryptocurrencies'][2] + Random(-2, 2), 1, 2)
                 sleep 300
-                MouseClick('L', coords['coin_top'][1] + Random(-2, 2), coords['coin_top'][2] + Random(-2, 2), 1, 2)
+                if stats.streak = coin_change_streak
+                    MouseClick('L', coords['coin_top'][1] + Random(-2, 2), coords['coin_top'][2] + Random(-2, 2), 1, 2)
+                else
+                    MouseClick('L', coords['coin_top'][1] + Random(-2, 2), coords['coin_top'][2] + Random(1, 2)*28, 1, 2)
                 sleep 500
                 Send '{Escape}'
                 sleep 1000
