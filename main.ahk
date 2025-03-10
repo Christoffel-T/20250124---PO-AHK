@@ -265,6 +265,8 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         if not isAllSame(candle_data[1].colors) {
             blockers[key] := {state: true, tick_count: A_TickCount}
+        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
+            blockers[key] := {state: false, tick_count: A_TickCount}
         } else {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
@@ -280,65 +282,65 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
-        key := 'candle_engulfed'
-        if not blockers.Has(key)
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        if candle_data.Length >= 3 and candle_data[2].H > candle_data[3].H and candle_data[2].L < candle_data[3].L {
-            blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; key := 'candle_engulfed'
+        ; if not blockers.Has(key)
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if candle_data.Length >= 3 and candle_data[2].H > candle_data[3].H and candle_data[2].L < candle_data[3].L {
+        ;     blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
-        key := '2candle_diff'
-        if not blockers.Has(key)
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        if candle_data.Length >= 3 and candle_data[2].color != candle_data[3].color and outy2 < min(candle_data[1].H, candle_data[1].L) and outy1 > max(candle_data[1].H, candle_data[1].L) {
-            blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 30000 {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; key := '2candle_diff'
+        ; if not blockers.Has(key)
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if candle_data.Length >= 3 and candle_data[2].color != candle_data[3].color and outy2 < min(candle_data[1].H, candle_data[1].L) and outy1 > max(candle_data[1].H, candle_data[1].L) {
+        ;     blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 30000 {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
-        key := 'small_body'
-        if not blockers.Has(key)
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        if candle_data.Length >= 3 and abs(candle_data[3].O - candle_data[3].C)/abs(candle_data[3].H - candle_data[3].L) <= 0.1 and abs(candle_data[2].O - candle_data[2].C)/abs(candle_data[2].H - candle_data[2].L) <= 0.1 {
-            blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; key := 'small_body'
+        ; if not blockers.Has(key)
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if candle_data.Length >= 3 and abs(candle_data[3].O - candle_data[3].C)/abs(candle_data[3].H - candle_data[3].L) <= 0.1 and abs(candle_data[2].O - candle_data[2].C)/abs(candle_data[2].H - candle_data[2].L) <= 0.1 {
+        ;     blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
-        if state_5loss and stats.streak != -5
-            state_5loss := false
+        ; if state_5loss and stats.streak != -5
+        ;     state_5loss := false
 
-        key := '5losses'
-        if not blockers.Has(key)
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        if stats.streak = -5 and not state_5loss {
-            state_5loss := true
-            blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if blockers[key].state and candle_data.Length >= 3 and candle_data[2].color = candle_data[3].color and candle_data[1].color = candle_data[4].color {
-            state_5loss := true
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; key := '5losses'
+        ; if not blockers.Has(key)
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if stats.streak = -5 and not state_5loss {
+        ;     state_5loss := true
+        ;     blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else if blockers[key].state and candle_data.Length >= 3 and candle_data[2].color = candle_data[3].color and candle_data[1].color = candle_data[4].color {
+        ;     state_5loss := true
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
-        key := 'color_ch3'
-        if not blockers.Has(key)
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        if candle_data[1].color_changes.Length > 3 {
-            blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 45000 {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; key := 'color_ch3'
+        ; if not blockers.Has(key)
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if candle_data[1].color_changes.Length > 3 {
+        ;     blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 45000 {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
         for k, v in blockers {
             if v.state
