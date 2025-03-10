@@ -634,7 +634,7 @@ start() {
         }
         sleep 50
         MouseClick('L', coords[action][1] + Random(-5, 5), coords[action][2] + Random(-5, 5), 1, 2)
-        sleep 30
+        sleep 500
         while check_balance(balance).current = balance.current {
             ToolTip('Waiting balance change...', 500, 5, 12)
             sleep 50
