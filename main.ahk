@@ -125,7 +125,8 @@ start() {
     pixels_search()
     check_trade_closed()
     
-    datetime := DateAdd(A_NowUTC, -5, 'h')
+    datetime := A_Now
+    ; datetime := DateAdd(A_NowUTC, -5, 'h')
     if stats.reset_date != SubStr(datetime, 1, -6) {
         stats.win := 0
         stats.loss := 0
