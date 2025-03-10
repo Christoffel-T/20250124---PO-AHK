@@ -261,27 +261,27 @@ start() {
             blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
-        key := '3sCc'
-        if not blockers.Has(key)
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        if not isAllSame(candle_data[1].colors) {
-            blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; key := '3sCc'
+        ; if not blockers.Has(key)
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if not isAllSame(candle_data[1].colors) {
+        ;     blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 15000 {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
-        key := '2px'
-        if not blockers.Has(key)
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        if ps1 and ps2 and Abs(outy2 - outy1) <= 2 {
-            blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 45000 {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
-            blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; key := '2px'
+        ; if not blockers.Has(key)
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if ps1 and ps2 and Abs(outy2 - outy1) <= 2 {
+        ;     blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else if blockers[key].state and A_TickCount > blockers[key].tick_count + 45000 {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; } else {
+        ;     blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
         ; key := 'candle_engulfed'
         ; if not blockers.Has(key)
