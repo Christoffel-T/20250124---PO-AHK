@@ -40,8 +40,8 @@ isAllSame(arr) {
 }
 
 get_timeframe(interval := 15) {
-    datetime := A_NowUTC
-    datetime := DateAdd(datetime, -5, 'h')
+    datetime := A_Now
+    ; datetime := DateAdd(A_NowUTC, -5, 'h')
     seconds := SubStr(datetime, -2)
     rounded_seconds := Floor(seconds / interval) * interval
     rounded_time := SubStr(datetime, 1, -2) Format("{:02}", rounded_seconds)
@@ -94,8 +94,8 @@ main(hk:='') {
     _time := 15
     _time += 2
     payout := 92
-    datetime := A_NowUTC
-    datetime := DateAdd(datetime, -5, 'h')
+    datetime := A_Now
+    ; datetime := DateAdd(A_NowUTC, -5, 'h')
     stats.reset_date := SubStr(datetime, 1, -6)
     date := FormatTime(datetime, 'MM/dd')
     time := FormatTime(datetime, 'HH:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
