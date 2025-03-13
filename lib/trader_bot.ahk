@@ -564,21 +564,21 @@ class TraderBot {
             if this.ps.close_green.state {
                 Loop {
                     this.ps.open := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.green, 15), x:x, y:y}
-                    if this.ps.open
+                    if this.ps.open.state
                         break
                 }
             } else if this.ps.close_red.state {
                 Loop {
                     this.ps.open := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.red, 15), x:x, y:y}
-                    if this.ps.open
+                    if this.ps.open.state
                         break
                 }
             }
             if this.ps.close_red.state {
                 this.candle_data[1].O := this.ps.open.y
                 this.candle_data[1].C := this.ps.close_red.y
-                this.candle_data[1].H := this.candle_data[1].HasOwnProp('H') ? min(this.ps.close_red.y, this.candle_data[1].H, this.candle_data[1].O) : this.ps.open.y
-                this.candle_data[1].L := this.candle_data[1].HasOwnProp('L') ? max(this.ps.close_red.y, this.candle_data[1].L, this.candle_data[1].O) : this.ps.close_red.y
+                this.candle_data[1].H := this.candle_data[1].HasOwnProp('H') ? max(this.ps.close_red.y, this.candle_data[1].H, this.candle_data[1].O) : this.ps.open.y
+                this.candle_data[1].L := this.candle_data[1].HasOwnProp('L') ? min(this.ps.close_red.y, this.candle_data[1].L, this.candle_data[1].O) : this.ps.close_red.y
                 if this.ps.close_red.y and this.ps.open.y
                     this.candle_data[1].size := Abs(this.ps.close_red.y - this.ps.open.y)
             } else if this.ps.close_green.state {
