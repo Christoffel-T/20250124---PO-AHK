@@ -10,8 +10,8 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1,3,7,15,31,66,135,281,586,1223])
-        this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2000])
+        this.amount_arr.Push([1,3,7,15,31,66,135,281,586,2]) ; 1223])
+        this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2]) ; 2000])
         Loop 10 {
             _index := A_Index
             if this.amount_arr.Length < A_Index
