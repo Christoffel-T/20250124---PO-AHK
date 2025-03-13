@@ -92,7 +92,7 @@ main(hk:='') {
 
     amount := get_amount(balance.current)
     _time := 15
-    _time += 3
+    _time += 4
     payout := 92
     datetime := A_Now
     ; datetime := DateAdd(A_NowUTC, -5, 'h')
