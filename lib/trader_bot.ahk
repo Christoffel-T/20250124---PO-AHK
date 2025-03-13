@@ -52,7 +52,7 @@ class TraderBot {
         this.marked_time_refresh := A_TickCount
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,this.active_trade,this.last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -93,7 +93,7 @@ class TraderBot {
         }
         this.stats.reset_date := SubStr(this.datetime, 1, -6)
         
-        if this.ps.r_touch_blue.state and this.ps.orange {
+        if this.ps.blue.state and this.ps.orange.state {
             this.both_lines_detected()
         }
     
@@ -174,7 +174,7 @@ class TraderBot {
         ; key := '2px'
         ; if not this.blockers.Has(key)
         ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if this.ps.r_touch_blue.state and this.ps.orange and Abs(this.ps.orange.y - this.ps.blue.y) <= 2 {
+        ; if this.ps.blue.state and this.ps.orange.state and Abs(this.ps.orange.y - this.ps.blue.y) <= 2 {
         ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
         ; } else if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 {
         ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
@@ -254,35 +254,35 @@ class TraderBot {
         } else {
             _pheight := 4
         }
-        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and this.crossovers_arr.Length >= 2 and last_trade != 'BUY'  and not trade_opened[1]
-        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and this.crossovers_arr.Length >= 2 and last_trade != 'SELL' and not trade_opened[1]
+        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and this.crossovers_arr.Length >= 2 and this.last_trade != 'BUY'  and not trade_opened[1]
+        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and this.crossovers_arr.Length >= 2 and this.last_trade != 'SELL' and not trade_opened[1]
 
         if this.paused
             return false
         if (condition_buy) {
-            last_trade := 'BUY'
+            this.last_trade := 'BUY'
             trade_opened := [true, A_TickCount]
-            this.main_sub1(last_trade)
+            this.main_sub1(this.last_trade)
         } else if (condition_sell) {
-            last_trade := 'SELL'
+            this.last_trade := 'SELL'
             trade_opened := [true, A_TickCount]
-            this.main_sub1(last_trade)
+            this.main_sub1(this.last_trade)
         }
     }
     scenario3() {
-        condition_buy  := this.ps.close_green and this.ps.close_green.y < this.ps.blue.y - 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'R' and this.candle_data[3] = 'R' and this.candle_data[2] = 'R' and this.candle_data[1] = 'G' and not trade_opened[1]
-        condition_sell := this.ps.close_red and this.ps.close_green.y > this.ps.blue.y + 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'G' and this.candle_data[3] = 'G' and this.candle_data[2] = 'G' and this.candle_data[1] = 'R' and not trade_opened[1]
+        condition_buy  := this.ps.close_green.state and this.ps.close_green.y < this.ps.blue.y - 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'R' and this.candle_data[3] = 'R' and this.candle_data[2] = 'R' and this.candle_data[1] = 'G' and not trade_opened[1]
+        condition_sell := this.ps.close_red.state and this.ps.close_red.y > this.ps.blue.y + 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'G' and this.candle_data[3] = 'G' and this.candle_data[2] = 'G' and this.candle_data[1] = 'R' and not trade_opened[1]
 
         if this.paused
             return false
         if (condition_buy) {
-            ; last_trade := 'BUY'
+            ; this.last_trade := 'BUY'
             trade_opened := [true, A_TickCount]
-            this.main_sub1(last_trade)
+            this.main_sub1(this.last_trade)
         } else if (condition_sell) {
-            ; last_trade := 'SELL'
+            ; this.last_trade := 'SELL'
             trade_opened := [true, A_TickCount]
-            this.main_sub1(last_trade)
+            this.main_sub1(this.last_trade)
         }
     }
     scenario2() {
@@ -291,14 +291,14 @@ class TraderBot {
 
         if trade_opened[1] and this.paused
             return false
-        if (this.ps.close_green and this.ps.orange.y < this.ps.blue.y and this.ps.close_green.y > this.ps.orange.y and condition_buy) {
+        if (this.ps.close_green.state and this.ps.orange.y < this.ps.blue.y and this.ps.close_green.y > this.ps.orange.y and condition_buy) {
             trade_opened := [true, A_TickCount]
-            last_trade := 'BUY'
-            this.main_sub1(last_trade)
-        } else if (this.ps.close_red and this.ps.orange.y > this.ps.blue.y and this.ps.close_green.y < this.ps.orange.y and condition_sell) {
+            this.last_trade := 'BUY'
+            this.main_sub1(this.last_trade)
+        } else if (this.ps.close_red.state and this.ps.orange.y > this.ps.blue.y and this.ps.close_red.y < this.ps.orange.y and condition_sell) {
             trade_opened := [true, A_TickCount]
-            last_trade := 'SELL'
-            this.main_sub1(last_trade)
+            this.last_trade := 'SELL'
+            this.main_sub1(this.last_trade)
         }
     }
 
@@ -317,7 +317,7 @@ class TraderBot {
                 Loop 19 {
                     ToolTip(,,,A_Index+1)
                 }
-                last_trade := ''
+                this.last_trade := ''
                 ToolTip('Waiting for payout to be 92 or higher...', 500, 5, 12)
                 MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
                 sleep 300
@@ -336,7 +336,7 @@ class TraderBot {
     }
     check_trade_closed() {
         if (this.trade_opened[1] and countdown_close < 0) {
-            active_trade := ''
+            this.active_trade := ''
             this.trade_opened[1] := false
             new_balance := this.check_balance(this.balance)
             if (new_balance.current <= this.balance.current + 0.5) {
@@ -376,10 +376,10 @@ class TraderBot {
         ToolTip('orange', this.ps.orange.x-200, this.ps.orange.y, 3)
         ToolTip('blue', this.ps.blue.x, this.ps.blue.y-200, 4)
         ToolTip('orange', this.ps.orange.x, this.ps.orange.y-200, 5)
-        if this.ps.close_green
+        if this.ps.close_green.state 
             ToolTip('CLOSE-green', this.ps.close_green.x-250, this.ps.close_green.y, 6)
-        if this.ps.close_red
-            ToolTip('CLOSE-red', this.ps.close_green.x-250, this.ps.close_green.y, 6)
+        if this.ps.close_red.state 
+            ToolTip('CLOSE-red', this.ps.close_red.x-250, this.ps.close_red.y, 6)
         if this.candle_data[1].HasOwnProp('O') and this.candle_data[1].HasOwnProp('H') and this.candle_data[1].HasOwnProp('L') and this.candle_data[1].HasOwnProp('C') {
             if this.candle_data[1].O
                 ToolTip('OPEN', this.ps.blue.x-250, this.candle_data[1].O, 7)
@@ -388,12 +388,8 @@ class TraderBot {
         }
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
-        this.ps.g_touch_blue := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.ps.blue.y+4, this.ps.blue.x+2, this.ps.blue.y-4, this.colors.green, 5), x:x, y:y}
-        this.ps.g_touch_orange := {state: PixelSearch(&x, &y, this.ps.orange.x+4, this.ps.orange.y+4, this.ps.orange.x+2, this.ps.orange.y-4, this.colors.green, 5), x:x, y:y}
-        this.ps.r_touch_blue := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.ps.blue.y+4, this.ps.blue.x+2, this.ps.blue.y-4, this.colors.red, 5), x:x, y:y}
-        this.ps.r_touch_orange := {state: PixelSearch(&x, &y, this.ps.orange.x+4, this.ps.orange.y+4, this.ps.orange.x+2, this.ps.orange.y-4, this.colors.red, 5), x:x, y:y}
 
-        _color := this.ps.close_green ? 'G' : this.ps.close_red ? 'R' : '?'    
+        _color := this.ps.close_green.state ? 'G' : this.ps.close_red.state ? 'R' : '?'    
         if Mod(A_Sec, 15) >= 12 {
             this.candle_data[1].colors.Push(_color)
         }
@@ -402,19 +398,19 @@ class TraderBot {
 
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
             _timeframe := Utils.get_timeframe()
-            if _timeframe != this.candle_data[1].timeframe and (this.ps.close_green or this.ps.close_red) {
+            if _timeframe != this.candle_data[1].timeframe and (this.ps.close_green.state or this.ps.close_red.state) {
                 this.candle_data.InsertAt(1, {color: _color, timeframe: _timeframe, colors: [_color], color_changes: [_color], H: this.candle_data[1].C, L: this.candle_data[1].C})
                 while this.candle_data.Length > 5
                     this.candle_data.Pop()
             }
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((this.crossovers_arr.Length = 0 || this.crossovers_arr[-1].direction != 'BUY') and this.ps.orange.y > this.ps.blue.y) {
-                if last_trade=''
-                    last_trade := 'BUY'
+                if this.last_trade=''
+                    this.last_trade := 'BUY'
                 this.crossovers_arr.Push({direction: 'BUY', time: A_TickCount})
             } else if ((this.crossovers_arr.Length = 0 || this.crossovers_arr[-1].direction != 'SELL') and this.ps.orange.y < this.ps.blue.y) {
-                if last_trade=''
-                    last_trade := 'SELL'
+                if this.last_trade=''
+                    this.last_trade := 'SELL'
                 this.crossovers_arr.Push({direction: 'SELL', time: A_TickCount})
             }
             if this.crossovers_arr.Length > 10
@@ -456,8 +452,8 @@ class TraderBot {
             streaks_str .= k '[' v '] '
         }
         
-        debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange ' | diff: ' (this.ps.blue.state and this.ps.orange ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
-        ; debug_str := 'G: ' (this.ps.orange and this.ps.close_green ? this.ps.close_green.y - this.ps.orange.y : 0) ' | R: ' (this.ps.orange and this.ps.close_red ? this.ps.orange.y - this.ps.close_green.y : 0) ' | ' debug_str
+        debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
+        ; debug_str := 'G: ' (this.ps.orange.state and this.ps.close_green.state ? this.ps.close_green.y - this.ps.orange.y : 0) ' | R: ' (this.ps.orange.state and this.ps.close_red.state ? this.ps.orange.y - this.ps.close_green.y : 0) ' | ' debug_str
         _a := this.ps.g_touch_blue.state and this.ps.g_touch_orange.state ? '2lines: BUY' : this.ps.r_touch_blue.state and this.ps.r_touch_orange.state ? '2lines: SELL' : ''
         debug_str := _a ' | ' debug_str
         debug_str := this.crossovers_arr.Length > 0 ? 'last CO: ' this.crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - this.crossovers_arr[-1].time)/1000) ')' ' | ' debug_str : debug_str
@@ -482,19 +478,21 @@ class TraderBot {
         win_rate := Format('{:.1f}', win_rate)
     
         loop {
-            try {
-                file_size := FileGetSize(this.log_file)
-                max_size := 5 * 1024 * 1024 ; 5 MB
-                if file_size > max_size
-                    FileDelete(this.log_file)
+            ; try {
+                if FileExist(this.log_file) {
+                    file_size := FileGetSize(this.log_file)
+                    max_size := 5 * 1024 * 1024 ; 5 MB
+                    if file_size > max_size
+                        FileDelete(this.log_file)
+                }
     
                 FileAppend(
                     date ',' 
                     time ',' 
-                    active_trade countdown_close_str ' | ' paused_str ',' 
+                    this.active_trade countdown_close_str ' | ' paused_str ',' 
                     format('{:.2f}', this.amount) ',' 
                     this.balance.current ' (' this.balance.max ' | ' this.balance.min ')' ',' 
-                    last_trade ',' 
+                    this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
                     this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)' ',' 
                     streaks_str ',' 
@@ -507,12 +505,12 @@ class TraderBot {
                     exitapp
                 }
                 break
-            } catch as e {
-                err++
-                ToolTip('Appending new row. Errors: ' err '`n' e.Message, 500, 5, 12)
-                sleep 100
-                continue
-            }
+            ; } catch as e {
+            ;     err++
+            ;     ToolTip('Appending new row. Errors: ' err '`n' e.Message, 500, 5, 12)
+            ;     sleep 100
+            ;     continue
+            ; }
         }
     }
     main_sub1(action) {
@@ -528,59 +526,73 @@ class TraderBot {
             ToolTip('Waiting balance change...', 500, 5, 12)
             sleep 50
             if (a_index>100) {
-                last_trade := action
+                this.last_trade := action
                 ToolTip(,,, 12)
                 return 
             }
         }
         ToolTip(,,, 12)
         this.balance := this.check_balance(this.balance)
-        active_trade := action
+        this.active_trade := action
     }     
 
     pixels_search() {
-        this.ps.orange.state := false
-        try
-            this.ps.blue.state := {state: PixelSearch(&x, &y, this.coords.area.x, this.coords.area.y, this.coords.area.x2, this.coords.area.y2, this.colors.blue, 5), x:x, y:y}
-        catch as e {
+        this.ps.blue :=     {state: false}
+        this.ps.orange :=     {state: false}
+        this.ps.close_green :=     {state: false}
+        this.ps.close_red :=     {state: false}
+        this.ps.open :=     {state: false}
+        this.ps.g_touch_blue :=     {state: false}
+        this.ps.g_touch_orange :=   {state: false}
+        this.ps.r_touch_blue :=     {state: false}
+        this.ps.r_touch_orange :=   {state: false}
+
+        try {
+            this.ps.blue := {state: PixelSearch(&x, &y, this.coords.area.x, this.coords.area.y, this.coords.area.x2, this.coords.area.y2, this.colors.blue, 5), x:x, y:y}
+        } catch as e {
             ToolTip('Error: PixelSearch failed`n' e.Message, 500, 5, 15)
             this.coords.area.x := max(this.coords.area.x - 1, 100)
             this.coords.area.x2 := this.coords.area.x - 2
             ToolTip(,,, 15)
             return
         }
-        this.ps.close_green := ''
-        this.ps.close_red := ''
         if this.ps.blue.state {
             this.ps.orange := {state: PixelSearch(&x, &y, this.ps.blue.x+1, this.coords.area.y, this.ps.blue.x-1, this.coords.area.y2, this.colors.orange, 5), x:x, y:y}
             this.ps.close_green := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.green, 5), x:x, y:y}
-            if not this.ps.close_green
+            if not this.ps.close_green.state 
                 this.ps.close_red := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.red, 5), x:x, y:y}
-            if this.ps.close_green {
+            if this.ps.close_green.state {
                 Loop {
-                    this.ps.open := {state: PixelSearch(&outxo, &outyo, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.green, 15), x:x, y:y}
+                    this.ps.open := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.green, 15), x:x, y:y}
                     if this.ps.open
                         break
                 }
-            } else if this.ps.close_red {
+            } else if this.ps.close_red.state {
                 Loop {
-                    this.ps.open := {state: PixelSearch(&outxo, &outyo, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.red, 15), x:x, y:y}
+                    this.ps.open := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.red, 15), x:x, y:y}
                     if this.ps.open
                         break
                 }
             }
-            if this.ps.close_green or this.ps.close_red {
-                this.candle_data[1].O := outyo
+            if this.ps.close_red.state {
+                this.candle_data[1].O := this.ps.open.y
+                this.candle_data[1].C := this.ps.close_red.y
+                this.candle_data[1].H := this.candle_data[1].HasOwnProp('H') ? min(this.ps.close_red.y, this.candle_data[1].H, this.candle_data[1].O) : this.ps.open.y
+                this.candle_data[1].L := this.candle_data[1].HasOwnProp('L') ? max(this.ps.close_red.y, this.candle_data[1].L, this.candle_data[1].O) : this.ps.close_red.y
+                if this.ps.close_red.y and this.ps.open.y
+                    this.candle_data[1].size := Abs(this.ps.close_red.y - this.ps.open.y)
+            } else if this.ps.close_green.state {
+                this.candle_data[1].O := this.ps.open.y
                 this.candle_data[1].C := this.ps.close_green.y
-                this.candle_data[1].H := this.candle_data[1].HasOwnProp('H') ? min(this.ps.close_green.y, this.candle_data[1].H, this.candle_data[1].O) : this.ps.close_green ? this.ps.close_green.y : outyo
-                this.candle_data[1].L := this.candle_data[1].HasOwnProp('L') ? max(this.ps.close_green.y, this.candle_data[1].L, this.candle_data[1].O) : this.ps.close_red ? this.ps.close_green.y : outyo
-                if this.ps.close_green.y and outyo
-                    this.candle_data[1].size := Abs(this.ps.close_green.y - outyo)
+                this.candle_data[1].H := this.candle_data[1].HasOwnProp('H') ? min(this.ps.close_green.y, this.candle_data[1].H, this.candle_data[1].O) : this.ps.close_green.y
+                this.candle_data[1].L := this.candle_data[1].HasOwnProp('L') ? max(this.ps.close_green.y, this.candle_data[1].L, this.candle_data[1].O) : this.ps.open.y
+                if this.ps.close_green.y and this.ps.open.y
+                    this.candle_data[1].size := Abs(this.ps.close_green.y - this.ps.open.y)
             }
 
             this.coords.area.x := min(this.coords.area.x + 1, A_ScreenWidth*0.95)
             this.coords.area.x2 := this.coords.area.x - 2
-            ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', this.balance.current), 5, 5, 11)
+            ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', this.balance.current), 5, 5, 11)
         } else {
             this.coords.area.x := max(this.coords.area.x - 1, 100)
             if this.coords.area.x < this.min_x {
@@ -588,10 +600,18 @@ class TraderBot {
                 this.reload_website()
             }
             this.coords.area.x2 := this.coords.area.x - 2
-            ; debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange ' | diff: ' (this.ps.blue.state and this.ps.orange ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
-            ; ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent last_trade: ' last_trade '`nCurrent balance: ' format('{:.2f}', balance.current), 5, 5, 11)
+            ; debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
+            ; ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', balance.current), 5, 5, 11)
             return
         }
+
+        if this.ps.blue.state and this.ps.orange.state {
+            this.ps.g_touch_blue := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.ps.blue.y+4, this.ps.blue.x+2, this.ps.blue.y-4, this.colors.green, 5), x:x, y:y}
+            this.ps.g_touch_orange := {state: PixelSearch(&x, &y, this.ps.orange.x+4, this.ps.orange.y+4, this.ps.orange.x+2, this.ps.orange.y-4, this.colors.green, 5), x:x, y:y}
+            this.ps.r_touch_blue := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.ps.blue.y+4, this.ps.blue.x+2, this.ps.blue.y-4, this.colors.red, 5), x:x, y:y}
+            this.ps.r_touch_orange := {state: PixelSearch(&x, &y, this.ps.orange.x+4, this.ps.orange.y+4, this.ps.orange.x+2, this.ps.orange.y-4, this.colors.red, 5), x:x, y:y}
+        }
+
         ToolTip(,,, 12)
     }
 
