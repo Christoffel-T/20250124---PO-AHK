@@ -42,7 +42,7 @@ class TraderBot {
         this.min_x := this.coords.area.x - 50
         this.amount := this.get_amount(this.balance.current)
         this._time := 15
-        this._time += 2
+        this._time += 4
         this.payout := 92
         this.datetime := A_Now
         this.stats.reset_date := SubStr(this.datetime, 1, -6)
