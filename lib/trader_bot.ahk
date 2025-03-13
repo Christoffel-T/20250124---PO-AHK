@@ -254,34 +254,34 @@ class TraderBot {
         } else {
             _pheight := 4
         }
-        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and this.crossovers_arr.Length >= 2 and this.last_trade != 'BUY'  and not trade_opened[1]
-        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and this.crossovers_arr.Length >= 2 and this.last_trade != 'SELL' and not trade_opened[1]
+        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and this.crossovers_arr.Length >= 2 and this.last_trade != 'BUY'  and not this.trade_opened[1]
+        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and this.crossovers_arr.Length >= 2 and this.last_trade != 'SELL' and not this.trade_opened[1]
 
         if this.paused
             return false
         if (condition_buy) {
             this.last_trade := 'BUY'
-            trade_opened := [true, A_TickCount]
+            this.trade_opened := [true, A_TickCount]
             this.main_sub1(this.last_trade)
         } else if (condition_sell) {
             this.last_trade := 'SELL'
-            trade_opened := [true, A_TickCount]
+            this.trade_opened := [true, A_TickCount]
             this.main_sub1(this.last_trade)
         }
     }
     scenario3() {
-        condition_buy  := this.ps.close_green.state and this.ps.close_green.y < this.ps.blue.y - 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'R' and this.candle_data[3] = 'R' and this.candle_data[2] = 'R' and this.candle_data[1] = 'G' and not trade_opened[1]
-        condition_sell := this.ps.close_red.state and this.ps.close_red.y > this.ps.blue.y + 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'G' and this.candle_data[3] = 'G' and this.candle_data[2] = 'G' and this.candle_data[1] = 'R' and not trade_opened[1]
+        condition_buy  := this.ps.close_green.state and this.ps.close_green.y < this.ps.blue.y - 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'R' and this.candle_data[3] = 'R' and this.candle_data[2] = 'R' and this.candle_data[1] = 'G' and not this.trade_opened[1]
+        condition_sell := this.ps.close_red.state and this.ps.close_red.y > this.ps.blue.y + 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'G' and this.candle_data[3] = 'G' and this.candle_data[2] = 'G' and this.candle_data[1] = 'R' and not this.trade_opened[1]
 
         if this.paused
             return false
         if (condition_buy) {
             ; this.last_trade := 'BUY'
-            trade_opened := [true, A_TickCount]
+            this.trade_opened := [true, A_TickCount]
             this.main_sub1(this.last_trade)
         } else if (condition_sell) {
             ; this.last_trade := 'SELL'
-            trade_opened := [true, A_TickCount]
+            this.trade_opened := [true, A_TickCount]
             this.main_sub1(this.last_trade)
         }
     }
@@ -289,14 +289,14 @@ class TraderBot {
         condition_buy := this.ps.g_touch_blue.state 
         condition_sell := this.ps.r_touch_blue.state 
 
-        if trade_opened[1] and this.paused
+        if this.trade_opened[1] and this.paused
             return false
         if (this.ps.close_green.state and this.ps.orange.y < this.ps.blue.y and this.ps.close_green.y > this.ps.orange.y and condition_buy) {
-            trade_opened := [true, A_TickCount]
+            this.trade_opened := [true, A_TickCount]
             this.last_trade := 'BUY'
             this.main_sub1(this.last_trade)
         } else if (this.ps.close_red.state and this.ps.orange.y > this.ps.blue.y and this.ps.close_red.y < this.ps.orange.y and condition_sell) {
-            trade_opened := [true, A_TickCount]
+            this.trade_opened := [true, A_TickCount]
             this.last_trade := 'SELL'
             this.main_sub1(this.last_trade)
         }
