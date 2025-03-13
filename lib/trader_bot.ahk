@@ -520,7 +520,7 @@ class TraderBot {
             sleep 100
         }
         sleep 50
-        MouseClick('L', this.coords[action][1] + Random(-5, 5), this.coords[action][2] + Random(-5, 5), 1, 2)
+        MouseClick('L', this.coords.%action%[1] + Random(-5, 5), this.coords.%action%[2] + Random(-5, 5), 1, 2)
         sleep 500
         while this.check_balance(this.balance).current = this.balance.current {
             ToolTip('Waiting balance change...', 500, 5, 12)
