@@ -478,7 +478,7 @@ class TraderBot {
         win_rate := Format('{:.1f}', win_rate)
     
         loop {
-            ; try {
+            try {
                 if FileExist(this.log_file) {
                     file_size := FileGetSize(this.log_file)
                     max_size := 5 * 1024 * 1024 ; 5 MB
@@ -505,12 +505,14 @@ class TraderBot {
                     exitapp
                 }
                 break
-            ; } catch as e {
-            ;     err++
-            ;     ToolTip('Appending new row. Errors: ' err '`n' e.Message, 500, 5, 12)
-            ;     sleep 100
-            ;     continue
-            ; }
+            } catch as e {
+                if !InStr(e.Message, 'being used by another process')
+                    throw e
+                err++
+                ToolTip('Appending new row. Errors: ' err '`n' e.Message, 500, 5, 12)
+                sleep 100
+                continue
+            }
         }
     }
     main_sub1(action) {
