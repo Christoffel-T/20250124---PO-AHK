@@ -341,8 +341,10 @@ class TraderBot {
         if (this.trade_opened[1]) {
             MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             sleep 50
-            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open2.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 55)
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open2.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 55) {
+                MsgBox '??'
                 return
+            }
             this.active_trade := ''
             this.trade_opened[1] := false
             MouseClick('L', this.coords.trades_closed.x + Random(-5, 5), this.coords.trades_closed.y + Random(-1, 1), 3, 2)
@@ -381,6 +383,7 @@ class TraderBot {
             } 
         }
     }
+
     both_lines_detected() {
         ToolTip('blue', this.ps.blue.x-200, this.ps.blue.y, 2)
         ToolTip('orange', this.ps.orange.x-200, this.ps.orange.y, 3)
@@ -544,8 +547,6 @@ class TraderBot {
             sleep 50
             ToolTip('waiting for trade to be opened', , , 12)
             if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 75) {
-                MouseMove x, y
-                MsgBox '?'
                 break
             }
 
