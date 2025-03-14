@@ -256,8 +256,8 @@ class TraderBot {
         } else {
             _pheight := 4
         }
-        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and this.crossovers_arr.Length >= 2 and this.last_trade != 'BUY'  and not this.trade_opened[1]
-        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and this.crossovers_arr.Length >= 2 and this.last_trade != 'SELL' and not this.trade_opened[1]
+        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
+        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
 
         if this.paused
             return false
