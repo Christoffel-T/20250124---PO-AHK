@@ -543,8 +543,11 @@ class TraderBot {
             MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y)
             sleep 50
             ToolTip('waiting for trade to be opened', , , 12)
-            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 75)
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 75) {
+                MouseMove x, y
+                MsgBox '?'
                 break
+            }
 
             ; if (a_index>100) {
             ;     this.last_trade := action
