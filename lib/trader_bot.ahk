@@ -538,9 +538,13 @@ class TraderBot {
         sleep 50
         loop {
             ToolTip('waiting for trade to be opened', , , 12)
-            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open2.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 55)
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 75)
                 break
+            MouseMove(this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y)
             sleep 50
+            MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y)
+            sleep 50
+
             ; if (a_index>100) {
             ;     this.last_trade := action
             ;     ToolTip(,,, 12)
