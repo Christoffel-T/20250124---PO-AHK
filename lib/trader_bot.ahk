@@ -264,11 +264,11 @@ class TraderBot {
         if (condition_buy) {
             this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
-            this.main_sub1(this.last_trade)
+            this.execute_trade(this.last_trade)
         } else if (condition_sell) {
             this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
-            this.main_sub1(this.last_trade)
+            this.execute_trade(this.last_trade)
         }
     }
     scenario3() {
@@ -280,11 +280,11 @@ class TraderBot {
         if (condition_buy) {
             ; this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
-            this.main_sub1(this.last_trade)
+            this.execute_trade(this.last_trade)
         } else if (condition_sell) {
             ; this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
-            this.main_sub1(this.last_trade)
+            this.execute_trade(this.last_trade)
         }
     }
     scenario2() {
@@ -296,11 +296,11 @@ class TraderBot {
         if (this.ps.close_green.state and this.ps.orange.y < this.ps.blue.y and this.ps.close_green.y > this.ps.orange.y and condition_buy) {
             this.trade_opened := [true, A_TickCount]
             this.last_trade := 'BUY'
-            this.main_sub1(this.last_trade)
+            this.execute_trade(this.last_trade)
         } else if (this.ps.close_red.state and this.ps.orange.y > this.ps.blue.y and this.ps.close_red.y < this.ps.orange.y and condition_sell) {
             this.trade_opened := [true, A_TickCount]
             this.last_trade := 'SELL'
-            this.main_sub1(this.last_trade)
+            this.execute_trade(this.last_trade)
         }
     }
 
@@ -524,7 +524,7 @@ class TraderBot {
             }
         }
     }
-    main_sub1(action) {
+    execute_trade(action) {
         global
         this.active_trade := ''
         if !WinActive(this.wtitle) {
