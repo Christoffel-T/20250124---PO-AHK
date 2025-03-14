@@ -463,11 +463,11 @@ class TraderBot {
             streaks_str .= k '[' v '] '
         }
         
-        debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
-        ; debug_str := 'G: ' (this.ps.orange.state and this.ps.close_green.state ? this.ps.close_green.y - this.ps.orange.y : 0) ' | R: ' (this.ps.orange.state and this.ps.close_red.state ? this.ps.orange.y - this.ps.close_green.y : 0) ' | ' debug_str
+        this.debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
+        ; this.debug_str := 'G: ' (this.ps.orange.state and this.ps.close_green.state ? this.ps.close_green.y - this.ps.orange.y : 0) ' | R: ' (this.ps.orange.state and this.ps.close_red.state ? this.ps.orange.y - this.ps.close_green.y : 0) ' | ' this.debug_str
         _a := this.ps.g_touch_blue.state and this.ps.g_touch_orange.state ? '2lines: BUY' : this.ps.r_touch_blue.state and this.ps.r_touch_orange.state ? '2lines: SELL' : ''
-        debug_str := _a ' | ' debug_str
-        debug_str := this.crossovers_arr.Length > 0 ? 'last CO: ' this.crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - this.crossovers_arr[-1].time)/1000) ')' ' | ' debug_str : debug_str
+        this.debug_str := _a ' | ' this.debug_str
+        this.debug_str := this.crossovers_arr.Length > 0 ? 'last CO: ' this.crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - this.crossovers_arr[-1].time)/1000) ')' ' | ' this.debug_str : this.debug_str
         _ := ''
         for val in this.candle_data {
             if A_Index > 3 {
@@ -476,7 +476,7 @@ class TraderBot {
             }
             _ .= val.color '(' SubStr(val.timeframe, -2) ')|'
         }
-        debug_str := _ ' | ' debug_str
+        this.debug_str := _ ' | ' this.debug_str
         
         _pauser := ''
         for k, v in this.blockers {
@@ -508,7 +508,7 @@ class TraderBot {
                     this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)' ',' 
                     streaks_str ',' 
                     str_ohlc ',' 
-                    debug_str '`n',
+                    this.debug_str '`n',
                     this.log_file
                 )
                 if this.balance.current < 1 {
@@ -615,7 +615,7 @@ class TraderBot {
 
             this.coords.area.x := min(this.coords.area.x + 1, A_ScreenWidth*0.95)
             this.coords.area.x2 := this.coords.area.x - 2
-            ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', this.balance.current), 5, 5, 11)
+            ToolTip('(' A_Sec '.' A_MSec ')' this.debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', this.balance.current), 5, 5, 11)
         } else {
             this.coords.area.x := max(this.coords.area.x - 1, 100)
             if this.coords.area.x < this.min_x {
@@ -623,8 +623,8 @@ class TraderBot {
                 this.reload_website()
             }
             this.coords.area.x2 := this.coords.area.x - 2
-            ; debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
-            ; ToolTip('(' A_Sec '.' A_MSec ')' debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', balance.current), 5, 5, 11)
+            ; this.debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
+            ; ToolTip('(' A_Sec '.' A_MSec ')' this.debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', balance.current), 5, 5, 11)
             return
         }
 
