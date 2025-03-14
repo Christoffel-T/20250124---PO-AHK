@@ -3,19 +3,48 @@
 class Settings {
     __New() {
         this.settings_file := 'settings.ini'
-        this.wtitle := IniRead(this.settings_file, 'General', 'wtitle')
-        this.coords := this.read_settings(['area', 'BUY', 'SELL', 'Payout', 'coin', 'cryptocurrencies', 'stocks', 'coin_top', 'empty_area'], 'coords')
-        this.colors := this.read_settings(['blue', 'orange', 'green', 'red'], 'colors')
+        this.wtitle := this.read_settings('General', ['wtitle'])
+        this.coords := this.read_settings('coords', ['detect_trade_open1', 'detect_trade_open2', 'detect_trade_close1', 'detect_trade_close2', 'trades_closed', 'trades_opened', 'area', 'BUY', 'SELL', 'Payout', 'coin', 'cryptocurrencies', 'stocks', 'coin_top', 'empty_area'])
+        this.colors := this.read_settings('colors', ['blue', 'orange', 'green', 'red'], )
     }
 
-    read_settings(arr, section) {
+    read_settings(section, arr) {
         _map := Map()
         for v in arr {
+            _iniread := IniRead(this.settings_file, section, v, '')
+            if _iniread = '' {
+                if section = 'coords' {
+                    loop {
+                        sleep 10
+                        MouseGetPos(&_x, &_y, &_win)
+                        tooltip('x: ' _x ', y: ' _y '`nPress [Left Ctrl] to set coordinate for: ' v)
+                        if GetKeyState('LControl', 'P') {
+                            _iniread := _x ', ' _y
+                            IniWrite(_iniread, this.settings_file, section, v)
+                            tooltip()
+                            KeyWait 'LControl'
+                            break
+                        }
+                    }
+                } else {
+                    Loop {
+                        _ib := InputBox('Enter value for ' v, 'Settings', 'h100')
+                        if _ib.Result = 'Cancel' {
+                            ExitApp
+                        }
+                        if not _ib.Value = '' {
+                            break
+                        }
+                    }
+                    _iniread := _ib.Value
+                    IniWrite(_iniread, this.settings_file, section, v)
+                }
+            }
             if section != 'coords' {
-                _map.%v% := IniRead(this.settings_file, section, v)
+                _map.%v% := _iniread
                 continue
             }
-            _split := StrSplit(IniRead(this.settings_file, section, v), ',', ' ')
+            _split := StrSplit(_iniread, ',', ' ')
             _map.%v% := {x: _split[1], y: _split[2]}
             if _split.Length = 4 {
                 _map.%v%.w := _split[3]

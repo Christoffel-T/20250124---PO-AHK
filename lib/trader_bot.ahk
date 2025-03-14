@@ -10,8 +10,8 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1,3,7,15,31,66,135,281,586,2]) ; 1223])
-        this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2]) ; 2000])
+        this.amount_arr.Push([1,3,7,15,31,66,135,281,586,1223])
+        this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2000])
         Loop 10 {
             _index := A_Index
             if this.amount_arr.Length < A_Index
@@ -80,6 +80,7 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 1)
         sleep 100
 
+        this.balance := this.check_balance(this.balance)
         this.checker_payout()
         this.pixels_search()
         this.check_trade_closed()
@@ -215,21 +216,22 @@ class TraderBot {
         ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
         ; }
 
-        ; if this.state.5loss and this.stats.streak != -5
-        ;     this.state.5loss := false
-
-        ; key := '5losses'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if this.stats.streak = -5 and not this.state.5loss {
-        ;     this.state.5loss := true
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else if this.blockers[key].state and this.candle_data.Length >= 3 and this.candle_data[2].color = this.candle_data[3].color and this.candle_data[1].color = this.candle_data[4].color {
-        ;     this.state.5loss := true
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
+        
+        key := '4losses'
+        coin_change_streak := -4
+        if this.state.5loss and this.stats.streak != coin_change_streak
+            this.state.5loss := false
+        if not this.blockers.Has(key)
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        if this.stats.streak = coin_change_streak and not this.state.5loss {
+            this.state.5loss := true
+            this.blockers[key] := {state: true, tick_count: A_TickCount}
+        } else if this.blockers[key].state and this.candle_data.Length >= 3 and this.candle_data[2].color = this.candle_data[3].color and this.candle_data[1].color = this.candle_data[4].color {
+            this.state.5loss := true
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        } else {
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        }
 
         ; key := 'color_ch3'
         ; if not this.blockers.Has(key)
@@ -335,12 +337,19 @@ class TraderBot {
         }
     }
     check_trade_closed() {
-        if (this.trade_opened[1] and countdown_close < 0) {
+        if (this.trade_opened[1]) {
             this.active_trade := ''
             this.trade_opened[1] := false
-            new_balance := this.check_balance(this.balance)
-            if (new_balance.current <= this.balance.current + 0.5) {
-                this.balance := new_balance
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open2.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 15)
+                return
+            MouseClick('L', this.coords.trades_closed.x + Random(-5, 5), this.coords.trades_closed.y + Random(-1, 1), 1, 2)
+            sleep 50
+            draw := {x1:this.coords.detect_trade_close1.x , x2:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: (this.coords.detect_trade_close2.y+this.coords.detect_trade_close1.y)/2}
+            win := {x2:this.coords.detect_trade_close2.x , x1:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y2:this.coords.detect_trade_close2.y, y1: (this.coords.detect_trade_close2.y+this.coords.detect_trade_close1.y)/2}
+            MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 1, 2)
+            win.ps := PixelSearch(&x, &y, win.x1, win.y1, win.x2, win.y2, this.colors.green, 15)
+            draw.ps := PixelSearch(&x, &y, draw.x1, draw.y1, draw.x2, draw.y2, this.colors.green, 15)
+            if not win.ps and not draw.ps {
                 if this.stats.streak > 0
                     this.stats.streak := 0
                 this.stats.streak--
@@ -357,16 +366,14 @@ class TraderBot {
                 ;     amount := default_amount + Floor(balance.current/1000)
                 this.set_amount(this.amount)
                 this.stats.loss++
-            } else if (new_balance.current > this.balance.current + this.amount*1.2) {
-                this.balance := new_balance
+            } else if win.ps {
                 if this.stats.streak < 0
                     this.stats.streak := 0
                 this.amount := this.get_amount(this.balance.current)
                 this.set_amount(this.amount)
                 this.stats.streak++
                 this.stats.win++
-            } else {
-                this.balance := new_balance
+            } else if draw.ps {
                 this.stats.draw++
             } 
         }
@@ -517,15 +524,20 @@ class TraderBot {
     }
     main_sub1(action) {
         global
+        this.active_trade := ''
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)
             sleep 100
         }
         sleep 50
-        MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-5, 5), 1, 2)
-        sleep 500
-        while this.check_balance(this.balance).current = this.balance.current {
-            ToolTip('Waiting balance change...', 500, 5, 12)
+        MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
+        sleep 50
+        MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 1, 2)
+        sleep 50
+        loop {
+            ToolTip('waiting for trade to be opened', 500, 5, 12)
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open2.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 15)
+                break
             sleep 50
             if (a_index>100) {
                 this.last_trade := action
