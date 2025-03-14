@@ -58,6 +58,8 @@ class TraderBot {
 
     start_loop(*) {
         ToolTip('Running...', 5, 5, 1)
+        this.trade_opened[1] := true
+        this.check_trade_closed()
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)  
         }
@@ -340,15 +342,17 @@ class TraderBot {
         if (this.trade_opened[1]) {
             this.active_trade := ''
             this.trade_opened[1] := false
-            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open2.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 15)
-                return
-            MouseClick('L', this.coords.trades_closed.x + Random(-5, 5), this.coords.trades_closed.y + Random(-1, 1), 1, 2)
+            MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             sleep 50
-            draw := {x1:this.coords.detect_trade_close1.x , x2:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: (this.coords.detect_trade_close2.y+this.coords.detect_trade_close1.y)/2}
-            win := {x2:this.coords.detect_trade_close2.x , x1:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y2:this.coords.detect_trade_close2.y, y1: (this.coords.detect_trade_close2.y+this.coords.detect_trade_close1.y)/2}
-            MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 1, 2)
-            win.ps := PixelSearch(&x, &y, win.x1, win.y1, win.x2, win.y2, this.colors.green, 15)
-            draw.ps := PixelSearch(&x, &y, draw.x1, draw.y1, draw.x2, draw.y2, this.colors.green, 15)
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open2.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 55)
+                return
+            MouseClick('L', this.coords.trades_closed.x + Random(-5, 5), this.coords.trades_closed.y + Random(-1, 1), 3, 2)
+            sleep 50
+            draw := {x1:this.coords.detect_trade_close1.x , x2:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: this.coords.detect_trade_close2.y}
+            win := {x2:this.coords.detect_trade_close2.x , x1:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: this.coords.detect_trade_close2.y}
+            win.ps := PixelSearch(&x, &y, win.x1, win.y1, win.x2, win.y2, this.colors.green, 55)
+            draw.ps := PixelSearch(&x, &y, draw.x1, draw.y1, draw.x2, draw.y2, this.colors.green, 55)
+            MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             if not win.ps and not draw.ps {
                 if this.stats.streak > 0
                     this.stats.streak := 0
@@ -530,13 +534,13 @@ class TraderBot {
             sleep 100
         }
         sleep 50
-        MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
+        MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 3, 2)
         sleep 50
-        MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 1, 2)
+        MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
         sleep 50
         loop {
             ToolTip('waiting for trade to be opened', 500, 5, 12)
-            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open2.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 15)
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open2.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 55)
                 break
             sleep 50
             if (a_index>100) {
