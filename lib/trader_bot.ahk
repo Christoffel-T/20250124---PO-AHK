@@ -58,8 +58,6 @@ class TraderBot {
 
     start_loop(*) {
         ToolTip('Running...', 5, 5, 1)
-        this.trade_opened[1] := true
-        this.check_trade_closed()
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)  
         }
