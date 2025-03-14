@@ -104,7 +104,6 @@ class TraderBot {
     }
     
     check_paused() {
-        return false
         key := '2cr'
         if not this.blockers.Has(key)
             this.blockers[key] := {state: false, tick_count: A_TickCount}
