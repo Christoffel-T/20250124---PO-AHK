@@ -10,8 +10,8 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1,3,7,15,31,66,135,281,586,1223])
-        this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2000])
+        this.amount_arr.Push([1, 3+5,  7, 15, 31,  66, 135, 281,  586, 1223])
+        this.amount_arr.Push([2, 6+5, 14, 30, 62, 132, 270, 562, 1172, 2000])
         Loop 10 {
             _index := A_Index
             if this.amount_arr.Length < A_Index
@@ -349,7 +349,7 @@ class TraderBot {
             sleep 200
             draw := {x1:this.coords.detect_trade_close1.x , x2:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: this.coords.detect_trade_close2.y}
             win :=  {x2:this.coords.detect_trade_close2.x , x1:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: this.coords.detect_trade_close2.y}
-            win.ps := PixelSearch(&x, &y, win.x1, win.y1, win.x2, win.y2, this.colors.green, 60)
+            win.ps := PixelSearch(&x, &y, win.x1, win.y1, win.x2, win.y2, this.colors.green, 65)
             draw.ps := PixelSearch(&x, &y, draw.x1, draw.y1, draw.x2, draw.y2, this.colors.green, 60)
             MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             if not win.ps and not draw.ps {
