@@ -10,8 +10,8 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1, 3+5,  7, 15, 31,  66, 135, 281,  586, 1223])
-        this.amount_arr.Push([2, 6+5, 14, 30, 62, 132, 270, 562, 1172, 2000])
+        this.amount_arr.Push([1, 3,  7, 15, 31,  66, 135, 281,  586, 1223])
+        this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2000])
         Loop 10 {
             _index := A_Index
             if this.amount_arr.Length < A_Index
@@ -339,9 +339,12 @@ class TraderBot {
     check_trade_closed() {
         if (this.trade_opened[1]) {
             MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
-            sleep 50
-            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 55) {
-                return
+            sleep 50 
+            loop 3 {
+                if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green, 75) {
+                    return
+                }
+                sleep 50
             }
             this.active_trade := ''
             this.trade_opened[1] := false
