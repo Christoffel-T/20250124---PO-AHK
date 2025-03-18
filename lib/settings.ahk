@@ -6,7 +6,7 @@ class Settings {
         this.general := this.read_settings('General', ['wtitle'])
         this.wtitle := this.general.wtitle
         this.coords := this.read_settings('coords', ['detect_trade_open1', 'detect_trade_open2', 'detect_trade_close1', 'detect_trade_close2', 'trades_closed', 'trades_opened', 'area', 'BUY', 'SELL', 'Payout', 'coin', 'cryptocurrencies', 'stocks', 'coin_top', 'empty_area'])
-        this.colors := this.read_settings('colors', ['blue', 'orange', 'green', 'red'], )
+        this.colors := this.read_settings('colors', ['blue', 'orange', 'green', 'green2', 'red'], )
     }
 
     read_settings(section, arr) {
