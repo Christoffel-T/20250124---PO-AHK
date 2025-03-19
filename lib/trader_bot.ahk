@@ -541,12 +541,10 @@ class TraderBot {
         MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
         sleep 50
         loop {
-            MouseMove(this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y)
-            sleep 50
-            MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y)
+            MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, 0)
             sleep 50
             ToolTip('waiting for trade to be opened', , , 12)
-            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 20) {
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
                 break
             }
 
