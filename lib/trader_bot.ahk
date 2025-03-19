@@ -710,6 +710,12 @@ class TraderBot {
             }
             ToolTip
             cur_bal := StrReplace(match[], ',', '')
+            if cur_bal > _balance.max and this.stats.streak < 0 {
+                MsgBox 'Win not detected error'
+                this.stats.streak := 1
+                this.amount := this.get_amount(this.balance.current)
+                this.set_amount(this.amount)
+            }
             _balnew := {current: cur_bal, max: Format('{:.2f}', max(cur_bal, _balance.max)), min: Format('{:.2f}', min(cur_bal, _balance.min))}
             return _balnew
         }
