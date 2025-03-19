@@ -29,10 +29,11 @@ class TraderBot {
         this.countdown_close_str := ''
         this.win_rate := ''
         this.debug_str := ''
+        this.stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.balance := {current: 0, min: 999999999, max: 0}
         this.balance := this.check_balance(this.balance)
         this.candle_data := [{color: '?', colors: [], color_changes: ['?'], timeframe: Utils.get_timeframe()}]
-        this.stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
+        
         this.lose_streak := {max: this.stats.streak, repeat: Map()}
         this.paused := false
         this.blockers := Map()
@@ -688,7 +689,6 @@ class TraderBot {
     }
     
     check_balance(_balance) {
-        MsgBox this.stats.streak
         Loop {
             A_Clipboard := ''
             if !WinActive(this.wtitle) {
