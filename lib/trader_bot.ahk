@@ -688,6 +688,7 @@ class TraderBot {
     }
     
     check_balance(_balance) {
+        MsgBox this.stats.streak
         Loop {
             A_Clipboard := ''
             if !WinActive(this.wtitle) {
