@@ -1,6 +1,7 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
+
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -359,6 +360,10 @@ class TraderBot {
                 if this.stats.streak > 0
                     this.stats.streak := 0
                 this.stats.streak--
+
+                if not this.lose_streak.repeat.Has(this.stats.streak)
+                    this.lose_streak.repeat[this.stats.streak] := 0
+
                 if (this.stats.streak = this.lose_streak.max)
                     this.lose_streak.repeat[this.stats.streak]++
                 else if (this.stats.streak < this.lose_streak.max) {
