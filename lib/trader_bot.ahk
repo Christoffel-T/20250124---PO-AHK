@@ -712,8 +712,10 @@ class TraderBot {
             ToolTip
             cur_bal := StrReplace(match[], ',', '')
             if cur_bal > _balance.max and this.stats.streak < 0 {
-                MsgBox 'Win not detected error'
+                ; MsgBox 'Win not detected error'
+                this.trade_opened[1] := false                
                 this.stats.streak := 1
+                this.stats.win++
                 this.amount := this.get_amount(this.balance.current)
                 this.set_amount(this.amount)
             }
