@@ -543,7 +543,7 @@ class TraderBot {
         }
         sleep 50
         MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
-        sleep 50
+        sleep 200
         MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
         sleep 50
         loop {
