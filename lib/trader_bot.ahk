@@ -553,6 +553,10 @@ class TraderBot {
             if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
                 break
             }
+            if A_Index > 400 {
+                this.trade_opened[1] := false
+                return
+            }
 
             ; if (a_index>100) {
             ;     this.last_trade := action
@@ -561,7 +565,7 @@ class TraderBot {
             ; }
         }
         ToolTip(,,, 12)
-        this.balance := this.check_balance(this.balance)
+        ; this.balance := this.check_balance(this.balance)
         this.active_trade := action
     }     
 
