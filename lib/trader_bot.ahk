@@ -13,6 +13,11 @@ class TraderBot {
         this.amount_arr.Push([1, 3,  7, 15, 32,  68, 139, 285,  590, 1228, 2270, 4560, 9200])
         this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2365, 4755, 9570, 19180])
         this.amounts_tresholds := [[20000, 3],[4350, 2], [3060, 1]]
+        for tresh in this.amounts_tresholds {
+            if val >= tresh[1]
+                return tresh[2]
+            return 1
+        }
 
         Loop 10 {
             _index := A_Index
@@ -43,6 +48,7 @@ class TraderBot {
         this.state := {coin_change_streak: false, 5loss: false}
         this.min_x := this.coords.area.x - 50
         this.amount := this.get_amount(this.balance.current)
+        MsgBox this.balance.current '`n' this.amount
         this._time := 15
         this._time += 4
         this.payout := 92
