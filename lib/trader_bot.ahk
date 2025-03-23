@@ -417,13 +417,16 @@ class TraderBot {
         if _color != this.candle_data[1].color_changes[-1]
             this.candle_data[1].color_changes.Push(_color)
 
-        if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
+        if (Mod(A_Sec, 15) >= 13) {
             _timeframe := Utils.get_timeframe()
             if _timeframe != this.candle_data[1].timeframe {
                 this.candle_data.InsertAt(1, {color: _color, timeframe: _timeframe, colors: [_color], color_changes: [_color], H: this.candle_data[1].C, L: this.candle_data[1].C})
                 while this.candle_data.Length > 7
                     this.candle_data.Pop()
             }
+        }
+
+        if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((this.crossovers_arr.Length = 0 || this.crossovers_arr[-1].direction != 'BUY') and this.ps.orange.y > this.ps.blue.y) {
                 if this.last_trade=''
