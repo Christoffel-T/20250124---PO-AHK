@@ -12,7 +12,7 @@ class TraderBot {
         this.amount_arr := []
         this.amount_arr.Push([1, 3,  7, 15, 32,  68, 139, 285,  590, 1228, 2270, 4560, 9200])
         this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2365, 4755, 9570, 19180])
-        this.amounts_tresholds := [[20000, 3],[4350, 2], [3060, 1]]
+        this.amounts_tresholds := [[20000, 3],[4350, 2], [0, 1]]
 
         Loop 10 {
             _index := A_Index
@@ -654,11 +654,10 @@ class TraderBot {
 
     get_amount(val) {
         for tresh in this.amounts_tresholds {
-            MsgBox val '`n' tresh[1] '`n' tresh[2]
             if val >= tresh[1]
                 return tresh[2]
-            return 1
         }
+        return 1
     }
 
     reload_website() {
