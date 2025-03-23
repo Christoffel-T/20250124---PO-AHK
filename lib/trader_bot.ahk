@@ -43,7 +43,6 @@ class TraderBot {
         this.state := {coin_change_streak: false, 5loss: false}
         this.min_x := this.coords.area.x - 50
         this.amount := this.get_amount(this.balance.current)
-        MsgBox this.balance.current '`n' this.amount
         this._time := 15
         this._time += 4
         this.payout := 92
