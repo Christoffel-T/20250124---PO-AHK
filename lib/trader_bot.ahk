@@ -654,6 +654,7 @@ class TraderBot {
 
     get_amount(val) {
         for tresh in this.amounts_tresholds {
+            MsgBox val '`n' tresh[1] '`n' tresh[2]
             if val >= tresh[1]
                 return tresh[2]
             return 1
