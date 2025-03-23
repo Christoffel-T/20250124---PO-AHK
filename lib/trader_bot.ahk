@@ -10,8 +10,10 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1, 3,  7, 15, 31,  66, 135, 281,  586, 1223])
-        this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2000])
+        this.amount_arr.Push([1, 3,  7, 15, 32,  68, 139, 285,  590, 1228, 2270, 4560, 9200])
+        this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2365, 4755, 9570, 19180])
+        this.amounts_tresholds := [[20000, 3],[4350, 2], [3060, 1]]
+
         Loop 10 {
             _index := A_Index
             if this.amount_arr.Length < A_Index
@@ -38,7 +40,6 @@ class TraderBot {
         this.lose_streak := {max: this.stats.streak, repeat: Map()}
         this.paused := false
         this.blockers := Map()
-        this.amounts_tresholds := [[4350, 2], [3060, 1]]
         this.state := {coin_change_streak: false, 5loss: false}
         this.min_x := this.coords.area.x - 50
         this.amount := this.get_amount(this.balance.current)
@@ -83,7 +84,8 @@ class TraderBot {
 
         this.balance := this.check_balance(this.balance)
         this.checker_payout()
-        this.pixels_search()
+        if not this.pixels_search()
+            return
         this.check_trade_closed()
         
         this.datetime := A_Now
@@ -253,9 +255,9 @@ class TraderBot {
     }
     scenario1() {
         if this.stats.streak <= -4 {
-            _pheight := 4
+            _pheight := 3.75
         } else {
-            _pheight := 4
+            _pheight := 3.75
         }
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
         condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
@@ -308,7 +310,7 @@ class TraderBot {
     checker_payout() {
         coin_change_streak := -4
         Loop {
-            if not this.state.coin_change_streak and this.stats.streak != coin_change_streak
+            if not this.state.coin_change_streak and this.stats.streak = coin_change_streak
                 this.state.coin_change_streak := true
 
             if (this.stats.streak != coin_change_streak or not this.state.coin_change_streak) and ImageSearch(&outx, &outy, this.coords.Payout.x, this.coords.Payout.y, this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, '*10 payout.png') {
@@ -417,9 +419,9 @@ class TraderBot {
 
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
             _timeframe := Utils.get_timeframe()
-            if _timeframe != this.candle_data[1].timeframe and (this.ps.close_green.state or this.ps.close_red.state) {
+            if _timeframe != this.candle_data[1].timeframe {
                 this.candle_data.InsertAt(1, {color: _color, timeframe: _timeframe, colors: [_color], color_changes: [_color], H: this.candle_data[1].C, L: this.candle_data[1].C})
-                while this.candle_data.Length > 5
+                while this.candle_data.Length > 7
                     this.candle_data.Pop()
             }
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
@@ -587,13 +589,13 @@ class TraderBot {
             this.coords.area.x := max(this.coords.area.x - 1, 100)
             this.coords.area.x2 := this.coords.area.x - 2
             ToolTip(,,, 15)
-            return
+            return false
         }
         if this.ps.blue.state {
             this.ps.orange := {state: PixelSearch(&x, &y, this.ps.blue.x+1, this.coords.area.y, this.ps.blue.x-1, this.coords.area.y2, this.colors.orange, 5), x:x, y:y}
-            this.ps.close_green := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.green, 5), x:x, y:y}
+            this.ps.close_green := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.green, 10), x:x, y:y}
             if not this.ps.close_green.state 
-                this.ps.close_red := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.red, 5), x:x, y:y}
+                this.ps.close_red := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.red, 10), x:x, y:y}
             if this.ps.close_green.state {
                 Loop {
                     this.ps.open := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.green, 15), x:x, y:y}
@@ -635,7 +637,7 @@ class TraderBot {
             this.coords.area.x2 := this.coords.area.x - 2
             ; this.debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
             ; ToolTip('(' A_Sec '.' A_MSec ')' this.debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', balance.current), 5, 5, 11)
-            return
+            return false
         }
 
         if this.ps.blue.state and this.ps.orange.state {
@@ -646,6 +648,7 @@ class TraderBot {
         }
 
         ToolTip(,,, 12)
+        return true
     }
 
     get_amount(val) {

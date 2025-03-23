@@ -17,4 +17,3 @@ class Utils {
         return rounded_time
     }    
 }
-
