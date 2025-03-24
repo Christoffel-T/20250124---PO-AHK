@@ -309,10 +309,9 @@ class TraderBot {
 
     checker_payout() {
         coin_change_streak := -4
+        if not this.state.coin_change_streak and this.stats.streak != coin_change_streak
+            this.state.coin_change_streak := true
         Loop {
-            if not this.state.coin_change_streak and this.stats.streak = coin_change_streak
-                this.state.coin_change_streak := true
-
             if (this.stats.streak != coin_change_streak or not this.state.coin_change_streak) and ImageSearch(&outx, &outy, this.coords.Payout.x, this.coords.Payout.y, this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, '*10 payout.png') {
                 this.payout := 92
                 break
