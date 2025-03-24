@@ -328,10 +328,10 @@ class TraderBot {
                 sleep 300
                 MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
                 sleep 300
-                if this.stats.streak = coin_change_streak
-                    MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
-                else
-                    MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(1, 2)*28, 1, 2)
+                ; if this.stats.streak = coin_change_streak
+                ;     MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
+                ; else
+                    MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
                 sleep 500
                 Send '{Escape}'
                 sleep 1000
