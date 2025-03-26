@@ -12,6 +12,7 @@ class TraderBot {
         this.amount_arr := []
         this.amount_arr.Push([1, 3,  7, 15, 32,  68, 139, 285,  590, 1228, 2270, 4560, 9200])
         this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2365, 4755, 9570, 19180])
+        this.amount_arr.Push([3])
         this.amounts_tresholds := [[20000, 3],[4350, 2], [0, 1]]
 
         Loop 10 {
@@ -554,11 +555,12 @@ class TraderBot {
             MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, 0)
             sleep 50
             ToolTip('waiting for trade to be opened', , , 12)
-            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 20) {
                 break
             }
             if A_Index > 400 {
                 this.trade_opened[1] := false
+                this.active_trade := ''
                 return
             }
 
@@ -727,7 +729,8 @@ class TraderBot {
             cur_bal := StrReplace(match[], ',', '')
             if cur_bal > _balance.max and this.stats.streak < 0 {
                 ; MsgBox 'Win not detected error'
-                this.trade_opened[1] := false                
+                this.trade_opened[1] := false
+                this.active_trade := ''          
                 this.stats.streak := 1
                 this.stats.win++
                 this.amount := this.get_amount(this.balance.current)
