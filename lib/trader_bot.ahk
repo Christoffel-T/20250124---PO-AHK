@@ -230,10 +230,8 @@ class TraderBot {
         if this.stats.streak = coin_change_streak and not this.state.5loss {
             this.state.5loss := true
             this.blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if this.blockers[key].state and this.candle_data.Length >= 3 and this.candle_data[2].color = this.candle_data[3].color and this.candle_data[1].color = this.candle_data[4].color {
+        } else if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 and this.candle_data.Length >= 4 and this.candle_data[1].color = this.candle_data[2].color and this.candle_data[2].color = this.candle_data[3].color and this.candle_data[3].color = this.candle_data[4].color {
             this.state.5loss := true
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        } else {
             this.blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
@@ -317,25 +315,33 @@ class TraderBot {
                 this.payout := 92
                 break
             } else {
-                if this.state.coin_change_streak and this.stats.streak = coin_change_streak
-                    this.state.coin_change_streak := false
                 Loop 19 {
                     ToolTip(,,,A_Index+1)
                 }
                 this.last_trade := ''
-                ToolTip('Waiting for payout to be 92 or higher...', 500, 5, 12)
+                ToolTip('Waiting for payout to be 92 or higher... ' A_Index, 500, 5, 12)
                 MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
                 sleep 300
                 MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
                 sleep 300
-                ; if this.stats.streak = coin_change_streak
-                ;     MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
-                ; else
-                    MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
-                sleep 500
+                if this.state.coin_change_streak and this.stats.streak = coin_change_streak {
+                    this.state.coin_change_streak := false
+                    Loop {
+                        MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
+                        sleep 300
+                        new_cname := OCR.FromRect(this.coords.coin.x - 25, this.coords.coin.y - 25, 150, 50,, 3).Text
+                        ToolTip('Waiting coin name change (' this.coin_name ' vs ' new_cname ') ' A_Index, 500, 5, 12)
+                        if this.coin_name != new_cname {
+                            this.coin_name := new_cname
+                            break
+                        }
+                    }
+                } else {
+                    MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
+                }
+                sleep 300
                 Send '{Escape}'
                 sleep 1000
-
             }
         }
     }
