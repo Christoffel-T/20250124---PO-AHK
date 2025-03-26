@@ -321,9 +321,9 @@ class TraderBot {
                 this.last_trade := ''
                 ToolTip('Waiting for payout to be 92 or higher... ' A_Index, 500, 5, 12)
                 MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
-                sleep 300
+                sleep 100
                 MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
-                sleep 300
+                sleep 100
                 if this.state.coin_change_streak and this.stats.streak = coin_change_streak {
                     this.state.coin_change_streak := false
                     Loop {
@@ -339,7 +339,7 @@ class TraderBot {
                 } else {
                     MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
                 }
-                sleep 300
+                sleep 100
                 Send '{Escape}'
                 sleep 1000
             }
@@ -603,20 +603,18 @@ class TraderBot {
         }
         if this.ps.blue.state {
             this.ps.orange := {state: PixelSearch(&x, &y, this.ps.blue.x+1, this.coords.area.y, this.ps.blue.x-1, this.coords.area.y2, this.colors.orange, 5), x:x, y:y}
-            this.ps.close_green := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.green, 10), x:x, y:y}
-            if not this.ps.close_green.state 
-                this.ps.close_red := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.red, 10), x:x, y:y}
-            if this.ps.close_green.state {
-                Loop {
-                    this.ps.open := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.green, 15), x:x, y:y}
-                    if this.ps.open.state
-                        break
-                }
-            } else if this.ps.close_red.state {
-                Loop {
-                    this.ps.open := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.red, 15), x:x, y:y}
-                    if this.ps.open.state
-                        break
+            Loop {
+                this.ps.close_green := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.green, 10), x:x, y:y}
+                if not this.ps.close_green.state 
+                    this.ps.close_red := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.red, 10), x:x, y:y}
+                if this.ps.close_green.state {
+                        this.ps.open := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.green, 15), x:x, y:y}
+                        if this.ps.open.state
+                            break
+                } else if this.ps.close_red.state {
+                        this.ps.open := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.red, 15), x:x, y:y}
+                        if this.ps.open.state
+                            break
                 }
             }
             if this.ps.close_red.state {
@@ -720,7 +718,7 @@ class TraderBot {
             sleep 50
             Send('^a^c')
             sleep 50
-            if !ClipWait(2) {
+            if !ClipWait(0.5) {
                 ToolTip('Copy failed')
                 sleep 30
                 continue
