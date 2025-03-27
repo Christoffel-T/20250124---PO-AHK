@@ -548,6 +548,7 @@ class TraderBot {
     execute_trade(action) {
         global
         this.active_trade := ''
+        this.balance.last_trade := this.balance.current
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)
             sleep 100
@@ -579,6 +580,10 @@ class TraderBot {
         ToolTip(,,, 12)
         ; this.balance := this.check_balance(this.balance)
         this.active_trade := action
+        while cur_bal := this.check_balance(this.balance).current = this.balance.last_trade {
+            sleep 100
+        }
+        this.balance.last_trade := cur_bal
     }     
 
     pixels_search() {
@@ -731,7 +736,7 @@ class TraderBot {
             }
             ToolTip
             cur_bal := StrReplace(match[], ',', '')
-            if cur_bal > _balance.max and this.stats.streak < 0 {
+            if cur_bal > _balance.last_trade + 0.5 and this.stats.streak < 0 {
                 ; MsgBox 'Win not detected error'
                 this.trade_opened[1] := false
                 this.active_trade := ''          
