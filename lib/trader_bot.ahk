@@ -740,9 +740,11 @@ class TraderBot {
                 if cur_bal < _balance.last_trade + this.amount*1.4 {
                     this.stats.streak++
                     this.stats.draw++
+                    this.stats.loss--
                 } else {
                     this.stats.streak := 1
                     this.stats.win++
+                    this.stats.loss--
                     this.amount := this.get_amount(cur_bal)
                 }
                 this.set_amount(this.amount)
