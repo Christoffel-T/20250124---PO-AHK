@@ -521,7 +521,7 @@ class TraderBot {
                     time ',' 
                     this.active_trade countdown_close_str ' | ' paused_str ',' 
                     format('{:.2f}', this.amount) ',' 
-                    this.balance.current ' | ' this.balance.last_trade ' (' this.balance.max ' | ' this.balance.min ')' ',' 
+                    this.balance.current ' (' this.balance.max ' | ' this.balance.min ')' ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
                     this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)' ',' 
@@ -548,7 +548,7 @@ class TraderBot {
     execute_trade(action) {
         global
         this.active_trade := ''
-        this.balance.last_trade := this.balance.current
+        this.balance.last_trade := this.balance.current - this.amount
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)
             sleep 100
@@ -579,14 +579,6 @@ class TraderBot {
         }
         ToolTip(,,, 12)
         ; this.balance := this.check_balance(this.balance)
-        this.active_trade := action
-        loop {
-            cur_bal := this.check_balance(this.balance)
-            if cur_bal.current != this.balance.last_trade
-                break
-            sleep 100
-        }
-        this.balance.last_trade := cur_bal.current
     }     
 
     pixels_search() {
