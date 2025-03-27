@@ -578,6 +578,7 @@ class TraderBot {
             ; }
         }
         ToolTip(,,, 12)
+        this.active_trade := action
         ; this.balance := this.check_balance(this.balance)
     }     
 
