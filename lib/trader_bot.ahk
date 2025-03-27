@@ -736,16 +736,18 @@ class TraderBot {
             }
             ToolTip
             cur_bal := StrReplace(match[], ',', '')
-            if cur_bal > _balance.last_trade + 0.5 and this.stats.streak < 0 {
-                ; MsgBox 'Win not detected error'
-                this.trade_opened[1] := false
-                this.active_trade := ''          
-                this.stats.streak := 1
-                this.stats.win++
-                this.amount := this.get_amount(this.balance.current)
+            if cur_bal > _balance.last_trade + 0.5 and this.stats.streak < 0 and not this.trade_opened[1] {
+                if cur_bal < _balance.last_trade + this.amount*1.4 {
+                    this.stats.streak++
+                    this.stats.draw++
+                } else {
+                    this.stats.streak := 1
+                    this.stats.win++
+                    this.amount := this.get_amount(cur_bal)
+                }
                 this.set_amount(this.amount)
             }
-            _balnew := {current: cur_bal, max: Format('{:.2f}', max(cur_bal, _balance.max)), min: Format('{:.2f}', min(cur_bal, _balance.min))}
+            _balnew := {current: cur_bal, last_trade: _balance.last_trade, max: Format('{:.2f}', max(cur_bal, _balance.max)), min: Format('{:.2f}', min(cur_bal, _balance.min))}
             return _balnew
         }
     }
