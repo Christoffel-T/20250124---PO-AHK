@@ -34,7 +34,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {current: 0, min: 999999999, max: 0}
+        this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance := this.check_balance(this.balance)
         this.candle_data := [{color: '?', colors: [], color_changes: ['?'], timeframe: Utils.get_timeframe()}]
         
