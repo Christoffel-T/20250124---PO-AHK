@@ -746,6 +746,7 @@ class TraderBot {
                     this.amount := this.get_amount(cur_bal)
                 }
                 this.set_amount(this.amount)
+                _balance.last_trade := cur_bal
             }
             _balnew := {current: cur_bal, last_trade: _balance.last_trade, max: Format('{:.2f}', max(cur_bal, _balance.max)), min: Format('{:.2f}', min(cur_bal, _balance.min))}
             return _balnew
