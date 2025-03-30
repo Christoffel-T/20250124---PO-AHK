@@ -10,19 +10,29 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1, 3,  7, 15, 32,  68, 139, 285,  590, 1228, 2270, 4560, 9200])
-        this.amount_arr.Push([2, 6, 14, 30, 62, 132, 270, 562, 1172, 2365, 4755, 9570, 19180])
-        this.amount_arr.Push([3])
-        this.amounts_tresholds := [[20000, 3],[4350, 2], [0, 1]]
+        ; this.amounts_tresholds := [[20000, 3],[4350, 2], [0, 1]]
+        this.amounts_tresholds := []
 
         Loop 10 {
             _index := A_Index
             if this.amount_arr.Length < A_Index
                 this.amount_arr.Push([A_Index])
             while this.amount_arr[_index].Length < 20 {
-                this.amount_arr[_index].Push(this.amount_arr[_index][-1]*2+1)
+                total := 0
+                for v in this.amount_arr[_index] {
+                    total += v
+                }
+                val := min(20000, Ceil(total/0.92)+_index)
+                this.amount_arr[_index].Push(val)
             }
+            _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
+            this.amounts_tresholds.InsertAt(1, [_tresh, _index])
         }
+        ; var := ''
+        ; for v in this.amounts_tresholds {
+        ;     var .= v[2] ' = ' v[1] '`n'
+        ; }
+        ; MsgBox 'Tresholds value:`n' var
         this.start_time := A_TickCount
         this.log_file := 'log.csv'
         this.trade_opened := [false, A_TickCount]
