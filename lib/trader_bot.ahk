@@ -23,7 +23,7 @@ class TraderBot {
                 ;     total += v
                 ; }
                 ; val := min(20000, Ceil(total/0.92)+_index)
-                val := min(20000, Floor(this.amount_arr[_index][-1]*2.1))
+                val := min(20000, Floor(this.amount_arr[_index][-1]*2.1)+_index)
                 this.amount_arr[_index].Push(val)
             }
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
