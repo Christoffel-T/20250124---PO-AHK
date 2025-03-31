@@ -40,6 +40,7 @@ class TraderBot {
         this.crossovers_arr := []
         this.last_trade := ''
         this.active_trade := ''
+        this.executed_trades := ['', 1]
         this.countdown_close := 0
         this.countdown_close_str := ''
         this.win_rate := ''
@@ -66,7 +67,7 @@ class TraderBot {
         this.marked_time_refresh := A_TickCount
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,this.active_trade,this.last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -479,7 +480,7 @@ class TraderBot {
         time := FormatTime(this.datetime, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
         if this.trade_opened[1] {
             countdown_close := (this.trade_opened[2] - A_TickCount)/1000
-            countdown_close_str := Abs(this.stats.streak) ' (' format('{:.2f}', countdown_close) ')'
+            countdown_close_str :=  this.executed_trades[1][2] ' (' format('{:.2f}', countdown_close) ')'
         } else {
             countdown_close_str := ''
         }
@@ -589,6 +590,11 @@ class TraderBot {
             ; }
         }
         ToolTip(,,, 12)
+        if this.executed_trades[2][1] = action {
+            this.executed_trades.InsertAt(1, [action, this.executed_trades[2][2]+1])
+        } else {
+            this.executed_trades.InsertAt(1, [action, 1])
+        }
         this.active_trade := action
         ; this.balance := this.check_balance(this.balance)
     }     
