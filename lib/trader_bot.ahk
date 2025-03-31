@@ -19,10 +19,11 @@ class TraderBot {
                 this.amount_arr.Push([A_Index])
             while this.amount_arr[_index].Length < 20 {
                 total := 0
-                for v in this.amount_arr[_index] {
-                    total += v
-                }
-                val := min(20000, Ceil(total/0.92)+_index)
+                ; for v in this.amount_arr[_index] {
+                ;     total += v
+                ; }
+                ; val := min(20000, Ceil(total/0.92)+_index)
+                val := min(20000, Floor(this.amount_arr[_index][-1]*2.1))
                 this.amount_arr[_index].Push(val)
             }
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
