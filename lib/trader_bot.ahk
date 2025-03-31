@@ -479,7 +479,7 @@ class TraderBot {
         time := FormatTime(this.datetime, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
         if this.trade_opened[1] {
             countdown_close := (this.trade_opened[2] - A_TickCount)/1000
-            countdown_close_str := ' (' format('{:.2f}', countdown_close) ')'
+            countdown_close_str := Abs(this.stats.streak) ' (' format('{:.2f}', countdown_close) ')'
         } else {
             countdown_close_str := ''
         }
