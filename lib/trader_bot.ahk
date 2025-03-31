@@ -38,6 +38,7 @@ class TraderBot {
         this.log_file := 'log.csv'
         this.trade_opened := [false, A_TickCount]
         this.crossovers_arr := []
+        this.current_color := '?'
         this.last_trade := ''
         this.active_trade := ''
         this.executed_trades := ['', '']
@@ -285,20 +286,21 @@ class TraderBot {
             this.execute_trade('SELL', '1')
         }
     }
-    scenario3() {
-        condition_buy  := this.ps.close_green.state and this.ps.close_green.y < this.ps.blue.y - 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'R' and this.candle_data[3] = 'R' and this.candle_data[2] = 'R' and this.candle_data[1] = 'G' and not this.trade_opened[1]
-        condition_sell := this.ps.close_red.state and this.ps.close_red.y > this.ps.blue.y + 1 and Mod(A_Sec, 15) >= 12 and this.candle_data.Length >=4 and this.candle_data[4] = 'G' and this.candle_data[3] = 'G' and this.candle_data[2] = 'G' and this.candle_data[1] = 'R' and not this.trade_opened[1]
+    scenario2() {
+        _pheight := 3.75
+        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.current_color = 'G' and A_TickCount - this.crossovers_arr[-1].time <= 30500 A_TickCount - this.crossovers_arr[-1].time >= 15000 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
+        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.current_color = 'R' and A_TickCount - this.crossovers_arr[-1].time <= 30500 A_TickCount - this.crossovers_arr[-1].time >= 15000 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
 
         if this.paused
             return false
         if (condition_buy) {
-            ; this.last_trade := 'BUY'
+            this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
-            this.execute_trade('BUY', '3')
+            this.execute_trade('BUY', '2')
         } else if (condition_sell) {
-            ; this.last_trade := 'SELL'
+            this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
-            this.execute_trade('SELL', '3')
+            this.execute_trade('SELL', '2')
         }
     }
 
@@ -412,17 +414,17 @@ class TraderBot {
 
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
 
-        _color := this.ps.close_green.state ? 'G' : this.ps.close_red.state ? 'R' : '?'    
+        this.current_color := this.ps.close_green.state ? 'G' : this.ps.close_red.state ? 'R' : '?'    
         if Mod(A_Sec, 15) >= 12 {
-            this.candle_data[1].colors.Push(_color)
+            this.candle_data[1].colors.Push(this.current_color)
         }
-        if _color != this.candle_data[1].color_changes[-1]
-            this.candle_data[1].color_changes.Push(_color)
+        if this.current_color != this.candle_data[1].color_changes[-1]
+            this.candle_data[1].color_changes.Push(this.current_color)
 
         if (Mod(A_Sec, 15) >= 13) {
             _timeframe := Utils.get_timeframe()
             if _timeframe != this.candle_data[1].timeframe {
-                this.candle_data.InsertAt(1, {color: _color, timeframe: _timeframe, colors: [_color], color_changes: [_color], H: this.candle_data[1].C, L: this.candle_data[1].C})
+                this.candle_data.InsertAt(1, {color: this.current_color, timeframe: _timeframe, colors: [this.current_color], color_changes: [this.current_color], H: this.candle_data[1].C, L: this.candle_data[1].C})
                 while this.candle_data.Length > 7
                     this.candle_data.Pop()
             }
@@ -448,6 +450,7 @@ class TraderBot {
         }
         this.paused := this.check_paused()
         this.scenario1()
+        this.scenario2()
     }
     update_log() {
         global
