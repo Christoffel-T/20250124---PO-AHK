@@ -744,8 +744,9 @@ class TraderBot {
             cur_bal := StrReplace(match[], ',', '')
             if cur_bal > _balance.last_trade + 0.5 and this.stats.streak < 0 and not this.trade_opened[1] {
                 if cur_bal < _balance.last_trade + this.amount*1.4 {
-                    this.stats.streak++
-                    this.stats.draw++
+                    sleep 10
+                    ; this.stats.streak++
+                    ; this.stats.draw++
                 } else {
                     this.stats.streak := 1
                     this.stats.win++
