@@ -497,7 +497,7 @@ class TraderBot {
             _ .= val.color '(' SubStr(val.timeframe, -2) ')|'
         }
         if this.crossovers_arr.Length > 0 {
-            this.debug_str := this.current_color ' | (' A_TickCount - this.crossovers_arr[-1].time ')' _ ' | ' this.debug_str
+            this.debug_str := this.current_color ' (' A_TickCount - this.crossovers_arr[-1].time ') | ' _ ' | ' this.debug_str
         } else {
             this.debug_str := _ ' | ' this.debug_str
         }
