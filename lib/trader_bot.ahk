@@ -387,6 +387,7 @@ class TraderBot {
                 if this.stats.streak < 0
                     this.stats.streak := 0
                 this.amount := this.get_amount(this.balance.current)
+                this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 this.set_amount(this.amount)
                 this.stats.streak++
                 this.stats.win++
