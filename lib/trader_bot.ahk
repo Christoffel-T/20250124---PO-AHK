@@ -390,11 +390,12 @@ class TraderBot {
             } else if win.ps {
                 if this.stats.streak <= 3 and this.stats.streak > 0
                     this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
+                else
+                    this.amount := this.get_amount(this.balance.current)
                 if this.stats.streak < 0
                     this.stats.streak := 0
-                this.amount := this.get_amount(this.balance.current)
-                this.set_amount(this.amount)
                 this.stats.streak++
+                this.set_amount(this.amount)
                 this.stats.win++
             } else if draw.ps {
                 this.stats.draw++
