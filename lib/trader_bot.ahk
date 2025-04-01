@@ -289,7 +289,7 @@ class TraderBot {
     }
     scenario2() {
         _pheight := 3.75
-        condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 30500 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
+        condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 32000 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
         condition_buy  := this.ps.orange.y - this.ps.blue.y > _pheight and this.current_color = 'G' and condition_both
         condition_sell := this.ps.blue.y - this.ps.orange.y > _pheight and this.current_color = 'R' and condition_both
 
