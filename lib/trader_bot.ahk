@@ -750,7 +750,8 @@ class TraderBot {
                     this.stats.win++
                     this.stats.loss--
                     this.amount := this.get_amount(cur_bal)
-                    this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
+                    if this.stats.streak <= 3
+                        this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 }
                 this.set_amount(this.amount)
                 _balance.last_trade := cur_bal
