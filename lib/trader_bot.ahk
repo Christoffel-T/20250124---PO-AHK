@@ -365,7 +365,7 @@ class TraderBot {
             if not win.ps and not draw.ps {
                 if this.stats.streak > 3
                     this.stats.streak := 0
-                this.stats.streak := -Abs(this.stats.streak)
+                this.stats.streak := -Abs(this.stats.streak)+1
                 this.stats.streak--
 
                 if not this.lose_streak.repeat.Has(this.stats.streak)
