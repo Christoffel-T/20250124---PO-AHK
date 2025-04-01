@@ -363,8 +363,9 @@ class TraderBot {
             draw.ps := PixelSearch(&x, &y, draw.x1, draw.y1, draw.x2, draw.y2, this.colors.green2, 30)
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             if not win.ps and not draw.ps {
-                if this.stats.streak > 0
+                if this.stats.streak > 3
                     this.stats.streak := 0
+                this.stats.streak := -Abs(this.stats.streak)
                 this.stats.streak--
 
                 if not this.lose_streak.repeat.Has(this.stats.streak)
@@ -386,8 +387,9 @@ class TraderBot {
             } else if win.ps {
                 if this.stats.streak < 0
                     this.stats.streak := 0
+                if this.stats.streak <= 3
+                    this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 this.amount := this.get_amount(this.balance.current)
-                this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 this.set_amount(this.amount)
                 this.stats.streak++
                 this.stats.win++
