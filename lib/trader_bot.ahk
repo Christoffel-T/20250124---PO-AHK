@@ -288,8 +288,9 @@ class TraderBot {
     }
     scenario2() {
         _pheight := 3.75
-        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.current_color = 'G' and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 30500 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
-        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.current_color = 'R' and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 30500 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
+        condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 30500 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
+        condition_buy  := this.ps.orange.y - this.ps.blue.y > _pheight and this.current_color = 'G' and condition_both
+        condition_sell := this.ps.blue.y - this.ps.orange.y > _pheight and this.current_color = 'R' and condition_both
 
         if this.paused
             return false
@@ -365,7 +366,8 @@ class TraderBot {
             if not win.ps and not draw.ps {
                 if this.stats.streak > 3
                     this.stats.streak := 0
-                this.stats.streak := -Abs(this.stats.streak)+1
+                else if this.stats.streak > 0
+                    this.stats.streak := -Abs(this.stats.streak)+1
                 this.stats.streak--
 
                 if not this.lose_streak.repeat.Has(this.stats.streak)
