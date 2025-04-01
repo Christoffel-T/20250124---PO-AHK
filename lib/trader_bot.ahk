@@ -271,8 +271,9 @@ class TraderBot {
         } else {
             _pheight := 3.75
         }
-        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
-        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
+        condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
+        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
+        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
 
         if this.paused
             return false
@@ -387,10 +388,10 @@ class TraderBot {
                 this.set_amount(this.amount)
                 this.stats.loss++
             } else if win.ps {
+                if this.stats.streak <= 3 and this.stats.streak > 0
+                    this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 if this.stats.streak < 0
                     this.stats.streak := 0
-                if this.stats.streak <= 3
-                    this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 this.amount := this.get_amount(this.balance.current)
                 this.set_amount(this.amount)
                 this.stats.streak++
@@ -498,7 +499,7 @@ class TraderBot {
             }
             _ .= val.color '(' SubStr(val.timeframe, -2) ')|'
         }
-        if this.crossovers_arr.Length > 0 {
+        if this.crossovers_arr.Length > 1 {
             this.debug_str := this.current_color ' (' A_TickCount - this.crossovers_arr[-1].time ') | ' _ ' | ' this.debug_str
         } else {
             this.debug_str := _ ' | ' this.debug_str
