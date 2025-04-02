@@ -539,10 +539,6 @@ class TraderBot {
                     this.debug_str '`n',
                     this.log_file
                 )
-                if this.balance.current < 1 {
-                    MsgBox('0 Balance.')
-                    exitapp
-                }
                 break
             } catch as e {
                 if !InStr(e.Message, 'being used by another process')
@@ -561,6 +557,10 @@ class TraderBot {
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)
             sleep 100
+        }
+        if this.balance.current < 1 {
+            MsgBox('0 Balance.')
+            exitapp
         }
         sleep 50
         MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
