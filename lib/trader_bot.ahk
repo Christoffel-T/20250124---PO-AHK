@@ -441,7 +441,7 @@ class TraderBot {
         if (Mod(A_Sec, 15) >= 13) {
             _timeframe := Utils.get_timeframe()
             if _timeframe != this.candle_data[1].timeframe {
-                this.candle_data.InsertAt(1, {color: this.current_color, timeframe: _timeframe, colors: [this.current_color], color_changes: [this.current_color], H: this.candle_data[1].C, L: this.candle_data[1].C})
+                this.candle_data.InsertAt(1, {color: this.current_color, timeframe: _timeframe, colors: [this.current_color], colors_12: [this.current_color], color_changes: [this.current_color], H: this.candle_data[1].C, L: this.candle_data[1].C})
                 while this.candle_data.Length > 7
                     this.candle_data.Pop()
             }
