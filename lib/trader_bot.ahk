@@ -33,7 +33,8 @@ class TraderBot {
         ; for v in this.amounts_tresholds {
         ;     var .= v[2] ' = ' v[1] '`n'
         ; }
-        ; MsgBox 'Tresholds value:`n' var
+
+        ; MsgBox next_bal '`nTresholds value:`n' var
         this.start_time := A_TickCount
         this.log_file := 'log.csv'
         this.trade_opened := [false, A_TickCount]
@@ -49,7 +50,7 @@ class TraderBot {
         this.stats := {streak: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance := this.check_balance(this.balance)
-        this.candle_data := [{color: '?', colors: [], color_changes: ['?'], timeframe: Utils.get_timeframe()}]
+        this.candle_data := [{color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe()}]
         
         this.lose_streak := {max: this.stats.streak, repeat: Map()}
         this.paused := false
@@ -68,7 +69,7 @@ class TraderBot {
         this.marked_time_refresh := A_TickCount
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,next_target,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -181,7 +182,7 @@ class TraderBot {
         ; key := '3sCc'
         ; if not this.blockers.Has(key)
         ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if not Utils.is_all_same(candle_data[1].colors) {
+        ; if not Utils.is_all_same(candle_data[1].colors_12) {
         ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
         ; } else if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
         ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
@@ -266,12 +267,12 @@ class TraderBot {
         return false
     }
     scenario1() {
-        if this.stats.streak <= -4 {
-            _pheight := 3.75
-        } else {
-            _pheight := 3.75
-        }
+        _pheight := 3.75
         condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
+        if this.stats.streak <= -4 {
+            _pheight := 5.5
+            condition_both := condition_both and Utils.is_all_same(this.candle_data[1].colors)
+        }
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
         condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
 
@@ -290,6 +291,10 @@ class TraderBot {
     scenario2() {
         _pheight := 3.75
         condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 32000 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
+        if this.stats.streak <= -4 {
+            _pheight := 5.5
+            condition_both := condition_both and Utils.is_all_same(this.candle_data[1].colors)
+        }
         condition_buy  := this.ps.orange.y - this.ps.blue.y > _pheight and this.current_color = 'G' and condition_both
         condition_sell := this.ps.blue.y - this.ps.orange.y > _pheight and this.current_color = 'R' and condition_both
 
@@ -422,8 +427,9 @@ class TraderBot {
         ToolTip(A_Sec '.' A_MSec ' ||Mod 14?|| ' Mod(A_Sec, 15), 1205, 5, 19)
 
         this.current_color := this.ps.close_green.state ? 'G' : this.ps.close_red.state ? 'R' : '?'    
+        this.candle_data[1].colors.Push(this.current_color)
         if Mod(A_Sec, 15) >= 12 {
-            this.candle_data[1].colors.Push(this.current_color)
+            this.candle_data[1].colors_12.Push(this.current_color)
         }
         if this.current_color != this.candle_data[1].color_changes[-1]
             this.candle_data[1].color_changes.Push(this.current_color)
@@ -515,6 +521,17 @@ class TraderBot {
         err := 0
         win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         win_rate := Format('{:.1f}', win_rate)
+
+        str := Map()
+        str.next_bal := '$1000: $99999999999999'
+
+        for v in this.amounts_tresholds {
+            if this.balance.current > v[1] {
+                break
+            }
+            str.next_bal := '$' v[2]+1 ': ' v[1]
+        }
+
     
         loop {
             try {
@@ -528,9 +545,10 @@ class TraderBot {
                 FileAppend(
                     date ',' 
                     time ',' 
-                    this.active_trade countdown_close_str ' | ' paused_str ',' 
+                    '(' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
                     format('{:.2f}', this.amount) ',' 
                     this.balance.current ' (' this.balance.max ' | ' this.balance.min ')' ',' 
+                    str.next_bal ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
                     this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)' ',' 
