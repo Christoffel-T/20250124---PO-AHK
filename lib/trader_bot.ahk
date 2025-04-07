@@ -271,10 +271,12 @@ class TraderBot {
         condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
         if this.stats.streak <= -4 {
             _pheight := 5.5
-            condition_both := condition_both and Utils.is_all_same(this.candle_data[1].colors)
+            condition_both := condition_both and Utils.is_all_same(this.candle_data[1].colors) and this.candle_data[1].size >= 50 and Mod(A_Sec, 15) >= 10 
         }
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
         condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
+        condition_buy  :=  condition_buy and this.candle_data.Length >= 2 and this.current_color = 'G' and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'R'
+        condition_sell := condition_sell and this.candle_data.Length >= 2 and this.current_color = 'R' and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'G'
 
         if this.paused
             return false
@@ -293,10 +295,12 @@ class TraderBot {
         condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 32000 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
         if this.stats.streak <= -4 {
             _pheight := 5.5
-            condition_both := condition_both and Utils.is_all_same(this.candle_data[1].colors)
+            condition_both := condition_both and Utils.is_all_same(this.candle_data[1].colors) and this.candle_data[1].size >= 50
         }
         condition_buy  := this.ps.orange.y - this.ps.blue.y > _pheight and this.current_color = 'G' and condition_both
         condition_sell := this.ps.blue.y - this.ps.orange.y > _pheight and this.current_color = 'R' and condition_both
+        condition_buy  :=  condition_buy and this.candle_data.Length >= 2 and this.current_color = 'G' and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'R'
+        condition_sell := condition_sell and this.candle_data.Length >= 2 and this.current_color = 'R' and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'G'
 
         if this.paused
             return false
