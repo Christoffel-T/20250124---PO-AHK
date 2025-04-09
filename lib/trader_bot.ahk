@@ -700,9 +700,10 @@ class TraderBot {
 
     get_amount(val) {
         for tresh in this.amounts_tresholds {
+            _index := A_Index
             if val >= tresh[1] {
-                while amounts_tresholds.Length > _index
-                    amounts_tresholds.Pop()        
+                while this.amounts_tresholds.Length > _index
+                    this.amounts_tresholds.Pop()        
                 return tresh[2]
             }
         }
