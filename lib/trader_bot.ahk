@@ -406,8 +406,11 @@ class TraderBot {
                 if this.stats.streak < 0
                     this.stats.streak := 0
                 this.stats.streak++
-                if this.stats.streak2 != 0
+                if this.stats.streak2 != 0 {
                     this.stats.streak2++
+                    if this.stats.streak2 = 0
+                        this.amount := this.get_amount(this.balance.current)
+                }
                 this.set_amount()
                 this.stats.win++
             } else if draw.ps {
@@ -789,6 +792,9 @@ class TraderBot {
                     ; this.stats.draw++
                 } else {
                     this.stats.streak := 1
+                    this.stats.streak2 += 2
+                    if this.stats.streak2 = 0
+                        this.amount := this.get_amount(this.balance.current)
                     this.stats.win++
                     this.stats.loss--
                     this.amount := this.get_amount(cur_bal)
