@@ -5,35 +5,6 @@
 amounts_tresholds := [[0, 1]]
 amount_arr := []
 
-Loop 5 {
-    _index := A_Index
-    if amount_arr.Length < A_Index
-        amount_arr.Push([A_Index])
-    while amount_arr[_index].Length < 20 {
-        total := 0
-        ; for v in amount_arr[_index] {
-        ;     total += v
-        ; }
-        ; val := min(20000, Ceil(total/0.92)+_index)
-        val := min(20000, Floor(amount_arr[_index][-1]*2.1)+_index)
-        amount_arr[_index].Push(val)
-    }
-    _tresh := A_Index = 1 ? amount_arr[_index][9]*10 : amount_arr[_index][10]*10
-    amounts_tresholds.InsertAt(1, [_tresh, _index+1])
-}
-val := 5000
-for tresh in amounts_tresholds {
-    MsgBox tresh[1] '`n' tresh[2]
-
-    _index := A_Index
-    if val >= tresh[1] {
-        MsgBox amounts_tresholds[_index][2]
-        while amounts_tresholds.Length > _index
-            amounts_tresholds.Pop()
-
-    }
-}
-MsgBox amounts_tresholds[-1][2]
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
