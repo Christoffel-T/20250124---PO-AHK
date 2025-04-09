@@ -399,7 +399,7 @@ class TraderBot {
                 this.set_amount()
                 this.stats.loss++
             } else if win.ps {
-                if this.stats.streak < 4 and this.stats.streak > 0 and this.stats.streak2 != 0
+                if this.stats.streak < 4 and this.stats.streak > 0 and this.stats.streak2 = 0
                     this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 else
                     this.amount := this.get_amount(this.balance.current)
@@ -729,7 +729,7 @@ class TraderBot {
             sleep 100
         }
         if this.stats.streak2 < 0 {
-            this.amount := this.amount_arr[this.get_amount(this.balance.current)][4]
+            this.amount := this.amount_arr[this.get_amount(this.balance.current)][4+1]
         }
         sleep 80
         Send('^f')
