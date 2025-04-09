@@ -731,6 +731,11 @@ class TraderBot {
         if this.stats.streak2 < 0 {
             this.amount := this.amount_arr[this.get_amount(this.balance.current)][4+1]
         }
+        if this.stats.streak2 <= -7 {
+            this.stats.streak2 := 0
+            this.stats.streak := 0
+            this.amount := this.amount_arr[this.get_amount(this.balance.current)][this.stats.streak+1]
+        }
         sleep 80
         Send('^f')
         sleep 80
