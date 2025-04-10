@@ -13,6 +13,7 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
+        this.amount_arr.Push([1, 3, 7, 15, 7])
         ; this.amounts_tresholds := [[20000, 3],[4350, 2], [0, 1]]
         this.amounts_tresholds := [[0, 1]]
 
@@ -376,7 +377,7 @@ class TraderBot {
                 else if this.stats.streak > 0
                     this.stats.streak := -Abs(this.stats.streak)+1
                 this.stats.streak--
-                
+
                 if this.state.32
                     this.stats.streak2--
                 if this.stats.streak <= -4 and not this.state.32 {
@@ -401,7 +402,7 @@ class TraderBot {
                 this.set_amount()
                 this.stats.loss++
             } else if win.ps {
-                if this.stats.streak < 4 and this.stats.streak > 0 and not this.state.32
+                if this.stats.streak < 4 and this.stats.streak > 0
                     this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 else
                     this.amount := this.get_amount(this.balance.current)
@@ -556,7 +557,7 @@ class TraderBot {
                 FileAppend(
                     date ',' 
                     time ',' 
-                    '(' this.stats.streak '|' this.stats.streak2 ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
+                    '(' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
                     format('{:.2f}', this.amount) ',' 
                     this.balance.current ' (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
@@ -731,11 +732,16 @@ class TraderBot {
             WinActivate(this.wtitle)  
             sleep 100
         }
-        if this.state.32 {
-            this.amount := this.amount_arr[this.get_amount(this.balance.current)][4+1]
-        }
-        if this.balance.current >= this.balance.max and this.state.32 {
-            this.state.32 := false
+        ; if this.state.32 {
+        ;     this.amount := this.amount_arr[this.get_amount(this.balance.current)][4+1]
+        ; }
+        ; if this.balance.current >= this.balance.max and this.state.32 {
+        ;     this.state.32 := false
+        ;     this.stats.streak2 := 0
+        ;     this.stats.streak := 1
+        ;     this.amount := this.amount_arr[this.get_amount(this.balance.current)][this.stats.streak]
+        ; }
+        if Abs(this.stats.streak) > 4 {
             this.stats.streak2 := 0
             this.stats.streak := 1
             this.amount := this.amount_arr[this.get_amount(this.balance.current)][this.stats.streak]
