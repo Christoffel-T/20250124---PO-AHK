@@ -58,7 +58,7 @@ class TraderBot {
         this.lose_streak := {max: this.stats.streak, repeat: Map()}
         this.paused := false
         this.blockers := Map()
-        this.state := {coin_change_streak: false, 5loss: false}
+        this.state := {coin_change_streak: false, 5loss: false, 32:false}
         this.min_x := this.coords.area.x - 50
         this.amount := this.get_amount(this.balance.current)
         this._time := 15
@@ -376,10 +376,12 @@ class TraderBot {
                 else if this.stats.streak > 0
                     this.stats.streak := -Abs(this.stats.streak)+1
                 this.stats.streak--
-                if this.stats.streak2 != 0
+                
+                if this.state.32
                     this.stats.streak2--
-                if this.stats.streak <= -4 and this.stats.streak2 = 0 {
+                if this.stats.streak <= -4 and not this.state.32 {
                     this.stats.streak2--
+                    this.state.32 := true
                 }        
 
                 if not this.lose_streak.repeat.Has(this.stats.streak)
@@ -399,17 +401,15 @@ class TraderBot {
                 this.set_amount()
                 this.stats.loss++
             } else if win.ps {
-                if this.stats.streak < 4 and this.stats.streak > 0 and this.stats.streak2 = 0
+                if this.stats.streak < 4 and this.stats.streak > 0 and not this.state.32
                     this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 else
                     this.amount := this.get_amount(this.balance.current)
                 if this.stats.streak < 0
                     this.stats.streak := 0
                 this.stats.streak++
-                if this.stats.streak2 != 0 {
+                if this.state.32 {
                     this.stats.streak2++
-                    if this.stats.streak2 = 0
-                        this.amount := this.get_amount(this.balance.current)
                 }
                 this.set_amount()
                 this.stats.win++
@@ -731,13 +731,14 @@ class TraderBot {
             WinActivate(this.wtitle)  
             sleep 100
         }
-        if this.stats.streak2 < 0 {
+        if this.state.32 {
             this.amount := this.amount_arr[this.get_amount(this.balance.current)][4+1]
         }
-        if this.stats.streak2 < -7 {
+        if this.balance.current >= this.balance.max and this.state.32 {
+            this.state.32 := false
             this.stats.streak2 := 0
-            this.stats.streak := 0
-            this.amount := this.amount_arr[this.get_amount(this.balance.current)][this.stats.streak+1]
+            this.stats.streak := 1
+            this.amount := this.amount_arr[this.get_amount(this.balance.current)][this.stats.streak]
         }
         sleep 80
         Send('^f')
@@ -792,9 +793,8 @@ class TraderBot {
                     ; this.stats.draw++
                 } else {
                     this.stats.streak := 1
-                    this.stats.streak2 += 2
-                    if this.stats.streak2 = 0
-                        this.amount := this.get_amount(this.balance.current)
+                    if this.state.32
+                        this.stats.streak2 += 2
                     this.stats.win++
                     this.stats.loss--
                     this.amount := this.get_amount(cur_bal)
