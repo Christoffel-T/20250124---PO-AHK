@@ -29,7 +29,7 @@ class TraderBot {
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
         }
-        this.amount_arr[1][5] := 7
+        this.amount_arr[1][6] := 7
         ; var := ''
         ; for v in this.amounts_tresholds {
         ;     var .= v[2] ' = ' v[1] '`n'
@@ -368,10 +368,10 @@ class TraderBot {
             draw.ps := PixelSearch(&x, &y, draw.x1, draw.y1, draw.x2, draw.y2, this.colors.green2, 30)
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             if not win.ps and not draw.ps {
-                if this.stats.streak > 4
+                if this.stats.streak > 0
                     this.stats.streak := 0
-                else if this.stats.streak > 0
-                    this.stats.streak := -Abs(this.stats.streak)+1
+                ; else if this.stats.streak > 0
+                ;     this.stats.streak := -Abs(this.stats.streak)+1
                 this.stats.streak--
 
                 if this.state.32
