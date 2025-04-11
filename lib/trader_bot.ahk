@@ -2,10 +2,6 @@
 #Include OCR.ahk
 #Include utils.ahk
 
-amounts_tresholds := [[0, 1]]
-amount_arr := []
-obj := TraderBot({})
-
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
