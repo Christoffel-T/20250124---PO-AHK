@@ -40,7 +40,6 @@ class TraderBot {
         this.log_file := 'log.csv'
         this.trade_opened := [false, A_TickCount]
         this.crossovers_arr := []
-        this.candle_data[1].color := '?'
         this.last_trade := ''
         this.active_trade := ''
         this.executed_trades := ['', '']
