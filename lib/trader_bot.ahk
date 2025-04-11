@@ -268,7 +268,7 @@ class TraderBot {
     }
     scenario1() {
         _pheight := 5
-        condition_both := Mod(A_Sec, 15) >= 12 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and A_TickCount - this.crossovers_arr[-1].time <= 32000
+        condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
         if this.stats.streak <= -40 {
             _pheight := 3.75
         }
@@ -288,13 +288,13 @@ class TraderBot {
         }
     }
     scenario2() {
-        _pheight := 5
-        condition_both := Mod(A_Sec, 15) >= 12 and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 32000 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
+        _pheight := 3.75
+        condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 32000 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
         if this.stats.streak <= -40 {
             _pheight := 3.75
         }
-        condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[2].color = 'R' and this.ps.orange.y - this.ps.blue.y > _pheight and this.candle_data[1].color = 'G' and condition_both
-        condition_sell := this.candle_data[1].color = 'R' and this.candle_data[2].color = 'G' and this.ps.blue.y - this.ps.orange.y > _pheight and this.candle_data[1].color = 'R' and condition_both
+        condition_buy  := this.ps.orange.y - this.ps.blue.y > _pheight and this.candle_data[1].color = 'G' and condition_both
+        condition_sell := this.ps.blue.y - this.ps.orange.y > _pheight and this.candle_data[1].color = 'R' and condition_both
 
         if this.paused
             return false
@@ -306,6 +306,24 @@ class TraderBot {
             this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
             this.execute_trade('SELL', '2')
+        }
+    }
+    scenario3() {
+        _pheight := 5
+        condition_both := Mod(A_Sec, 15) >= 12 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
+        condition_buy  := this.ps.orange.y - this.ps.blue.y < _pheight and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'R' and condition_both
+        condition_sell := this.ps.blue.y - this.ps.orange.y < _pheight and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'G' and condition_both
+
+        if this.paused
+            return false
+        if (condition_buy) {
+            this.last_trade := 'BUY'
+            this.trade_opened := [true, A_TickCount]
+            this.execute_trade('BUY', '3')
+        } else if (condition_sell) {
+            this.last_trade := 'SELL'
+            this.trade_opened := [true, A_TickCount]
+            this.execute_trade('SELL', '3')
         }
     }
 
