@@ -309,6 +309,8 @@ class TraderBot {
         }
     }
     scenario3() {
+        if this.candle_data.Length < 2
+            return false
         _pheight := 5
         condition_both := Mod(A_Sec, 15) >= 12 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
         condition_buy  := this.ps.orange.y - this.ps.blue.y < _pheight and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'R' and condition_both
@@ -490,6 +492,7 @@ class TraderBot {
         this.paused := this.check_paused()
         this.scenario1()
         this.scenario2()
+        this.scenario3()
     }
     update_log() {
         global
