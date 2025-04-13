@@ -15,5 +15,21 @@ class Utils {
         rounded_seconds := Floor(seconds / interval) * interval
         rounded_time := SubStr(datetime, 1, -2) Format("{:02}", rounded_seconds)
         return rounded_time
-    }    
+    }
+
+    static PasteText(text) {
+        if not text 
+            return
+        A_Clipboard := ''
+        sleep 50
+        A_Clipboard := text
+        sleep 50
+        if !ClipWait(1) {
+            MsgBox 'An error occured.'
+            return false
+        }
+        Send '^v'
+        sleep 50
+    }
+        
 }

@@ -29,6 +29,7 @@ class TraderBot {
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
         }
+        this.amount_arr[1][4] := 16
         this.amount_arr[1][4+1] := 1.5
         ; var := ''
         ; for v in this.amounts_tresholds {
@@ -49,15 +50,15 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance := this.check_balance(this.balance)
+        this.balance := this.CheckBalance(this.balance)
         this.candle_data := [{color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe()}]
         
-        this.lose_streak := {max: this.stats.streak, repeat: Map()}
+        this.lose_streak := {max: this.stats.streak, repeat: Map(), end_by_win_count: 0}
         this.paused := false
         this.blockers := Map()
         this.state := {coin_change_streak: false, 5loss: false, 32:false}
         this.min_x := this.coords.area.x - 50
-        this.amount := this.get_amount(this.balance.current)
+        this.amount := this.GetAmount(this.balance.current)
         this._time := 15
         this._time += 4
         this.payout := 92
@@ -73,21 +74,21 @@ class TraderBot {
         }
     }
 
-    start_loop(*) {
+    StartLoop(*) {
         ToolTip('Running...', 5, 5, 1)
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)  
         }
         WinMove(-8, -8, 1040, 744, this.wtitle)
-        this.set_amount()
+        this.SetTradeAmount()
         MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
-        SetTimer(this.main.Bind(this), 100)
+        SetTimer(this.Main.Bind(this), 100)
     }
 
-    main() {
+    Main() {
         if A_TickCount > this.marked_time_refresh + 2*60*60*1000 {
             this.marked_time_refresh := A_TickCount
-            this.reload_website()
+            this.ReloadWebsite()
             ; reload
         }    
         if !WinActive(this.wtitle) {
@@ -97,31 +98,31 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 1)
         sleep 100
 
-        this.balance := this.check_balance(this.balance)
-        this.checker_payout()
-        if not this.pixels_search()
+        this.balance := this.CheckBalance(this.balance)
+        this.CheckPayout()
+        if not this.PixsSearch()
             return
-        this.check_trade_closed()
+        this.CheckTradeClosed()
         
         this.datetime := A_Now
         if this.stats.reset_date != SubStr(this.datetime, 1, -6) {
             this.stats.win := 0
             this.stats.loss := 0
             this.stats.draw := 0
-            this.lose_streak := {max: 0, repeat: Map()}
+            this.lose_streak := {max: 0, repeat: Map(), end_by_win_count: 0}
         }
         this.stats.reset_date := SubStr(this.datetime, 1, -6)
         
         if this.ps.blue.state and this.ps.orange.state {
-            this.both_lines_detected()
+            this.BothLinesDetected()
         }
     
-        this.update_log()
+        this.UpdateLog()
         sleep 100
     
     }
     
-    check_paused() {
+    CheckPaused() {
         key := '2cr'
         if not this.blockers.Has(key)
             this.blockers[key] := {state: false, tick_count: A_TickCount}
@@ -266,7 +267,7 @@ class TraderBot {
         }
         return false
     }
-    scenario1() {
+    Scenario1() {
         _pheight := 5
         condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
         if this.stats.streak <= -40 {
@@ -280,14 +281,14 @@ class TraderBot {
         if (condition_buy) {
             this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
-            this.execute_trade('BUY', '1')
+            this.ExecuteTrade('BUY', '1')
         } else if (condition_sell) {
             this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
-            this.execute_trade('SELL', '1')
+            this.ExecuteTrade('SELL', '1')
         }
     }
-    scenario2() {
+    Scenario2() {
         _pheight := 3.75
         condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 32000 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
         if this.stats.streak <= -40 {
@@ -301,14 +302,14 @@ class TraderBot {
         if (condition_buy) {
             this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
-            this.execute_trade('BUY', '2')
+            this.ExecuteTrade('BUY', '2')
         } else if (condition_sell) {
             this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
-            this.execute_trade('SELL', '2')
+            this.ExecuteTrade('SELL', '2')
         }
     }
-    scenario3() {
+    Scenario3() {
         if this.candle_data.Length < 2
             return false
         _pheight := 5
@@ -321,15 +322,15 @@ class TraderBot {
         if (condition_buy) {
             this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
-            this.execute_trade('BUY', '3')
+            this.ExecuteTrade('BUY', '3')
         } else if (condition_sell) {
             this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
-            this.execute_trade('SELL', '3')
+            this.ExecuteTrade('SELL', '3')
         }
     }
 
-    checker_payout() {
+    CheckPayout() {
         coin_change_streak := -4
         if not this.state.coin_change_streak and this.stats.streak != coin_change_streak
             this.state.coin_change_streak := true
@@ -368,7 +369,7 @@ class TraderBot {
             }
         }
     }
-    check_trade_closed() {
+    CheckTradeClosed() {
         if (this.trade_opened[1]) {
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             sleep 50 
@@ -400,18 +401,30 @@ class TraderBot {
                     this.stats.streak2--
                     this.state.32 := true
                 }        
+                this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
+                
+                if Abs(this.stats.streak) > 4 {
+                    if not this.lose_streak.repeat.Has(this.stats.streak)
+                        this.lose_streak.repeat[this.stats.streak] := 0
+                    if this.stats.streak < this.lose_streak.max
+                        this.lose_streak.max := this.stats.streak
+                    this.lose_streak.repeat[this.stats.streak]++
 
-                this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
-                ; if (Mod(stats.streak, -2)=0)
-                ;     amount := default_amount + Floor(balance.current/1000)
-                this.set_amount()
+                    this.stats.streak := 1
+                    this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
+                    this.stats.streak2 := 0
+                }        
+
+                this.SetTradeAmount()
                 this.stats.loss++
             } else if win.ps {
                 if this.stats.streak < 2 and this.stats.streak > 0
-                    this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
+                    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 else
-                    this.amount := this.get_amount(this.balance.current)
+                    this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
+                    if this.stats.streak <= -4
+                        this.lose_streak.end_by_win_count++
                     if not this.lose_streak.repeat.Has(this.stats.streak)
                         this.lose_streak.repeat[this.stats.streak] := 0
                     if this.stats.streak < this.lose_streak.max
@@ -419,11 +432,16 @@ class TraderBot {
                     this.lose_streak.repeat[this.stats.streak]++
                     this.stats.streak := 0
                 }
+                if Abs(this.stats.streak) > 4 {
+                    this.stats.streak2 := 0
+                    this.stats.streak := 1
+                    this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
+                }        
                 this.stats.streak++
                 if this.state.32 {
                     this.stats.streak2++
                 }
-                this.set_amount()
+                this.SetTradeAmount()
                 this.stats.win++
             } else if draw.ps {
                 this.stats.draw++
@@ -431,7 +449,7 @@ class TraderBot {
         }
     }
 
-    both_lines_detected() {
+    BothLinesDetected() {
         ToolTip('blue', this.ps.blue.x-200, this.ps.blue.y, 2)
         ToolTip('orange', this.ps.orange.x-200, this.ps.orange.y, 3)
         ToolTip('blue', this.ps.blue.x, this.ps.blue.y-200, 4)
@@ -484,12 +502,12 @@ class TraderBot {
             catch  
                 this.coin_name := '???'
         }
-        this.paused := this.check_paused()
-        this.scenario1()
-        this.scenario2()
-        this.scenario3()
+        this.paused := this.CheckPaused()
+        this.Scenario1()
+        this.Scenario2()
+        this.Scenario3()
     }
-    update_log() {
+    UpdateLog() {
         global
 
         str_ohlc := ''
@@ -508,7 +526,7 @@ class TraderBot {
             countdown_close_str := ''
         }
     
-        streaks_str := ''
+        streaks_str := '<' this.lose_streak.end_by_win_count '> '
         if this.lose_streak.repeat.Count > 0
             lose_streak_str := this.lose_streak.max '(' this.lose_streak.repeat[this.lose_streak.max] ')'
         else
@@ -592,7 +610,7 @@ class TraderBot {
             }
         }
     }
-    execute_trade(action, reason) {
+    ExecuteTrade(action, reason) {
         global
         this.active_trade := ''
         this.balance.last_trade := this.balance.current - this.amount
@@ -633,10 +651,10 @@ class TraderBot {
         while this.executed_trades.Length > 10
             this.executed_trades.Pop()
         this.active_trade := action
-        ; this.balance := this.check_balance(this.balance)
+        ; this.balance := this.CheckBalance(this.balance)
     }     
 
-    pixels_search() {
+    PixsSearch() {
         this.ps.blue :=     {state: false}
         this.ps.orange :=     {state: false}
         this.ps.close_green :=     {state: false}
@@ -695,7 +713,7 @@ class TraderBot {
             this.coords.area.x := max(this.coords.area.x - 1, 100)
             if this.coords.area.x < this.min_x {
                 this.coords.area.x := this.min_x
-                this.reload_website()
+                this.ReloadWebsite()
             }
             this.coords.area.x2 := this.coords.area.x - 2
             ; this.debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
@@ -714,7 +732,7 @@ class TraderBot {
         return true
     }
 
-    get_amount(val) {
+    GetAmount(val) {
         for tresh in this.amounts_tresholds {
             _index := A_Index
             if val >= tresh[1] {
@@ -726,7 +744,7 @@ class TraderBot {
         return this.amounts_tresholds[-1][2]
     }
 
-    reload_website() {
+    ReloadWebsite() {
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)  
             sleep 100
@@ -734,42 +752,56 @@ class TraderBot {
         sleep 80
         Send('^r')
         sleep 5000
-        this.check_balance(this.balance)
+        this.CheckBalance(this.balance)
         sleep 2000
         return
     }
     
-    set_amount() {
+    SetTradeAmount() {
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)  
             sleep 100
         }
         ; if this.state.32 {
-        ;     this.amount := this.amount_arr[this.get_amount(this.balance.current)][4+1]
+        ;     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][4+1]
         ; }
         ; if this.balance.current >= this.balance.max and this.state.32 {
         ;     this.state.32 := false
         ;     this.stats.streak2 := 0
         ;     this.stats.streak := 1
-        ;     this.amount := this.amount_arr[this.get_amount(this.balance.current)][this.stats.streak]
+        ;     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
         ; }
-        if Abs(this.stats.streak) > 4 {
-            this.stats.streak2 := 0
-            this.stats.streak := 1
-            this.amount := this.amount_arr[this.get_amount(this.balance.current)][this.stats.streak]
-        }
         sleep 80
         Send('^f')
         sleep 80
         Send('^a{BS}')
         sleep 80
-        Send('amount')
+        Utils.PasteText('amount')
         sleep 80
         Send('{enter}')
         sleep 80
         Send('{esc}')
         sleep 80
         Send('{tab}')
+        sleep 80
+        Utils.PasteText(this.trade_time)
+        Send('{tab 2}')
+        sleep 50
+        MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
+        return
+    }
+    
+    SetTradeTime() {
+        if !WinActive(this.wtitle) {
+            WinActivate(this.wtitle)  
+            sleep 100
+        }
+        sleep 80
+        Send('^f')
+        sleep 80
+        Send('^a{BS}')
+        sleep 80
+        
         sleep 80
         A_Clipboard := this.amount
         sleep 100
@@ -781,7 +813,7 @@ class TraderBot {
         return
     }
     
-    check_balance(_balance) {
+    CheckBalance(_balance) {
         Loop {
             A_Clipboard := ''
             if !WinActive(this.wtitle) {
@@ -815,11 +847,11 @@ class TraderBot {
                         this.stats.streak2 += 2
                     this.stats.win++
                     this.stats.loss--
-                    this.amount := this.get_amount(cur_bal)
+                    this.amount := this.GetAmount(cur_bal)
                     if this.stats.streak <= 3
-                        this.amount := this.amount_arr[this.get_amount(this.balance.current+this.amount*2.2)][this.stats.streak]
+                        this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][this.stats.streak]
                 }
-                this.set_amount()
+                this.SetTradeAmount()
                 _balance.last_trade := cur_bal
             }
             _balnew := {current: cur_bal, last_trade: _balance.last_trade, max: Format('{:.2f}', max(cur_bal, _balance.max)), min: Format('{:.2f}', min(cur_bal, _balance.min))}
