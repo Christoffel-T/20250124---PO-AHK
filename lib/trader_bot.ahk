@@ -784,7 +784,7 @@ class TraderBot {
         sleep 80
         Send('{tab}')
         sleep 80
-        Utils.PasteText(this.trade_time)
+        Utils.PasteText('')
         Send('{tab 2}')
         sleep 50
         MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
