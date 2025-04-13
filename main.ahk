@@ -11,10 +11,10 @@ SendMode('Event')
 settings_obj := Settings()
 obj_trader := TraderBot(settings_obj)
 
-Hotkey('F1', obj_trader.start_loop.Bind(obj_trader), 'On')
+Hotkey('F1', obj_trader.StartLoop, 'On')
 ToolTip('Ready. Press F1 to start', 5, 5, 1)
-obj_trader.start_loop(obj_trader)
+obj_trader.StartLoop
 
 $^Esc::ExitApp
 $+Esc::Reload
-$Esc::Pause -1
+$Esc::Pause 1
