@@ -404,6 +404,7 @@ class TraderBot {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 
                 if Abs(this.stats.streak) > 4 {
+                    this.stats.streak++
                     if not this.lose_streak.repeat.Has(this.stats.streak)
                         this.lose_streak.repeat[this.stats.streak] := 0
                     if this.stats.streak < this.lose_streak.max
