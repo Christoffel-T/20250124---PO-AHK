@@ -273,8 +273,8 @@ class TraderBot {
         if this.stats.streak <= -40 {
             _pheight := 3.75
         }
-        condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[2].color = 'R' and this.candle_data[1] and this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
-        condition_sell := this.candle_data[1].color = 'R' and this.candle_data[2].color = 'G' and this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
+        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
+        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
 
         if this.paused
             return false
