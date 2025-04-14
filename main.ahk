@@ -11,10 +11,9 @@ SendMode('Event')
 settings_obj := Settings()
 obj_trader := TraderBot(settings_obj)
 
-msgbox 'test'
 Hotkey('F1', obj_trader.StartLoop, 'On')
 ToolTip('Ready. Press F1 to start', 5, 5, 1)
 obj_trader.StartLoop
-$`::Pause 1
+$Esc::Pause 1
 $+Esc::Reload
 $^Esc::ExitApp
