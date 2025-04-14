@@ -778,14 +778,15 @@ class TraderBot {
         sleep 80
         Utils.PasteText('amount')
         sleep 80
-        Send('{enter}')
-        sleep 80
-        Send('{esc}')
+        Send('{enter}{Escape}')
         sleep 80
         Send('{tab}')
         sleep 80
-        Utils.PasteText('')
-        Send('{tab 2}')
+        Utils.PasteText(this.amount)
+        sleep 80
+        Send('^f')
+        sleep 80
+        Send('USD{enter}{Escape}')
         sleep 50
         MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
         return
@@ -829,9 +830,22 @@ class TraderBot {
                 continue
             }
             sleep 100
+            if !RegExMatch(A_Clipboard, 'USD') {
+                tooltip('Error: No balance found`n' A_Clipboard)
+                sleep 80
+                Send('^f')
+                sleep 80
+                Send('USD{enter}{Escape}')
+                sleep 50
+                continue
+            }
             if !RegExMatch(A_Clipboard, 'm)^\d{1,3}(,\d{3})*(\.\d{2})*$', &match) {
                 tooltip('Error: No balance found`n' A_Clipboard)
-                sleep 100
+                sleep 80
+                Send('^f')
+                sleep 80
+                Send('USD{enter}{Escape}')
+                sleep 50
                 continue
             }
             ToolTip
