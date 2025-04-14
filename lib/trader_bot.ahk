@@ -419,7 +419,7 @@ class TraderBot {
                 this.SetTradeAmount()
                 this.stats.loss++
             } else if win.ps {
-                if this.stats.streak < 2 and this.stats.streak > 0
+                if this.stats.streak < 3 and this.stats.streak > 0
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 else
                     this.amount := this.GetAmount(this.balance.current)
@@ -785,7 +785,7 @@ class TraderBot {
         sleep 80
         Utils.PasteText(this.amount)
         sleep 80
-        Send('^f')
+        Send('{Tab}^f')
         sleep 80
         Send('USD{enter}{Escape}')
         sleep 50
