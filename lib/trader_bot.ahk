@@ -29,8 +29,7 @@ class TraderBot {
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
         }
-        this.amount_arr[1][4] := 16
-        this.amount_arr[1][4+1] := 1.5
+        this.amount_arr[1][4] := 17
         ; var := ''
         ; for v in this.amounts_tresholds {
         ;     var .= v[2] ' = ' v[1] '`n'
