@@ -29,7 +29,7 @@ class TraderBot {
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
         }
-        this.amount_arr[1][4] := 17
+        this.amount_arr[1][5+1] := 50
         ; var := ''
         ; for v in this.amounts_tresholds {
         ;     var .= v[2] ' = ' v[1] '`n'
@@ -235,19 +235,19 @@ class TraderBot {
         ; }
 
         
-        key := '4losses'
-        coin_change_streak := -4
-        if this.state.5loss and this.stats.streak != coin_change_streak
-            this.state.5loss := false
-        if not this.blockers.Has(key)
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        if this.stats.streak = coin_change_streak and not this.state.5loss {
-            this.state.5loss := true
-            this.blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if Mod(A_Sec, 15) >= 13 and this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 and this.candle_data.Length >= 4 and this.candle_data[1].color = this.candle_data[2].color and this.candle_data[2].color = this.candle_data[3].color and this.candle_data[3].color = this.candle_data[4].color {
-            this.state.5loss := true
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; key := '4losses'
+        ; coin_change_streak := -4
+        ; if this.state.5loss and this.stats.streak != coin_change_streak
+        ;     this.state.5loss := false
+        ; if not this.blockers.Has(key)
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if this.stats.streak = coin_change_streak and not this.state.5loss {
+        ;     this.state.5loss := true
+        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else if Mod(A_Sec, 15) >= 13 and this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 and this.candle_data.Length >= 4 and this.candle_data[1].color = this.candle_data[2].color and this.candle_data[2].color = this.candle_data[3].color and this.candle_data[3].color = this.candle_data[4].color {
+        ;     this.state.5loss := true
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
         ; key := 'color_ch3'
         ; if not this.blockers.Has(key)
@@ -402,7 +402,7 @@ class TraderBot {
                 }        
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 
-                if Abs(this.stats.streak) > 4 {
+                if Abs(this.stats.streak) > 5 {
                     this.stats.streak++
                     if not this.lose_streak.repeat.Has(this.stats.streak)
                         this.lose_streak.repeat[this.stats.streak] := 0
@@ -413,17 +413,17 @@ class TraderBot {
                     this.stats.streak := 1
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
                     this.stats.streak2 := 0
-                }        
+                }
 
                 this.SetTradeAmount()
                 this.stats.loss++
             } else if win.ps {
-                if this.stats.streak < 3 and this.stats.streak > 0
+                if this.stats.streak <= 5 and this.stats.streak > 0
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
                 else
                     this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
-                    if this.stats.streak <= -4
+                    if this.stats.streak <= -5
                         this.lose_streak.end_by_win_count++
                     if not this.lose_streak.repeat.Has(this.stats.streak)
                         this.lose_streak.repeat[this.stats.streak] := 0
@@ -432,7 +432,7 @@ class TraderBot {
                     this.lose_streak.repeat[this.stats.streak]++
                     this.stats.streak := 0
                 }
-                if Abs(this.stats.streak) > 4 {
+                if Abs(this.stats.streak) > 5 {
                     this.stats.streak2 := 0
                     this.stats.streak := 1
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
