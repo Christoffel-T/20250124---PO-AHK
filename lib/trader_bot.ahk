@@ -127,8 +127,7 @@ class TraderBot {
             this.blockers[key] := {state: false, tick_count: A_TickCount}
         if this.candle_data.Length >= 2 and (Abs(this.ps.orange.y - this.ps.blue.y) < Abs(this.candle_data[1].C - this.candle_data[2].C)) {
             this.blockers[key] := {state: true, tick_count: A_TickCount}
-        }
-        if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
+        } else if this.blockers[key].state {
             this.blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
