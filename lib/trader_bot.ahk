@@ -543,7 +543,7 @@ class TraderBot {
     UpdateLog() {
         global
 
-        str_ohlc := ''
+        str_ohlc := '<' this.ps.moving_price.y '>'
             
         str_ohlc .= this.candle_data[2].HasOwnProp('O') ? this.candle_data[1].O ' (' this.candle_data[2].O ') | ' : '? | '
         str_ohlc .= this.candle_data[2].HasOwnProp('H') ? this.candle_data[1].H ' (' this.candle_data[2].H ') | ' : '? | '
@@ -697,10 +697,14 @@ class TraderBot {
         this.ps.g_touch_orange := {state: false}
         this.ps.r_touch_blue := {state: false}
         this.ps.r_touch_orange := {state: false}
-
-        this.ps.moving_price := {state: PixelSearch(&x1, &y1, this.coords.area_price.x, this.coords.area_price.y, this.coords.area_price.x2, this.coords.area_price.y2, this.colors.moving_price, 5)}
-        PixelSearch(&x2, &y2, x1+5, this.coords.area_price.y2, x1-5, y1, this.colors.moving_price, 5)
-        this.ps.moving_price.y := (y1+y2)/2
+        loop {
+            try {
+                this.ps.moving_price := {state: PixelSearch(&x1, &y1, this.coords.area_price.x, this.coords.area_price.y, this.coords.area_price.x2, this.coords.area_price.y2, this.colors.moving_price, 5)}
+                PixelSearch(&x2, &y2, x1+5, this.coords.area_price.y2, x1-5, y1, this.colors.moving_price, 5)
+                this.ps.moving_price.y := (y1+y2)/2
+                break
+            }
+        }
         try {
             this.ps.blue := {state: PixelSearch(&x, &y, this.coords.area.x, this.coords.area.y, this.coords.area.x2, this.coords.area.y2, this.colors.blue, 5), x:x, y:y}
         } catch as e {
