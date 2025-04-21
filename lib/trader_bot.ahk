@@ -29,13 +29,6 @@ class TraderBot {
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
         }
-        this.amount_arr[1][5+1] := 50
-        ; var := ''
-        ; for v in this.amounts_tresholds {
-        ;     var .= v[2] ' = ' v[1] '`n'
-        ; }
-
-        ; MsgBox next_bal '`nTresholds value:`n' var
         this.start_time := A_TickCount
         this.log_file := 'log.csv'
         this.trade_opened := [false, A_TickCount]
@@ -122,7 +115,7 @@ class TraderBot {
     }
     
     CheckPaused() {
-        key := 'lines_diff_smaller'
+        key := 'PAUSE'
         if not this.blockers.Has(key)
             this.blockers[key] := {state: false, tick_count: A_TickCount}
         if this.candle_data.Length >= 2 and (Abs(this.ps.orange.y - this.ps.blue.y) < Abs(this.candle_data[1].C - this.candle_data[2].C)) {
@@ -276,11 +269,8 @@ class TraderBot {
         return false
     }
     Scenario1() {
-        _pheight := 5
+        _pheight := 15
         condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
-        if this.stats.streak <= -40 {
-            _pheight := 3.75
-        }
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
         condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
 
@@ -342,7 +332,7 @@ class TraderBot {
             return false
         if this.paused
             return false
-        condition_both := Mod(A_Sec, 15) >= 13 and Abs(this.ps.orange.y - this.ps.blue.y) >= 20 and not this.trade_opened[1]
+        condition_both := Mod(A_Sec, 15) >= 13 and Abs(this.ps.orange.y - this.ps.blue.y) >= 25 and not this.trade_opened[1]
         condition_buy  := condition_both and (+this.ps.orange.y - this.ps.blue.y > -this.candle_data[1].C + this.candle_data[2].C) and this.candle_data[1].color = 'G'
         condition_sell := condition_both and (-this.ps.orange.y + this.ps.blue.y > +this.candle_data[1].C - this.candle_data[2].C) and this.candle_data[1].color = 'R'
 
@@ -513,7 +503,7 @@ class TraderBot {
                 this.coin_name := '???'
         }
         this.paused := this.CheckPaused()
-        ; this.Scenario1()
+        this.Scenario1()
         ; this.Scenario2()
         ; this.Scenario3()
         this.Scenario4()
