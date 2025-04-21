@@ -542,7 +542,7 @@ class TraderBot {
     UpdateLog() {
         global
 
-        str_ohlc := '<' this.ps.moving_price.y '>'
+        str_ohlc := '<' this.ps.moving_price.y '> '
             
         str_ohlc .= this.candle_data[2].HasOwnProp('O') ? this.candle_data[1].O ' (' this.candle_data[2].O ') | ' : '? | '
         str_ohlc .= this.candle_data[2].HasOwnProp('H') ? this.candle_data[1].H ' (' this.candle_data[2].H ') | ' : '? | '
@@ -566,25 +566,13 @@ class TraderBot {
         for k, v in this.lose_streak.repeat {
             streaks_str .= k '[' v '] '
         }
-        
-        this.debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
-        ; this.debug_str := 'G: ' (this.ps.orange.state and this.ps.close_green.state ? this.ps.close_green.y - this.ps.orange.y : 0) ' | R: ' (this.ps.orange.state and this.ps.close_red.state ? this.ps.orange.y - this.ps.close_green.y : 0) ' | ' this.debug_str
-        _a := this.ps.g_touch_blue.state and this.ps.g_touch_orange.state ? '2lines: BUY' : this.ps.r_touch_blue.state and this.ps.r_touch_orange.state ? '2lines: SELL' : ''
-        this.debug_str := _a ' | ' this.debug_str
-        this.debug_str := this.crossovers_arr.Length > 0 ? 'last CO: ' this.crossovers_arr[-1].direction '(' Format('{:.1f}', (A_TickCount - this.crossovers_arr[-1].time)/1000) ')' ' | ' this.debug_str : this.debug_str
-        _ := ''
-        for val in this.candle_data {
-            if A_Index > 3 {
-                _ := RTrim(_, '|')
-                break
-            }
-            _ .= val.color '(' SubStr(val.timeframe, -2) ')|'
-        }
-        if this.crossovers_arr.Length > 1 {
-            this.debug_str := this.candle_data[1].color ' (' A_TickCount - this.crossovers_arr[-1].time ') | ' _ ' | ' this.debug_str
-        } else {
-            this.debug_str := _ ' | ' this.debug_str
-        }
+
+        this.debug_str := 'qualifiers: ' this.candle_data[1].color ' | '
+        if not this.paused
+            this.debug_str .= ' NP | '
+        this.debug_str .= ' line_diff: ' this.ps.blue.y - this.ps.orange.y ' | '
+        this.debug_str .= ' cnd_diff: ' this.candle_data[1].C - this.candle_data[2].C ' | '
+        this.debug_str .= ' mv_price: ' this.ps.moving_price.y ' <>? ' this.candle_data[1].O + (this.candle_data[1].size/2) ' | '
         
         _pauser := ''
         for k, v in this.blockers {
