@@ -567,12 +567,14 @@ class TraderBot {
             streaks_str .= k '[' v '] '
         }
 
-        this.debug_str := 'qualifiers: ' this.candle_data[1].color ' | '
-        if not this.paused
-            this.debug_str .= ' NP | '
-        this.debug_str .= ' line_diff: ' -this.ps.blue.y + this.ps.orange.y ' | '
-        this.debug_str .= ' cnd_diff: ' -this.candle_data[1].C + this.candle_data[2].C ' | '
-        this.debug_str .= ' mv_price: ' this.ps.moving_price.y ' <? ' this.candle_data[1].O - (this.candle_data[1].size/2) ' | ' this.ps.moving_price.y ' +? ' this.candle_data[1].O + (this.candle_data[1].size/2) ' | '
+        try {    
+            this.debug_str := 'qualifiers: ' this.candle_data[1].color ' | '
+            if not this.paused
+                this.debug_str .= ' NP | '
+            this.debug_str .= ' line_diff: ' -this.ps.blue.y + this.ps.orange.y ' | '
+            this.debug_str .= ' cnd_diff: ' -this.candle_data[1].C + this.candle_data[2].C ' | '
+            this.debug_str .= ' mv_price: ' this.ps.moving_price.y ' <? ' this.candle_data[1].O - (this.candle_data[1].size/2) ' | ' this.ps.moving_price.y ' +? ' this.candle_data[1].O + (this.candle_data[1].size/2) ' | '
+        }
         
         _pauser := ''
         for k, v in this.blockers {
