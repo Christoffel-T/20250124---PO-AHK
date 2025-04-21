@@ -609,7 +609,7 @@ class TraderBot {
                 FileAppend(
                     date ',' 
                     time ',' 
-                    '(' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
+                    '(' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
                     format('{:.2f}', this.amount) ',' 
                     this.balance.current ' (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
