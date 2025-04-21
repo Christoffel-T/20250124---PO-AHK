@@ -343,11 +343,11 @@ class TraderBot {
         if this.paused
             return false
         condition_both := Mod(A_Sec, 15) >= 13 and Abs(this.ps.orange.y - this.ps.blue.y) >= 20 and not this.trade_opened[1]
-        condition_buy  := condition_both and (-this.ps.orange.y + this.ps.blue.y >  this.candle_data[1].C - this.candle_data[2].C) and this.candle_data[1].color = 'G'
-        condition_sell := condition_both and ( this.ps.orange.y - this.ps.blue.y > -this.candle_data[1].C + this.candle_data[2].C) and this.candle_data[1].color = 'R'
+        condition_buy  := condition_both and (+this.ps.orange.y - this.ps.blue.y > -this.candle_data[1].C + this.candle_data[2].C) and this.candle_data[1].color = 'G'
+        condition_sell := condition_both and (-this.ps.orange.y + this.ps.blue.y > +this.candle_data[1].C - this.candle_data[2].C) and this.candle_data[1].color = 'R'
 
-        condition_buy  := condition_buy  and this.ps.moving_price.y > this.candle_data[1].O + (this.candle_data[1].size/2)
-        condition_sell := condition_sell and this.ps.moving_price.y < this.candle_data[1].O - (this.candle_data[1].size/2)
+        condition_buy  := condition_buy  and this.ps.moving_price.y < this.candle_data[1].O - (this.candle_data[1].size/2)
+        condition_sell := condition_sell and this.ps.moving_price.y > this.candle_data[1].O + (this.candle_data[1].size/2)
 
         if (condition_buy) {
             this.last_trade := 'BUY'
