@@ -433,26 +433,10 @@ class TraderBot {
                 }
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 
-                if Abs(this.stats.streak) > 5 {
-                    this.stats.streak++
-                    if not this.lose_streak.repeat.Has(this.stats.streak)
-                        this.lose_streak.repeat[this.stats.streak] := 0
-                    if this.stats.streak < this.lose_streak.max
-                        this.lose_streak.max := this.stats.streak
-                    this.lose_streak.repeat[this.stats.streak]++
-
-                    this.stats.streak := 1
-                    this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
-                    this.stats.streak2 := 0
-                }
-
                 this.SetTradeAmount()
                 this.stats.loss++
             } else if win.ps {
-                if this.stats.streak <= 5 and this.stats.streak > 0
-                    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][this.stats.streak+1]
-                else
-                    this.amount := this.GetAmount(this.balance.current)
+                this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
                     if this.stats.streak <= -5
                         this.lose_streak.end_by_win_count++
@@ -462,11 +446,6 @@ class TraderBot {
                         this.lose_streak.max := this.stats.streak
                     this.lose_streak.repeat[this.stats.streak]++
                     this.stats.streak := 0
-                }
-                if Abs(this.stats.streak) > 5 {
-                    this.stats.streak2 := 0
-                    this.stats.streak := 1
-                    this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
                 }
                 this.stats.streak++
                 if this.state.32 {
