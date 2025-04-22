@@ -8,8 +8,8 @@ class Utils {
         return true
     }
     
-    static get_timeframe(interval := 15) {
-        datetime := A_Now
+    static get_timeframe(interval := 15, add_sec := 0) {
+        datetime := A_Now + add_sec
         ; datetime := DateAdd(A_NowUTC, -5, 'h')
         seconds := SubStr(datetime, -2)
         rounded_seconds := Floor(seconds / interval) * interval

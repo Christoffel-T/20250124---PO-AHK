@@ -61,6 +61,8 @@ class TraderBot {
         this.coin_name := OCR.FromRect(this.coords.coin.x - 15, this.coords.coin.y - 15, 130, 40).Text
         this.marked_time_refresh := A_TickCount
 
+        this.pause_based_on_timeframe := ''
+
         if !FileExist(this.log_file) {
             FileAppend('date,time,active_trade,next_target,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
@@ -115,24 +117,42 @@ class TraderBot {
     }
     
     CheckPaused() {
-        key := 'PAUSE'
+        key := 'PAUSE_blue_touch_top/bottom'
+
+        if (this.ps.blue.y >= this.candle_data[1].O - 10 and this.ps.blue.y <= this.candle_data[1].O + 10)
+        or (this.ps.blue.y >= this.candle_data[1].C - 10 and this.ps.blue.y <= this.candle_data[1].C + 10)
+            this.pause_based_on_timeframe := Utils.get_timeframe(15,15)
+
         if not this.blockers.Has(key)
             this.blockers[key] := {state: false, tick_count: A_TickCount}
-        if this.candle_data.Length >= 2 and (Abs(this.ps.orange.y - this.ps.blue.y) < Abs(this.candle_data[1].C - this.candle_data[2].C)) {
+        if this.pause_based_on_timeframe = this.candle_data[1].timeframe {
             this.blockers[key] := {state: true, tick_count: A_TickCount}
-        } else if this.blockers[key].state {
+        } else {
             this.blockers[key] := {state: false, tick_count: A_TickCount}
         }
 
-        ; key := '2cr'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if (this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-2].time <= 30000) {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; }
-        ; if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
+        key := 'PAUSE'
+        pause_buy  := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y > this.candle_data[1].O - (this.candle_data[1].size/2) and this.candle_data[1].color = 'G'
+        pause_sell := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y < this.candle_data[1].O + (this.candle_data[1].size/2) and this.candle_data[1].color = 'R'
+
+        if not this.blockers.Has(key)
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        if this.candle_data.Length >= 2 and pause_buy or pause_sell {
+            this.blockers[key] := {state: true, tick_count: A_TickCount}
+        }
+        if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
+        key := '2cr'
+        if not this.blockers.Has(key)
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        if (this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-2].time <= 30000) {
+            this.blockers[key] := {state: true, tick_count: A_TickCount}
+        }
+        if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 {
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        }
 
         ; key := 'not_3G3R'
         ; if not this.blockers.Has(key)
@@ -266,16 +286,18 @@ class TraderBot {
             if v.state
                 return true
         }
+        
         return false
     }
     Scenario1() {
-        _pheight := 15
+        if this.paused
+            return false
+
+        _pheight := 25
         condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
         condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
 
-        if this.paused
-            return false
         if (condition_buy) {
             this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
@@ -294,6 +316,9 @@ class TraderBot {
         }
         condition_buy  := this.ps.orange.y - this.ps.blue.y > _pheight and this.candle_data[1].color = 'G' and condition_both
         condition_sell := this.ps.blue.y - this.ps.orange.y > _pheight and this.candle_data[1].color = 'R' and condition_both
+
+        condition_buy  := condition_buy  and this.ps.moving_price.y < this.candle_data[1].O - (this.candle_data[1].size/2)
+        condition_sell := condition_sell and this.ps.moving_price.y > this.candle_data[1].O + (this.candle_data[1].size/2)
 
         if this.paused
             return false
@@ -578,7 +603,7 @@ class TraderBot {
                 FileAppend(
                     date ',' 
                     time ',' 
-                    '(' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
+                    'LD: ' this.ps.orange.y - this.ps.blue.y ' | (' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
                     format('{:.2f}', this.amount) ',' 
                     this.balance.current ' (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
@@ -789,10 +814,8 @@ class TraderBot {
             sleep 50
             ClipWait(0.5)
             if A_Clipboard != this.amount {
-                MsgBox A_Clipboard ' != ' this.amount
                 continue
             }
-            MsgBox A_Clipboard ' = ' this.amount
             sleep 80
             A_Clipboard := ''
             Send('{Tab}^f')
