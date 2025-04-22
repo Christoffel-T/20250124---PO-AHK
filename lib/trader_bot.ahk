@@ -589,7 +589,10 @@ class TraderBot {
             }
             str.next_bal := '$' v[2] ': ' v[1]
         }
-
+        
+        str_c := '-'
+        try
+            str_c := 'LD: ' this.ps.orange.y - this.ps.blue.y 
     
         loop {
             try {
@@ -603,7 +606,7 @@ class TraderBot {
                 FileAppend(
                     date ',' 
                     time ',' 
-                    'LD: ' this.ps.orange.y - this.ps.blue.y ' | (' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
+                    str_c ' | (' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
                     format('{:.2f}', this.amount) ',' 
                     this.balance.current ' (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
