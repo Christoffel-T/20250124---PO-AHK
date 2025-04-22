@@ -792,8 +792,9 @@ class TraderBot {
                 MsgBox A_Clipboard ' != ' this.amount
                 continue
             }
-
+            MsgBox A_Clipboard ' = ' this.amount
             sleep 80
+            A_Clipboard := ''
             Send('{Tab}^f')
             sleep 80
             Send('USD{enter}{Escape}')
