@@ -756,38 +756,51 @@ class TraderBot {
     }
     
     SetTradeAmount() {
-        if !WinActive(this.wtitle) {
-            WinActivate(this.wtitle)  
-            sleep 100
+        Loop {
+            if !WinActive(this.wtitle) {
+                WinActivate(this.wtitle)  
+                sleep 100
+            }
+            ; if this.state.32 {
+            ;     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][4+1]
+            ; }
+            ; if this.balance.current >= this.balance.max and this.state.32 {
+            ;     this.state.32 := false
+            ;     this.stats.streak2 := 0
+            ;     this.stats.streak := 1
+            ;     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
+            ; }
+            sleep 80
+            Send('^f')
+            sleep 80
+            Send('^a{BS}')
+            sleep 80
+            Utils.PasteText('amount')
+            sleep 80
+            Send('{enter}{Escape}')
+            sleep 80
+            Send('{tab}')
+            sleep 80
+            Utils.PasteText(this.amount)
+            sleep 80
+            A_Clipboard := ''
+            sleep 50
+            Send('^a^c')
+            sleep 50
+            ClipWait(0.5)
+            if A_Clipboard != this.amount {
+                MsgBox A_Clipboard ' != ' this.amount
+                continue
+            }
+
+            sleep 80
+            Send('{Tab}^f')
+            sleep 80
+            Send('USD{enter}{Escape}')
+            sleep 50
+            MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
+            return
         }
-        ; if this.state.32 {
-        ;     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][4+1]
-        ; }
-        ; if this.balance.current >= this.balance.max and this.state.32 {
-        ;     this.state.32 := false
-        ;     this.stats.streak2 := 0
-        ;     this.stats.streak := 1
-        ;     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
-        ; }
-        sleep 80
-        Send('^f')
-        sleep 80
-        Send('^a{BS}')
-        sleep 80
-        Utils.PasteText('amount')
-        sleep 80
-        Send('{enter}{Escape}')
-        sleep 80
-        Send('{tab}')
-        sleep 80
-        Utils.PasteText(this.amount)
-        sleep 80
-        Send('{Tab}^f')
-        sleep 80
-        Send('USD{enter}{Escape}')
-        sleep 50
-        MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
-        return
     }
     
     SetTradeTime() {
