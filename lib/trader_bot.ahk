@@ -589,7 +589,7 @@ class TraderBot {
             }
             str.next_bal := '$' v[2] ': ' v[1]
         }
-        
+
         str_c := '-'
         try
             str_c := 'LD: ' this.ps.orange.y - this.ps.blue.y 
@@ -785,6 +785,7 @@ class TraderBot {
     
     SetTradeAmount() {
         Loop {
+            this.amount := Min(this.amount, this.balance.current)
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
                 sleep 100
