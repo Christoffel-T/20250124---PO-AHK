@@ -121,7 +121,7 @@ class TraderBot {
 
         if (this.ps.blue.y >= this.candle_data[1].O - 10 and this.ps.blue.y <= this.candle_data[1].O + 10)
         or (this.ps.blue.y >= this.candle_data[1].C - 10 and this.ps.blue.y <= this.candle_data[1].C + 10)
-            this.pause_based_on_timeframe := Utils.get_timeframe(15,15)
+            this.pause_based_on_timeframe := Utils.get_timeframe(15,0)
 
         if not this.blockers.Has(key)
             this.blockers[key] := {state: false, tick_count: A_TickCount}
@@ -286,15 +286,14 @@ class TraderBot {
             if v.state
                 return true
         }
-        
         return false
     }
     Scenario1() {
         if this.paused
             return false
 
-        _pheight := 25
-        condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
+        _pheight := 40
+        condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[1].size >= 30
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
         condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
 
@@ -357,9 +356,9 @@ class TraderBot {
             return false
         if this.paused
             return false
-        condition_both := Mod(A_Sec, 15) >= 13 and Abs(this.ps.orange.y - this.ps.blue.y) >= 25 and not this.trade_opened[1]
-        condition_buy  := condition_both and (+this.ps.orange.y - this.ps.blue.y > -this.candle_data[1].C + this.candle_data[2].C) and this.candle_data[1].color = 'G'
-        condition_sell := condition_both and (-this.ps.orange.y + this.ps.blue.y > +this.candle_data[1].C - this.candle_data[2].C) and this.candle_data[1].color = 'R'
+        condition_both := Mod(A_Sec, 15) >= 13 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and not this.trade_opened[1] and this.candle_data[1].size >= 30
+        condition_buy  := condition_both and this.ps.orange.y > this.ps.blue.y and (+this.ps.orange.y - this.ps.blue.y > -this.candle_data[1].C + this.candle_data[2].C) and this.candle_data[1].color = 'G'
+        condition_sell := condition_both and this.ps.orange.y < this.ps.blue.y and (-this.ps.orange.y + this.ps.blue.y > +this.candle_data[1].C - this.candle_data[2].C) and this.candle_data[1].color = 'R'
 
         condition_buy  := condition_buy  and this.ps.moving_price.y < this.candle_data[1].O - (this.candle_data[1].size/2)
         condition_sell := condition_sell and this.ps.moving_price.y > this.candle_data[1].O + (this.candle_data[1].size/2)
