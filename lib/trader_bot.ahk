@@ -818,7 +818,7 @@ class TraderBot {
             Send('^a^c')
             sleep 50
             ClipWait(0.5)
-            if RegExReplace(A_Clipboard, '\D') != this.amount {
+            if RegExReplace(A_Clipboard, '[^\d.]') != this.amount {
                 continue
             }
             sleep 80
