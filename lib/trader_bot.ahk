@@ -130,6 +130,7 @@ class TraderBot {
         } else {
             this.blockers[key] := {state: false, tick_count: A_TickCount}
         }
+        
 
         key := 'PAUSE'
         pause_buy  := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y > this.candle_data[1].O - (this.candle_data[1].size/2) and this.candle_data[1].color = 'G'
