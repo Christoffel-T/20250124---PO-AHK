@@ -442,16 +442,16 @@ class TraderBot {
                         ToolTip('Waiting coin name change (' this.coin_name ' vs ' new_cname ') ' A_Index, 500, 5, 12)
                         if this.coin_name != new_cname {
                             this.coin_name := new_cname
-                            MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
-                            sleep 100
-                            MouseClick('L', this.coords.time_15.x + Random(-2, 2), this.coords.time_15.y + Random(-2, 2), 1, 2)
-                            sleep 100
                             break
                         }
                     }
                 } else {
                     MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
                 }
+                sleep 100
+                MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
+                sleep 100
+                MouseClick('L', this.coords.time_15.x + Random(-2, 2), this.coords.time_15.y + Random(-2, 2), 1, 2)
                 sleep 100
                 Send '{Escape}'
                 sleep 1000
@@ -547,7 +547,7 @@ class TraderBot {
         ; if (Mod(A_Sec, 15) >= 13) {
         _timeframe := Utils.get_timeframe()
         if _timeframe != this.candle_data[1].timeframe {
-            this.candle_data.InsertAt(1, {color: this.candle_data[1].color, size: 0, timeframe: _timeframe, colors: [this.candle_data[1].color], colors_12: [this.candle_data[1].color], color_changes: [this.candle_data[1].color], O: this.candle_data[1].O, H: this.candle_data[1].H, L: this.candle_data[1].L, C: this.candle_data[1].C})
+            this.candle_data.InsertAt(1, {blue_line_y: [], color: this.candle_data[1].color, size: 0, timeframe: _timeframe, colors: [this.candle_data[1].color], colors_12: [this.candle_data[1].color], color_changes: [this.candle_data[1].color], O: this.candle_data[1].O, H: this.candle_data[1].H, L: this.candle_data[1].L, C: this.candle_data[1].C})
             while this.candle_data.Length > 7
                 this.candle_data.Pop()
         }
