@@ -442,6 +442,10 @@ class TraderBot {
                         ToolTip('Waiting coin name change (' this.coin_name ' vs ' new_cname ') ' A_Index, 500, 5, 12)
                         if this.coin_name != new_cname {
                             this.coin_name := new_cname
+                            MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
+                            sleep 100
+                            MouseClick('L', this.coords.time_15.x + Random(-2, 2), this.coords.time_15.y + Random(-2, 2), 1, 2)
+                            sleep 100
                             break
                         }
                     }
