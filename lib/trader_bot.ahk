@@ -75,6 +75,11 @@ class TraderBot {
         }
         WinMove(-8, -8, 1040, 744, this.wtitle)
         this.SetTradeAmount()
+        sleep 100
+        MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
+        sleep 100
+        MouseClick('L', this.coords.time_15.x + Random(-2, 2), this.coords.time_15.y + Random(-2, 2), 1, 2)
+        sleep 100
         MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
         SetTimer(this.Main.Bind(this), 100)
     }
