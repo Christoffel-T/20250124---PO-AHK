@@ -43,7 +43,7 @@ class TraderBot {
         this.stats := {streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance := this.CheckBalance(this.balance)
-        this.candle_data := [{color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe()}]
+        this.candle_data := [{blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_price: 0}]
         
         this.lose_streak := {max: this.stats.streak, repeat: Map(), end_by_win_count: 0}
         this.paused := false
@@ -117,6 +117,27 @@ class TraderBot {
     }
     
     CheckPaused() {
+        key := 'pause-3'
+
+        _bottom := 0
+        _top := 99999999
+        for v in this.candle_data[2].blue_line_y {
+            _bottom := max(_bottom, v)
+            _top := min(_top, v)
+        }
+
+        if this.stats.streak <= -3 and Mod(A_Sec, 15) = 1
+        and (this.ps.blue.y > _top and this.candle_data[1].color = 'G' or this.ps.blue.y < _top and this.candle_data[1].color = 'R')
+            this.pause_based_on_timeframe := Utils.get_timeframe(15,0)
+
+        if not this.blockers.Has(key)
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        if this.pause_based_on_timeframe = this.candle_data[1].timeframe {
+            this.blockers[key] := {state: true, tick_count: A_TickCount}
+        } else {
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
         key := 'PAUSE_blue_touch_top/bottom'
 
         if (this.ps.blue.y >= this.candle_data[1].O - 10 and this.ps.blue.y <= this.candle_data[1].O + 10)
@@ -373,6 +394,26 @@ class TraderBot {
             this.ExecuteTrade('SELL', '4')
         }
     }
+    Scenario5() {
+        if this.candle_data.Length < 2 or this.trade_opened[1]
+            return false
+        condition_both := Mod(A_Sec, 15) = 1 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and this.candle_data[1].size >= 30
+        condition_buy  := condition_both and this.candle_data[2].color = 'R' and this.candle_data[2].moving_price < this.candle_data[2].O
+        condition_sell := condition_both and this.candle_data[2].color = 'G' and this.candle_data[2].moving_price > this.candle_data[2].O
+
+        condition_buy  := condition_buy  and this.candle_data[1].color = 'G' and this.candle_data[1].C < this.ps.blue.y
+        condition_sell := condition_sell and this.candle_data[1].color = 'R' and this.candle_data[1].C > this.ps.blue.y
+
+        if (condition_buy) {
+            this.last_trade := 'BUY'
+            this.trade_opened := [true, A_TickCount]
+            this.ExecuteTrade('BUY', '5')
+        } else if (condition_sell) {
+            this.last_trade := 'SELL'
+            this.trade_opened := [true, A_TickCount]
+            this.ExecuteTrade('SELL', '5')
+        }
+    }
 
     CheckPayout() {
         coin_change_streak := -4
@@ -506,6 +547,8 @@ class TraderBot {
             while this.candle_data.Length > 7
                 this.candle_data.Pop()
         }
+        this.candle_data[1].blue_line_y.Push(this.ps.blue.y)
+        this.candle_data[1].moving_price := this.ps.moving_price.y
         ; }
 
         if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
