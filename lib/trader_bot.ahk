@@ -109,6 +109,7 @@ class TraderBot {
         
         if this.ps.blue.state and this.ps.orange.state {
             this.BothLinesDetected()
+            this.RunScenarios()
         }
     
         this.UpdateLog()
@@ -582,12 +583,23 @@ class TraderBot {
             catch  
                 this.coin_name := '???'
         }
+    }
+
+    RunScenarios() {
         this.paused := this.CheckPaused()
+        if this.stats.streak <= -3 {
+            if  not (this.candle_data[2].color = 'G' and this.candle_data[1].color = 'G' and this.candle_data[1].O < this.candle_data[2].C)
+            and not (this.candle_data[2].color = 'R' and this.candle_data[1].color = 'R' and this.candle_data[1].O > this.candle_data[2].C)
+            {
+                return
+            }
+        }
         this.Scenario1()
         ; this.Scenario2()
         ; this.Scenario3()
         this.Scenario4()
     }
+
     UpdateLog() {
         global
 
@@ -923,6 +935,9 @@ class TraderBot {
             if !ClipWait(0.5) {
                 ToolTip('Copy failed')
                 sleep 30
+                if A_Index > 20 {
+                    this.ReloadWebsite()
+                }
                 continue
             }
             sleep 100
