@@ -85,11 +85,6 @@ class TraderBot {
     }
 
     Main() {
-        if A_TickCount > this.marked_time_refresh + 2*60*60*1000 {
-            this.marked_time_refresh := A_TickCount
-            this.ReloadWebsite()
-            ; reload
-        }    
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)
             sleep 100
@@ -422,9 +417,15 @@ class TraderBot {
 
     CheckPayout() {
         coin_change_streak := -4
+        this.marked_time_refresh := A_TickCount
         if not this.state.coin_change_streak and this.stats.streak != coin_change_streak
             this.state.coin_change_streak := true
         Loop {
+            if A_TickCount > this.marked_time_refresh + 2*60*1000 {
+                this.marked_time_refresh := A_TickCount
+                this.ReloadWebsite()
+                ; reload
+            }    
             if (this.stats.streak != coin_change_streak or not this.state.coin_change_streak) and ImageSearch(&outx, &outy, this.coords.Payout.x, this.coords.Payout.y, this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, '*10 payout.png') {
                 this.payout := 92
                 break
