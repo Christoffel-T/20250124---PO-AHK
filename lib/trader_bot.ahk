@@ -121,9 +121,12 @@ class TraderBot {
 
         _bottom := 0
         _top := 99999999
-        for v in this.candle_data[2].blue_line_y {
-            _bottom := max(_bottom, v)
-            _top := min(_top, v)
+
+        if this.candle_data.Length >= 2 {
+            for v in this.candle_data[2].blue_line_y {
+                _bottom := max(_bottom, v)
+                _top := min(_top, v)
+            }
         }
 
         if this.stats.streak <= -3 and Mod(A_Sec, 15) = 1
