@@ -587,13 +587,6 @@ class TraderBot {
 
     RunScenarios() {
         this.paused := this.CheckPaused()
-        if this.stats.streak <= -3 {
-            if  not (this.candle_data[2].color = 'G' and this.candle_data[1].color = 'G' and this.candle_data[1].O < this.candle_data[2].C)
-            and not (this.candle_data[2].color = 'R' and this.candle_data[1].color = 'R' and this.candle_data[1].O > this.candle_data[2].C)
-            {
-                return
-            }
-        }
         this.Scenario1()
         ; this.Scenario2()
         ; this.Scenario3()
