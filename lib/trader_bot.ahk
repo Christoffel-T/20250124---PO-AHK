@@ -139,7 +139,7 @@ class TraderBot {
             }
         }
 
-        if this.stats.streak <= -3 and Mod(A_Sec, 15) = 1
+        if this.stats.streak <= -3 and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
         and (this.ps.blue.y > _top and this.candle_data[1].color = 'G' or this.ps.blue.y < _top and this.candle_data[1].color = 'R')
             this.pause_based_on_timeframe := Utils.get_timeframe(15,0)
 
@@ -329,7 +329,7 @@ class TraderBot {
         _pheight := 40
         condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[1].size >= 30
         if this.stats.streak <= -3
-            condition_both := condition_both and Mod(A_Sec, 15) >= 1
+            condition_both := condition_both and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
         condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
 
@@ -414,7 +414,7 @@ class TraderBot {
     Scenario5() {
         if this.candle_data.Length < 2 or this.trade_opened[1]
             return false
-        condition_both := Mod(A_Sec, 15) = 1 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and this.candle_data[1].size >= 30
+        condition_both := Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and this.candle_data[1].size >= 30
         condition_buy  := condition_both and this.candle_data[2].color = 'R' and this.candle_data[2].moving_price < this.candle_data[2].O
         condition_sell := condition_both and this.candle_data[2].color = 'G' and this.candle_data[2].moving_price > this.candle_data[2].O
 
