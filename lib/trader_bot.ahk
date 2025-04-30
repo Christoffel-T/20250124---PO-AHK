@@ -121,6 +121,8 @@ class TraderBot {
 
         key := 'PAUSE_5_10min'
 
+        if not this.blockers.Has(key)
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
         if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 600000 {
             this.blockers[key] := {state: false, tick_count: A_TickCount}
         }
@@ -934,7 +936,7 @@ class TraderBot {
             Send('^a^c')
             sleep 50
             ClipWait(0.5)
-            if Format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]')) != Format('{:.2f}', this.amount) {
+            if Format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]')) != Format('{:.2f}', RegExReplace(this.amount, '[^\d.]')) {
                 continue
             }
             sleep 80
