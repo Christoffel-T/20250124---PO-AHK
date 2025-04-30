@@ -118,6 +118,13 @@ class TraderBot {
     }
     
     CheckPaused() {
+
+        key := 'PAUSE_5_10min'
+
+        if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 600000 {
+            this.blockers[key] := {state: false, tick_count: A_TickCount}
+        }
+
         key := 'pause-3'
 
         _bottom := 0
@@ -319,6 +326,8 @@ class TraderBot {
 
         _pheight := 40
         condition_both := this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[1].size >= 30
+        if this.stats.streak <= -3
+            condition_both := condition_both and Mod(A_Sec, 15) >= 1
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
         condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
 
@@ -382,6 +391,8 @@ class TraderBot {
         if this.paused
             return false
         condition_both := Mod(A_Sec, 15) >= 13 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and not this.trade_opened[1] and this.candle_data[1].size >= 30
+        if this.stats.streak <= -3
+            condition_both := Mod(A_Sec, 15) >= 1 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and not this.trade_opened[1] and this.candle_data[1].size >= 30
         condition_buy  := condition_both and this.ps.orange.y > this.ps.blue.y and (+this.ps.orange.y - this.ps.blue.y > -this.candle_data[1].C + this.candle_data[2].C) and this.candle_data[1].color = 'G'
         condition_sell := condition_both and this.ps.orange.y < this.ps.blue.y and (-this.ps.orange.y + this.ps.blue.y > +this.candle_data[1].C - this.candle_data[2].C) and this.candle_data[1].color = 'R'
 
@@ -502,6 +513,43 @@ class TraderBot {
                 }
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 
+                if this.stats.streak <= -3 {
+                    ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
+                    MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
+                    sleep 100
+                    MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
+                    sleep 100
+                    Loop {
+                        MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
+                        sleep 200
+                        new_cname := OCR.FromRect(this.coords.coin.x - 25, this.coords.coin.y - 25, 150, 50,, 3).Text
+                        ToolTip('Waiting coin name change (' this.coin_name ' vs ' new_cname ') ' A_Index, 500, 5, 12)
+                        if this.coin_name != new_cname {
+                            this.coin_name := new_cname
+                            break
+                        }
+                    }
+                    sleep 100
+                    MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
+                    sleep 100
+                    MouseClick('L', this.coords.time_15.x + Random(-2, 2), this.coords.time_15.y + Random(-2, 2), 1, 2)
+                    sleep 100
+                    Send '{Escape}'
+                    sleep 200
+                }
+
+                key := 'PAUSE_5_10min'
+
+                if not this.blockers.Has(key)
+                    this.blockers[key] := {state: false, tick_count: A_TickCount}
+                if this.stats.streak = -5 {
+                    this.blockers[key] := {state: true, tick_count: A_TickCount}
+                } else {
+                    this.blockers[key] := {state: false, tick_count: A_TickCount}
+                }
+                
+
+
                 this.SetTradeAmount()
                 this.stats.loss++
             } else if win.ps {
@@ -587,10 +635,17 @@ class TraderBot {
 
     RunScenarios() {
         this.paused := this.CheckPaused()
+        if this.stats.strek <= -3 {
+            qualifier_buy  := this.candle_data[1].moving_price < this.candle_data[2].C and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'G'
+            qualifier_sell := this.candle_data[1].moving_price > this.candle_data[2].C and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'R'
+            if not qualifier_buy and not qualifier_sell
+                return
+        }
         this.Scenario1()
         ; this.Scenario2()
         ; this.Scenario3()
         this.Scenario4()
+        this.Scenario5()
     }
 
     UpdateLog() {
