@@ -637,7 +637,7 @@ class TraderBot {
 
     RunScenarios() {
         this.paused := this.CheckPaused()
-        if this.stats.strek <= -3 {
+        if this.stats.streak <= -3 {
             qualifier_buy  := this.candle_data[1].moving_price < this.candle_data[2].C and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'G'
             qualifier_sell := this.candle_data[1].moving_price > this.candle_data[2].C and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'R'
             if not qualifier_buy and not qualifier_sell
