@@ -930,9 +930,13 @@ class TraderBot {
             Send('^a^c')
             sleep 50
             ClipWait(0.5)
-            if Format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]')) != Format('{:.2f}', RegExReplace(this.amount, '[^\d.]')) {
+            try {
+                if Format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]')) != Format('{:.2f}', RegExReplace(this.amount, '[^\d.]')) {
+                    continue
+                }
+            } catch {
                 continue
-            }
+            } 
             sleep 80
             A_Clipboard := ''
             Send('{Tab}^f')
