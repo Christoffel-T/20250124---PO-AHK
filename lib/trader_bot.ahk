@@ -119,14 +119,6 @@ class TraderBot {
     
     CheckPaused() {
 
-        key := 'PAUSE_5_10min'
-
-        if not this.blockers.Has(key)
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 600000 {
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        }
-
         key := 'pause-3'
 
         _bottom := 0
@@ -644,6 +636,8 @@ class TraderBot {
                 return
         }
         this.Scenario1()
+        if this.stats.streak <= -3
+            return
         ; this.Scenario2()
         ; this.Scenario3()
         this.Scenario4()
