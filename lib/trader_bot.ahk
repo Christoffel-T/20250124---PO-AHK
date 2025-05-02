@@ -532,18 +532,6 @@ class TraderBot {
                     sleep 200
                 }
 
-                key := 'PAUSE_5_10min'
-
-                if not this.blockers.Has(key)
-                    this.blockers[key] := {state: false, tick_count: A_TickCount}
-                if this.stats.streak = -5 {
-                    this.blockers[key] := {state: true, tick_count: A_TickCount}
-                } else {
-                    this.blockers[key] := {state: false, tick_count: A_TickCount}
-                }
-                
-
-
                 this.SetTradeAmount()
                 this.stats.loss++
             } else if win.ps {
