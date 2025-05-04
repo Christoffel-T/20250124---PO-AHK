@@ -321,9 +321,9 @@ class TraderBot {
 
         _pheight := 23
         _candle_size := 20
-        condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 32000 and not this.trade_opened[1] and this.candle_data[1].size >= _candle_size
-        if this.stats.streak <= -3
-            condition_both := condition_both and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
+        condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 16000 and not this.trade_opened[1] and this.candle_data[1].size >= _candle_size
+        ; if this.stats.streak <= -3
+        ;     condition_both := condition_both and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
         condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
 
@@ -694,8 +694,8 @@ class TraderBot {
         }
 
         str_c := ''
-        str_c .= 'b' this.ps.r_touch_blue.state this.ps.r_touch_orange.state ' | '
-        str_c .= 'o' this.ps.r_touch_blue.state this.ps.r_touch_orange.state ' | '
+        str_c .= 'g' this.ps.g_touch_blue.state this.ps.g_touch_orange.state ' | '
+        str_c .= 'r' this.ps.r_touch_blue.state this.ps.r_touch_orange.state ' | '
         try
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
     
@@ -851,7 +851,7 @@ class TraderBot {
             ; ToolTip('(' A_Sec '.' A_MSec ')' this.debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', balance.current), 5, 5, 11)
             return false
         }
-        threshold := [6, 4]
+        threshold := [10, 8]
         if this.ps.blue.state and this.ps.orange.state {
             this.ps.g_touch_blue := {state: PixelSearch(&x, &y, this.ps.blue.x+threshold[1], this.ps.blue.y+threshold[1], this.ps.blue.x+threshold[2], this.ps.blue.y-threshold[1], this.colors.green, 5), x:x, y:y}
             this.ps.g_touch_orange := {state: PixelSearch(&x, &y, this.ps.orange.x+threshold[1], this.ps.orange.y+threshold[1], this.ps.orange.x+threshold[2], this.ps.orange.y-threshold[1], this.colors.green, 5), x:x, y:y}
