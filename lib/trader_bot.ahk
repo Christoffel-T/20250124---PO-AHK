@@ -119,66 +119,67 @@ class TraderBot {
     
     CheckPaused() {
 
-        key := 'pause-3'
+        ; key := 'pause-3'
 
-        _bottom := 0
-        _top := 99999999
+        ; _bottom := 0
+        ; _top := 99999999
 
-        if this.candle_data.Length >= 2 {
-            for v in this.candle_data[2].blue_line_y {
-                _bottom := max(_bottom, v)
-                _top := min(_top, v)
-            }
-        }
+        ; if this.candle_data.Length >= 2 {
+        ;     for v in this.candle_data[2].blue_line_y {
+        ;         _bottom := max(_bottom, v)
+        ;         _top := min(_top, v)
+        ;     }
+        ; }
 
-        if this.stats.streak <= -3 and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
-        and (this.ps.blue.y > _top and this.candle_data[1].color = 'G' or this.ps.blue.y < _top and this.candle_data[1].color = 'R')
-            this.pause_based_on_timeframe := Utils.get_timeframe(15,0)
+        ; if this.stats.streak <= -3 and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
+        ; and (this.ps.blue.y > _top and this.candle_data[1].color = 'G' or this.ps.blue.y < _top and this.candle_data[1].color = 'R')
+        ;     this.pause_based_on_timeframe := Utils.get_timeframe(15,0)
 
-        if not this.blockers.Has(key)
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        if this.pause_based_on_timeframe = this.candle_data[1].timeframe {
-            this.blockers[key] := {state: true, tick_count: A_TickCount}
-        } else {
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; if not this.blockers.Has(key)
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if this.pause_based_on_timeframe = this.candle_data[1].timeframe {
+        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else {
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
-        key := 'PAUSE_blue_touch_top/bottom'
+        ; key := 'PAUSE_blue_touch_top/bottom'
 
-        if (this.ps.blue.y >= this.candle_data[1].O - 10 and this.ps.blue.y <= this.candle_data[1].O + 10)
-        or (this.ps.blue.y >= this.candle_data[1].C - 10 and this.ps.blue.y <= this.candle_data[1].C + 10)
-            this.pause_based_on_timeframe := Utils.get_timeframe(15,0)
+        ; if (this.ps.blue.y >= this.candle_data[1].O - 10 and this.ps.blue.y <= this.candle_data[1].O + 10)
+        ; or (this.ps.blue.y >= this.candle_data[1].C - 10 and this.ps.blue.y <= this.candle_data[1].C + 10)
+        ;     this.pause_based_on_timeframe := Utils.get_timeframe(15,0)
 
-        if not this.blockers.Has(key)
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        if this.pause_based_on_timeframe = this.candle_data[1].timeframe {
-            this.blockers[key] := {state: true, tick_count: A_TickCount}
-        } else {
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; if not this.blockers.Has(key)
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if this.pause_based_on_timeframe = this.candle_data[1].timeframe {
+        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
+        ; } else {
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
+        ; if this.blockers[key].state and 
 
-        key := 'PAUSE'
-        pause_buy  := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y > this.candle_data[1].O - (this.candle_data[1].size/2) and this.candle_data[1].color = 'G'
-        pause_sell := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y < this.candle_data[1].O + (this.candle_data[1].size/2) and this.candle_data[1].color = 'R'
+        ; key := 'PAUSE'
+        ; pause_buy  := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y > this.candle_data[1].O - (this.candle_data[1].size/2) and this.candle_data[1].color = 'G'
+        ; pause_sell := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y < this.candle_data[1].O + (this.candle_data[1].size/2) and this.candle_data[1].color = 'R'
 
-        if not this.blockers.Has(key)
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        if this.candle_data.Length >= 2 and pause_buy or pause_sell {
-            this.blockers[key] := {state: true, tick_count: A_TickCount}
-        }
-        if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; if not this.blockers.Has(key)
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if this.candle_data.Length >= 2 and pause_buy or pause_sell {
+        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
+        ; }
+        ; if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
-        key := '2cr'
-        if not this.blockers.Has(key)
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        if (this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-2].time <= 30000) {
-            this.blockers[key] := {state: true, tick_count: A_TickCount}
-        }
-        if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 {
-            this.blockers[key] := {state: false, tick_count: A_TickCount}
-        }
+        ; key := '2cr'
+        ; if not this.blockers.Has(key)
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if (this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-2].time <= 30000) {
+        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
+        ; }
+        ; if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 {
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
 
         ; key := 'not_3G3R'
         ; if not this.blockers.Has(key)
@@ -617,19 +618,19 @@ class TraderBot {
 
     RunScenarios() {
         this.paused := this.CheckPaused()
-        if this.stats.streak <= -3 {
-            qualifier_buy  := this.candle_data[1].moving_price < this.candle_data[2].C and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'G'
-            qualifier_sell := this.candle_data[1].moving_price > this.candle_data[2].C and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'R'
-            if not qualifier_buy and not qualifier_sell
-                return
-        }
+        ; if this.stats.streak <= -3 {
+        ;     qualifier_buy  := this.candle_data[1].moving_price < this.candle_data[2].C and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'G'
+        ;     qualifier_sell := this.candle_data[1].moving_price > this.candle_data[2].C and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'R'
+        ;     if not qualifier_buy and not qualifier_sell
+        ;         return
+        ; }
         this.Scenario1()
         if this.stats.streak <= -3
             return
         ; this.Scenario2()
         ; this.Scenario3()
-        this.Scenario4()
-        this.Scenario5()
+        ; this.Scenario4()
+        ; this.Scenario5()
     }
 
     UpdateLog() {
@@ -919,12 +920,12 @@ class TraderBot {
             sleep 50
             ClipWait(0.5)
             try {
-                if Format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]')) != Format('{:.2f}', RegExReplace(this.amount, '[^\d.]')) {
+                if Format('{:.0f}', RegExReplace(A_Clipboard, '[^\d.]')) != Format('{:.0f}', RegExReplace(this.amount, '[^\d.]')) {
                     continue
                 }
             } catch {
                 continue
-            } 
+            }
             sleep 80
             A_Clipboard := ''
             Send('{Tab}^f')
