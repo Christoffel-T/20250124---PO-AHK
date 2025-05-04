@@ -625,8 +625,8 @@ class TraderBot {
         ;         return
         ; }
         this.Scenario1()
-        if this.stats.streak <= -3
-            return
+        ; if this.stats.streak <= -3
+        ;     return
         ; this.Scenario2()
         ; this.Scenario3()
         ; this.Scenario4()
