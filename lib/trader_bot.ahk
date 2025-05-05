@@ -1036,6 +1036,7 @@ class TraderBot {
     }
 
     SetBalance(bal_amount) {
+        bal_amount := format('{:.2f}', bal_amount)
         Loop {
             A_Clipboard := ''
             if !WinActive(this.wtitle) {
