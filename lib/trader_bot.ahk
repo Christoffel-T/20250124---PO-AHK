@@ -1,7 +1,6 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
-
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -597,7 +596,7 @@ class TraderBot {
         this.candle_data[1].moving_price := this.ps.moving_price.y
         ; }
 
-        if (Mod(A_Sec, 15) = 14 and A_MSec >= 100) {
+        if (Mod(A_Sec, 15) >= 14 and A_MSec >= 100) {
             ToolTip(A_Sec '.' A_MSec ' ||MOD 14!!!!!!!!!!!!|| ' Mod(A_Sec, 15), 1205, 5, 19)
             if ((this.crossovers_arr.Length = 0 || this.crossovers_arr[-1].direction != 'BUY') and this.ps.orange.y > this.ps.blue.y) {
                 if this.last_trade=''
