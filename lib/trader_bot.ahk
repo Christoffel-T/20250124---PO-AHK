@@ -50,6 +50,7 @@ class TraderBot {
             } else {
                 this.SetBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
             }
+            this.CheckBalance()
         }
         
         this.candle_data := [{blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_price: 0}]
