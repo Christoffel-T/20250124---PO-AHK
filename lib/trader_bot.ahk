@@ -41,7 +41,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.balance := {starting: 50001, current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance := this.CheckBalance()
+        this.CheckBalance()
         
         if this.balance.current != this.balance.starting {
             MsgBox this.balance.current ' != ' this.balance.starting
