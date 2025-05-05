@@ -889,6 +889,10 @@ class TraderBot {
     
     SetTradeAmount() {
         Loop {
+            if this.balance.current < 1 {
+                MsgBox('0 Balance.')
+                exitapp
+            }    
             this.amount := Min(this.amount, this.balance.current)
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
