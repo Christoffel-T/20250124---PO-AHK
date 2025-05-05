@@ -1027,6 +1027,7 @@ class TraderBot {
             this.balance.current := cur_bal
             this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
             this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
+            return
         }
     }
 }
