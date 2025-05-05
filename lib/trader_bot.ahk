@@ -55,8 +55,6 @@ class TraderBot {
         this.payout := 92
         this.datetime := A_Now
         this.stats.reset_date := SubStr(this.datetime, 1, -6)
-        this.date := FormatTime(this.datetime, 'MM/dd')
-        this.time := FormatTime(this.datetime, 'HH:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
         this.coin_name := OCR.FromRect(this.coords.coin.x - 15, this.coords.coin.y - 15, 130, 40).Text
         this.marked_time_refresh := A_TickCount
 
@@ -645,8 +643,8 @@ class TraderBot {
             str_ohlc .= this.candle_data[2].HasOwnProp('C') ? this.candle_data[1].C ' (' this.candle_data[2].C ') | ' : '? | '
         }
 
-        date := FormatTime(this.datetime, 'MM/dd')
-        time := FormatTime(this.datetime, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
+        date := FormatTime(A_Now, 'MM/dd')
+        time := FormatTime(A_Now, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
         if this.trade_opened[1] {
             countdown_close := (this.trade_opened[2] - A_TickCount)/1000
             countdown_close_str :=  this.executed_trades[1][2] ' (' format('{:.2f}', countdown_close) ')'
