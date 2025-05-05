@@ -974,6 +974,8 @@ class TraderBot {
                 WinActivate(this.wtitle)  
                 sleep 100
             }
+            MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
+            sleep 50
             Send('^a^c')
             sleep 50
             if !ClipWait(0.5) {
