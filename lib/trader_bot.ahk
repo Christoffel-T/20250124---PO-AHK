@@ -695,7 +695,7 @@ class TraderBot {
 
         str_c := ''
         try
-            str_c .= Format('{:.1f}', (A_TickCount - this.crossovers_arr[-1].time)/1000) ' | '
+            str_c .= SubStr(this.crossovers_arr[-1].direction, 1, 1) Format('{:.1f}', (A_TickCount - this.crossovers_arr[-1].time)/1000) ' | '
         str_c .= 'g' this.ps.g_touch_blue.state this.ps.g_touch_orange.state ' | '
         str_c .= 'r' this.ps.r_touch_blue.state this.ps.r_touch_orange.state ' | '
         try
