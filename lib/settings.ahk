@@ -5,7 +5,7 @@ class Settings {
         this.settings_file := 'settings.ini'
         this.general := this.read_settings('General', ['wtitle'])
         this.wtitle := this.general.wtitle
-        this.coords := this.read_settings('coords', ['time1', 'time_15', 'detect_trade_open1', 'detect_trade_open2', 'detect_trade_close1', 'detect_trade_close2', 'trades_closed', 'trades_opened', 'area', 'area_price', 'BUY', 'SELL', 'Payout', 'coin', 'cryptocurrencies', 'stocks', 'coin_top', 'empty_area'])
+        this.coords := this.read_settings('coords', ['balance', 'top_up', 'time1', 'time_15', 'detect_trade_open1', 'detect_trade_open2', 'detect_trade_close1', 'detect_trade_close2', 'trades_closed', 'trades_opened', 'area', 'area_price', 'BUY', 'SELL', 'Payout', 'coin', 'cryptocurrencies', 'stocks', 'coin_top', 'empty_area'])
         this.colors := this.read_settings('colors', ['blue', 'orange', 'green', 'green2', 'red', 'moving_price'], )
     }
 

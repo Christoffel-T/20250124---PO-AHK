@@ -1,6 +1,7 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
+
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -40,11 +41,17 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 50001, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 5000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.CheckBalance()
         
         if this.balance.current != this.balance.starting {
-            MsgBox this.balance.current ' != ' this.balance.starting
+            if this.balance.current < this.balance.starting {
+                this.SetBalance(this.balance.starting-this.balance.current)
+            } else {
+                this.SetBalance(Ceil(this.balance.current/1000)*1000)
+            }
+        } else {
+            'bal same'
         }
         
         this.candle_data := [{blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_price: 0}]
@@ -969,7 +976,6 @@ class TraderBot {
                 WinActivate(this.wtitle)  
                 sleep 100
             }
-            sleep 50
             Send('^a^c')
             sleep 50
             if !ClipWait(0.5) {
@@ -1027,6 +1033,28 @@ class TraderBot {
             this.balance.current := cur_bal
             this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
             this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
+            return
+        }
+    }
+
+    SetBalance(bal_amount) {
+        Loop {
+            A_Clipboard := ''
+            if !WinActive(this.wtitle) {
+                WinActivate(this.wtitle)  
+                sleep 100
+            }
+            MouseClick('L', this.coords.balance.x + Random(-2, 2), this.coords.balance.y + Random(-2, 2), 1, 2)
+            sleep 500
+            MouseClick('L', this.coords.top_up.x + Random(-2, 2), this.coords.top_up.y + Random(-2, 2), 1, 2)
+            sleep 1000
+            Send '{tab}'
+            sleep 500
+            Utils.PasteText(bal_amount)
+            sleep 500
+            Send '{Enter}'
+            sleep 1000
+            MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
             return
         }
     }
