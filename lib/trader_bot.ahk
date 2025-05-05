@@ -51,7 +51,7 @@ class TraderBot {
                 this.SetBalance(Ceil(this.balance.current/1000)*1000)
             }
         } else {
-            msgbox 'bal same'
+            msgbox 'bal sames'
         }
         
         this.candle_data := [{blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_price: 0}]
