@@ -318,7 +318,7 @@ class TraderBot {
 
         _pheight := 23
         _candle_size := 20
-        condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 16000 and not this.trade_opened[1] and this.candle_data[1].size >= _candle_size
+        condition_both := Mod(A_Sec, 15) >= 13 and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 16000 and not this.trade_opened[1] and this.candle_data[1].size >= _candle_size
         ; if this.stats.streak <= -3
         ;     condition_both := condition_both and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
         condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
