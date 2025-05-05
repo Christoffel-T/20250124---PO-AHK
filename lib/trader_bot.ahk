@@ -40,8 +40,13 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance := this.CheckBalance(this.balance)
+        this.balance := {starting: 5000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := this.CheckBalance()
+        
+        if this.balance.current != this.balance.starting {
+            MsgBox this.balance.current ' != ' this.balance.starting
+        }
+        
         this.candle_data := [{blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_price: 0}]
         
         this.lose_streak := {max: this.stats.streak, repeat: Map(), end_by_win_count: 0}
@@ -89,7 +94,7 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 1)
         sleep 100
 
-        this.balance := this.CheckBalance(this.balance)
+        this.CheckBalance()
         this.CheckPayout()
         if not this.PSearch()
             return
@@ -741,10 +746,6 @@ class TraderBot {
             WinActivate(this.wtitle)
             sleep 100
         }
-        if this.balance.current < 1 {
-            MsgBox('0 Balance.')
-            exitapp
-        }
         sleep 50
         MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
         sleep 200
@@ -882,17 +883,13 @@ class TraderBot {
         sleep 80
         Send('^r')
         sleep 5000
-        this.CheckBalance(this.balance)
+        this.CheckBalance()
         sleep 2000
         return
     }
     
     SetTradeAmount() {
         Loop {
-            if this.balance.current < 1 {
-                MsgBox('0 Balance.')
-                exitapp
-            }    
             this.amount := Min(this.amount, this.balance.current)
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
@@ -965,7 +962,7 @@ class TraderBot {
         return
     }
     
-    CheckBalance(_balance) {
+    CheckBalance() {
         Loop {
             A_Clipboard := ''
             if !WinActive(this.wtitle) {
@@ -1004,8 +1001,13 @@ class TraderBot {
             }
             ToolTip
             cur_bal := StrReplace(match[], ',', '')
-            if cur_bal > _balance.last_trade + 0.5 and this.stats.streak < 0 and not this.trade_opened[1] {
-                if cur_bal < _balance.last_trade + this.amount*1.4 {
+            if cur_bal < 1 {
+                MsgBox('0 Balance.')
+                reload
+            }
+    
+            if cur_bal > this.balance.last_trade + 0.5 and this.stats.streak < 0 and not this.trade_opened[1] {
+                if cur_bal < this.balance.last_trade + this.amount*1.4 {
                     sleep 10
                     ; this.stats.streak++
                     ; this.stats.draw++
@@ -1020,10 +1022,11 @@ class TraderBot {
                         this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][this.stats.streak]
                 }
                 this.SetTradeAmount()
-                _balance.last_trade := cur_bal
+                this.balance.last_trade := cur_bal
             }
-            _balnew := {current: cur_bal, last_trade: _balance.last_trade, max: Format('{:.2f}', max(cur_bal, _balance.max)), min: Format('{:.2f}', min(cur_bal, _balance.min))}
-            return _balnew
+            this.balance.current := cur_bal
+            this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
+            this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
         }
     }
 }
