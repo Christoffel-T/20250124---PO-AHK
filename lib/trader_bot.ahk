@@ -100,6 +100,11 @@ class TraderBot {
         sleep 100
 
         this.CheckBalance()
+        if this.balance.current < 1 {
+            MsgBox('0 Balance.')
+            reload
+        }
+
         this.CheckPayout()
         if not this.PSearch()
             return
@@ -780,7 +785,6 @@ class TraderBot {
         while this.executed_trades.Length > 10
             this.executed_trades.Pop()
         this.active_trade := action
-        ; this.balance := this.CheckBalance(this.balance)
     }     
 
     PSearch() {
@@ -888,8 +892,6 @@ class TraderBot {
         sleep 80
         Send('^r')
         sleep 5000
-        this.CheckBalance()
-        sleep 2000
         return
     }
     
@@ -1007,10 +1009,6 @@ class TraderBot {
             }
             ToolTip
             cur_bal := StrReplace(match[], ',', '')
-            if cur_bal < 1 {
-                MsgBox('0 Balance.')
-                reload
-            }
     
             if cur_bal > this.balance.last_trade + 0.5 and this.stats.streak < 0 and not this.trade_opened[1] {
                 if cur_bal < this.balance.last_trade + this.amount*1.4 {
