@@ -101,11 +101,6 @@ class TraderBot {
         sleep 100
 
         this.CheckBalance()
-        if this.balance.current < 1 {
-            MsgBox('0 Balance.')
-            reload
-        }
-
         this.CheckPayout()
         if not this.PSearch()
             return
@@ -756,6 +751,10 @@ class TraderBot {
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)
             sleep 100
+        }
+        if this.balance.current < 1 {
+            MsgBox('0 Balance.')
+            reload
         }
         sleep 50
         MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
