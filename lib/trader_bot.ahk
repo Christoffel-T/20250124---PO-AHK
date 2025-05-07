@@ -54,7 +54,7 @@ class TraderBot {
             this.CheckBalance()
         }
         
-        this.candle_data := [{blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_price: 0}]
+        this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_price: 0}]
         
         this.lose_streak := {max: this.stats.streak, repeat: Map(), end_by_win_count: 0}
         this.paused := false
@@ -327,14 +327,17 @@ class TraderBot {
     Scenario1() {
         if this.paused
             return false
+        bad_condition := false
+        try
+            bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
 
         _pheight := 23
         _candle_size := 20
-        condition_both := Mod(A_Sec, 15) <= 2 and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[1].size >= _candle_size
+        condition_both := (Mod(A_Sec, 15) <= 2 or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         ; if this.stats.streak <= -3
         ;     condition_both := condition_both and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
-        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.ps.g_touch_blue.state and this.ps.g_touch_orange.state and condition_both
-        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.ps.r_touch_blue.state and this.ps.r_touch_orange.state and condition_both
+        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
 
         if (condition_buy) {
             this.last_trade := 'BUY'
@@ -602,6 +605,7 @@ class TraderBot {
             while this.candle_data.Length > 7
                 this.candle_data.Pop()
         }
+        this.candle_data[1].both_lines_touch := this.ps.r_touch_blue.state and this.ps.r_touch_orange.state or this.ps.g_touch_blue.state and this.ps.g_touch_orange.state
         this.candle_data[1].blue_line_y.Push(this.ps.blue.y)
         this.candle_data[1].moving_price := this.ps.moving_price.y
         ; }
@@ -1020,12 +1024,35 @@ class TraderBot {
                 if cur_bal > this.balance.last_trade + 0.5 {
                     ; this.stats.streak++
                     ; this.stats.draw++
+                    this.stats.streak++
+                    if this.stats.streak < 0 {
+                        if this.stats.streak <= -5
+                            this.lose_streak.end_by_win_count++
+                        if not this.lose_streak.repeat.Has(this.stats.streak)
+                            this.lose_streak.repeat[this.stats.streak] := 0
+                        if this.stats.streak < this.lose_streak.max
+                            this.lose_streak.max := this.stats.streak
+                        this.lose_streak.repeat[this.stats.streak]++
+                        this.stats.streak := 0
+                    }
+    
                     this.stats.streak := 1
                     if this.state.32
                         this.stats.streak2 += 2
                     this.stats.win++
                     this.stats.loss--
                     this.amount := this.GetAmount(cur_bal)
+                                    if this.stats.streak < 0 {
+                    if this.stats.streak <= -5
+                        this.lose_streak.end_by_win_count++
+                    if not this.lose_streak.repeat.Has(this.stats.streak)
+                        this.lose_streak.repeat[this.stats.streak] := 0
+                    if this.stats.streak < this.lose_streak.max
+                        this.lose_streak.max := this.stats.streak
+                    this.lose_streak.repeat[this.stats.streak]++
+                    this.stats.streak := 0
+                }
+
                 } else {
                     sleep 10
                     this.stats.loss--
