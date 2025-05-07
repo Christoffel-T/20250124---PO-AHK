@@ -325,12 +325,11 @@ class TraderBot {
         return false
     }
     Scenario1() {
-        if this.paused
+        if this.paused or this.candle_data.Length < 2
             return false
         bad_condition := false
         try
             bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
-
         _pheight := 23
         _candle_size := 20
         condition_both := (Mod(A_Sec, 15) <= 2 or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
