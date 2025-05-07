@@ -748,7 +748,7 @@ class TraderBot {
     ExecuteTrade(action, reason) {
         global
         this.active_trade := ''
-        this.balance.last_trade := this.balance.current - this.amount
+        this.balance.last_trade := this.balance.current
         if !WinActive(this.wtitle) {
             WinActivate(this.wtitle)
             sleep 100
@@ -1016,9 +1016,8 @@ class TraderBot {
             ToolTip
             cur_bal := StrReplace(match[], ',', '')
     
-            if cur_bal > this.balance.last_trade + 0.5 and this.stats.streak < 0 and not this.trade_opened[1] {
-                MsgBox cur_bal '>' this.balance.last_trade '(' this.amount ')'
-                if cur_bal >= this.balance.last_trade + this.amount*1.2 {
+            if cur_bal > this.balance.last_trade and this.stats.streak < 0 and not this.trade_opened[1] {
+                if cur_bal > this.balance.last_trade + 0.5 {
                     ; this.stats.streak++
                     ; this.stats.draw++
                     this.stats.streak := 1
@@ -1029,6 +1028,8 @@ class TraderBot {
                     this.amount := this.GetAmount(cur_bal)
                 } else {
                     sleep 10
+                    this.stats.loss--
+                    this.stats.draw++
                 }
                 this.SetTradeAmount()
                 this.balance.last_trade := cur_bal
