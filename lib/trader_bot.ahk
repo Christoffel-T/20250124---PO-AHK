@@ -1011,19 +1011,17 @@ class TraderBot {
             cur_bal := StrReplace(match[], ',', '')
     
             if cur_bal > this.balance.last_trade + 0.5 and this.stats.streak < 0 and not this.trade_opened[1] {
-                if cur_bal < this.balance.last_trade + this.amount*1.4 {
-                    sleep 10
+                if cur_bal >= this.balance.last_trade + this.amount*1.2 {
                     ; this.stats.streak++
                     ; this.stats.draw++
-                } else {
                     this.stats.streak := 1
                     if this.state.32
                         this.stats.streak2 += 2
                     this.stats.win++
                     this.stats.loss--
                     this.amount := this.GetAmount(cur_bal)
-                    if this.stats.streak <= 3
-                        this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][this.stats.streak]
+                } else {
+                    sleep 10
                 }
                 this.SetTradeAmount()
                 this.balance.last_trade := cur_bal
