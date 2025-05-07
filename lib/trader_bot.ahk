@@ -656,7 +656,7 @@ class TraderBot {
         }
 
         date := FormatTime(A_Now, 'MM/dd')
-        time := FormatTime(A_Now, 'hh:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
+        time := FormatTime(A_Now, 'HH:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
         if this.trade_opened[1] {
             countdown_close := (this.trade_opened[2] - A_TickCount)/1000
             countdown_close_str :=  this.executed_trades[1][2] ' (' format('{:.2f}', countdown_close) ')'
