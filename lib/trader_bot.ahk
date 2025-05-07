@@ -50,6 +50,7 @@ class TraderBot {
             } else {
                 this.SetBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
             }
+            sleep 2000
             this.CheckBalance()
         }
         
@@ -1016,6 +1017,7 @@ class TraderBot {
             cur_bal := StrReplace(match[], ',', '')
     
             if cur_bal > this.balance.last_trade + 0.5 and this.stats.streak < 0 and not this.trade_opened[1] {
+                MsgBox cur_bal '>' this.balance.last_trade '(' this.amount ')'
                 if cur_bal >= this.balance.last_trade + this.amount*1.2 {
                     ; this.stats.streak++
                     ; this.stats.draw++
