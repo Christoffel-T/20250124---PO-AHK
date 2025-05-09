@@ -5,7 +5,7 @@
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
-        this.wtitle := settings_obj.wtitle
+        this.wtitle := WinExist(settings_obj.wtitle)
         this.coords := settings_obj.coords
         this.colors := settings_obj.colors
         this.ps := Map()
