@@ -48,7 +48,7 @@ class TraderBot {
             if this.balance.current < this.balance.starting {
                 this.SetBalance(this.balance.starting-this.balance.current)
             } else {
-                this.SetBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
+                ; this.SetBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
             }
             sleep 2000
             this.CheckBalance()
