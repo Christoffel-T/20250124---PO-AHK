@@ -443,6 +443,9 @@ class TraderBot {
         if not this.state.coin_change_streak and this.stats.streak != coin_change_streak
             this.state.coin_change_streak := true
         Loop {
+            if A_Index > 100 {
+                this.ReloadWebsite()
+            }
             if A_TickCount > this.marked_time_refresh + 2*60*1000 {
                 this.marked_time_refresh := A_TickCount
                 this.ReloadWebsite()
@@ -894,7 +897,11 @@ class TraderBot {
             sleep 100
         }
         sleep 80
-        Send('^r')
+        Send('!d')
+        sleep 80
+        Utils.PasteText('https://pocketoption.com/en/cabinet/demo-quick-high-low/')
+        sleep 80
+        Send('{Enter}')
         sleep 5000
         return
     }
