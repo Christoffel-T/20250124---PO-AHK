@@ -908,6 +908,10 @@ class TraderBot {
     
     SetTradeAmount() {
         Loop {
+            if A_Index > 1000 {
+                this.ReloadWebsite()
+            }
+
             this.amount := Min(this.amount, this.balance.current)
             if this.balance.current < 1 {
                 MsgBox('0 Balance.')
@@ -987,6 +991,9 @@ class TraderBot {
     
     CheckBalance() {
         Loop {
+            if A_Index > 1000 {
+                this.ReloadWebsite()
+            }
             A_Clipboard := ''
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
