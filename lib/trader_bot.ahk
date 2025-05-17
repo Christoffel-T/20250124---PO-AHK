@@ -339,6 +339,8 @@ class TraderBot {
             condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C
         } else {
             condition_both := Mod(A_Sec, 15) <= 2
+            condition_buy  := true
+            condition_sell := true
         }
         condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         ; if this.stats.streak <= -3
