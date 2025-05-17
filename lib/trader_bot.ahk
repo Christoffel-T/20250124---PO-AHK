@@ -40,21 +40,21 @@ class TraderBot {
         this.countdown_close_str := ''
         this.win_rate := ''
         this.debug_str := ''
-        this.stats := {streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 5000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.stats := {bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
+        this.balance := {starting: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.CheckBalance()
         
         if this.balance.current != this.balance.starting {
             if this.balance.current < this.balance.starting {
-                this.SetBalance(this.balance.starting-this.balance.current)
+                this.AddBalance(this.balance.starting-this.balance.current)
             } else {
-                ; this.SetBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
+                ; this.AddBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
             }
             sleep 2000
             this.CheckBalance()
         }
         
-        this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_price: 0}]
+        this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
         this.lose_streak := {max: this.stats.streak, repeat: Map(), end_by_win_count: 0}
         this.paused := false
@@ -332,11 +332,19 @@ class TraderBot {
             bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
         _pheight := 23
         _candle_size := 20
-        condition_both := (Mod(A_Sec, 15) <= 2 or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
+        if this.stats.streak <= -4 {
+            if not condition_both := Mod(A_Sec, 15) = 4 and Utils.is_all_same(this.candle_data[1].colors) and not Utils.is_all_same(this.candle_data[1].moving_prices)
+                return
+            condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C
+            condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C
+        } else {
+            condition_both := Mod(A_Sec, 15) <= 2
+        }
+        condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         ; if this.stats.streak <= -3
         ;     condition_both := condition_both and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
-        condition_buy  := this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
-        condition_sell := this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+        condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+        condition_sell := condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
 
         if (condition_buy) {
             this.last_trade := 'BUY'
@@ -420,8 +428,8 @@ class TraderBot {
         if this.candle_data.Length < 2 or this.trade_opened[1]
             return false
         condition_both := Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and this.candle_data[1].size >= 30
-        condition_buy  := condition_both and this.candle_data[2].color = 'R' and this.candle_data[2].moving_price < this.candle_data[2].O
-        condition_sell := condition_both and this.candle_data[2].color = 'G' and this.candle_data[2].moving_price > this.candle_data[2].O
+        condition_buy  := condition_both and this.candle_data[2].color = 'R' and this.candle_data[2].moving_prices[-1] < this.candle_data[2].O
+        condition_sell := condition_both and this.candle_data[2].color = 'G' and this.candle_data[2].moving_prices[-1] > this.candle_data[2].O
 
         condition_buy  := condition_buy  and this.candle_data[1].color = 'G' and this.candle_data[1].C < this.ps.blue.y
         condition_sell := condition_sell and this.candle_data[1].color = 'R' and this.candle_data[1].C > this.ps.blue.y
@@ -553,7 +561,7 @@ class TraderBot {
             } else if win.ps {
                 this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
-                    if this.stats.streak <= -5
+                    if this.stats.streak = -4
                         this.lose_streak.end_by_win_count++
                     if not this.lose_streak.repeat.Has(this.stats.streak)
                         this.lose_streak.repeat[this.stats.streak] := 0
@@ -603,13 +611,13 @@ class TraderBot {
         ; if (Mod(A_Sec, 15) >= 13) {
         _timeframe := Utils.get_timeframe()
         if _timeframe != this.candle_data[1].timeframe {
-            this.candle_data.InsertAt(1, {blue_line_y: [], color: this.candle_data[1].color, size: 0, timeframe: _timeframe, colors: [this.candle_data[1].color], colors_12: [this.candle_data[1].color], color_changes: [this.candle_data[1].color], O: this.candle_data[1].O, H: this.candle_data[1].H, L: this.candle_data[1].L, C: this.candle_data[1].C})
+            this.candle_data.InsertAt(1, {moving_prices: [], blue_line_y: [], color: this.candle_data[1].color, size: 0, timeframe: _timeframe, colors: [this.candle_data[1].color], colors_12: [this.candle_data[1].color], color_changes: [this.candle_data[1].color], O: this.candle_data[1].O, H: this.candle_data[1].H, L: this.candle_data[1].L, C: this.candle_data[1].C})
             while this.candle_data.Length > 7
                 this.candle_data.Pop()
         }
         this.candle_data[1].both_lines_touch := this.ps.r_touch_blue.state and this.ps.r_touch_orange.state or this.ps.g_touch_blue.state and this.ps.g_touch_orange.state
         this.candle_data[1].blue_line_y.Push(this.ps.blue.y)
-        this.candle_data[1].moving_price := this.ps.moving_price.y
+        this.candle_data[1].moving_prices.Push(this.ps.moving_price.y)
         ; }
 
         if (Mod(A_Sec, 15) = 13 and A_MSec >= 500 or Mod(A_Sec, 15) = 14) {
@@ -635,8 +643,8 @@ class TraderBot {
     RunScenarios() {
         this.paused := this.CheckPaused()
         ; if this.stats.streak <= -3 {
-        ;     qualifier_buy  := this.candle_data[1].moving_price < this.candle_data[2].C and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'G'
-        ;     qualifier_sell := this.candle_data[1].moving_price > this.candle_data[2].C and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'R'
+        ;     qualifier_buy  := this.candle_data[1].moving_prices[-1] < this.candle_data[2].C and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'G'
+        ;     qualifier_sell := this.candle_data[1].moving_prices[-1] > this.candle_data[2].C and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'R'
         ;     if not qualifier_buy and not qualifier_sell
         ;         return
         ; }
@@ -914,8 +922,12 @@ class TraderBot {
 
             this.amount := Min(this.amount, this.balance.current)
             if this.balance.current < 1 {
-                MsgBox('0 Balance.')
-                reload
+                this.stats.bal_lose++
+                this.AddBalance(this.balance.starting-this.balance.current)
+            }
+            if this.balance.current >= 2000 {
+                this.stats.bal_win++
+                this.AddBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
             }
     
             if !WinActive(this.wtitle) {
@@ -1032,7 +1044,7 @@ class TraderBot {
             }
             ToolTip
             cur_bal := StrReplace(match[], ',', '')
-    
+            cur_bal := cur_bal - this.stats.bal_win * 2000
             if cur_bal > this.balance.last_trade and this.stats.streak < 0 and not this.trade_opened[1] {
                 if cur_bal > this.balance.last_trade + 0.5 {
                     ; this.stats.streak++
@@ -1055,17 +1067,16 @@ class TraderBot {
                     this.stats.win++
                     this.stats.loss--
                     this.amount := this.GetAmount(cur_bal)
-                                    if this.stats.streak < 0 {
-                    if this.stats.streak <= -5
-                        this.lose_streak.end_by_win_count++
-                    if not this.lose_streak.repeat.Has(this.stats.streak)
-                        this.lose_streak.repeat[this.stats.streak] := 0
-                    if this.stats.streak < this.lose_streak.max
-                        this.lose_streak.max := this.stats.streak
-                    this.lose_streak.repeat[this.stats.streak]++
-                    this.stats.streak := 0
-                }
-
+                    if this.stats.streak < 0 {
+                        if this.stats.streak <= -5
+                            this.lose_streak.end_by_win_count++
+                        if not this.lose_streak.repeat.Has(this.stats.streak)
+                            this.lose_streak.repeat[this.stats.streak] := 0
+                        if this.stats.streak < this.lose_streak.max
+                            this.lose_streak.max := this.stats.streak
+                        this.lose_streak.repeat[this.stats.streak]++
+                        this.stats.streak := 0
+                    }
                 } else {
                     sleep 10
                     this.stats.loss--
@@ -1081,7 +1092,7 @@ class TraderBot {
         }
     }
 
-    SetBalance(bal_amount) {
+    AddBalance(bal_amount) {
         bal_amount := format('{:.2f}', bal_amount)
         Loop {
             A_Clipboard := ''
