@@ -740,7 +740,7 @@ class TraderBot {
                     time ',' 
                     str_c '(' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
                     format('{:.2f}', this.amount) ',' 
-                    this.balance.current ' (' this.balance.max ' | ' this.balance.min ')' ',' 
+                    this.balance.current '(W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
@@ -926,10 +926,14 @@ class TraderBot {
             if this.balance.current < 1 {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
+                this.balance.max := this.balance.starting
+                this.balance.min := this.balance.starting
             }
             if this.balance.current >= 2000 {
                 this.stats.bal_win++
                 this.AddBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
+                this.balance.max := this.balance.starting
+                this.balance.min := this.balance.starting
             }
     
             if !WinActive(this.wtitle) {
