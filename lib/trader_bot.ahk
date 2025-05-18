@@ -1058,7 +1058,7 @@ class TraderBot {
                     ; this.stats.draw++
                     this.stats.streak++
                     if this.stats.streak < 0 {
-                        if this.stats.streak <= -5
+                        if this.stats.streak = -4
                             this.lose_streak.end_by_win_count++
                         if not this.lose_streak.repeat.Has(this.stats.streak)
                             this.lose_streak.repeat[this.stats.streak] := 0
@@ -1075,7 +1075,7 @@ class TraderBot {
                     this.stats.loss--
                     this.amount := this.GetAmount(cur_bal)
                     if this.stats.streak < 0 {
-                        if this.stats.streak <= -5
+                        if this.stats.streak = -4
                             this.lose_streak.end_by_win_count++
                         if not this.lose_streak.repeat.Has(this.stats.streak)
                             this.lose_streak.repeat[this.stats.streak] := 0
