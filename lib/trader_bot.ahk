@@ -936,7 +936,7 @@ class TraderBot {
                 this.balance.max := this.balance.starting
                 this.balance.min := this.balance.starting
             }
-            this.amount := this.balance.current
+            this.amount := 10000
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
                 sleep 100
