@@ -931,8 +931,7 @@ class TraderBot {
                 this.AddBalance(this.balance.starting-this.balance.current)
                 this.balance.max := this.balance.starting
                 this.balance.min := this.balance.starting
-            }
-            if this.balance.current >= 2000 {
+            } else if this.balance.current >= 2000 {
                 this.stats.bal_win++
                 this.AddBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
                 this.balance.max := this.balance.starting
