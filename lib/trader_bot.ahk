@@ -333,7 +333,7 @@ class TraderBot {
         _pheight := 23
         _candle_size := 20
         if this.stats.streak <= -4 {
-            if not condition_both := Mod(A_Sec, 15) = 4 and Utils.is_all_same(this.candle_data[1].colors) and not Utils.is_all_same(this.candle_data[1].moving_prices)
+            if not condition_both := Mod(A_Sec, 15) = 8 and Utils.is_all_same(this.candle_data[1].colors) and not Utils.is_all_same(this.candle_data[1].moving_prices)
                 return
             condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C
             condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C
