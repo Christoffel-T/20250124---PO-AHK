@@ -510,6 +510,7 @@ class TraderBot {
                 }
                 sleep 50
             }
+            sleep 1000
             this.active_trade := ''
             this.trade_opened[1] := false
             MouseClick('L', this.coords.trades_closed.x + Random(-2, 2), this.coords.trades_closed.y + Random(-1, 1), 5, 2)
