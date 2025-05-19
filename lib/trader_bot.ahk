@@ -1,7 +1,6 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
-
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -332,7 +331,7 @@ class TraderBot {
             bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
         _pheight := 23
         _candle_size := 20
-        if this.stats.streak <= -4 {
+        if this.stats.streak <= -4000000000 {
             if not condition_both := Mod(A_Sec, 15) = 8 and Utils.is_all_same(this.candle_data[1].colors) and not Utils.is_all_same(this.candle_data[1].moving_prices)
                 return
             condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C
@@ -1105,6 +1104,8 @@ class TraderBot {
             Send '{Enter}'
             sleep 1000
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
+            this.balance.max := 0
+            this.balance.min := 9**10
             sleep 1000
             this.CheckBalance()
             return
