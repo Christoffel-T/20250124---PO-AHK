@@ -47,7 +47,6 @@ class TraderBot {
         if this.balance.current != this.balance.starting {
             if this.balance.current < this.balance.starting {
                 this.AddBalance(this.balance.starting-this.balance.current)
-                this.balance.min := this.balance.starting
             } else {
                 ; this.AddBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
             }
@@ -510,7 +509,7 @@ class TraderBot {
                 }
                 sleep 50
             }
-            sleep 1000
+            sleep 500
             this.active_trade := ''
             this.trade_opened[1] := false
             MouseClick('L', this.coords.trades_closed.x + Random(-2, 2), this.coords.trades_closed.y + Random(-1, 1), 5, 2)
@@ -923,19 +922,15 @@ class TraderBot {
             if A_Index > 1000 {
                 this.ReloadWebsite()
             }
-
+            this.CheckBalance()
             this.amount := 10000
             this.amount := Min(this.amount, this.balance.current)
             if this.balance.current < 1 {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
-                this.balance.max := this.balance.starting
-                this.balance.min := this.balance.starting
             } else if this.balance.current >= 2000 {
                 this.stats.bal_win++
                 this.AddBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
-                this.balance.max := this.balance.starting
-                this.balance.min := this.balance.starting
             }
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
