@@ -1119,6 +1119,7 @@ class TraderBot {
             Send '{Enter}'
             sleep 1000
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
+            sleep 1000
             this.CheckBalance()
             return
         }
