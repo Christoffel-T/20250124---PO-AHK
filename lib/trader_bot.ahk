@@ -681,13 +681,13 @@ class TraderBot {
             countdown_close_str := ''
         }
     
-        streaks_str := '<' this.lose_streak.end_by_win_count '> '
+        streaks_str := ''
         if this.lose_streak.repeat.Count > 0
             lose_streak_str := this.lose_streak.max '(' this.lose_streak.repeat[this.lose_streak.max] ')'
         else
             lose_streak_str := 0 '(' 0 ')'
         for k, v in this.lose_streak.repeat {
-            streaks_str .= k '[' v '] '
+            streaks_str .= k '<' v '> '
         }
 
         try {    
@@ -923,7 +923,6 @@ class TraderBot {
                 this.ReloadWebsite()
             }
             this.CheckBalance()
-            this.amount := 10000
             this.amount := Min(this.amount, this.balance.current)
             if this.balance.current < 1 {
                 this.stats.bal_lose++
@@ -1072,16 +1071,6 @@ class TraderBot {
                     this.stats.win++
                     this.stats.loss--
                     this.amount := this.GetAmount(cur_bal)
-                    if this.stats.streak < 0 {
-                        if this.stats.streak = -4
-                            this.lose_streak.end_by_win_count++
-                        if not this.lose_streak.repeat.Has(this.stats.streak)
-                            this.lose_streak.repeat[this.stats.streak] := 0
-                        if this.stats.streak < this.lose_streak.max
-                            this.lose_streak.max := this.stats.streak
-                        this.lose_streak.repeat[this.stats.streak]++
-                        this.stats.streak := 0
-                    }
                 } else {
                     sleep 10
                     this.stats.loss--
