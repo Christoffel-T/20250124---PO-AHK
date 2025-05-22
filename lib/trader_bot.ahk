@@ -400,6 +400,7 @@ class TraderBot {
         condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         
         condition_buy  := this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
+        condition_sell := this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
 
         if condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
             this.qualifiers.sc2B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
