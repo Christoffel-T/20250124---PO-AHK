@@ -366,7 +366,7 @@ class TraderBot {
         }
         if this.qualifiers.HasOwnProp('sc1S') {
             if A_TickCount >= this.qualifiers.sc1S.time + 1500 and A_TickCount <= this.qualifiers.sc1S.time + 2500 
-            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1B.price_line {
+            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1S.price_line {
                 condition_sell := true
                 this.qualifiers.sc1S.state := false
             }
@@ -426,7 +426,7 @@ class TraderBot {
         }
         if this.qualifiers.HasOwnProp('sc2S') {
             if A_TickCount >= this.qualifiers.sc2S.time + 1500 and A_TickCount <= this.qualifiers.sc2S.time + 2500 
-            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2B.price_line {
+            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2S.price_line {
                 condition_sell := true
                 this.qualifiers.sc2S.state := false
             }
