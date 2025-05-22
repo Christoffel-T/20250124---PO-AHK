@@ -1,6 +1,7 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
+
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -11,6 +12,7 @@ class TraderBot {
         this.amount_arr := []
         ; this.amounts_tresholds := [[20000, 3],[4350, 2], [0, 1]]
         this.amounts_tresholds := [[0, 1]]
+        this.qualifiers := {}
 
         Loop 10 {
             _index := A_Index
@@ -344,8 +346,38 @@ class TraderBot {
         condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         ; if this.stats.streak <= -3
         ;     condition_both := condition_both and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
-        condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
-        condition_sell := condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+        if condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+            this.qualifiers.sc1B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
+        if condition_sell := condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+            this.qualifiers.sc1S := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
+        
+        condition_buy := false
+        condition_sell := false
+        
+        if this.qualifiers.HasOwnProp('sc1B') {
+            if A_TickCount >= this.qualifiers.sc1B.time + 1500 and A_TickCount <= this.qualifiers.sc1B.time + 2500 
+            and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc1B.price_line {
+                condition_buy := true
+                this.qualifiers.sc1B.state := false
+            }
+            if this.qualifiers.sc1B.state and A_TickCount > this.qualifiers.sc1B.time + 2500
+            or this.qualifiers.sc1B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1B.price_line {
+                condition_buy := false
+                this.qualifiers.sc1B.state := false
+            }
+        }
+        if this.qualifiers.HasOwnProp('sc1S') {
+            if A_TickCount >= this.qualifiers.sc1S.time + 1500 and A_TickCount <= this.qualifiers.sc1S.time + 2500 
+            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1B.price_line {
+                condition_sell := true
+                this.qualifiers.sc1S.state := false
+            }
+            if this.qualifiers.sc1S.state and A_TickCount > this.qualifiers.sc1S.time + 2500
+            or this.qualifiers.sc1S.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1S.price_line {
+                condition_buy := false
+                this.qualifiers.sc1S.state := false
+            }
+        }
 
         if (condition_buy) {
             this.last_trade := 'BUY'
@@ -357,7 +389,66 @@ class TraderBot {
             this.ExecuteTrade('SELL', '1')
         }
     }
+
     Scenario2() {
+        if this.paused or this.candle_data.Length < 2
+            return false
+        bad_condition := false
+        try
+            bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
+        _pheight := 23
+        _candle_size := 20
+        condition_both := Mod(A_Sec, 15) >= 13
+        condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
+        
+        condition_buy  := this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
+
+        if condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+            this.qualifiers.sc2B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
+        if condition_sell := condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+            this.qualifiers.sc2S := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
+
+        condition_buy := false
+        condition_sell := false
+        
+        if this.qualifiers.HasOwnProp('sc2B') {
+            if A_TickCount >= this.qualifiers.sc2B.time + 1500 and A_TickCount <= this.qualifiers.sc2B.time + 2500 
+            and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc2B.price_line {
+                condition_buy := true
+                this.qualifiers.sc2B.state := false
+            }
+            if this.qualifiers.sc2B.state and A_TickCount > this.qualifiers.sc2B.time + 2500
+            or this.qualifiers.sc2B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2B.price_line {
+                condition_buy := false
+                this.qualifiers.sc2B.state := false
+            }
+        }
+        if this.qualifiers.HasOwnProp('sc2S') {
+            if A_TickCount >= this.qualifiers.sc2S.time + 1500 and A_TickCount <= this.qualifiers.sc2S.time + 2500 
+            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2B.price_line {
+                condition_sell := true
+                this.qualifiers.sc2S.state := false
+            }
+            if this.qualifiers.sc2S.state and A_TickCount > this.qualifiers.sc2S.time + 2500
+            or this.qualifiers.sc2S.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2S.price_line {
+                condition_buy := false
+                this.qualifiers.sc2S.state := false
+            }
+        }
+
+        if (condition_buy) {
+            this.qualifiers.sc2B := false
+            this.last_trade := 'BUY'
+            this.trade_opened := [true, A_TickCount]
+            this.ExecuteTrade('BUY', '2')
+        } else if (condition_sell) {
+            this.qualifiers.sc2S := false
+            this.last_trade := 'SELL'
+            this.trade_opened := [true, A_TickCount]
+            this.ExecuteTrade('SELL', '2')
+        }
+    }
+    Scenario2_old() {
         _pheight := 3.75
         condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 32000 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
         if this.stats.streak <= -40 {
@@ -650,10 +741,10 @@ class TraderBot {
         ;     if not qualifier_buy and not qualifier_sell
         ;         return
         ; }
+        this.Scenario2()
         this.Scenario1()
         ; if this.stats.streak <= -3
         ;     return
-        ; this.Scenario2()
         ; this.Scenario3()
         ; this.Scenario4()
         ; this.Scenario5()
@@ -719,6 +810,11 @@ class TraderBot {
         }
 
         str_c := ''
+        for k, v in this.qualifiers.OwnProps() {
+            if v.state {
+                str_c .= k ' | '
+            }
+        }
         try
             str_c .= SubStr(this.crossovers_arr[-1].direction, 1, 1) Format('{:.1f}', (A_TickCount - this.crossovers_arr[-1].time)/1000) ' | '
         str_c .= 'g' this.ps.g_touch_blue.state this.ps.g_touch_orange.state ' | '
