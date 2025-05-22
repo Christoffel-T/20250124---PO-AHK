@@ -42,14 +42,12 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1350, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.CheckBalance()
         
         if this.balance.current != this.balance.starting {
             if this.balance.current < this.balance.starting {
                 this.AddBalance(this.balance.starting-this.balance.current)
-            } else {
-                ; this.AddBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
             }
             sleep 2000
             this.CheckBalance()
@@ -1024,7 +1022,7 @@ class TraderBot {
                 this.AddBalance(this.balance.starting-this.balance.current)
             } else if this.balance.current >= 2000 {
                 this.stats.bal_win++
-                this.AddBalance(Ceil(this.balance.current/1000)*1000 - this.balance.current)
+                this.AddBalance(this.stats.bal_win*2000 + this.balance.starting - this.balance.current)
             }
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
