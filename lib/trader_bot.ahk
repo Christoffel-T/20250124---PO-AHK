@@ -1,7 +1,12 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
-
+test := {}
+test.bad := {state: 1, sta: 2}
+test.bad2 := {state: 1, sta: 2}
+for k, v in test.OwnProps() {
+    MsgBox k '`n' v.state
+}
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -378,10 +383,12 @@ class TraderBot {
         }
 
         if (condition_buy) {
+            this.qualifiers.sc1B.state := false
             this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('BUY', '1')
         } else if (condition_sell) {
+            this.qualifiers.sc1S.state := false
             this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('SELL', '1')
@@ -436,12 +443,12 @@ class TraderBot {
         }
 
         if (condition_buy) {
-            this.qualifiers.sc2B := false
+            this.qualifiers.sc2B.state := false
             this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('BUY', '2')
         } else if (condition_sell) {
-            this.qualifiers.sc2S := false
+            this.qualifiers.sc2S.state := false
             this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('SELL', '2')
