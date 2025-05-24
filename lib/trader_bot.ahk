@@ -36,7 +36,7 @@ class TraderBot {
         this.crossovers_arr := []
         this.last_trade := ''
         this.active_trade := ''
-        this.executed_trades := ['', '']
+        this.executed_trades := [['', '']]
         this.countdown_close := 0
         this.countdown_close_str := ''
         this.win_rate := ''
@@ -380,12 +380,10 @@ class TraderBot {
         if (condition_buy) {
             this.qualifiers.sc1B.state := false
             this.last_trade := 'BUY'
-            this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('BUY', '1')
         } else if (condition_sell) {
             this.qualifiers.sc1S.state := false
             this.last_trade := 'SELL'
-            this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('SELL', '1')
         }
     }
@@ -862,6 +860,7 @@ class TraderBot {
         global
         if this.trade_opened[1]
             return false
+        this.trade_opened := [true, A_TickCount]
         this.active_trade := ''
         this.balance.last_trade := this.balance.current
         if !WinActive(this.wtitle) {
