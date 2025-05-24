@@ -324,7 +324,7 @@ class TraderBot {
         return false
     }
     Scenario1() {
-        if this.paused or this.candle_data.Length < 2
+        if this.paused or this.candle_data.Length < 2 or this.trade_opened[1]
             return false
         bad_condition := false
         try
@@ -391,7 +391,7 @@ class TraderBot {
     }
 
     Scenario2() {
-        if this.paused or this.candle_data.Length < 2
+        if this.paused or this.candle_data.Length < 2 or this.trade_opened[1]
             return false
         bad_condition := false
         try
