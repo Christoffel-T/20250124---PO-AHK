@@ -338,8 +338,8 @@ class TraderBot {
             condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C
         } else {
             condition_both := Mod(A_Sec, 15) <= 2
-            condition_buy  := true
-            condition_sell := true
+            condition_buy  := condition_both
+            condition_sell := condition_both
         }
         condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         ; if this.stats.streak <= -3
@@ -353,7 +353,7 @@ class TraderBot {
         condition_sell := false
         
         if this.qualifiers.HasOwnProp('sc1B') {
-            if A_TickCount >= this.qualifiers.sc1B.time + 1500 and A_TickCount <= this.qualifiers.sc1B.time + 2500 
+            if this.qualifiers.sc1B.state and A_TickCount >= this.qualifiers.sc1B.time + 1500 and A_TickCount <= this.qualifiers.sc1B.time + 2500 
             and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc1B.price_line {
                 condition_buy := true
                 this.qualifiers.sc1B.state := false
@@ -365,7 +365,7 @@ class TraderBot {
             }
         }
         if this.qualifiers.HasOwnProp('sc1S') {
-            if A_TickCount >= this.qualifiers.sc1S.time + 1500 and A_TickCount <= this.qualifiers.sc1S.time + 2500 
+            if this.qualifiers.sc1S.state and A_TickCount >= this.qualifiers.sc1S.time + 1500 and A_TickCount <= this.qualifiers.sc1S.time + 2500 
             and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1S.price_line {
                 condition_sell := true
                 this.qualifiers.sc1S.state := false
@@ -399,8 +399,8 @@ class TraderBot {
         condition_both := Mod(A_Sec, 15) >= 13
         condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         
-        condition_buy  := this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
-        condition_sell := this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
+        condition_buy  := Mod(A_Sec, 15) >= 13 and this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
+        condition_sell := Mod(A_Sec, 15) >= 13 and this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
 
         if condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
             this.qualifiers.sc2B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
@@ -411,7 +411,7 @@ class TraderBot {
         condition_sell := false
         
         if this.qualifiers.HasOwnProp('sc2B') {
-            if A_TickCount >= this.qualifiers.sc2B.time + 1500 and A_TickCount <= this.qualifiers.sc2B.time + 2500 
+            if this.qualifiers.sc2B.state and A_TickCount >= this.qualifiers.sc2B.time + 1500 and A_TickCount <= this.qualifiers.sc2B.time + 2500 
             and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc2B.price_line {
                 condition_buy := true
                 this.qualifiers.sc2B.state := false
@@ -423,7 +423,7 @@ class TraderBot {
             }
         }
         if this.qualifiers.HasOwnProp('sc2S') {
-            if A_TickCount >= this.qualifiers.sc2S.time + 1500 and A_TickCount <= this.qualifiers.sc2S.time + 2500 
+            if this.qualifiers.sc2S.state and A_TickCount >= this.qualifiers.sc2S.time + 1500 and A_TickCount <= this.qualifiers.sc2S.time + 2500 
             and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2S.price_line {
                 condition_sell := true
                 this.qualifiers.sc2S.state := false
@@ -438,12 +438,10 @@ class TraderBot {
         if (condition_buy) {
             this.qualifiers.sc2B.state := false
             this.last_trade := 'BUY'
-            this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('BUY', '2')
         } else if (condition_sell) {
             this.qualifiers.sc2S.state := false
             this.last_trade := 'SELL'
-            this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('SELL', '2')
         }
     }
