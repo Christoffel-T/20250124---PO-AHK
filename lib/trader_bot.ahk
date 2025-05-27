@@ -332,56 +332,72 @@ class TraderBot {
         _pheight := 20
         _candle_size := 20
         if this.stats.streak <= -4000000000 {
-            if not condition_both := Mod(A_Sec, 15) = 8 and Utils.is_all_same(this.candle_data[1].colors) and not Utils.is_all_same(this.candle_data[1].moving_prices)
+            if not condition_both := Mod(A_Sec-1, 15) = 8 and Utils.is_all_same(this.candle_data[1].colors) and not Utils.is_all_same(this.candle_data[1].moving_prices)
                 return
             condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C
             condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C
         } else {
-            condition_both := Mod(A_Sec, 15) <= 2
+            condition_both := Mod(A_Sec-1, 15) <= 2
             condition_buy  := condition_both
             condition_sell := condition_both
         }
         condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         ; if this.stats.streak <= -3
-        ;     condition_both := condition_both and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
+        ;     condition_both := condition_both and Mod(A_Sec-1, 15) >= 1 and Mod(A_Sec-1, 15) <= 3
         if condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
-            this.qualifiers.sc1B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
+            this.qualifiers.sc1B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size}
         if condition_sell := condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
-            this.qualifiers.sc1S := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
+            this.qualifiers.sc1S := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size}
         
         condition_buy := false
         condition_sell := false
         
         if this.qualifiers.HasOwnProp('sc1B') {
-            if this.qualifiers.sc1B.state and A_TickCount >= this.qualifiers.sc1B.time + 1500 and A_TickCount <= this.qualifiers.sc1B.time + 2500 
+            if this.qualifiers.sc1B.state = 1 and A_TickCount >= this.qualifiers.sc1B.time + 2500 and A_TickCount <= this.qualifiers.sc1B.time + 3000 
             and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc1B.price_line {
-                condition_buy := true
-                this.qualifiers.sc1B.state := false
+                this.qualifiers.sc1B.state := 2
+                this.qualifiers.sc1B.candle_size := this.candle_data[1].size
+                this.qualifiers.sc1B.timeframe := Utils.get_timeframe()
             }
-            if this.qualifiers.sc1B.state and A_TickCount > this.qualifiers.sc1B.time + 2500
+            if this.qualifiers.sc1B.state = 2 and this.stats.streak <= -4 and this.candle_data[1].size > this.qualifiers.sc1B.candle_size {
+                condition_sell := true
+            } else if this.qualifiers.sc1B.state = 2 and this.stats.streak > -4 {
+                condition_sell := true
+            } else if this.qualifiers.sc1B.state = 2 and Utils.get_timeframe() != this.qualifiers.sc1B.timeframe {
+                condition_sell := false
+                this.qualifiers.sc1B.state = false
+            } else if this.qualifiers.sc1B.state = 2 and A_TickCount > this.qualifiers.sc1B.time + 3000
             or this.qualifiers.sc1B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1B.price_line {
-                condition_buy := false
-                this.qualifiers.sc1B.state := false
-            }
+                condition_sell := false
+                this.qualifiers.sc1B.state = false
+            } 
         }
         if this.qualifiers.HasOwnProp('sc1S') {
-            if this.qualifiers.sc1S.state and A_TickCount >= this.qualifiers.sc1S.time + 1500 and A_TickCount <= this.qualifiers.sc1S.time + 2500 
+            if this.qualifiers.sc1S.state = 1 and A_TickCount >= this.qualifiers.sc1S.time + 2500 and A_TickCount <= this.qualifiers.sc1S.time + 3000 
             and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1S.price_line {
+                this.qualifiers.sc1S.state := 2
+                this.qualifiers.sc1S.candle_size := this.candle_data[1].size
+                this.qualifiers.sc1S.timeframe := Utils.get_timeframe()
+            }
+            if this.qualifiers.sc1S.state = 2 and this.stats.streak <= -4 and this.candle_data[1].size > this.qualifiers.sc1S.candle_size {
                 condition_sell := true
-                this.qualifiers.sc1S.state := false
-            }
-            if this.qualifiers.sc1S.state and A_TickCount > this.qualifiers.sc1S.time + 2500
-            or this.qualifiers.sc1S.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1S.price_line {
-                condition_buy := false
-                this.qualifiers.sc1S.state := false
-            }
+            } else if this.qualifiers.sc1S.state = 2 and this.stats.streak > -4 {
+                condition_sell := true
+            } else if this.qualifiers.sc1S.state = 2 and Utils.get_timeframe() != this.qualifiers.sc1S.timeframe {
+                condition_sell := false
+                this.qualifiers.sc1S.state = false
+            } else if this.qualifiers.sc1S.state = 2 and A_TickCount > this.qualifiers.sc1S.time + 3000
+            or this.qualifiers.sc1S.state and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc1S.price_line {
+                condition_sell := false
+                this.qualifiers.sc1S.state = false
+            } 
         }
 
-        if (condition_buy) {
+        if (condition_buy and this.candle_data[1].color = 'G') {
             this.qualifiers.sc1B.state := false
             this.last_trade := 'BUY'
             this.ExecuteTrade('BUY', '1')
-        } else if (condition_sell) {
+        } else if (condition_sell and this.candle_data[1].color = 'R') {
             this.qualifiers.sc1S.state := false
             this.last_trade := 'SELL'
             this.ExecuteTrade('SELL', '1')
@@ -396,50 +412,66 @@ class TraderBot {
             bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
         _pheight := 20
         _candle_size := 20
-        condition_both := Mod(A_Sec, 15) >= 13
+        condition_both := Mod(A_Sec-1, 15) >= 13
         condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         
-        condition_buy  := Mod(A_Sec, 15) >= 13 and this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
-        condition_sell := Mod(A_Sec, 15) >= 13 and this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
+        condition_buy  := Mod(A_Sec-1, 15) >= 13 and this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
+        condition_sell := Mod(A_Sec-1, 15) >= 13 and this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
 
         if condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
-            this.qualifiers.sc2B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
+            this.qualifiers.sc2B := {timeframe: Utils.get_timeframe(), state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size}
         if condition_sell := condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
-            this.qualifiers.sc2S := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1]}
+            this.qualifiers.sc2S := {timeframe: Utils.get_timeframe(), state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size}
 
         condition_buy := false
         condition_sell := false
         
         if this.qualifiers.HasOwnProp('sc2B') {
-            if this.qualifiers.sc2B.state and A_TickCount >= this.qualifiers.sc2B.time + 1500 and A_TickCount <= this.qualifiers.sc2B.time + 2500 
+            if this.qualifiers.sc2B.state = 1 and A_TickCount >= this.qualifiers.sc2B.time + 2500 and A_TickCount <= this.qualifiers.sc2B.time + 3000 
             and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc2B.price_line {
-                condition_buy := true
-                this.qualifiers.sc2B.state := false
+                this.qualifiers.sc2B.state := 2
+                this.qualifiers.sc2B.candle_size := this.candle_data[1].size
+                this.qualifiers.sc2B.timeframe := Utils.get_timeframe()
             }
-            if this.qualifiers.sc2B.state and A_TickCount > this.qualifiers.sc2B.time + 2500
+            if this.qualifiers.sc2B.state = 2 and this.stats.streak <= -4 and this.candle_data[1].size > this.qualifiers.sc2B.candle_size {
+                condition_sell := true
+            } else if this.qualifiers.sc2B.state = 2 and this.stats.streak > -4 {
+                condition_sell := true
+            } else if this.qualifiers.sc2B.state = 2 and Utils.get_timeframe() != this.qualifiers.sc2B.timeframe {
+                condition_sell := false
+                this.qualifiers.sc2B.state = false
+            } else if this.qualifiers.sc2B.state = 2 and A_TickCount > this.qualifiers.sc2B.time + 3000
             or this.qualifiers.sc2B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2B.price_line {
-                condition_buy := false
-                this.qualifiers.sc2B.state := false
-            }
+                condition_sell := false
+                this.qualifiers.sc2B.state = false
+            } 
         }
         if this.qualifiers.HasOwnProp('sc2S') {
-            if this.qualifiers.sc2S.state and A_TickCount >= this.qualifiers.sc2S.time + 1500 and A_TickCount <= this.qualifiers.sc2S.time + 2500 
+            if this.qualifiers.sc2S.state = 1 and A_TickCount >= this.qualifiers.sc2S.time + 2500 and A_TickCount <= this.qualifiers.sc2S.time + 3000 
             and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2S.price_line {
+                this.qualifiers.sc2S.state := 2
+                this.qualifiers.sc2S.candle_size := this.candle_data[1].size
+                this.qualifiers.sc2S.timeframe := Utils.get_timeframe()
+            }
+            if this.qualifiers.sc2S.state = 2 and this.stats.streak <= -4 and this.candle_data[1].size > this.qualifiers.sc2S.candle_size {
                 condition_sell := true
-                this.qualifiers.sc2S.state := false
-            }
-            if this.qualifiers.sc2S.state and A_TickCount > this.qualifiers.sc2S.time + 2500
-            or this.qualifiers.sc2S.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2S.price_line {
-                condition_buy := false
-                this.qualifiers.sc2S.state := false
-            }
+            } else if this.qualifiers.sc2S.state = 2 and this.stats.streak > -4 {
+                condition_sell := true
+            } else if this.qualifiers.sc2S.state = 2 and Utils.get_timeframe() != this.qualifiers.sc2S.timeframe {
+                condition_sell := false
+                this.qualifiers.sc2S.state = false
+            } else if this.qualifiers.sc2S.state = 2 and A_TickCount > this.qualifiers.sc2S.time + 3000
+            or this.qualifiers.sc2S.state and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc2S.price_line {
+                condition_sell := false
+                this.qualifiers.sc2S.state = false
+            } 
         }
 
-        if (condition_buy) {
+        if (condition_buy and this.candle_data[1].color = 'G') {
             this.qualifiers.sc2B.state := false
             this.last_trade := 'BUY'
             this.ExecuteTrade('BUY', '2')
-        } else if (condition_sell) {
+        } else if (condition_sell and this.candle_data[1].color = 'R') {
             this.qualifiers.sc2S.state := false
             this.last_trade := 'SELL'
             this.ExecuteTrade('SELL', '2')
