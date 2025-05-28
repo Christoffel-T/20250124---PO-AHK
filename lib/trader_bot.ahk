@@ -13,6 +13,7 @@ class TraderBot {
         ; this.amounts_tresholds := [[20000, 3],[4350, 2], [0, 1]]
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
+        this.qualifiers.streak_sc := -4000
 
         Loop 10 {
             _index := A_Index
@@ -42,7 +43,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 1350, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1700, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.CheckBalance()
         
         if this.balance.current != this.balance.starting {
@@ -359,9 +360,9 @@ class TraderBot {
                 this.qualifiers.sc1B.candle_size := this.candle_data[1].size
                 this.qualifiers.sc1B.timeframe := Utils.get_timeframe()
             }
-            if this.qualifiers.sc1B.state = 2 and this.stats.streak <= -4 and this.candle_data[1].size > this.qualifiers.sc1B.candle_size {
+            if this.qualifiers.sc1B.state = 2 and this.stats.streak <= this.qualifiers.streak_sc and this.candle_data[1].size > this.qualifiers.sc1B.candle_size {
                 condition_sell := true
-            } else if this.qualifiers.sc1B.state = 2 and this.stats.streak > -4 {
+            } else if this.qualifiers.sc1B.state = 2 and this.stats.streak > this.qualifiers.streak_sc {
                 condition_sell := true
             } else if this.qualifiers.sc1B.state = 2 and Utils.get_timeframe() != this.qualifiers.sc1B.timeframe {
                 condition_sell := false
@@ -379,9 +380,9 @@ class TraderBot {
                 this.qualifiers.sc1S.candle_size := this.candle_data[1].size
                 this.qualifiers.sc1S.timeframe := Utils.get_timeframe()
             }
-            if this.qualifiers.sc1S.state = 2 and this.stats.streak <= -4 and this.candle_data[1].size > this.qualifiers.sc1S.candle_size {
+            if this.qualifiers.sc1S.state = 2 and this.stats.streak <= this.qualifiers.streak_sc and this.candle_data[1].size > this.qualifiers.sc1S.candle_size {
                 condition_sell := true
-            } else if this.qualifiers.sc1S.state = 2 and this.stats.streak > -4 {
+            } else if this.qualifiers.sc1S.state = 2 and this.stats.streak > this.qualifiers.streak_sc {
                 condition_sell := true
             } else if this.qualifiers.sc1S.state = 2 and Utils.get_timeframe() != this.qualifiers.sc1S.timeframe {
                 condition_sell := false
@@ -433,9 +434,9 @@ class TraderBot {
                 this.qualifiers.sc2B.candle_size := this.candle_data[1].size
                 this.qualifiers.sc2B.timeframe := Utils.get_timeframe()
             }
-            if this.qualifiers.sc2B.state = 2 and this.stats.streak <= -4 and this.candle_data[1].size > this.qualifiers.sc2B.candle_size {
+            if this.qualifiers.sc2B.state = 2 and this.stats.streak <= this.qualifiers.streak_sc and this.candle_data[1].size > this.qualifiers.sc2B.candle_size {
                 condition_sell := true
-            } else if this.qualifiers.sc2B.state = 2 and this.stats.streak > -4 {
+            } else if this.qualifiers.sc2B.state = 2 and this.stats.streak > this.qualifiers.streak_sc {
                 condition_sell := true
             } else if this.qualifiers.sc2B.state = 2 and Utils.get_timeframe() != this.qualifiers.sc2B.timeframe {
                 condition_sell := false
@@ -453,9 +454,9 @@ class TraderBot {
                 this.qualifiers.sc2S.candle_size := this.candle_data[1].size
                 this.qualifiers.sc2S.timeframe := Utils.get_timeframe()
             }
-            if this.qualifiers.sc2S.state = 2 and this.stats.streak <= -4 and this.candle_data[1].size > this.qualifiers.sc2S.candle_size {
+            if this.qualifiers.sc2S.state = 2 and this.stats.streak <= this.qualifiers.streak_sc and this.candle_data[1].size > this.qualifiers.sc2S.candle_size {
                 condition_sell := true
-            } else if this.qualifiers.sc2S.state = 2 and this.stats.streak > -4 {
+            } else if this.qualifiers.sc2S.state = 2 and this.stats.streak > this.qualifiers.streak_sc {
                 condition_sell := true
             } else if this.qualifiers.sc2S.state = 2 and Utils.get_timeframe() != this.qualifiers.sc2S.timeframe {
                 condition_sell := false
