@@ -355,7 +355,7 @@ class TraderBot {
         
         if this.qualifiers.HasOwnProp('sc1B') {
             if this.qualifiers.sc1B.state = 1 and A_TickCount >= this.qualifiers.sc1B.time + 2500 and A_TickCount <= this.qualifiers.sc1B.time + 3000 
-            and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc1B.price_line {
+            and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc1B.price_line + 2 {
                 this.qualifiers.sc1B.state := 2
                 this.qualifiers.sc1B.candle_size := this.candle_data[1].size
                 this.qualifiers.sc1B.timeframe := Utils.get_timeframe()
@@ -368,14 +368,14 @@ class TraderBot {
                 condition_sell := false
                 this.qualifiers.sc1B.state := false
             } else if this.qualifiers.sc1B.state = 2 and A_TickCount > this.qualifiers.sc1B.time + 3000
-            or this.qualifiers.sc1B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1B.price_line {
+            or this.qualifiers.sc1B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1B.price_line + 2 {
                 condition_sell := false
                 this.qualifiers.sc1B.state := false
             } 
         }
         if this.qualifiers.HasOwnProp('sc1S') {
             if this.qualifiers.sc1S.state = 1 and A_TickCount >= this.qualifiers.sc1S.time + 2500 and A_TickCount <= this.qualifiers.sc1S.time + 3000 
-            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1S.price_line {
+            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1S.price_line - 2 {
                 this.qualifiers.sc1S.state := 2
                 this.qualifiers.sc1S.candle_size := this.candle_data[1].size
                 this.qualifiers.sc1S.timeframe := Utils.get_timeframe()
@@ -388,7 +388,7 @@ class TraderBot {
                 condition_sell := false
                 this.qualifiers.sc1S.state := false
             } else if this.qualifiers.sc1S.state = 2 and A_TickCount > this.qualifiers.sc1S.time + 3000
-            or this.qualifiers.sc1S.state and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc1S.price_line {
+            or this.qualifiers.sc1S.state and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc1S.price_line - 2 {
                 condition_sell := false
                 this.qualifiers.sc1S.state := false
             } 
@@ -429,7 +429,7 @@ class TraderBot {
         
         if this.qualifiers.HasOwnProp('sc2B') {
             if this.qualifiers.sc2B.state = 1 and A_TickCount >= this.qualifiers.sc2B.time + 2500 and A_TickCount <= this.qualifiers.sc2B.time + 3000 
-            and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc2B.price_line {
+            and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc2B.price_line + 2 {
                 this.qualifiers.sc2B.state := 2
                 this.qualifiers.sc2B.candle_size := this.candle_data[1].size
                 this.qualifiers.sc2B.timeframe := Utils.get_timeframe()
@@ -442,14 +442,14 @@ class TraderBot {
                 condition_sell := false
                 this.qualifiers.sc2B.state := false
             } else if this.qualifiers.sc2B.state = 2 and A_TickCount > this.qualifiers.sc2B.time + 3000
-            or this.qualifiers.sc2B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2B.price_line {
+            or this.qualifiers.sc2B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2B.price_line + 2 {
                 condition_sell := false
                 this.qualifiers.sc2B.state := false
             } 
         }
         if this.qualifiers.HasOwnProp('sc2S') {
             if this.qualifiers.sc2S.state = 1 and A_TickCount >= this.qualifiers.sc2S.time + 2500 and A_TickCount <= this.qualifiers.sc2S.time + 3000 
-            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2S.price_line {
+            and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2S.price_line - 2 {
                 this.qualifiers.sc2S.state := 2
                 this.qualifiers.sc2S.candle_size := this.candle_data[1].size
                 this.qualifiers.sc2S.timeframe := Utils.get_timeframe()
@@ -462,7 +462,7 @@ class TraderBot {
                 condition_sell := false
                 this.qualifiers.sc2S.state := false
             } else if this.qualifiers.sc2S.state = 2 and A_TickCount > this.qualifiers.sc2S.time + 3000
-            or this.qualifiers.sc2S.state and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc2S.price_line {
+            or this.qualifiers.sc2S.state and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc2S.price_line - 2 {
                 condition_sell := false
                 this.qualifiers.sc2S.state := false
             } 
