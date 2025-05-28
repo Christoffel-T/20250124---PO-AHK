@@ -841,7 +841,7 @@ class TraderBot {
 
         str_c := ''
         for k, v in this.qualifiers.OwnProps() {
-            if not v.HasOwnProp('state')
+            if not Type(v) = 'Object' or not v.HasOwnProp('state')
                 continue
             if v.state {
                 str_c .= k ' | '
