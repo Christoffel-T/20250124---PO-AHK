@@ -491,7 +491,7 @@ class TraderBot {
             this.qualifiers.sc3S := {state: true, price_line: this.candle_data[1].moving_prices[-1]}
 
         condition_buy  := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state and this.qualifiers.sc3B.price_line < this.candle_data[1].moving_prices[-1]
-        condition_sell := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3B.state and this.qualifiers.sc3B.price_line < this.candle_data[1].moving_prices[-1]
+        condition_sell := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state and this.qualifiers.sc3S.price_line < this.candle_data[1].moving_prices[-1]
 
         if (condition_buy) {
             this.qualifiers.sc3B.state := false
