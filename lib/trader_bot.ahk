@@ -394,6 +394,11 @@ class TraderBot {
             } 
         }
 
+        if this.qualifiers.HasOwnProp('sc1B') and this.qualifiers.sc1B.HasOwnProp('timeframe') and this.qualifiers.sc1B.state and Utils.get_timeframe() != this.qualifiers.sc1B.timeframe
+            this.qualifiers.sc1B.state := false
+        if this.qualifiers.HasOwnProp('sc1S') and this.qualifiers.sc1S.HasOwnProp('timeframe') and this.qualifiers.sc1S.state and Utils.get_timeframe() != this.qualifiers.sc1S.timeframe
+            this.qualifiers.sc1S.state := false
+
         if (condition_buy and this.candle_data[1].color = 'G') {
             this.qualifiers.sc1B.state := false
             this.last_trade := 'BUY'
@@ -468,6 +473,12 @@ class TraderBot {
             } 
         }
 
+        if this.qualifiers.HasOwnProp('sc2B') and this.qualifiers.sc2B.state and A_Now > this.qualifiers.sc2B.timeframe + 30
+            this.qualifiers.sc2B.state := false
+        if this.qualifiers.HasOwnProp('sc2S') and this.qualifiers.sc2S.state and A_Now > this.qualifiers.sc2S.timeframe + 30
+            this.qualifiers.sc2S.state := false
+
+
         if (condition_buy and this.candle_data[1].color = 'G') {
             this.qualifiers.sc2B.state := false
             this.last_trade := 'BUY'
@@ -495,7 +506,7 @@ class TraderBot {
 
         if this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state and Utils.get_timeframe() != this.qualifiers.sc3B.timeframe
             this.qualifiers.sc3B.state := false
-        if this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state and Utils.get_timeframe() != this.qualifiers.sc3B.timeframe
+        if this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state and Utils.get_timeframe() != this.qualifiers.sc3S.timeframe
             this.qualifiers.sc3S.state := false
 
         if (condition_buy) {
