@@ -478,45 +478,28 @@ class TraderBot {
             this.ExecuteTrade('SELL', '2')
         }
     }
-    Scenario2_old() {
-        _pheight := 3.75
-        condition_both := this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 32000 and A_TickCount - this.crossovers_arr[-1].time >= 15000 and not this.trade_opened[1]
-        if this.stats.streak <= -40 {
-            _pheight := 3.75
-        }
-        condition_buy  := this.ps.orange.y - this.ps.blue.y > _pheight and this.candle_data[1].color = 'G' and condition_both
-        condition_sell := this.ps.blue.y - this.ps.orange.y > _pheight and this.candle_data[1].color = 'R' and condition_both
-
-        condition_buy  := condition_buy  and this.ps.moving_price.y < this.candle_data[1].O - (this.candle_data[1].size/2)
-        condition_sell := condition_sell and this.ps.moving_price.y > this.candle_data[1].O + (this.candle_data[1].size/2)
-
-        if this.paused
-            return false
-        if (condition_buy) {
-            this.last_trade := 'BUY'
-            this.trade_opened := [true, A_TickCount]
-            this.ExecuteTrade('BUY', '2')
-        } else if (condition_sell) {
-            this.last_trade := 'SELL'
-            this.trade_opened := [true, A_TickCount]
-            this.ExecuteTrade('SELL', '2')
-        }
-    }
     Scenario3() {
-        if this.candle_data.Length < 2
+        if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
             return false
-        _pheight := 5
-        condition_both := Mod(A_Sec, 15) >= 12 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1]
-        condition_buy  := this.ps.orange.y - this.ps.blue.y < _pheight and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'R' and condition_both
-        condition_sell := this.ps.blue.y - this.ps.orange.y < _pheight and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'G' and condition_both
+        _pheight := 20
+        _candle_size := 20
+        condition_both := Mod(A_Sec-1, 15) >= 12 and A_MSec >= 500 and this.crossovers_arr.Length >= 2 and this.candle_data[1].size >= _candle_size
+        
+        if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].O 
+            this.qualifiers.sc3B := {state: true, price_line: this.candle_data[1].moving_prices[-1]}
+        if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].O
+            this.qualifiers.sc3S := {state: true, price_line: this.candle_data[1].moving_prices[-1]}
 
-        if this.paused
-            return false
+        condition_buy  := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state and this.qualifiers.sc3B.price_line < this.candle_data[1].moving_prices[-1]
+        condition_sell := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3B.state and this.qualifiers.sc3B.price_line < this.candle_data[1].moving_prices[-1]
+
         if (condition_buy) {
+            this.qualifiers.sc3B.state := false
             this.last_trade := 'BUY'
             this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('BUY', '3')
         } else if (condition_sell) {
+            this.qualifiers.sc3S.state := false
             this.last_trade := 'SELL'
             this.trade_opened := [true, A_TickCount]
             this.ExecuteTrade('SELL', '3')
@@ -708,8 +691,8 @@ class TraderBot {
     BothLinesDetected() {
         ToolTip('blue', this.ps.blue.x-200, this.ps.blue.y, 2)
         ToolTip('orange', this.ps.orange.x-200, this.ps.orange.y, 3)
-        ToolTip('blue', this.ps.blue.x, this.ps.blue.y-200, 4)
-        ToolTip('orange', this.ps.orange.x, this.ps.orange.y-200, 5)
+        ToolTip('blue', this.ps.blue.x, A_ScreenHeight-100, 4)
+        ToolTip('orange', this.ps.orange.x, A_ScreenHeight-50, 5)
         if this.ps.close_green.state 
             ToolTip('CLOSE-green', this.ps.close_green.x-250, this.ps.close_green.y, 6)
         if this.ps.close_red.state 
@@ -771,13 +754,11 @@ class TraderBot {
         ;     if not qualifier_buy and not qualifier_sell
         ;         return
         ; }
+        this.Scenario3()
+        if this.stats.streak <= -4
+            return
         this.Scenario2()
         this.Scenario1()
-        ; if this.stats.streak <= -3
-        ;     return
-        ; this.Scenario3()
-        ; this.Scenario4()
-        ; this.Scenario5()
     }
 
     UpdateLog() {
