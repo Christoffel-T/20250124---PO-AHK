@@ -486,12 +486,17 @@ class TraderBot {
         condition_both := Mod(A_Sec-1, 15) >= 12 and A_MSec >= 500 and this.crossovers_arr.Length >= 2 and this.candle_data[1].size >= _candle_size
         
         if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].O 
-            this.qualifiers.sc3B := {state: true, price_line: this.candle_data[1].moving_prices[-1]}
+            this.qualifiers.sc3B := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()}
         if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].O
-            this.qualifiers.sc3S := {state: true, price_line: this.candle_data[1].moving_prices[-1]}
+            this.qualifiers.sc3S := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()}
 
-        condition_buy  := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state and this.qualifiers.sc3B.price_line < this.candle_data[1].moving_prices[-1]
-        condition_sell := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state and this.qualifiers.sc3S.price_line < this.candle_data[1].moving_prices[-1]
+        condition_buy  := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc3B.price_line
+        condition_sell := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc3S.price_line
+
+        if this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state and Utils.get_timeframe() != this.qualifiers.sc3B.timeframe
+            this.qualifiers.sc3B.state := false
+        if this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state and Utils.get_timeframe() != this.qualifiers.sc3B.timeframe
+            this.qualifiers.sc3S.state := false
 
         if (condition_buy) {
             this.qualifiers.sc3B.state := false
