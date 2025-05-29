@@ -1206,7 +1206,6 @@ class TraderBot {
                     this.stats.loss--
                     this.stats.draw++
                 }
-                this.SetTradeAmount()
                 this.balance.last_trade := cur_bal
             }
             this.balance.current := cur_bal
