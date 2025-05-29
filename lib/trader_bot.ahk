@@ -361,15 +361,15 @@ class TraderBot {
                 this.qualifiers.sc1B.timeframe := Utils.get_timeframe()
             }
             if this.qualifiers.sc1B.state = 2 and this.stats.streak <= this.qualifiers.streak_sc and this.candle_data[1].size > this.qualifiers.sc1B.candle_size {
-                condition_sell := true
+                condition_buy := true
             } else if this.qualifiers.sc1B.state = 2 and this.stats.streak > this.qualifiers.streak_sc {
-                condition_sell := true
+                condition_buy := true
             } else if this.qualifiers.sc1B.state = 2 and Utils.get_timeframe() != this.qualifiers.sc1B.timeframe {
-                condition_sell := false
+                condition_buy := false
                 this.qualifiers.sc1B.state := false
             } else if this.qualifiers.sc1B.state = 2 and A_TickCount > this.qualifiers.sc1B.time + 3000
             or this.qualifiers.sc1B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc1B.price_line + 2 {
-                condition_sell := false
+                condition_buy := false
                 this.qualifiers.sc1B.state := false
             } 
         }
@@ -435,15 +435,15 @@ class TraderBot {
                 this.qualifiers.sc2B.timeframe := Utils.get_timeframe()
             }
             if this.qualifiers.sc2B.state = 2 and this.stats.streak <= this.qualifiers.streak_sc and this.candle_data[1].size > this.qualifiers.sc2B.candle_size {
-                condition_sell := true
+                condition_buy := true
             } else if this.qualifiers.sc2B.state = 2 and this.stats.streak > this.qualifiers.streak_sc {
-                condition_sell := true
+                condition_buy := true
             } else if this.qualifiers.sc2B.state = 2 and Utils.get_timeframe() != this.qualifiers.sc2B.timeframe {
-                condition_sell := false
+                condition_buy := false
                 this.qualifiers.sc2B.state := false
             } else if this.qualifiers.sc2B.state = 2 and A_TickCount > this.qualifiers.sc2B.time + 3000
             or this.qualifiers.sc2B.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc2B.price_line + 2 {
-                condition_sell := false
+                condition_buy := false
                 this.qualifiers.sc2B.state := false
             } 
         }
