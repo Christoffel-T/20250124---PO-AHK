@@ -90,6 +90,8 @@ class TraderBot {
         MouseClick('L', this.coords.time_choice.x + Random(-2, 2), this.coords.time_choice.y + Random(-2, 2), 1, 2)
         sleep 100
         MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
+        sleep 100
+        this.CheckPayout(true)
         SetTimer(this.Main.Bind(this), 100)
     }
 
@@ -547,7 +549,7 @@ class TraderBot {
         }
     }
 
-    CheckPayout() {
+    CheckPayout(change_anyway := false) {
         coin_change_streak := -4
         this.marked_time_refresh := A_TickCount
         if not this.state.coin_change_streak and this.stats.streak != coin_change_streak
@@ -561,7 +563,7 @@ class TraderBot {
                 this.ReloadWebsite()
                 ; reload
             }    
-            if (this.stats.streak != coin_change_streak or not this.state.coin_change_streak) and ImageSearch(&outx, &outy, this.coords.Payout.x, this.coords.Payout.y, this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, '*10 payout.png') {
+            if not change_anyway and (this.stats.streak != coin_change_streak or not this.state.coin_change_streak) and ImageSearch(&outx, &outy, this.coords.Payout.x, this.coords.Payout.y, this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, '*10 payout.png') {
                 this.payout := 92
                 break
             } else {
