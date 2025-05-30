@@ -567,6 +567,7 @@ class TraderBot {
                 this.payout := 92
                 break
             } else {
+                change_anyway := false
                 Loop 19 {
                     ToolTip(,,,A_Index+1)
                 }
