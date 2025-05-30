@@ -342,7 +342,7 @@ class TraderBot {
             condition_buy  := condition_both
             condition_sell := condition_both
         }
-        condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
+        condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         ; if this.stats.streak <= -3
         ;     condition_both := condition_both and Mod(A_Sec-1, 15) >= 1 and Mod(A_Sec-1, 15) <= 3
         if condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
@@ -419,7 +419,7 @@ class TraderBot {
         _pheight := 20
         _candle_size := 20
         condition_both := Mod(A_Sec-1, 15) >= 13
-        condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-1].time <= 15000 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
+        condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         
         condition_buy  := Mod(A_Sec-1, 15) >= 13 and this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
         condition_sell := Mod(A_Sec-1, 15) >= 13 and this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
@@ -770,9 +770,8 @@ class TraderBot {
         ;     if not qualifier_buy and not qualifier_sell
         ;         return
         ; }
-        this.Scenario3()
         if this.stats.streak <= -4
-            return
+            this.Scenario3()
         this.Scenario2()
         this.Scenario1()
     }
