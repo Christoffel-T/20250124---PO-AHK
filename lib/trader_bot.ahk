@@ -369,7 +369,7 @@ class TraderBot {
             } 
             if this.qualifiers.sc1B.state = 1 and A_Now > this.qualifiers.sc1B.timeframe + 15 {
                 this.qualifiers.sc1B.state := false
-            } else if this.qualifiers.sc1B.state = 2 and A_TickCount > this.qualifiers.sc1B.time + 3000 {
+            } else if this.qualifiers.sc1B.state = 1 and A_TickCount > this.qualifiers.sc1B.time + 3000 {
                 this.qualifiers.sc1B.state := false
             } 
         }
@@ -387,7 +387,7 @@ class TraderBot {
             } 
             if this.qualifiers.sc1S.state = 1 and A_Now > this.qualifiers.sc1S.timeframe + 15 {
                 this.qualifiers.sc1S.state := false
-            } else if this.qualifiers.sc1S.state = 2 and A_TickCount > this.qualifiers.sc1S.time + 3000 {
+            } else if this.qualifiers.sc1S.state = 1 and A_TickCount > this.qualifiers.sc1S.time + 3000 {
                 this.qualifiers.sc1S.state := false
             } 
         }
@@ -439,7 +439,7 @@ class TraderBot {
             } 
             if this.qualifiers.sc2B.state = 1 and A_Now > this.qualifiers.sc2B.timeframe + 30 {
                 this.qualifiers.sc2B.state := false
-            } else if this.qualifiers.sc2B.state = 2 and A_TickCount > this.qualifiers.sc2B.time + 3000 {
+            } else if this.qualifiers.sc2B.state = 1 and A_TickCount > this.qualifiers.sc2B.time + 3000 {
                 this.qualifiers.sc2B.state := false
             } 
         }
@@ -457,7 +457,7 @@ class TraderBot {
             } 
             if this.qualifiers.sc2S.state = 1 and A_Now > this.qualifiers.sc2S.timeframe + 30 {
                 this.qualifiers.sc2S.state := false
-            } else if this.qualifiers.sc2S.state = 2 and A_TickCount > this.qualifiers.sc2S.time + 3000 {
+            } else if this.qualifiers.sc2S.state = 1 and A_TickCount > this.qualifiers.sc2S.time + 3000 {
                 this.qualifiers.sc2S.state := false
             } 
         }
