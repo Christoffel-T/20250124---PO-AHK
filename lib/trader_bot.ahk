@@ -1039,7 +1039,7 @@ class TraderBot {
                 this.AddBalance(this.balance.starting-this.balance.current)
             } else if this.balance.current >= 2000 {
                 this.stats.bal_win++
-                this.AddBalance(this.stats.bal_win*2000 + this.balance.starting - this.balance.current)
+                this.AddBalance(this.stats.bal_win*(3000-this.balance.starting) + this.balance.starting - this.balance.current)
             }
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
@@ -1158,7 +1158,7 @@ class TraderBot {
             if cur_bal >= 50000 {
                 MsgBox 'Balance too high.'
             }
-            cur_bal := Format('{:.2f}', cur_bal - this.stats.bal_win * 2000)
+            cur_bal := Format('{:.2f}', cur_bal - this.stats.bal_win * (3000-this.balance.starting))
             if cur_bal > this.balance.last_trade and this.stats.streak < 0 and not this.trade_opened[1] {
                 if cur_bal > this.balance.last_trade + 0.5 {
                     ; this.stats.streak++
