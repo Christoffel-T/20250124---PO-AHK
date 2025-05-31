@@ -330,26 +330,16 @@ class TraderBot {
         if this.paused or this.candle_data.Length < 2
             return false
         bad_condition := false
-        try
-            bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
+        ; try
+        ;     bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
         _pheight := 20
         _candle_size := 20
-        if this.stats.streak <= -4000000000 {
-            if not condition_both := Mod(A_Sec-1, 15) = 8 and Utils.is_all_same(this.candle_data[1].colors) and not Utils.is_all_same(this.candle_data[1].moving_prices)
-                return
-            condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C
-            condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C
-        } else {
-            condition_both := Mod(A_Sec-1, 15) <= 2
-            condition_buy  := condition_both
-            condition_sell := condition_both
-        }
-        condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
+        condition_both := Mod(A_Sec-1, 15) <= 2 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         ; if this.stats.streak <= -3
         ;     condition_both := condition_both and Mod(A_Sec-1, 15) >= 1 and Mod(A_Sec-1, 15) <= 3
-        if condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+        if condition_both and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
             this.qualifiers.sc1B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
-        if condition_sell := condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+        if condition_both and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
             this.qualifiers.sc1S := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
         
         condition_buy := false
@@ -407,19 +397,18 @@ class TraderBot {
         if this.paused or this.candle_data.Length < 2
             return false
         bad_condition := false
-        try
-            bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
+        ; try
+        ;     bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
         _pheight := 20
         _candle_size := 20
-        condition_both := Mod(A_Sec-1, 15) >= 13
-        condition_both := (condition_both or not bad_condition) and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
+        condition_both := Mod(A_Sec-1, 15) >= 13 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
         
-        condition_buy  := Mod(A_Sec-1, 15) >= 13 and this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
-        condition_sell := Mod(A_Sec-1, 15) >= 13 and this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
+        condition_buy  := this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
+        condition_sell := this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
 
-        if condition_buy  := condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+        if condition_both and condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch
             this.qualifiers.sc2B := {timeframe: Utils.get_timeframe(), state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
-        if condition_sell := condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+        if condition_both and condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch
             this.qualifiers.sc2S := {timeframe: Utils.get_timeframe(), state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
 
         condition_buy := false
@@ -754,8 +743,8 @@ class TraderBot {
         ;     if not qualifier_buy and not qualifier_sell
         ;         return
         ; }
-        if this.stats.streak <= -4
-            this.Scenario3()
+        ; if this.stats.streak <= -4
+        ;     this.Scenario3()
         this.Scenario2()
         this.Scenario1()
     }
