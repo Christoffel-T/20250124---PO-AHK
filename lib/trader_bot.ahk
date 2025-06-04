@@ -31,7 +31,6 @@ class TraderBot {
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
         }
-        this.amount_arr[1][1] := 500
         this.start_time := A_TickCount
         this.log_file := 'log.csv'
         this.trade_opened := [false, A_TickCount]
@@ -1027,6 +1026,7 @@ class TraderBot {
             }
             this.CheckBalance()
             this.amount := Min(this.amount, this.balance.current)
+            this.amount := 200
             if this.balance.current < 1 {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
