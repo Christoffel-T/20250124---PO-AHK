@@ -31,6 +31,7 @@ class TraderBot {
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
         }
+        this.amount_arr[1][1] := 500
         this.start_time := A_TickCount
         this.log_file := 'log.csv'
         this.trade_opened := [false, A_TickCount]
@@ -1028,7 +1029,7 @@ class TraderBot {
                 this.AddBalance(this.balance.starting-this.balance.current)
             } else if this.balance.current >= 2000 {
                 this.stats.bal_win++
-                this.AddBalance(this.stats.bal_win*(3000-this.balance.starting) + this.balance.starting - this.balance.current)
+                this.AddBalance(1000 + this.balance.starting - this.balance.current)
             }
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
@@ -1147,7 +1148,7 @@ class TraderBot {
             if cur_bal >= 50000 {
                 MsgBox 'Balance too high.'
             }
-            cur_bal := Format('{:.2f}', cur_bal - this.stats.bal_win * (3000-this.balance.starting))
+            cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_win-this.stats.bal_lose) * (1000))
             if cur_bal > this.balance.last_trade and this.stats.streak < 0 and not this.trade_opened[1] {
                 if cur_bal > this.balance.last_trade + 0.5 {
                     ; this.stats.streak++
