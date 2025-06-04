@@ -1027,8 +1027,8 @@ class TraderBot {
                 this.ReloadWebsite()
             }
             this.CheckBalance()
-            this.amount := Min(this.amount, this.balance.current)
             this.amount := 1000
+            this.amount := Min(this.amount, this.balance.current)
             if this.balance.current < 1 {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
