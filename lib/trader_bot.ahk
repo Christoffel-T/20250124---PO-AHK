@@ -43,7 +43,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 1700, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 500, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.CheckBalance()
         
         if this.balance.current != this.balance.starting {
@@ -1027,7 +1027,7 @@ class TraderBot {
             if this.balance.current < 1 {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
-            } else if this.balance.current >= 2000 {
+            } else if this.balance.current >= 1000 {
                 this.stats.bal_win++
                 this.AddBalance(1000 + this.balance.starting - this.balance.current)
             }
