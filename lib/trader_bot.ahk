@@ -1199,7 +1199,7 @@ class TraderBot {
                 sleep 100
             }
             MouseClick('L', this.coords.balance.x + Random(-2, 2), this.coords.balance.y + Random(-2, 2), 1, 2)
-            sleep 500
+            sleep 1000
             MouseClick('L', this.coords.top_up.x + Random(-2, 2), this.coords.top_up.y + Random(-2, 2), 1, 2)
             sleep 1000
             Send '{tab}'
