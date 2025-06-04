@@ -383,6 +383,8 @@ class TraderBot {
             } 
         }
 
+        condition_buy := true
+
         if (condition_buy and this.candle_data[1].color = 'G') {
             this.qualifiers.sc1B.state := false
             this.last_trade := 'BUY'
