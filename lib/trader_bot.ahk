@@ -382,9 +382,6 @@ class TraderBot {
             } 
         }
 
-        condition_buy := true
-        condition_sell := true
-
         if (condition_buy and this.candle_data[1].color = 'G') {
             try
                 this.qualifiers.sc1B.state := false
@@ -875,8 +872,7 @@ class TraderBot {
             sleep 100
         }
         if this.balance.current < 1 {
-            MsgBox('0 Balance.')
-            reload
+            return
         }
         sleep 50
         MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
@@ -1027,7 +1023,6 @@ class TraderBot {
                 this.ReloadWebsite()
             }
             this.CheckBalance()
-            this.amount := 1000
             this.amount := Min(this.amount, this.balance.current)
             if this.balance.current < 1 {
                 this.stats.bal_lose++
