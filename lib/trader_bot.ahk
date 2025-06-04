@@ -383,6 +383,7 @@ class TraderBot {
         }
 
         condition_buy := true
+        condition_sell := true
 
         if (condition_buy and this.candle_data[1].color = 'G') {
             try
@@ -390,7 +391,8 @@ class TraderBot {
             this.last_trade := 'BUY'
             this.ExecuteTrade('BUY', '1')
         } else if (condition_sell and this.candle_data[1].color = 'R') {
-            this.qualifiers.sc1S.state := false
+            try 
+                this.qualifiers.sc1S.state := false
             this.last_trade := 'SELL'
             this.ExecuteTrade('SELL', '1')
         }
