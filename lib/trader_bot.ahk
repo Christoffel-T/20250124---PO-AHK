@@ -43,7 +43,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 500, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 750, reset_max: 1500, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.CheckBalance()
         
         if this.balance.current != this.balance.starting {
@@ -993,13 +993,14 @@ class TraderBot {
                 this.ReloadWebsite()
             }
             this.CheckBalance()
+            this.amount := 500
             this.amount := Min(this.amount, this.balance.current)
             if this.balance.current < 1 {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
-            } else if this.balance.current >= 1000 {
+            } else if this.balance.current >= this.balance.reset_max {
                 this.stats.bal_win++
-                this.AddBalance(1000 + this.balance.starting - this.balance.current)
+                this.AddBalance(this.balance.reset_max + this.balance.starting - this.balance.current)
             }
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
@@ -1118,7 +1119,7 @@ class TraderBot {
             if cur_bal >= 50000 {
                 MsgBox 'Balance too high.'
             }
-            cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_win) * (1000))
+            cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_win) * (this.balance.reset_max))
             if cur_bal > this.balance.last_trade and this.stats.streak < 0 and not this.trade_opened[1] {
                 if cur_bal > this.balance.last_trade + 0.5 {
                     ; this.stats.streak++
