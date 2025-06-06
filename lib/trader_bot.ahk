@@ -993,8 +993,6 @@ class TraderBot {
                 this.ReloadWebsite()
             }
             this.CheckBalance()
-            this.amount := 500
-            this.amount := Min(this.amount, this.balance.current)
             if this.balance.current < 1 {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
@@ -1002,6 +1000,9 @@ class TraderBot {
                 this.stats.bal_win++
                 this.AddBalance(this.balance.reset_max + this.balance.starting - this.balance.current)
             }
+            this.amount := 800
+            this.amount := Min(this.amount, this.balance.current)
+
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
                 sleep 100
