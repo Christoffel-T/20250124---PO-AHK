@@ -1000,7 +1000,6 @@ class TraderBot {
                 this.stats.bal_win++
                 this.AddBalance(this.balance.reset_max + this.balance.starting - this.balance.current)
             }
-            this.amount := 800
             this.amount := Min(this.amount, this.balance.current)
 
             if !WinActive(this.wtitle) {
