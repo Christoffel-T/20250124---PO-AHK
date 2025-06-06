@@ -415,7 +415,7 @@ class TraderBot {
 
         condition_buy := false
         condition_sell := false
-        
+         
         if this.qualifiers.HasOwnProp('sc2B') {
             if this.qualifiers.sc2B.state = 1 and A_TickCount >= this.qualifiers.sc2B.time + 2500 and A_TickCount <= this.qualifiers.sc2B.time + 3000 
             and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc2B.price_line + 2 {
