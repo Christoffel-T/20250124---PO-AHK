@@ -44,16 +44,6 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.balance := {starting: 750, reset_max: 1500, current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.CheckBalance()
-        
-        if this.balance.current != this.balance.starting {
-            if this.balance.current < this.balance.starting {
-                this.AddBalance(this.balance.starting-this.balance.current)
-            }
-            sleep 2000
-            this.CheckBalance()
-        }
-        
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
         this.lose_streak := {max: this.stats.streak, repeat: Map(), end_by_win_count: 0}
@@ -80,7 +70,16 @@ class TraderBot {
     StartLoop(*) {
         ToolTip('Running...', 5, 5, 1)
         this.ReloadWebsite()
-        WinMove(-8, -8, 1040, 744, this.wtitle)
+        this.CheckBalance()
+        
+        if this.balance.current != this.balance.starting {
+            if this.balance.current < this.balance.starting {
+                this.AddBalance(this.balance.starting-this.balance.current)
+            }
+            sleep 2000
+            this.CheckBalance()
+        }
+
         this.SetTradeAmount()
         sleep 100
         MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
@@ -1015,6 +1014,8 @@ class TraderBot {
         Utils.PasteText('https://pocketoption.com/en/cabinet/demo-quick-high-low/')
         sleep 80
         Send('{Enter}')
+        sleep 80
+        WinMove(-8, -8, 1040, 744, this.wtitle)
         sleep 5000
         return
     }
