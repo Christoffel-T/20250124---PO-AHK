@@ -79,9 +79,7 @@ class TraderBot {
 
     StartLoop(*) {
         ToolTip('Running...', 5, 5, 1)
-        if !WinActive(this.wtitle) {
-            WinActivate(this.wtitle)  
-        }
+        this.ReloadWebsite()
         WinMove(-8, -8, 1040, 744, this.wtitle)
         this.SetTradeAmount()
         sleep 100
@@ -515,8 +513,11 @@ class TraderBot {
         this.marked_time_refresh := A_TickCount
         if not this.state.coin_change_streak and this.stats.streak != coin_change_streak
             this.state.coin_change_streak := true
+        _count_reload := 0
         Loop {
-            if A_Index > 100 {
+            _count_reload++
+            if _count_reload > 100 {
+                _count_reload := 0
                 this.ReloadWebsite()
             }
             if A_TickCount > this.marked_time_refresh + 2*60*1000 {
@@ -540,7 +541,13 @@ class TraderBot {
                 sleep 100
                 if this.state.coin_change_streak and this.stats.streak = coin_change_streak {
                     this.state.coin_change_streak := false
+                    _count_reload := 0
                     Loop {
+                        _count_reload++
+                        if _count_reload > 20 {
+                            _count_reload := 0
+                            this.ReloadWebsite()
+                        }
                         MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
                         sleep 300
                         new_cname := OCR.FromRect(this.coords.coin.x - 25, this.coords.coin.y - 25, 150, 50,, 3).Text
@@ -604,7 +611,13 @@ class TraderBot {
                     sleep 100
                     MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
                     sleep 100
+                    _count_reload := 0
                     Loop {
+                        _count_reload++
+                        if _count_reload > 50 {
+                            _count_reload := 0
+                            this.ReloadWebsite()
+                        }
                         MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
                         sleep 200
                         new_cname := OCR.FromRect(this.coords.coin.x - 25, this.coords.coin.y - 25, 150, 50,, 3).Text
@@ -794,8 +807,15 @@ class TraderBot {
         str_c .= 'r' this.ps.r_touch_blue.state this.ps.r_touch_orange.state ' | '
         try
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
-    
+        
+        _count_reload := 0
         loop {
+            _count_reload++
+            if _count_reload > 1000 {
+                _count_reload := 0
+                MsgBox 'Too many errors while trying to append new row to log file.'
+            }
+
             try {
                 if FileExist(this.log_file) {
                     file_size := FileGetSize(this.log_file)
@@ -885,7 +905,13 @@ class TraderBot {
         this.ps.g_touch_orange := {state: false}
         this.ps.r_touch_blue := {state: false}
         this.ps.r_touch_orange := {state: false}
+        _count_reload := 0
         loop {
+            _count_reload++
+            if _count_reload > 1000 {
+                _count_reload := 0
+                this.ReloadWebsite()
+            }
             try {
                 this.ps.moving_price := {state: PixelSearch(&x1, &y1, this.coords.area_price.x, this.coords.area_price.y, this.coords.area_price.x2, this.coords.area_price.y2, this.colors.moving_price, 5)}
                 PixelSearch(&x2, &y2, x1+5, this.coords.area_price.y2, x1-5, y1, this.colors.moving_price, 5)
@@ -904,7 +930,13 @@ class TraderBot {
         }
         if this.ps.blue.state {
             this.ps.orange := {state: PixelSearch(&x, &y, this.ps.blue.x+1, this.coords.area.y, this.ps.blue.x-1, this.coords.area.y2, this.colors.orange, 5), x:x, y:y}
+            _count_reload := 0
             Loop {
+                _count_reload++
+                if _count_reload > 20000 {
+                    _count_reload := 0
+                    this.ReloadWebsite()
+                }
                 this.ps.close_green := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.green, 10), x:x, y:y}
                 if not this.ps.close_green.state 
                     this.ps.close_red := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y2, this.ps.blue.x+1, this.coords.area.y, this.colors.red, 10), x:x, y:y}
@@ -988,8 +1020,11 @@ class TraderBot {
     }
     
     SetTradeAmount() {
+        _count_reload := 0
         Loop {
-            if A_Index > 1000 {
+            _count_reload++
+            if _count_reload > 1000 {
+                _count_reload := 0
                 this.ReloadWebsite()
             }
             this.CheckBalance()
@@ -1074,8 +1109,11 @@ class TraderBot {
     }
     
     CheckBalance() {
+        _count_reload := 0
         Loop {
-            if A_Index > 1000 {
+            _count_reload++
+            if _count_reload > 1000 {
+                _count_reload := 0
                 this.ReloadWebsite()
             }
             A_Clipboard := ''
@@ -1158,29 +1196,27 @@ class TraderBot {
 
     AddBalance(bal_amount) {
         bal_amount := format('{:.2f}', bal_amount)
-        Loop {
-            A_Clipboard := ''
-            if !WinActive(this.wtitle) {
-                WinActivate(this.wtitle)  
-                sleep 100
-            }
-            MouseClick('L', this.coords.balance.x + Random(-2, 2), this.coords.balance.y + Random(-2, 2), 1, 2)
-            sleep 1000
-            MouseClick('L', this.coords.top_up.x + Random(-2, 2), this.coords.top_up.y + Random(-2, 2), 1, 2)
-            sleep 1000
-            Send '{tab}'
-            sleep 500
-            Utils.PasteText(bal_amount)
-            sleep 500
-            Send '{Enter}'
-            sleep 1000
-            MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
-            this.balance.max := 0
-            this.balance.min := 9**10
-            sleep 1000
-            this.CheckBalance()
-            return
+        A_Clipboard := ''
+        if !WinActive(this.wtitle) {
+            WinActivate(this.wtitle)  
+            sleep 100
         }
+        MouseClick('L', this.coords.balance.x + Random(-2, 2), this.coords.balance.y + Random(-2, 2), 1, 2)
+        sleep 1000
+        MouseClick('L', this.coords.top_up.x + Random(-2, 2), this.coords.top_up.y + Random(-2, 2), 1, 2)
+        sleep 1000
+        Send '{tab}'
+        sleep 500
+        Utils.PasteText(bal_amount)
+        sleep 500
+        Send '{Enter}'
+        sleep 1000
+        MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
+        this.balance.max := 0
+        this.balance.min := 9**10
+        sleep 1000
+        this.CheckBalance()
+        return
     }
 }
 
