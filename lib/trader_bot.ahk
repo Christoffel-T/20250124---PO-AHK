@@ -728,9 +728,9 @@ class TraderBot {
         ;         return
         ; }
         ; if this.stats.streak <= -4
-        ;     this.Scenario3()
-        this.Scenario2()
-        this.Scenario1()
+        this.Scenario3()
+        ; this.Scenario2()
+        ; this.Scenario1()
     }
 
     UpdateLog() {
