@@ -65,7 +65,7 @@ class TraderBot {
         if !FileExist(this.log_file) {
             FileAppend('date,time,active_trade,next_target,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
-    }
+    } 
 
     StartLoop(*) {
         ToolTip('Running...', 5, 5, 1)
