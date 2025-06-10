@@ -433,30 +433,27 @@ class TraderBot {
     Scenario3() {
         if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
             return false
-        _pheight := 20
-        _candle_size := 20
-        condition_both := Mod(A_Sec-1, 15) >= 12 and A_MSec >= 500 and this.crossovers_arr.Length >= 2 and this.candle_data[1].size >= _candle_size
+
+        condition_both := Mod(A_Sec-1, 15) >= 12
         
-        if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].O 
+        if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].O 
             this.qualifiers.sc3B := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()}
-        if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].O
+        if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].O
             this.qualifiers.sc3S := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()}
 
-        condition_buy  := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state and this.candle_data[1].moving_prices[-1] < this.qualifiers.sc3B.price_line
-        condition_sell := Mod(A_Sec-1, 15) >= 14 and this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state and this.candle_data[1].moving_prices[-1] > this.qualifiers.sc3S.price_line
+        condition_buy  := this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state
+        condition_sell := this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state
 
-        if this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state and Utils.get_timeframe() != this.qualifiers.sc3B.timeframe
-            this.qualifiers.sc3B.state := false
-        if this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state and Utils.get_timeframe() != this.qualifiers.sc3S.timeframe
-            this.qualifiers.sc3S.state := false
+        for v in ['sc3B', 'sc3S'] {
+            if this.qualifiers.HasOwnProp(v) and this.qualifiers.%v%.state and Utils.get_timeframe() != this.qualifiers.%v%.timeframe
+                this.qualifiers.%v%.state := false
+        }
 
         if (condition_buy) {
             this.qualifiers.sc3B.state := false
-            this.last_trade := 'BUY'
             this.ExecuteTrade('BUY', '3')
         } else if (condition_sell) {
             this.qualifiers.sc3S.state := false
-            this.last_trade := 'SELL'
             this.ExecuteTrade('SELL', '3')
         }
     }
@@ -497,7 +494,7 @@ class TraderBot {
             this.ExecuteTrade('BUY', '5')
         } else if (condition_sell) {
             this.last_trade := 'SELL'
-            this.ExecuteTrade('SELL', '5')
+            this.ExecuteTrade('SELL' , '5')
         }
     }
 
@@ -845,6 +842,7 @@ class TraderBot {
     }
     ExecuteTrade(action, reason) {
         global
+        this.last_trade := action
         if this.trade_opened[1]
             return false
         this.trade_opened := [true, A_TickCount]
