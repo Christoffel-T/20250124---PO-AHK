@@ -464,13 +464,13 @@ class TraderBot {
 
         condition_both := Mod(A_Sec-1, 15) >= 14
         
-        if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].O 
+        if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].O - this.candle_data[1].size/2
             this.qualifiers.sc3aB := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()+15}
-        if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].O
+        if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].O + this.candle_data[1].size/2
             this.qualifiers.sc3aS := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()+15}
 
-        condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[1].size > 2 and this.qualifiers.HasOwnProp('sc3aB') and this.qualifiers.sc3aB.state and this.qualifiers.sc3aB.timeframe = Utils.get_timeframe()
-        condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].size > 2 and this.qualifiers.HasOwnProp('sc3aS') and this.qualifiers.sc3aS.state and this.qualifiers.sc3aS.timeframe = Utils.get_timeframe()
+        condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].size > 2 and this.qualifiers.HasOwnProp('sc3aB') and this.qualifiers.sc3aB.state and this.qualifiers.sc3aB.timeframe = Utils.get_timeframe()
+        condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].size > 2 and this.qualifiers.HasOwnProp('sc3aS') and this.qualifiers.sc3aS.state and this.qualifiers.sc3aS.timeframe = Utils.get_timeframe()
 
         for v in ['sc3aB', 'sc3aS'] {
             if this.qualifiers.HasOwnProp(v) and this.qualifiers.%v%.state and Utils.get_timeframe() > this.qualifiers.%v%.timeframe
