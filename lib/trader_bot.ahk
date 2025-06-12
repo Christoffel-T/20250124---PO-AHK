@@ -718,9 +718,9 @@ class TraderBot {
             condition_both := Mod(A_Sec-1, 15) >= 10
             
             if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[1] < this.candle_data[1].C 
-                this.qualifiers.sc3bB := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()+15}
+                this.qualifiers.%_name_buy% := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()+15}
             if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[1] > this.candle_data[1].C and this.candle_data[1].moving_prices[1] > this.candle_data[2].O and this.candle_data[2].color = 'G'
-                this.qualifiers.sc3bS := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()+15}
+                this.qualifiers.%_name_sell% := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()+15}
 
             condition_buy  := false
             condition_sell := false
@@ -739,10 +739,10 @@ class TraderBot {
             }
 
             if (condition_buy) {
-                this.qualifiers.sc3bB.state := false
+                this.qualifiers.%_name_buy%.state := false
                 this.ExecuteTrade('BUY', _name)
             } else if (condition_sell) {
-                this.qualifiers.sc3bS.state := false
+                this.qualifiers.%_name_sell%.state := false
                 this.ExecuteTrade('SELL', _name)
             }
         }
