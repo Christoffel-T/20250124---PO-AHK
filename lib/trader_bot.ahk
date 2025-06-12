@@ -431,7 +431,8 @@ class TraderBot {
                     this.state.32 := true
                 }
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
-                
+                if this.stats.streak = 7
+                    this.amount += 30
                 if this.stats.streak <= -3 {
                     ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
                     MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
