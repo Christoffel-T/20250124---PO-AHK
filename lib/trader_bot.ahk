@@ -413,6 +413,17 @@ class TraderBot {
                 ;     this.stats.streak := -Abs(this.stats.streak)+1
                 this.stats.streak--
 
+                if !this.qualifiers.HasOwnProp('streak_reset')
+                    this.qualifiers.streak_reset := -4
+
+                if this.stats.streak <= this.qualifiers.streak_reset {
+                    if this.stats.streak <= -7
+                        this.qualifiers.streak_reset := -3
+                    else if this.stats.streak <= -4
+                        this.qualifiers.streak_reset := -7
+                    this.stats.streak := 1
+                }
+
                 if this.state.32
                     this.stats.streak2--
                 if this.stats.streak <= -4 and not this.state.32 {
