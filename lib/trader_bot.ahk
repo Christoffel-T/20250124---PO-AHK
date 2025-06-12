@@ -323,208 +323,6 @@ class TraderBot {
         }
         return false
     }
-    Scenario1() {
-        if this.paused or this.candle_data.Length < 2
-            return false
-        bad_condition := false
-        ; try
-        ;     bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
-        _pheight := 20
-        _candle_size := 20
-        condition_both := Mod(A_Sec-1, 15) <= 2 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
-        ; if this.stats.streak <= -3
-        ;     condition_both := condition_both and Mod(A_Sec-1, 15) >= 1 and Mod(A_Sec-1, 15) <= 3
-        if condition_both and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
-            this.qualifiers.sc1B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
-        if condition_both and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
-            this.qualifiers.sc1S := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
-        
-        condition_buy := false
-        condition_sell := false
-        
-        if this.qualifiers.HasOwnProp('sc1B') {
-            if this.qualifiers.sc1B.state = 1 and A_Now > this.qualifiers.sc1B.timeframe + 15 {
-                this.qualifiers.sc1B.state := false
-            } else if this.qualifiers.sc1B.state = 1 and A_TickCount > this.qualifiers.sc1B.time + 3000 {
-                this.qualifiers.sc1B.state := false
-            } 
-
-            if this.qualifiers.sc1B.state = 1 {
-                condition_buy := true
-            } 
-        }
-        if this.qualifiers.HasOwnProp('sc1S') {
-            if this.qualifiers.sc1S.state = 1 and A_Now > this.qualifiers.sc1S.timeframe + 15 {
-                this.qualifiers.sc1S.state := false
-            } else if this.qualifiers.sc1S.state = 1 and A_TickCount > this.qualifiers.sc1S.time + 3000 {
-                this.qualifiers.sc1S.state := false
-            } 
-
-            if this.qualifiers.sc1S.state = 1 {
-                condition_sell := true
-            } 
-        }
-
-        if (condition_buy and this.candle_data[1].color = 'G') {
-            try
-                this.qualifiers.sc1B.state := false
-            this.last_trade := 'BUY'
-            this.ExecuteTrade('BUY', '1')
-        } else if (condition_sell and this.candle_data[1].color = 'R') {
-            try 
-                this.qualifiers.sc1S.state := false
-            this.last_trade := 'SELL'
-            this.ExecuteTrade('SELL', '1')
-        }
-    }
-
-    Scenario2() {
-        if this.paused or this.candle_data.Length < 2
-            return false
-        bad_condition := false
-        ; try
-        ;     bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
-        _pheight := 20
-        _candle_size := 20
-        condition_both := Mod(A_Sec-1, 15) >= 13 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
-        
-        condition_buy  := this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
-        condition_sell := this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
-
-        if condition_both and condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch
-            this.qualifiers.sc2B := {timeframe: Utils.get_timeframe(), state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
-        if condition_both and condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch
-            this.qualifiers.sc2S := {timeframe: Utils.get_timeframe(), state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[-1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
-
-        condition_buy := false
-        condition_sell := false
-        
-        if this.qualifiers.HasOwnProp('sc2B') {
-            if this.qualifiers.sc2B.state = 1 and A_Now > this.qualifiers.sc2B.timeframe + 30 {
-                this.qualifiers.sc2B.state := false
-            } else if this.qualifiers.sc2B.state = 1 and A_TickCount > this.qualifiers.sc2B.time + 3000 {
-                this.qualifiers.sc2B.state := false
-            } 
-            if this.qualifiers.sc2B.state = 1 {
-                condition_buy := true
-            } 
-        }
-        if this.qualifiers.HasOwnProp('sc2S') {
-            if this.qualifiers.sc2S.state = 1 and A_Now > this.qualifiers.sc2S.timeframe + 30 {
-                this.qualifiers.sc2S.state := false
-            } else if this.qualifiers.sc2S.state = 1 and A_TickCount > this.qualifiers.sc2S.time + 3000 {
-                this.qualifiers.sc2S.state := false
-            } 
-            if this.qualifiers.sc2S.state = 1 {
-                condition_sell := true
-            } 
-        }
-
-        if (condition_buy and this.candle_data[1].color = 'G') {
-            this.qualifiers.sc2B.state := false
-            this.last_trade := 'BUY'
-            this.ExecuteTrade('BUY', '2')
-        } else if (condition_sell and this.candle_data[1].color = 'R') {
-            this.qualifiers.sc2S.state := false
-            this.last_trade := 'SELL'
-            this.ExecuteTrade('SELL', '2')
-        }
-    }
-    Scenario3() {
-        if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
-            return false
-
-        condition_both := Mod(A_Sec-1, 15) >= 12
-        
-        if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].O 
-            this.qualifiers.sc3B := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()}
-        if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].O
-            this.qualifiers.sc3S := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()}
-
-        condition_buy  := this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state
-        condition_sell := this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state
-
-        for v in ['sc3B', 'sc3S'] {
-            if this.qualifiers.HasOwnProp(v) and this.qualifiers.%v%.state and Utils.get_timeframe() != this.qualifiers.%v%.timeframe
-                this.qualifiers.%v%.state := false
-        }
-
-        if (condition_buy) {
-            this.qualifiers.sc3B.state := false
-            this.ExecuteTrade('BUY', '3')
-        } else if (condition_sell) {
-            this.qualifiers.sc3S.state := false
-            this.ExecuteTrade('SELL', '3')
-        }
-    }
-
-    Scenario3a() {
-        if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
-            return false
-
-        condition_both := Mod(A_Sec-1, 15) >= 14
-        
-        if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].O - this.candle_data[1].size/2
-            this.qualifiers.sc3aB := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()+15}
-        if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].O + this.candle_data[1].size/2
-            this.qualifiers.sc3aS := {state: true, price_line: this.candle_data[1].moving_prices[-1], timeframe: Utils.get_timeframe()+15}
-
-        condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[-1] < this.candle_data[1].C and this.candle_data[1].size > 2 and this.qualifiers.HasOwnProp('sc3aB') and this.qualifiers.sc3aB.state and this.qualifiers.sc3aB.timeframe = Utils.get_timeframe()
-        condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[-1] > this.candle_data[1].C and this.candle_data[1].size > 2 and this.qualifiers.HasOwnProp('sc3aS') and this.qualifiers.sc3aS.state and this.qualifiers.sc3aS.timeframe = Utils.get_timeframe()
-
-        for v in ['sc3aB', 'sc3aS'] {
-            if this.qualifiers.HasOwnProp(v) and this.qualifiers.%v%.state and Utils.get_timeframe() > this.qualifiers.%v%.timeframe
-                this.qualifiers.%v%.state := false
-        }
-
-        if (condition_buy) {
-            this.qualifiers.sc3aB.state := false
-            this.ExecuteTrade('BUY', '3a')
-        } else if (condition_sell) {
-            this.qualifiers.sc3aS.state := false
-            this.ExecuteTrade('SELL', '3a')
-        }
-    }
-    Scenario4() {
-        if this.candle_data.Length < 2
-            return false
-        if this.paused
-            return false
-        condition_both := Mod(A_Sec, 15) >= 13 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and not this.trade_opened[1] and this.candle_data[1].size >= 30
-        if this.stats.streak <= -3
-            condition_both := Mod(A_Sec, 15) >= 1 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and not this.trade_opened[1] and this.candle_data[1].size >= 30
-        condition_buy  := condition_both and this.ps.orange.y > this.ps.blue.y and (+this.ps.orange.y - this.ps.blue.y > -this.candle_data[1].C + this.candle_data[2].C) and this.candle_data[1].color = 'G'
-        condition_sell := condition_both and this.ps.orange.y < this.ps.blue.y and (-this.ps.orange.y + this.ps.blue.y > +this.candle_data[1].C - this.candle_data[2].C) and this.candle_data[1].color = 'R'
-
-        condition_buy  := condition_buy  and this.ps.moving_price.y < this.candle_data[1].O - (this.candle_data[1].size/2)
-        condition_sell := condition_sell and this.ps.moving_price.y > this.candle_data[1].O + (this.candle_data[1].size/2)
-
-        if (condition_buy) {
-            this.last_trade := 'BUY'
-            this.ExecuteTrade('BUY', '4')
-        } else if (condition_sell) {
-            this.last_trade := 'SELL'
-            this.ExecuteTrade('SELL', '4')
-        }
-    }
-    Scenario5() {
-        if this.candle_data.Length < 2 or this.trade_opened[1]
-            return false
-        condition_both := Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and this.candle_data[1].size >= 30
-        condition_buy  := condition_both and this.candle_data[2].color = 'R' and this.candle_data[2].moving_prices[-1] < this.candle_data[2].O
-        condition_sell := condition_both and this.candle_data[2].color = 'G' and this.candle_data[2].moving_prices[-1] > this.candle_data[2].O
-
-        condition_buy  := condition_buy  and this.candle_data[1].color = 'G' and this.candle_data[1].C < this.ps.blue.y
-        condition_sell := condition_sell and this.candle_data[1].color = 'R' and this.candle_data[1].C > this.ps.blue.y
-
-        if (condition_buy) {
-            this.last_trade := 'BUY'
-            this.ExecuteTrade('BUY', '5')
-        } else if (condition_sell) {
-            this.last_trade := 'SELL'
-            this.ExecuteTrade('SELL' , '5')
-        }
-    }
 
     CheckPayout(change_anyway := false) {
         coin_change_streak := -4
@@ -715,7 +513,7 @@ class TraderBot {
         }
         this.candle_data[1].both_lines_touch := this.ps.r_touch_blue.state and this.ps.r_touch_orange.state or this.ps.g_touch_blue.state and this.ps.g_touch_orange.state
         this.candle_data[1].blue_line_y.Push(this.ps.blue.y)
-        this.candle_data[1].moving_prices.Push(this.ps.moving_price.y)
+        this.candle_data[1].moving_prices.InsertAt(1, this.ps.moving_price.y)
         ; }
 
         if (Mod(A_Sec, 15) = 13 and A_MSec >= 500 or Mod(A_Sec, 15) = 14) {
@@ -740,17 +538,255 @@ class TraderBot {
 
     RunScenarios() {
         this.paused := this.CheckPaused()
-        ; if this.stats.streak <= -3 {
-        ;     qualifier_buy  := this.candle_data[1].moving_prices[-1] < this.candle_data[2].C and this.candle_data[1].color = 'G' and this.candle_data[2].color = 'G'
-        ;     qualifier_sell := this.candle_data[1].moving_prices[-1] > this.candle_data[2].C and this.candle_data[1].color = 'R' and this.candle_data[2].color = 'R'
-        ;     if not qualifier_buy and not qualifier_sell
-        ;         return
-        ; }
-        ; if this.stats.streak <= -4
-        this.Scenario3a()
-        this.Scenario3()
-        ; this.Scenario2()
-        ; this.Scenario1()
+        Scenario3b()
+        Scenario3a()
+        Scenario3()
+        ; is.Scenario2()
+        ; Scenario1()
+
+        Scenario1() {
+            if this.paused or this.candle_data.Length < 2
+                return false
+            _name := StrReplace(A_ThisFunc, 'Scenario', '')
+            bad_condition := false
+            ; try
+            ;     bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
+            _pheight := 20
+            _candle_size := 20
+            condition_both := Mod(A_Sec-1, 15) <= 2 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
+            ; if this.stats.streak <= -3
+            ;     condition_both := condition_both and Mod(A_Sec-1, 15) >= 1 and Mod(A_Sec-1, 15) <= 3
+            if condition_both and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+                this.qualifiers.sc1B := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
+            if condition_both and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch and condition_both
+                this.qualifiers.sc1S := {state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
+            
+            condition_buy := false
+            condition_sell := false
+            
+            if this.qualifiers.HasOwnProp('sc1B') {
+                if this.qualifiers.sc1B.state = 1 and A_Now > this.qualifiers.sc1B.timeframe + 15 {
+                    this.qualifiers.sc1B.state := false
+                } else if this.qualifiers.sc1B.state = 1 and A_TickCount > this.qualifiers.sc1B.time + 3000 {
+                    this.qualifiers.sc1B.state := false
+                } 
+
+                if this.qualifiers.sc1B.state = 1 {
+                    condition_buy := true
+                } 
+            }
+            if this.qualifiers.HasOwnProp('sc1S') {
+                if this.qualifiers.sc1S.state = 1 and A_Now > this.qualifiers.sc1S.timeframe + 15 {
+                    this.qualifiers.sc1S.state := false
+                } else if this.qualifiers.sc1S.state = 1 and A_TickCount > this.qualifiers.sc1S.time + 3000 {
+                    this.qualifiers.sc1S.state := false
+                } 
+
+                if this.qualifiers.sc1S.state = 1 {
+                    condition_sell := true
+                } 
+            }
+
+            if (condition_buy and this.candle_data[1].color = 'G') {
+                try
+                    this.qualifiers.sc1B.state := false
+                this.last_trade := 'BUY'
+                this.ExecuteTrade('BUY', _name)
+            } else if (condition_sell and this.candle_data[1].color = 'R') {
+                try 
+                    this.qualifiers.sc1S.state := false
+                this.last_trade := 'SELL'
+                this.ExecuteTrade('SELL', _name)
+            }
+        }
+        Scenario2() {
+            if this.paused or this.candle_data.Length < 2
+                return false
+            _name := StrReplace(A_ThisFunc, 'Scenario', '')
+            bad_condition := false
+            ; try
+            ;     bad_condition := this.candle_data[2].color = 'R' and this.ps.blue.y < this.candle_data[2].blue_line_y[-1] or this.candle_data[2].color = 'G' and this.ps.blue.y > this.candle_data[2].blue_line_y[-1]
+            _pheight := 20
+            _candle_size := 20
+            condition_both := Mod(A_Sec-1, 15) >= 13 and this.crossovers_arr.Length >= 2 and not this.trade_opened[1] and this.candle_data[2].size >= _candle_size
+            
+            condition_buy  := this.candle_data[2].color = 'G' and this.candle_data[1].moving_prices[1] < this.candle_data[1].C and this.candle_data[1].C < this.candle_data[2].C
+            condition_sell := this.candle_data[2].color = 'R' and this.candle_data[1].moving_prices[1] > this.candle_data[1].C and this.candle_data[1].C > this.candle_data[2].C
+
+            if condition_both and condition_buy  and this.ps.orange.y > this.ps.blue.y + _pheight and this.candle_data[2].both_lines_touch
+                this.qualifiers.sc2B := {timeframe: Utils.get_timeframe(), state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
+            if condition_both and condition_sell and this.ps.blue.y > this.ps.orange.y + _pheight and this.candle_data[2].both_lines_touch
+                this.qualifiers.sc2S := {timeframe: Utils.get_timeframe(), state: true, time: A_TickCount, price_line: this.candle_data[1].moving_prices[1], candle_size: this.candle_data[1].size, timeframe: Utils.get_timeframe()}
+
+            condition_buy := false
+            condition_sell := false
+            
+            if this.qualifiers.HasOwnProp('sc2B') {
+                if this.qualifiers.sc2B.state = 1 and A_Now > this.qualifiers.sc2B.timeframe + 30 {
+                    this.qualifiers.sc2B.state := false
+                } else if this.qualifiers.sc2B.state = 1 and A_TickCount > this.qualifiers.sc2B.time + 3000 {
+                    this.qualifiers.sc2B.state := false
+                } 
+                if this.qualifiers.sc2B.state = 1 {
+                    condition_buy := true
+                } 
+            }
+            if this.qualifiers.HasOwnProp('sc2S') {
+                if this.qualifiers.sc2S.state = 1 and A_Now > this.qualifiers.sc2S.timeframe + 30 {
+                    this.qualifiers.sc2S.state := false
+                } else if this.qualifiers.sc2S.state = 1 and A_TickCount > this.qualifiers.sc2S.time + 3000 {
+                    this.qualifiers.sc2S.state := false
+                } 
+                if this.qualifiers.sc2S.state = 1 {
+                    condition_sell := true
+                } 
+            }
+
+            if (condition_buy and this.candle_data[1].color = 'G') {
+                this.qualifiers.sc2B.state := false
+                this.last_trade := 'BUY'
+                this.ExecuteTrade('BUY', _name)
+            } else if (condition_sell and this.candle_data[1].color = 'R') {
+                this.qualifiers.sc2S.state := false
+                this.last_trade := 'SELL'
+                this.ExecuteTrade('SELL', _name)
+            }
+        }
+        Scenario3() {
+            if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
+                return false
+
+            _name := StrReplace(A_ThisFunc, 'Scenario', '')
+            condition_both := Mod(A_Sec-1, 15) >= 12
+            
+            if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[1] < this.candle_data[1].O 
+                this.qualifiers.sc3B := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()}
+            if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[1] > this.candle_data[1].O
+                this.qualifiers.sc3S := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()}
+
+            condition_buy  := this.qualifiers.HasOwnProp('sc3B') and this.qualifiers.sc3B.state
+            condition_sell := this.qualifiers.HasOwnProp('sc3S') and this.qualifiers.sc3S.state
+
+            for v in ['sc3B', 'sc3S'] {
+                if this.qualifiers.HasOwnProp(v) and this.qualifiers.%v%.state and Utils.get_timeframe() != this.qualifiers.%v%.timeframe
+                    this.qualifiers.%v%.state := false
+            }
+
+            if (condition_buy) {
+                this.qualifiers.sc3B.state := false
+                this.ExecuteTrade('BUY', _name)
+            } else if (condition_sell) {
+                this.qualifiers.sc3S.state := false
+                this.ExecuteTrade('SELL', _name)
+            }
+        }
+        Scenario3a() {
+            if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
+                return false
+
+            _name := StrReplace(A_ThisFunc, 'Scenario', '')
+            condition_both := Mod(A_Sec-1, 15) >= 14
+            
+            if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[1] < this.candle_data[1].O - this.candle_data[1].size/2
+                this.qualifiers.sc3aB := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()+15}
+            if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[1] > this.candle_data[1].O + this.candle_data[1].size/2
+                this.qualifiers.sc3aS := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()+15}
+
+            condition_buy  := this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[1] < this.candle_data[1].C and this.candle_data[1].size > 2 and this.qualifiers.HasOwnProp('sc3aB') and this.qualifiers.sc3aB.state and this.qualifiers.sc3aB.timeframe = Utils.get_timeframe()
+            condition_sell := this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[1] > this.candle_data[1].C and this.candle_data[1].size > 2 and this.qualifiers.HasOwnProp('sc3aS') and this.qualifiers.sc3aS.state and this.qualifiers.sc3aS.timeframe = Utils.get_timeframe()
+
+            for v in ['sc3aB', 'sc3aS'] {
+                if this.qualifiers.HasOwnProp(v) and this.qualifiers.%v%.state and Utils.get_timeframe() > this.qualifiers.%v%.timeframe
+                    this.qualifiers.%v%.state := false
+            }
+
+            if (condition_buy) {
+                this.qualifiers.sc3aB.state := false
+                this.ExecuteTrade('BUY', _name)
+            } else if (condition_sell) {
+                this.qualifiers.sc3aS.state := false
+                this.ExecuteTrade('SELL', _name)
+            }
+        }
+        Scenario3b() {
+            if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
+                return false
+
+            _name := StrReplace(A_ThisFunc, 'Scenario', '')
+            _name_buy := 'sc' _name 'B'
+            _name_sell := 'sc' _name 'S'
+            condition_both := Mod(A_Sec-1, 15) >= 10
+            
+            if condition_both and this.candle_data[1].color = 'G' and this.candle_data[1].moving_prices[1] < this.candle_data[1].C 
+                this.qualifiers.sc3bB := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()+15}
+            if condition_both and this.candle_data[1].color = 'R' and this.candle_data[1].moving_prices[1] > this.candle_data[1].C and this.candle_data[1].moving_prices[1] > this.candle_data[2].O and this.candle_data[2].color = 'G'
+                this.qualifiers.sc3bS := {state: true, price_line: this.candle_data[1].moving_prices[1], timeframe: Utils.get_timeframe()+15}
+
+            condition_buy  := false
+            condition_sell := false
+
+            for v in [_name_buy, _name_sell] {
+                if this.qualifiers.HasOwnProp(v) and this.qualifiers.%v%.state {
+                    if Utils.get_timeframe() > this.qualifiers.%v%.timeframe {
+                        this.qualifiers.%v%.state := false
+                    } else {
+                        if v = _name_buy and this.candle_data[1].moving_prices[1] < this.qualifiers.%v%.price_line - 1
+                            condition_buy := true
+                        if v = _name_sell and this.candle_data[1].moving_prices[1] > this.qualifiers.%v%.price_line + 1
+                            condition_sell := true
+                    }
+                }
+            }
+
+            if (condition_buy) {
+                this.qualifiers.sc3bB.state := false
+                this.ExecuteTrade('BUY', _name)
+            } else if (condition_sell) {
+                this.qualifiers.sc3bS.state := false
+                this.ExecuteTrade('SELL', _name)
+            }
+        }
+        Scenario4() {
+            if this.candle_data.Length < 2
+                return false
+            if this.paused
+                return false
+            condition_both := Mod(A_Sec, 15) >= 13 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and not this.trade_opened[1] and this.candle_data[1].size >= 30
+            if this.stats.streak <= -3
+                condition_both := Mod(A_Sec, 15) >= 1 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and not this.trade_opened[1] and this.candle_data[1].size >= 30
+            condition_buy  := condition_both and this.ps.orange.y > this.ps.blue.y and (+this.ps.orange.y - this.ps.blue.y > -this.candle_data[1].C + this.candle_data[2].C) and this.candle_data[1].color = 'G'
+            condition_sell := condition_both and this.ps.orange.y < this.ps.blue.y and (-this.ps.orange.y + this.ps.blue.y > +this.candle_data[1].C - this.candle_data[2].C) and this.candle_data[1].color = 'R'
+
+            condition_buy  := condition_buy  and this.ps.moving_price.y < this.candle_data[1].O - (this.candle_data[1].size/2)
+            condition_sell := condition_sell and this.ps.moving_price.y > this.candle_data[1].O + (this.candle_data[1].size/2)
+
+            if (condition_buy) {
+                this.last_trade := 'BUY'
+                this.ExecuteTrade('BUY', '4')
+            } else if (condition_sell) {
+                this.last_trade := 'SELL'
+                this.ExecuteTrade('SELL', '4')
+            }
+        }
+        Scenario5() {
+            if this.candle_data.Length < 2 or this.trade_opened[1]
+                return false
+            condition_both := Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3 and Abs(this.ps.orange.y - this.ps.blue.y) >= 40 and this.candle_data[1].size >= 30
+            condition_buy  := condition_both and this.candle_data[2].color = 'R' and this.candle_data[2].moving_prices[1] < this.candle_data[2].O
+            condition_sell := condition_both and this.candle_data[2].color = 'G' and this.candle_data[2].moving_prices[1] > this.candle_data[2].O
+
+            condition_buy  := condition_buy  and this.candle_data[1].color = 'G' and this.candle_data[1].C < this.ps.blue.y
+            condition_sell := condition_sell and this.candle_data[1].color = 'R' and this.candle_data[1].C > this.ps.blue.y
+
+            if (condition_buy) {
+                this.last_trade := 'BUY'
+                this.ExecuteTrade('BUY', '5')
+            } else if (condition_sell) {
+                this.last_trade := 'SELL'
+                this.ExecuteTrade('SELL' , '5')
+            }
+        }
+
     }
 
     UpdateLog() {
