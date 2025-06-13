@@ -422,6 +422,9 @@ class TraderBot {
                     else if this.stats.streak < -3
                         this.qualifiers.streak_reset := -7
                     this.stats.streak := 1
+                    this.amount := this.GetAmount(this.balance.current) ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
+                } else {
+                    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 }
 
                 if this.state.32
@@ -430,7 +433,6 @@ class TraderBot {
                     this.stats.streak2--
                     this.state.32 := true
                 }
-                this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 if this.stats.streak = 7
                     this.amount += 30
                 if this.stats.streak <= -3 {
