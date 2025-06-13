@@ -414,15 +414,15 @@ class TraderBot {
                 this.stats.streak--
 
                 if !this.qualifiers.HasOwnProp('streak_reset')
-                    this.qualifiers.streak_reset := -3
-
-                if this.stats.streak < this.qualifiers.streak_reset {
-                    if this.stats.streak < -7
-                        this.qualifiers.streak_reset := -3
-                    else if this.stats.streak < -3
-                        this.qualifiers.streak_reset := -7
+                    this.qualifiers.streak_reset := {val: -3, count: 0}
+                
+                if this.stats.streak < this.qualifiers.streak_reset.val {
+                    this.qualifiers.streak_reset.count++
                     this.stats.streak := 1
-                    this.amount := this.GetAmount(this.balance.current) ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
+                    this.amount := this.GetAmount(this.balance.current)
+                } else if this.stats.streak = this.qualifiers.streak_reset.val {
+                    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1]
+                    this.amount += 30*this.qualifiers.streak_reset.count
                 } else {
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 }
@@ -433,7 +433,7 @@ class TraderBot {
                     this.stats.streak2--
                     this.state.32 := true
                 }
-                if this.stats.streak = 7
+                if this.stats.streak = -3
                     this.amount += 30
                 if this.stats.streak <= -3 {
                     ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
