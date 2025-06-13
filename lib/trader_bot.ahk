@@ -469,7 +469,8 @@ class TraderBot {
             } else if win.ps {
                 if !this.qualifiers.HasOwnProp('streak_reset')
                     this.qualifiers.streak_reset := {val: -3, count: 0}
-                this.qualifiers.streak_reset.count := 0
+                if this.stats.streak = this.qualifiers.streak_reset.val
+                    this.qualifiers.streak_reset.count := 0
                 this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
                     if this.stats.streak = -4
