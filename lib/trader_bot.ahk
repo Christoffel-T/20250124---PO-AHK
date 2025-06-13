@@ -433,8 +433,6 @@ class TraderBot {
                     this.stats.streak2--
                     this.state.32 := true
                 }
-                if this.stats.streak = -3
-                    this.amount += 30
                 if this.stats.streak <= -3 {
                     ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
                     MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
@@ -469,6 +467,9 @@ class TraderBot {
                 this.SetTradeAmount()
                 this.stats.loss++
             } else if win.ps {
+                if !this.qualifiers.HasOwnProp('streak_reset')
+                    this.qualifiers.streak_reset := {val: -3, count: 0}
+                this.qualifiers.streak_reset.count := 0
                 this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
                     if this.stats.streak = -4
