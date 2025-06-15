@@ -1143,7 +1143,10 @@ class TraderBot {
             sleep 50
             ClipWait(0.5)
             try {
-                if Format('{:.0f}', RegExReplace(A_Clipboard, '[^\d.]')) != Format('{:.0f}', RegExReplace(this.amount, '[^\d.]')) {
+                _compare1 := RegExReplace(Format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]')), '\.\d+')
+                _compare2 := RegExReplace(Format('{:.2f}', RegExReplace(this.amount, '[^\d.]')), '\.\d+')
+
+                if _compare1 != _compare2 {
                     continue
                 }
             } catch {
