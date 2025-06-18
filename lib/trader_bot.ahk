@@ -42,7 +42,7 @@ class TraderBot {
         this.countdown_close_str := ''
         this.win_rate := ''
         this.debug_str := ''
-        this.stats := {bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
+        this.stats := {bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.balance := {starting: 500, reset_max: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -400,11 +400,43 @@ class TraderBot {
             this.active_trade := ''
             this.trade_opened[1] := false
             MouseClick('L', this.coords.trades_closed.x + Random(-2, 2), this.coords.trades_closed.y + Random(-1, 1), 5, 2)
-            sleep 300
-            draw := {x1:this.coords.detect_trade_close1.x , x2:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: this.coords.detect_trade_close2.y}
-            win :=  {x2:this.coords.detect_trade_close2.x , x1:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: this.coords.detect_trade_close2.y}
-            win.ps := PixelSearch(&x, &y, win.x1, win.y1, win.x2, win.y2, this.colors.green2, 37)
-            draw.ps := PixelSearch(&x, &y, draw.x1, draw.y1, draw.x2, draw.y2, this.colors.green2, 32)
+            sleep 500
+            ; draw := {x1:this.coords.detect_trade_close1.x , x2:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: this.coords.detect_trade_close2.y}
+            ; win :=  {x2:this.coords.detect_trade_close2.x , x1:(this.coords.detect_trade_close2.x+this.coords.detect_trade_close1.x)/2, y1:this.coords.detect_trade_close1.y, y2: this.coords.detect_trade_close2.y}
+            ; win.ps := PixelSearch(&x, &y, win.x1, win.y1, win.x2, win.y2, this.colors.green2, 37)
+            ; draw.ps := PixelSearch(&x, &y, draw.x1, draw.y1, draw.x2, draw.y2, this.colors.green2, 32)
+            this.CheckBalance()
+            if this.balance.current > this.balance.last_trade + 0.5 {
+                ; this.stats.streak++
+                ; this.stats.draw++
+                ; this.stats.streak++
+                ; if this.stats.streak < 0 {
+                ;     if this.stats.streak = -4
+                ;         this.lose_streak.end_by_win_count++
+                ;     if not this.lose_streak.repeat.Has(this.stats.streak)
+                ;         this.lose_streak.repeat[this.stats.streak] := 0
+                ;     if this.stats.streak < this.lose_streak.max
+                ;         this.lose_streak.max := this.stats.streak
+                ;     this.lose_streak.repeat[this.stats.streak]++
+                ;     this.stats.streak := 0
+                ; }
+
+                ; this.stats.streak := 1
+                ; if this.state.32
+                ;     this.stats.streak2 += 2
+                ; this.stats.win++
+                ; this.stats.loss--
+                ; this.amount := this.GetAmount(this.balance.current)
+                win := {ps:true}
+                draw := {ps:true}
+            } else if this.balance.current < this.balance.last_trade - 0.5 {
+                win := {ps:false}
+                draw := {ps:false}
+            } else {
+                draw := {ps:true}
+            }
+            this.balance.last_trade := this.balance.current
+
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             if not win.ps and not draw.ps {
                 if this.stats.streak > 0
@@ -1103,11 +1135,15 @@ class TraderBot {
             }
             this.CheckBalance()
             if this.balance.current < 1 {
+                this.stats.streak := 0
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
+                
             } else if this.balance.current >= this.balance.reset_max {
+                this.stats.streak := 0
                 this.stats.bal_win++
-                this.AddBalance(this.balance.reset_max + this.balance.starting - this.balance.current)
+                this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
+                this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
             }
             this.amount := Min(this.amount, this.balance.current)
 
@@ -1234,36 +1270,7 @@ class TraderBot {
             if cur_bal >= 50000 {
                 MsgBox 'Balance too high.'
             }
-            cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_win) * (this.balance.reset_max))
-            if cur_bal > this.balance.last_trade and this.stats.streak < 0 and not this.trade_opened[1] {
-                if cur_bal > this.balance.last_trade + 0.5 {
-                    ; this.stats.streak++
-                    ; this.stats.draw++
-                    this.stats.streak++
-                    if this.stats.streak < 0 {
-                        if this.stats.streak = -4
-                            this.lose_streak.end_by_win_count++
-                        if not this.lose_streak.repeat.Has(this.stats.streak)
-                            this.lose_streak.repeat[this.stats.streak] := 0
-                        if this.stats.streak < this.lose_streak.max
-                            this.lose_streak.max := this.stats.streak
-                        this.lose_streak.repeat[this.stats.streak]++
-                        this.stats.streak := 0
-                    }
-    
-                    this.stats.streak := 1
-                    if this.state.32
-                        this.stats.streak2 += 2
-                    this.stats.win++
-                    this.stats.loss--
-                    this.amount := this.GetAmount(cur_bal)
-                } else {
-                    sleep 10
-                    this.stats.loss--
-                    this.stats.draw++
-                }
-                this.balance.last_trade := cur_bal
-            }
+            cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
             this.balance.current := cur_bal
             this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
             this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
@@ -1272,6 +1279,13 @@ class TraderBot {
     }
 
     AddBalance(bal_amount) {
+        if bal_amount < 0 {
+            MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
+            this.balance.max := 0
+            this.balance.min := 9**10
+            sleep 1000
+            this.CheckBalance()
+        }
         bal_amount := format('{:.2f}', bal_amount)
         A_Clipboard := ''
         if !WinActive(this.wtitle) {
