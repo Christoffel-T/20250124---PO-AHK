@@ -433,6 +433,7 @@ class TraderBot {
                 win := {ps:false}
                 draw := {ps:false}
             } else {
+                win := {ps:false}
                 draw := {ps:true}
             }
             this.balance.last_trade := this.balance.current
