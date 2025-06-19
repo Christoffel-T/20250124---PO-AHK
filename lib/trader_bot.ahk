@@ -497,7 +497,6 @@ class TraderBot {
                 this.stats.streak := 0
 
                 this.stats.loss++
-                this.stats
             } else if win.ps {
                 this.stats.%this.executed_trades[1]%.win++
 
