@@ -43,7 +43,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 500, reset_max: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1000, reset_max: 2000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
         this.lose_streak := {max: this.stats.streak, repeat: Map(), end_by_win_count: 0}
@@ -455,7 +455,10 @@ class TraderBot {
                     this.amount := this.GetAmount(this.balance.current)
                 } else if this.stats.streak = this.qualifiers.streak_reset.val {
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1]
-                    this.amount += 30*this.qualifiers.streak_reset.count
+                    if this.qualifiers.streak_reset.count >= 5
+                        this.amount := 1.6*(this.amount + 35*this.qualifiers.streak_reset.count)
+                    else
+                        this.amount := 1.3*(this.amount + 35*this.qualifiers.streak_reset.count)
                 } else {
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 }
