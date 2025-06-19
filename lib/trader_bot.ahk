@@ -14,6 +14,7 @@ class TraderBot {
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
+        this.qualifiers.streak_reset := {val: -3, count: 0}
 
         Loop 10 {
             _index := A_Index
@@ -437,9 +438,6 @@ class TraderBot {
                 ;     this.stats.streak := -Abs(this.stats.streak)+1
                 this.stats.streak--
 
-                if !this.qualifiers.HasOwnProp('streak_reset')
-                    this.qualifiers.streak_reset := {val: -3, count: 0}
-                
                 if this.stats.streak < this.qualifiers.streak_reset.val {
                     this.qualifiers.streak_reset.count++
                     this.stats.streak := 1
@@ -503,8 +501,6 @@ class TraderBot {
             } else if win.ps {
                 this.stats.%this.executed_trades[1]%.win++
 
-                if !this.qualifiers.HasOwnProp('streak_reset')
-                    this.qualifiers.streak_reset := {val: -3, count: 0}
                 if this.stats.streak = this.qualifiers.streak_reset.val
                     this.qualifiers.streak_reset.count := 0
                 this.amount := this.GetAmount(this.balance.current)
@@ -1243,6 +1239,10 @@ class TraderBot {
                 continue
             }
             sleep 100
+            if RegExMatch(A_Clipboard, 'QT Real') {
+                MsgBox('Not on demo website, reloading Demo version.',, 'T3')
+                this.ReloadWebsite()
+            }
             if !RegExMatch(A_Clipboard, 'USD') {
                 tooltip('Error: No balance found`n' A_Clipboard)
                 sleep 80
