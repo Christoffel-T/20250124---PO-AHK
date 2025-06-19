@@ -37,7 +37,7 @@ class TraderBot {
         this.crossovers_arr := []
         this.last_trade := ''
         this.active_trade := ''
-        this.executed_trades := [['', '']]
+        this.executed_trades := ['']
         this.countdown_close := 0
         this.countdown_close_str := ''
         this.win_rate := ''
@@ -46,7 +46,7 @@ class TraderBot {
         this.balance := {starting: 1000, reset_max: 2000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
-        this.lose_streak := {max: this.stats.streak, repeat: Map(), end_by_win_count: 0}
+        this.lose_streak := {max: 0, repeat: Map()}
         this.paused := false
         this.blockers := Map()
         this.state := {coin_change_streak: false, 5loss: false, 32:false}
@@ -111,7 +111,7 @@ class TraderBot {
             this.stats.win := 0
             this.stats.loss := 0
             this.stats.draw := 0
-            this.lose_streak := {max: 0, repeat: Map(), end_by_win_count: 0}
+            this.lose_streak := {max: 0, repeat: Map()}
         }
         this.stats.reset_date := SubStr(this.datetime, 1, -6)
         
@@ -410,16 +410,6 @@ class TraderBot {
                 ; this.stats.streak++
                 ; this.stats.draw++
                 ; this.stats.streak++
-                ; if this.stats.streak < 0 {
-                ;     if this.stats.streak = -4
-                ;         this.lose_streak.end_by_win_count++
-                ;     if not this.lose_streak.repeat.Has(this.stats.streak)
-                ;         this.lose_streak.repeat[this.stats.streak] := 0
-                ;     if this.stats.streak < this.lose_streak.max
-                ;         this.lose_streak.max := this.stats.streak
-                ;     this.lose_streak.repeat[this.stats.streak]++
-                ;     this.stats.streak := 0
-                ; }
 
                 ; this.stats.streak := 1
                 ; if this.state.32
@@ -440,6 +430,7 @@ class TraderBot {
 
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             if not win.ps and not draw.ps {
+                this.stats.%this.executed_trades[1]%.lose++
                 if this.stats.streak > 0
                     this.stats.streak := 0
                 ; else if this.stats.streak > 0
@@ -501,21 +492,27 @@ class TraderBot {
                 }
 
                 this.SetTradeAmount()
+                if not this.lose_streak.repeat.Has(this.stats.streak) {
+                    this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
+                }
+                this.lose_streak.repeat[this.stats.streak].lose++
+                this.stats.streak := 0
+
                 this.stats.loss++
+                this.stats
             } else if win.ps {
+                this.stats.%this.executed_trades[1]%.win++
+
                 if !this.qualifiers.HasOwnProp('streak_reset')
                     this.qualifiers.streak_reset := {val: -3, count: 0}
                 if this.stats.streak = this.qualifiers.streak_reset.val
                     this.qualifiers.streak_reset.count := 0
                 this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
-                    if this.stats.streak = -4
-                        this.lose_streak.end_by_win_count++
-                    if not this.lose_streak.repeat.Has(this.stats.streak)
-                        this.lose_streak.repeat[this.stats.streak] := 0
-                    if this.stats.streak < this.lose_streak.max
-                        this.lose_streak.max := this.stats.streak
-                    this.lose_streak.repeat[this.stats.streak]++
+                    if not this.lose_streak.repeat.Has(this.stats.streak) {
+                        this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
+                    }
+                    this.lose_streak.repeat[this.stats.streak].win++
                     this.stats.streak := 0
                 }
                 this.stats.streak++
@@ -525,6 +522,7 @@ class TraderBot {
                 this.SetTradeAmount()
                 this.stats.win++
             } else if draw.ps {
+                this.stats.%this.executed_trades[1]%.draw++
                 this.stats.draw++
             }
         }
@@ -592,7 +590,8 @@ class TraderBot {
         this.paused := this.CheckPaused()
         Scenario3b()
         Scenario3a()
-        Scenario3()
+        if this.qualifiers.streak_reset.count < 1
+            Scenario3()
         ; is.Scenario2()
         ; Scenario1()
 
@@ -857,18 +856,14 @@ class TraderBot {
         time := FormatTime(A_Now, 'HH:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
         if this.trade_opened[1] {
             countdown_close := (this.trade_opened[2] - A_TickCount)/1000
-            countdown_close_str :=  this.executed_trades[1][2] ' (' format('{:.2f}', countdown_close) ')'
+            countdown_close_str :=  this.executed_trades[1] ' [' this.stats.%this.executed_trades[1]%.win '|' this.stats.%this.executed_trades[1]%.draw '|' this.stats.%this.executed_trades[1]%.lose ']' ' (' format('{:.2f}', countdown_close) ')'
         } else {
             countdown_close_str := ''
         }
     
         streaks_str := ''
-        if this.lose_streak.repeat.Count > 0
-            lose_streak_str := this.lose_streak.max '(' this.lose_streak.repeat[this.lose_streak.max] ')'
-        else
-            lose_streak_str := 0 '(' 0 ')'
         for k, v in this.lose_streak.repeat {
-            streaks_str .= k '<' v '> '
+            streaks_str .= k '<' v.win '|' v.lose '> '
         }
 
         try {    
@@ -915,6 +910,8 @@ class TraderBot {
         try
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
         
+        str_d := format('{:.2f}', this.amount) ' [' 35*this.qualifiers.streak_reset.count ']'
+
         _count_reload := 0
         loop {
             _count_reload++
@@ -934,8 +931,8 @@ class TraderBot {
                 FileAppend(
                     date ',' 
                     time ',' 
-                    str_c '(' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' this.active_trade countdown_close_str ' | ' paused_str ',' 
-                    format('{:.2f}', this.amount) ',' 
+                    str_c '(' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str ',' 
+                    str_d ',' 
                     this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
                     this.last_trade ',' 
@@ -997,9 +994,13 @@ class TraderBot {
             ; }
         }
         ToolTip(,,, 12)
-        this.executed_trades.InsertAt(1, [action, reason])
+        this.executed_trades.InsertAt(1, action reason)
         while this.executed_trades.Length > 10
             this.executed_trades.Pop()
+        if !this.stats.HasOwnProp(this.executed_trades[1]) {
+            this.stats.%this.executed_trades[1]% := {win:0, lose:0, draw:0}
+        }
+
         this.active_trade := action
     }     
 
@@ -1155,15 +1156,6 @@ class TraderBot {
                 WinActivate(this.wtitle)  
                 sleep 100
             }
-            ; if this.state.32 {
-            ;     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][4+1]
-            ; }
-            ; if this.balance.current >= this.balance.max and this.state.32 {
-            ;     this.state.32 := false
-            ;     this.stats.streak2 := 0
-            ;     this.stats.streak := 1
-            ;     this.amount := this.amount_arr[this.GetAmount(this.balance.current)][this.stats.streak]
-            ; }
             sleep 80
             Send('^f')
             sleep 80
