@@ -436,6 +436,11 @@ class TraderBot {
                     this.stats.streak := 0
                 ; else if this.stats.streak > 0
                 ;     this.stats.streak := -Abs(this.stats.streak)+1
+                if not this.lose_streak.repeat.Has(this.stats.streak) {
+                    this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
+                }
+                this.lose_streak.repeat[this.stats.streak].lose++
+
                 this.stats.streak--
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
@@ -490,11 +495,6 @@ class TraderBot {
                 }
 
                 this.SetTradeAmount()
-                if not this.lose_streak.repeat.Has(this.stats.streak) {
-                    this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
-                }
-                this.lose_streak.repeat[this.stats.streak].lose++
-                this.stats.streak := 0
 
                 this.stats.loss++
             } else if win.ps {
