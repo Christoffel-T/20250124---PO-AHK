@@ -44,7 +44,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 1000, reset_max: 2000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1250, reset_max: 1750, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
         this.lose_streak := {max: 0, repeat: Map()}
@@ -432,14 +432,14 @@ class TraderBot {
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             if not win.ps and not draw.ps {
                 this.stats.%this.executed_trades[1]%.lose++
-                if this.stats.streak > 0
+                if this.stats.streak >= 0
                     this.stats.streak := 0
-                ; else if this.stats.streak > 0
-                ;     this.stats.streak := -Abs(this.stats.streak)+1
-                if not this.lose_streak.repeat.Has(this.stats.streak) {
-                    this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
+                else {
+                    if not this.lose_streak.repeat.Has(this.stats.streak) {
+                        this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
+                    }
+                    this.lose_streak.repeat[this.stats.streak].lose++
                 }
-                this.lose_streak.repeat[this.stats.streak].lose++
 
                 this.stats.streak--
 
@@ -585,8 +585,9 @@ class TraderBot {
         this.paused := this.CheckPaused()
         Scenario3b()
         Scenario3a()
-        if this.qualifiers.streak_reset.count < 1
+        if this.stats.streak != -3 {
             Scenario3()
+        }
         ; is.Scenario2()
         ; Scenario1()
 
@@ -784,7 +785,7 @@ class TraderBot {
                 }
             }
 
-            if (condition_buy) {
+            if (condition_buy and this.stats.streak != -3) {
                 this.qualifiers.%_name_buy%.state := false
                 this.ExecuteTrade('BUY', _name)
             } else if (condition_sell) {
