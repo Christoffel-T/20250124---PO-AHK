@@ -448,7 +448,7 @@ class TraderBot {
                     this.stats.streak := 1
                     this.amount := this.GetAmount(this.balance.current)
                 } else if this.stats.streak = this.qualifiers.streak_reset.val {
-                    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1]
+                    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
                     if this.qualifiers.streak_reset.count > 0
                         this.qualifiers.streak_reset.value2 += (this.amount + 4 + 5)/0.92
                 } else {
@@ -1290,7 +1290,7 @@ class TraderBot {
             sleep 100
         }
         MouseClick('L', this.coords.balance.x + Random(-2, 2), this.coords.balance.y + Random(-2, 2), 1, 2)
-        sleep 1000
+        sleep 1500
         MouseClick('L', this.coords.top_up.x + Random(-2, 2), this.coords.top_up.y + Random(-2, 2), 1, 2)
         sleep 1000
         Send '{tab}'
