@@ -64,7 +64,7 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,balance,_3_loss,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,_3_loss,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
     } 
 
