@@ -14,7 +14,7 @@ class TraderBot {
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
-        this.qualifiers.streak_reset := {val: -3, count: 0}
+        this.qualifiers.streak_reset := {val: -3, count: 0, value2: 0}
 
         Loop 10 {
             _index := A_Index
@@ -64,7 +64,7 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,next_target,last_trade,balance,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,balance,_3_loss,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
     } 
 
@@ -449,12 +449,10 @@ class TraderBot {
                     this.amount := this.GetAmount(this.balance.current)
                 } else if this.stats.streak = this.qualifiers.streak_reset.val {
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1]
-                    if this.qualifiers.streak_reset.count >= 5
-                        this.amount := 1.6*(this.amount + 35*this.qualifiers.streak_reset.count)
-                    else
-                        this.amount := 1.3*(this.amount + 35*this.qualifiers.streak_reset.count)
+                    if this.qualifiers.streak_reset.count > 0
+                        this.qualifiers.streak_reset.value2 += (this.amount + 4 + 5)/0.92
                 } else {
-                    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak+1] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
+                    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 }
 
                 if this.state.32
@@ -499,9 +497,11 @@ class TraderBot {
                 this.stats.loss++
             } else if win.ps {
                 this.stats.%this.executed_trades[1]%.win++
-
-                if this.stats.streak = this.qualifiers.streak_reset.val
+                this.qualifiers.streak_reset.value2 -= this.amount*0.92
+                if this.qualifiers.streak_reset.value2 < 0 {
                     this.qualifiers.streak_reset.count := 0
+                    this.qualifiers.streak_reset.value2 := 0
+                }
                 this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
                     if not this.lose_streak.repeat.Has(this.stats.streak) {
@@ -907,7 +907,7 @@ class TraderBot {
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
         
         str_d := format('{:.2f}', this.amount) ' [' 35*this.qualifiers.streak_reset.count ']'
-
+        str_e := format('{:.2f}', -this.qualifiers.streak_reset.value2)
         _count_reload := 0
         loop {
             _count_reload++
@@ -929,6 +929,7 @@ class TraderBot {
                     time ',' 
                     str_c '(' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str ',' 
                     str_d ',' 
+                    str_e ',' 
                     this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
                     this.last_trade ',' 

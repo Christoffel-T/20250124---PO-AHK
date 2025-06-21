@@ -4,7 +4,7 @@ import gspread
 from google.oauth2 import service_account
 
 from datetime import datetime
-
+x = 5
 def append_to_google_sheets(data, row):
     # Use credentials to create a client to interact with the Google Drive API
     json_credentials = 'keys.json'
@@ -54,7 +54,8 @@ def append_to_google_sheets(data, row):
             sheet.delete_rows(20001, len(all_values))
 
 def monitor_log(file_path):
-    header = ["date","time","active_trade","amount","balance",'next_target',"last_trade","payout (coin)","Streak (W|D|L|win_rate)","Streaks","ohlc","debug"]  # Adjust as needed
+
+    header = ["date","time","active_trade","amount","balance","_3_loss",'next_target',"last_trade","payout (coin)","Streak (W|D|L|win_rate)","Streaks","ohlc","debug"]  # Adjust as needed
     last_size = 0
 
     # Ensure the header is set before starting the loop
@@ -107,7 +108,6 @@ def monitor_log(file_path):
             print(f"{datetime.now()} | Permission Error...")
             time.sleep(5)  # Adjust as needed
             continue
-
 
 if __name__ == "__main__":
     monitor_log("log.csv")
