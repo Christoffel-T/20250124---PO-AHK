@@ -1173,11 +1173,14 @@ class TraderBot {
             try {
                 _compare1 := RegExReplace(Format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]')), '\.\d+')
                 _compare2 := RegExReplace(Format('{:.2f}', RegExReplace(this.amount, '[^\d.]')), '\.\d+')
-
+                tooltip(_compare1 ' != ' _compare2)
+                sleep 300
                 if _compare1 != _compare2 {
                     continue
                 }
-            } catch {
+            } catch as e {
+                ToolTip(e.Message)
+                sleep 300
                 continue
             }
             sleep 80
