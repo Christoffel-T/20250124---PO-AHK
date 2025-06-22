@@ -440,16 +440,25 @@ class TraderBot {
                     }
                     this.lose_streak.repeat[this.stats.streak].lose++
                 }
+                if this.qualifiers.streak_reset.count > 0
+                    this.qualifiers.streak_reset.value2 += this.amount
 
                 this.stats.streak--
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
+                    if this.qualifiers.streak_reset.count = 0 
+                        this.qualifiers.streak_reset.value2 := (this.amount + 4 + 5)/0.92
+                    else
+                        this.qualifiers.streak_reset.value2 := (this.qualifiers.streak_reset.value2 + 5)/0.92
+
                     this.qualifiers.streak_reset.count++
                     this.stats.streak := 1
-                    this.qualifiers.streak_reset.value2 += (this.amount + 4 + 5)/0.92
                     this.amount := this.GetAmount(this.balance.current)
                 } else if this.stats.streak = this.qualifiers.streak_reset.val {
-                    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
+                    if this.qualifiers.streak_reset.count = 0 
+                        this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
+                    else
+                        this.amount := this.qualifiers.streak_reset.value2
                 } else {
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 }
@@ -905,7 +914,7 @@ class TraderBot {
         try
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
         
-        str_d := format('{:.2f}', this.amount) ' [' 35*this.qualifiers.streak_reset.count ']'
+        str_d := format('{:.2f}', this.amount)
         str_e := format('{:.2f}', -this.qualifiers.streak_reset.value2)
         _count_reload := 0
         loop {
@@ -1173,9 +1182,9 @@ class TraderBot {
             try {
                 _compare1 := RegExReplace(Format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]')), '\.\d+')
                 _compare2 := RegExReplace(Format('{:.2f}', RegExReplace(this.amount, '[^\d.]')), '\.\d+')
-                tooltip(_compare1 ' != ' _compare2)
-                sleep 300
                 if _compare1 != _compare2 {
+                    tooltip(_compare1 ' != ' _compare2)
+                    sleep 300
                     continue
                 }
             } catch as e {
@@ -1183,6 +1192,7 @@ class TraderBot {
                 sleep 300
                 continue
             }
+            tooltip
             sleep 80
             A_Clipboard := ''
             Send('{Tab}^f')
