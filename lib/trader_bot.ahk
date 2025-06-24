@@ -595,8 +595,8 @@ class TraderBot {
         if this.stats.streak != -3 {
             Scenario3()
         }
-        ; is.Scenario2()
-        ; Scenario1()
+        Scenario2()
+        Scenario1()
 
         Scenario1() {
             if this.paused or this.candle_data.Length < 2
