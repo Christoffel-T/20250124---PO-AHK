@@ -1149,11 +1149,15 @@ class TraderBot {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
                 this.amount := Min(this.amount, this.balance.starting)
+                this.qualifiers.streak_reset.count := 0
+                this.qualifiers.streak_reset.value2 := 0
             } else if this.balance.current >= this.balance.reset_max {
                 this.stats.streak := 0
                 this.stats.bal_win++
                 this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
+                this.qualifiers.streak_reset.count := 0
+                this.qualifiers.streak_reset.value2 := 0
             }
             this.amount := Min(this.amount, this.balance.current)
 
