@@ -457,7 +457,7 @@ class TraderBot {
                     if this.qualifiers.streak_reset.count = 0 
                         this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
                     else
-                        this.amount := this.qualifiers.streak_reset.value2
+                        this.amount := this.qualifiers.streak_reset.value2/0.92
                 } else {
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 }
