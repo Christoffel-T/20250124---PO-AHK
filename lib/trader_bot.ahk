@@ -1,7 +1,6 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
-
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -504,7 +503,7 @@ class TraderBot {
 
                 this.stats.loss++
             } else if win.ps {
-                this.stats.%this.executed_trades[1]%.win++
+                this.stats.%this.executed_trades[1]%.win++  
                 this.qualifiers.streak_reset.value2 -= this.amount*0.92
                 if this.qualifiers.streak_reset.value2 < 0 {
                     this.qualifiers.streak_reset.count := 0
@@ -914,6 +913,7 @@ class TraderBot {
         try
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
         
+        str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := format('{:.2f}', this.amount)
         str_e := format('{:.2f}', -this.qualifiers.streak_reset.value2)
         _count_reload := 0
@@ -935,7 +935,7 @@ class TraderBot {
                 FileAppend(
                     date ',' 
                     time ',' 
-                    str_c '(' this.candle_data[1].size ' | ' this.coin_name ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str ',' 
+                    str_c ',' 
                     str_d ',' 
                     str_e ',' 
                     this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
@@ -1148,7 +1148,7 @@ class TraderBot {
                 this.stats.streak := 0
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
-                
+                this.amount := Min(this.amount, this.balance.starting)
             } else if this.balance.current >= this.balance.reset_max {
                 this.stats.streak := 0
                 this.stats.bal_win++
