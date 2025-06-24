@@ -1257,7 +1257,7 @@ class TraderBot {
             }
             sleep 100
             if RegExMatch(A_Clipboard, 'QT Real') {
-                MsgBox('Not on demo website, reloading Demo version.',, 'T3')
+                MsgBox('Not on demo website, reloading Demo version.',, 'T2')
                 this.ReloadWebsite()
             }
             if !RegExMatch(A_Clipboard, 'USD') {
@@ -1306,7 +1306,7 @@ class TraderBot {
             sleep 100
         }
         MouseClick('L', this.coords.balance.x + Random(-2, 2), this.coords.balance.y + Random(-2, 2), 1, 2)
-        sleep 1500
+        sleep 2000
         MouseClick('L', this.coords.top_up.x + Random(-2, 2), this.coords.top_up.y + Random(-2, 2), 1, 2)
         sleep 1000
         Send '{tab}'
