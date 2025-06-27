@@ -930,7 +930,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := format('{:.2f}', this.amount)
-        str_e := format('{:.2f}', -this.qualifiers.streak_reset.value2)
+        str_e := format('{:.2f}', -this.qualifiers.streak_reset.value2) ' (' this.qualifiers.balance_mark.count ')'
         _count_reload := 0
         loop {
             _count_reload++
