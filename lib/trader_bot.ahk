@@ -73,10 +73,8 @@ class TraderBot {
         this.ReloadWebsite()
         this.CheckBalance()
         
-        while this.balance.current != this.balance.starting {
-            if this.balance.current < this.balance.starting {
-                this.AddBalance(this.balance.starting-this.balance.current)
-            }
+        while this.balance.current < this.balance.starting {
+            this.AddBalance(this.balance.starting-this.balance.current)
             sleep 2000
             this.CheckBalance()
         }
