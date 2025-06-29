@@ -66,7 +66,7 @@ class TraderBot {
         if !FileExist(this.log_file) {
             FileAppend('date,time,active_trade,_3_loss,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
-    } 
+    }
 
     StartLoop(*) {
         ToolTip('Running...', 5, 5, 1)
@@ -1257,6 +1257,8 @@ class TraderBot {
                 sleep 100
             }
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
+            sleep 50
+            Send('{Escape 2}')
             sleep 50
             Send('^a^c')
             sleep 50
