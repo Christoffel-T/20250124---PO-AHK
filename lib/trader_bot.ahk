@@ -44,7 +44,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.balance := {starting: 750, reset_max: 1500, current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.qualifiers.balance_mark := {mark: this.balance.starting, count: 0}
+        this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
         this.lose_streak := {max: 0, repeat: Map()}
@@ -444,7 +444,10 @@ class TraderBot {
                 this.stats.streak--
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
-                    if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 66 and this.qualifiers.balance_mark.count < 6 {
+                    if this.balance.current + 11 > this.qualifiers.balance_mark.mark_starting + 3000 {
+                        this.qualifiers.balance_mark.count++
+                        this.qualifiers.streak_reset.count := 0
+                    } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 66 and this.qualifiers.balance_mark.count < 6 {
                         this.qualifiers.balance_mark.count++
                         this.qualifiers.streak_reset.count := 0
                     } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count < 4 {
@@ -1125,6 +1128,7 @@ class TraderBot {
             if val >= tresh[1] {
                 while this.amounts_tresholds.Length > _index
                     this.amounts_tresholds.Pop()        
+                this.qualifiers.balance_mark.mark_starting := tresh[1]
                 return tresh[2]
             }
         }
