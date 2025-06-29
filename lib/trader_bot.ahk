@@ -13,7 +13,7 @@ class TraderBot {
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
-        this.qualifiers.streak_reset := {val: -3, count: 0, value2: 0}
+        this.qualifiers.streak_reset := {val: -3, count: 0, cummulative: 0}
 
         Loop 10 {
             _index := A_Index
@@ -429,6 +429,14 @@ class TraderBot {
 
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             if not win.ps and not draw.ps {
+                TradeLose()
+            } else if win.ps {
+                TradeWin()
+            } else if draw.ps {
+                TradeDraw()
+            }
+        }
+        TradeLose() {
                 this.stats.%this.executed_trades[1]%.lose++
                 if this.stats.streak >= 0
                     this.stats.streak := 0
@@ -438,38 +446,39 @@ class TraderBot {
                     }
                     this.lose_streak.repeat[this.stats.streak].lose++
                 }
-                if this.qualifiers.streak_reset.count > 0
-                    this.qualifiers.streak_reset.value2 += this.amount
+                if this.qualifiers.streak_reset.cummulative > 0
+                    this.qualifiers.streak_reset.cummulative += this.amount
 
                 this.stats.streak--
 
+                if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 66 and this.balance.current + 11 < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count >= 6 {
+                    this.qualifiers.streak_reset.val := -2
+                } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count >= 4 {
+                    this.qualifiers.streak_reset.val := -2
+                } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 00 and this.qualifiers.balance_mark.count >= 2 {
+                    this.qualifiers.streak_reset.val := -2
+                }
+
                 if this.stats.streak < this.qualifiers.streak_reset.val {
-                    if this.balance.current + 11 > this.qualifiers.balance_mark.mark_starting + 3000 {
+                    if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 66 and this.balance.current + 11 < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
                         this.qualifiers.balance_mark.count++
-                        this.qualifiers.streak_reset.count := 0
-                    } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 66 and this.qualifiers.balance_mark.count < 6 {
-                        this.qualifiers.balance_mark.count++
-                        this.qualifiers.streak_reset.count := 0
                     } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count < 4 {
                         this.qualifiers.balance_mark.count++
-                        this.qualifiers.streak_reset.count := 0
                     } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 0 and this.qualifiers.balance_mark.count < 2 {
                         this.qualifiers.balance_mark.count++
-                        this.qualifiers.streak_reset.count := 0
                     } else {
-                        if this.qualifiers.streak_reset.value2 > 0
-                            this.qualifiers.streak_reset.value2 := (this.qualifiers.streak_reset.value2 + 5)/0.92
+                        if this.qualifiers.streak_reset.cummulative > 0
+                            this.qualifiers.streak_reset.cummulative := (this.qualifiers.streak_reset.cummulative + 5)/0.92
                         else
-                            this.qualifiers.streak_reset.value2 := (this.amount + 4 + 5)/0.92
-                        this.qualifiers.streak_reset.count++
+                            this.qualifiers.streak_reset.cummulative := (this.amount + 4 + 5)/0.92
                     }
                     this.stats.streak := 1
                     this.amount := this.GetAmount(this.balance.current)
                 } else if this.stats.streak = this.qualifiers.streak_reset.val {
-                    if this.qualifiers.streak_reset.count = 0 
+                    if this.qualifiers.streak_reset.cummulative = 0 
                         this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
                     else
-                        this.amount := this.qualifiers.streak_reset.value2/0.92
+                        this.amount := this.qualifiers.streak_reset.cummulative/0.92
                 } else {
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 }
@@ -514,16 +523,18 @@ class TraderBot {
                 this.SetTradeAmount()
 
                 this.stats.loss++
-            } else if win.ps {
-                if this.balance.current >= this.qualifiers.balance_mark.mark + 100 {
+        }
+        TradeWin() {
+                if this.balance.current >= this.qualifiers.balance_mark.mark + 100 and this.balance.current < this.qualifiers.balance_mark.mark_starting + 3000 {
                     this.qualifiers.balance_mark.mark += 100
                     this.qualifiers.balance_mark.count := 0
                 }
                 this.stats.%this.executed_trades[1]%.win++  
-                this.qualifiers.streak_reset.value2 -= this.amount*0.92
-                if this.qualifiers.streak_reset.value2 < 0 {
-                    this.qualifiers.streak_reset.count := 0
-                    this.qualifiers.streak_reset.value2 := 0
+                this.qualifiers.streak_reset.cummulative -= this.amount*0.92
+                if this.qualifiers.streak_reset.cummulative < 0 {
+                    this.qualifiers.streak_reset.cummulative := 0
+                    this.qualifiers.balance_mark.count := 0
+                    this.qualifiers.streak_reset.val := -3
                 }
                 this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
@@ -538,11 +549,11 @@ class TraderBot {
                     this.stats.streak2++
                 }
                 this.SetTradeAmount()
-                this.stats.win++
-            } else if draw.ps {
-                this.stats.%this.executed_trades[1]%.draw++
-                this.stats.draw++
-            }
+                this.stats.win++            
+        }
+        TradeDraw() {
+            this.stats.%this.executed_trades[1]%.draw++
+            this.stats.draw++
         }
     }
 
@@ -931,7 +942,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := format('{:.2f}', this.amount)
-        str_e := format('{:.2f}', -this.qualifiers.streak_reset.value2) ' (' this.qualifiers.balance_mark.count ')'
+        str_e := format('{:.2f}', -this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.balance_mark.count ')'
         _count_reload := 0
         loop {
             _count_reload++
@@ -1166,15 +1177,13 @@ class TraderBot {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
                 this.amount := Min(this.amount, this.balance.starting)
-                this.qualifiers.streak_reset.count := 0
-                this.qualifiers.streak_reset.value2 := 0
+                this.qualifiers.streak_reset.cummulative := 0
             } else if this.balance.current >= this.balance.reset_max {
                 this.stats.streak := 0
                 this.stats.bal_win++
                 this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
-                this.qualifiers.streak_reset.count := 0
-                this.qualifiers.streak_reset.value2 := 0
+                this.qualifiers.streak_reset.cummulative := 0
             }
             this.amount := Min(this.amount, this.balance.current)
 
