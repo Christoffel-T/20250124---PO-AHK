@@ -96,8 +96,9 @@ class TraderBot {
             WinActivate(this.wtitle)
             sleep 100
         }
-        MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 1)
+        MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
         sleep 100
+        Send('{Escape 2}')
 
         this.CheckBalance()
         this.CheckPayout()
@@ -1160,6 +1161,10 @@ class TraderBot {
         sleep 80
         WinMove(-8, -8, 1040, 744, this.wtitle)
         sleep 5000
+        MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
+        sleep 100
+        Send('{Escape 2}')
+
         return
     }
     
@@ -1269,9 +1274,6 @@ class TraderBot {
                 WinActivate(this.wtitle)  
                 sleep 100
             }
-            MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
-            sleep 50
-            Send('{Escape 2}')
             sleep 50
             Send('^a^c')
             sleep 50
