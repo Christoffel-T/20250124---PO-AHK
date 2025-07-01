@@ -534,7 +534,6 @@ class TraderBot {
                 this.qualifiers.streak_reset.cummulative -= this.amount*0.92
                 if this.qualifiers.streak_reset.cummulative < 0 {
                     this.qualifiers.streak_reset.cummulative := 0
-                    this.qualifiers.balance_mark.count := 0
                     this.qualifiers.streak_reset.val := -3
                 }
                 this.amount := this.GetAmount(this.balance.current)
