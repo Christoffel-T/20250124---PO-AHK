@@ -1048,20 +1048,11 @@ class TraderBot {
         this.ps.r_touch_blue := {state: false}
         this.ps.r_touch_orange := {state: false}
         _count_reload := 0
-        loop {
-            _count_reload++
-            if _count_reload > 1000 {
-                _count_reload := 0
-                this.ReloadWebsite()
-            }
-            try {
-                this.ps.moving_price := {state: PixelSearch(&x1, &y1, this.coords.area_price.x, this.coords.area_price.y, this.coords.area_price.x2, this.coords.area_price.y2, this.colors.moving_price, 5)}
-                PixelSearch(&x2, &y2, x1+5, this.coords.area_price.y2, x1-5, y1, this.colors.moving_price, 5)
-                this.ps.moving_price.y := (y1+y2)/2
-                break
-            }
-        }
+        
         try {
+            this.ps.moving_price := {state: PixelSearch(&x1, &y1, this.coords.area_price.x, this.coords.area_price.y, this.coords.area_price.x2, this.coords.area_price.y2, this.colors.moving_price, 5)}
+            PixelSearch(&x2, &y2, x1+5, this.coords.area_price.y2, x1-5, y1, this.colors.moving_price, 5)
+            this.ps.moving_price.y := (y1+y2)/2
             this.ps.blue := {state: PixelSearch(&x, &y, this.coords.area.x, this.coords.area.y, this.coords.area.x2, this.coords.area.y2, this.colors.blue, 5), x:x, y:y}
         } catch as e {
             ToolTip('Error: PixelSearch failed`n' e.Message, 500, 5, 15)
