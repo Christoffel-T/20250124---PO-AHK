@@ -529,6 +529,7 @@ class TraderBot {
                 if this.balance.current >= this.qualifiers.balance_mark.mark + 100 and this.balance.current < this.qualifiers.balance_mark.mark_starting + 3000 {
                     this.qualifiers.balance_mark.mark += 100
                     this.qualifiers.balance_mark.count := 0
+                    this.qualifiers.streak_reset.val := -3
                 }
                 this.stats.%this.executed_trades[1]%.win++  
                 this.qualifiers.streak_reset.cummulative -= this.amount*0.92
@@ -1171,6 +1172,7 @@ class TraderBot {
                 this.stats.streak := 0
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
+                this.qualifiers.balance_mark.mark := this.balance.starting
                 this.amount := Min(this.amount, this.balance.starting)
                 this.qualifiers.streak_reset.cummulative := 0
             } else if this.balance.current >= this.balance.reset_max {
@@ -1178,6 +1180,7 @@ class TraderBot {
                 this.stats.bal_win++
                 this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
+                this.qualifiers.balance_mark.mark := this.balance.starting
                 this.qualifiers.streak_reset.cummulative := 0
             }
             this.amount := Min(this.amount, this.balance.current)
