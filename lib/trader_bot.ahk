@@ -452,20 +452,20 @@ class TraderBot {
 
                 this.stats.streak--
 
-                if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 66 and this.balance.current + 11 < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count >= 6 {
+                if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count >= 6 {
                     this.qualifiers.streak_reset.val := -2
-                } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count >= 4 {
+                } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count >= 4 {
                     this.qualifiers.streak_reset.val := -2
-                } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 00 and this.qualifiers.balance_mark.count >= 2 {
+                } else if this.balance.current > this.qualifiers.balance_mark.mark + 00 and this.qualifiers.balance_mark.count >= 2 {
                     this.qualifiers.streak_reset.val := -2
                 }
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
-                    if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 66 and this.balance.current + 11 < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
+                    if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
                         this.qualifiers.balance_mark.count++
-                    } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count < 4 {
+                    } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count < 4 {
                         this.qualifiers.balance_mark.count++
-                    } else if this.balance.current + 11 > this.qualifiers.balance_mark.mark + 0 and this.qualifiers.balance_mark.count < 2 {
+                    } else if this.balance.current > this.qualifiers.balance_mark.mark + 0 and this.qualifiers.balance_mark.count < 2 {
                         this.qualifiers.balance_mark.count++
                     } else {
                         if this.qualifiers.streak_reset.cummulative > 0
