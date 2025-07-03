@@ -44,7 +44,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 500, reset_max: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1000, reset_max: 2000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -437,7 +437,29 @@ class TraderBot {
             } else if draw.ps {
                 TradeDraw()
             }
+            this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / (this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose) * 100, 1)
+            RankScenarios()
         }
+
+        RankScenarios() {
+            sortableArray := ''
+            For key, value in this.stats.OwnProps()
+            {
+                if !InStr(key, 'BUY') and !InStr(key, 'SELL')
+                    continue
+                if !this.stats.%key%.HasOwnProp('rank')
+                    this.stats.%key%.rank := 0
+                sortableArray .= Format('{:.1f}', value.win_rate) ',' value.rank ',' key '`n'
+            }
+            sortableArray := Sort(sortableArray, 'R')
+
+            for v in StrSplit(sortableArray, '`n') {
+                try
+                    key := StrSplit(v,',')[3]
+                this.stats.%key%.rank := A_Index
+            }
+        }
+
         TradeLose() {
                 this.stats.%this.executed_trades[1]%.lose++
                 if this.stats.streak >= 0
@@ -824,7 +846,7 @@ class TraderBot {
                     }
                 }
             }
-
+            
             if (condition_buy and this.stats.streak != -3) {
                 this.qualifiers.%_name_buy%.state := false
                 this.ExecuteTrade('BUY', _name)
@@ -892,7 +914,7 @@ class TraderBot {
         time := FormatTime(A_Now, 'HH:mm:ss') '.' substr(Round(A_MSec/100), 1, 1)
         if this.trade_opened[1] {
             countdown_close := (this.trade_opened[2] - A_TickCount)/1000
-            countdown_close_str :=  this.executed_trades[1] ' [' this.stats.%this.executed_trades[1]%.win '|' this.stats.%this.executed_trades[1]%.draw '|' this.stats.%this.executed_trades[1]%.lose ']' ' (' format('{:.2f}', countdown_close) ')'
+            countdown_close_str :=  this.executed_trades[1] ' [' this.stats.%this.executed_trades[1]%.win '|' this.stats.%this.executed_trades[1]%.draw '|' this.stats.%this.executed_trades[1]%.lose ', ' this.stats.%this.executed_trades[1]%.win_rate '%]' ' (' format('{:.2f}', countdown_close) ')'
         } else {
             countdown_close_str := ''
         }
@@ -997,6 +1019,10 @@ class TraderBot {
         this.last_trade := action
         if this.trade_opened[1]
             return false
+        _name := action reason
+        if this.stats.%_name%.rank > 5
+            return false
+
         this.trade_opened := [true, A_TickCount]
         this.active_trade := ''
         this.balance.last_trade := this.balance.current
