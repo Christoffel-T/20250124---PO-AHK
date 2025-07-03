@@ -475,19 +475,21 @@ class TraderBot {
 
                 this.stats.streak--
 
-                if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count >= 6 {
+                if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count >= 5 {
                     this.qualifiers.streak_reset.val := -2
-                } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count >= 4 {
+                } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count >= 3 {
                     this.qualifiers.streak_reset.val := -2
-                } else if this.balance.current > this.qualifiers.balance_mark.mark + 00 and this.qualifiers.balance_mark.count >= 2 {
+                } else if this.balance.current > this.qualifiers.balance_mark.mark + 00 and this.qualifiers.balance_mark.count >= 1 {
                     this.qualifiers.streak_reset.val := -2
                 }
                 
-                if this.balance.current < this.qualifiers.balance_mark.mark {
-                    this.qualifiers.streak_reset.val := -3
-                }
+                ; if this.balance.current < this.qualifiers.balance_mark.mark {
+                ;     this.qualifiers.streak_reset.val := -3
+                ; }
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
+                    if this.qualifiers.streak_reset.val = -3
+                        this.qualifiers.streak_reset.val := -2
                     if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
                         this.qualifiers.balance_mark.count++
                     } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count < 4 {
