@@ -1,6 +1,7 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
+
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -458,6 +459,10 @@ class TraderBot {
                     this.qualifiers.streak_reset.val := -2
                 } else if this.balance.current > this.qualifiers.balance_mark.mark + 00 and this.qualifiers.balance_mark.count >= 2 {
                     this.qualifiers.streak_reset.val := -2
+                }
+                
+                if this.balance.current < this.qualifiers.balance_mark.mark {
+                    this.qualifiers.streak_reset.val := -3
                 }
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
@@ -1208,8 +1213,8 @@ class TraderBot {
             sleep 50
             ClipWait(0.5)
             try {
-                _compare1 := RegExReplace(Format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]')), '\.\d+')
-                _compare2 := RegExReplace(Format('{:.2f}', RegExReplace(this.amount, '[^\d.]')), '\.\d+')
+                _compare1 := Format('{:.0f}', RegExReplace(A_Clipboard, '[^\d.]'))
+                _compare2 := Format('{:.0f}', RegExReplace(this.amount, '[^\d.]'))
                 if _compare1 != _compare2 {
                     tooltip(_compare1 ' != ' _compare2)
                     sleep 300
