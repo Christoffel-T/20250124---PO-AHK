@@ -1022,7 +1022,7 @@ class TraderBot {
         if this.trade_opened[1]
             return false
         _name := action reason
-        if this.stats.%_name%.rank > 5
+        if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 5
             return false
 
         this.trade_opened := [true, A_TickCount]
