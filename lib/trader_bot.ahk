@@ -918,6 +918,8 @@ class TraderBot {
             countdown_close := (this.trade_opened[2] - A_TickCount)/1000
             if !this.stats.%this.executed_trades[1]%.HasOwnProp('win_rate')
                 this.stats.%this.executed_trades[1]%.win_rate := 100
+            if !this.stats.%this.executed_trades[1]%.HasOwnProp('rank')
+                this.stats.%this.executed_trades[1]%.rank := 1
             countdown_close_str :=  this.executed_trades[1] ' [' this.stats.%this.executed_trades[1]%.win '|' this.stats.%this.executed_trades[1]%.draw '|' this.stats.%this.executed_trades[1]%.lose '] [' this.stats.%this.executed_trades[1]%.win_rate '% ' this.stats.%this.executed_trades[1]%.rank '/' 10 ']' ' (' format('{:.2f}', countdown_close) ')'
         } else {
             countdown_close_str := ''
