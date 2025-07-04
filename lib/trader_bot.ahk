@@ -437,7 +437,7 @@ class TraderBot {
             } else if draw.ps {
                 TradeDraw()
             }
-            this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / (this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose) * 100, 1)
+            this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
             RankScenarios()
         }
 
