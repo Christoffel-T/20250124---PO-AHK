@@ -44,7 +44,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 1000, reset_max: 2000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1750, reset_max: 3500, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -555,7 +555,7 @@ class TraderBot {
                 this.stats.loss++
         }
         TradeWin() {
-                if this.balance.current >= this.qualifiers.balance_mark.mark + 100 and this.balance.current < this.qualifiers.balance_mark.mark_starting + 3000 {
+                if this.balance.current >= this.qualifiers.balance_mark.mark + 100 and this.balance.current < this.qualifiers.balance_mark.mark_starting + 1750 {
                     this.qualifiers.balance_mark.mark += 100
                     this.qualifiers.balance_mark.count := 0
                     this.qualifiers.streak_reset.val := -3
@@ -917,8 +917,8 @@ class TraderBot {
         if this.trade_opened[1] {
             countdown_close := (this.trade_opened[2] - A_TickCount)/1000
             if !this.stats.%this.executed_trades[1]%.HasOwnProp('win_rate')
-                this.stats.%this.executed_trades[1]%.win_rate := 0
-            countdown_close_str :=  this.executed_trades[1] ' [' this.stats.%this.executed_trades[1]%.win '|' this.stats.%this.executed_trades[1]%.draw '|' this.stats.%this.executed_trades[1]%.lose '] [' this.stats.%this.executed_trades[1]%.win_rate '%]' ' (' format('{:.2f}', countdown_close) ')'
+                this.stats.%this.executed_trades[1]%.win_rate := 100
+            countdown_close_str :=  this.executed_trades[1] ' [' this.stats.%this.executed_trades[1]%.win '|' this.stats.%this.executed_trades[1]%.draw '|' this.stats.%this.executed_trades[1]%.lose '] [' this.stats.%this.executed_trades[1]%.win_rate '% ' this.stats.%this.executed_trades[1]%.rank '/' 10 ']' ' (' format('{:.2f}', countdown_close) ')'
         } else {
             countdown_close_str := ''
         }
@@ -1024,7 +1024,7 @@ class TraderBot {
         if this.trade_opened[1]
             return false
         _name := action reason
-        if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 5
+        if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 5 and this.qualifiers.streak_reset.val = -2
             return false
 
         this.trade_opened := [true, A_TickCount]
