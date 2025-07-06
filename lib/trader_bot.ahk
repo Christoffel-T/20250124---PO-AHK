@@ -427,7 +427,7 @@ class TraderBot {
                 win := {ps:false}
                 draw := {ps:true}
             }
-            this.balance.last_trade := this.balance.current
+            this.balance.last_trade := this.balance.current 
 
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             if not win.ps and not draw.ps {
