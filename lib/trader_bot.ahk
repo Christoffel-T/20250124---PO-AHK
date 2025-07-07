@@ -555,7 +555,6 @@ class TraderBot {
             this.stats.loss++
         }
         TradeWin() {
-            this.qualifiers.streak_reset.count--
             if this.qualifiers.streak_reset.count < 0 {
                 this.qualifiers.streak_reset.count := 0
                 this.qualifiers.streak_reset.cummulative := 0
@@ -568,6 +567,7 @@ class TraderBot {
             }
             this.stats.%this.executed_trades[1]%.win++
             if this.stats.streak = this.qualifiers.streak_reset.val {
+                this.qualifiers.streak_reset.count--
                 this.qualifiers.streak_reset.cummulative := this.amount*0.92
             }
             ; if this.qualifiers.streak_reset.cummulative < 0 {
