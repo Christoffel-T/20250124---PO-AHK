@@ -488,6 +488,7 @@ class TraderBot {
                 ; }
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
+                    this.qualifiers.streak_reset.count++
                     if this.qualifiers.streak_reset.val = -3
                         this.qualifiers.streak_reset.val := -2
                     if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
@@ -507,6 +508,8 @@ class TraderBot {
                 } else if this.stats.streak = this.qualifiers.streak_reset.val {
                     if this.qualifiers.streak_reset.cummulative = 0 
                         this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
+                    else if this.qualifiers.streak_reset.count > 4
+                        this.amount := (this.qualifiers.streak_reset.cummulative)*0.75
                     else
                         this.amount := this.qualifiers.streak_reset.cummulative/0.92
                 } else {
@@ -558,12 +561,14 @@ class TraderBot {
                 if this.balance.current >= this.qualifiers.balance_mark.mark + 100 and this.balance.current < this.qualifiers.balance_mark.mark_starting + 1750 {
                     this.qualifiers.balance_mark.mark += 100
                     this.qualifiers.balance_mark.count := 0
+                    this.qualifiers.streak_reset.count := 0
                     this.qualifiers.streak_reset.val := -3
                 }
                 this.stats.%this.executed_trades[1]%.win++  
                 this.qualifiers.streak_reset.cummulative -= this.amount*0.92
                 if this.qualifiers.streak_reset.cummulative < 0 {
                     this.qualifiers.streak_reset.cummulative := 0
+                    this.qualifiers.streak_reset.count := 0
                     this.qualifiers.streak_reset.val := -3
                 }
                 this.amount := this.GetAmount(this.balance.current)
