@@ -3,6 +3,7 @@ CoordMode('Mouse', 'Screen')
 CoordMode('Pixel', 'Screen')
 CoordMode('ToolTip', 'Screen')
 SendMode('Event')
+Send '{Ctrl up}{Shift up}{Alt up}{LWin up}{RWin up}'
 
 #Include lib/trader_bot.ahk
 #Include lib/utils.ahk
