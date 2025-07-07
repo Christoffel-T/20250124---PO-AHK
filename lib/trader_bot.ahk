@@ -470,10 +470,6 @@ class TraderBot {
                 }
                 this.lose_streak.repeat[this.stats.streak].lose++
             }
-            if this.qualifiers.streak_reset.count < 2
-                this.qualifiers.streak_reset.cummulative += this.amount
-            else if this.stats.streak < this.qualifiers.streak_reset.val  
-                this.qualifiers.streak_reset.cummulative := this.amount
 
             this.stats.streak--
 
@@ -490,11 +486,13 @@ class TraderBot {
             ; }
 
             if this.stats.streak < this.qualifiers.streak_reset.val {
+                this.qualifiers.streak_reset.count++
                 if this.qualifiers.streak_reset.val = -2 {
-                    this.qualifiers.streak_reset.count++
-                }
-                if this.qualifiers.streak_reset.val = -3
+                    this.qualifiers.streak_reset.cummulative := this.amount
+                } else if this.qualifiers.streak_reset.val = -3 {
                     this.qualifiers.streak_reset.val := -2
+                    this.qualifiers.streak_reset.cummulative := 11
+                }
                 ; if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
                 ;     this.qualifiers.balance_mark.count++
                 ; } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count < 4 {
@@ -509,7 +507,7 @@ class TraderBot {
                 ; }
                 this.stats.streak := 1
                 this.amount := this.GetAmount(this.balance.current)
-            } else if this.stats.streak = this.qualifiers.streak_reset.val and this.qualifiers.streak_reset.count >= 2 {
+            } else if this.stats.streak = this.qualifiers.streak_reset.val and this.qualifiers.streak_reset.val = -2 {
                 this.amount := this.qualifiers.streak_reset.cummulative/0.87
             } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
