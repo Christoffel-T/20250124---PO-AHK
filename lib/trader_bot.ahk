@@ -488,7 +488,7 @@ class TraderBot {
             if this.stats.streak < this.qualifiers.streak_reset.val {
                 this.qualifiers.streak_reset.count++
                 if this.qualifiers.streak_reset.val = -2 {
-                    this.qualifiers.streak_reset.cummulative := this.amount
+                    this.qualifiers.streak_reset.cummulative := this.amount/0.87
                 } else if this.qualifiers.streak_reset.val = -3 {
                     this.qualifiers.streak_reset.val := -2
                     this.qualifiers.streak_reset.cummulative := 11
@@ -508,7 +508,7 @@ class TraderBot {
                 this.stats.streak := 1
                 this.amount := this.GetAmount(this.balance.current)
             } else if this.stats.streak = this.qualifiers.streak_reset.val and this.qualifiers.streak_reset.val = -2 {
-                this.amount := this.qualifiers.streak_reset.cummulative/0.87
+                this.amount := this.qualifiers.streak_reset.cummulative
             } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
             }
