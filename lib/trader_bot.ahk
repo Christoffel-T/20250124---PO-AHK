@@ -1005,7 +1005,7 @@ class TraderBot {
                     str_c ',' 
                     str_d ',' 
                     str_e ',' 
-                    '(' this.qualifiers.balance_mark.mark '|' this.qualifiers.balance_mark.mark_starting ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
+                    '(' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str_f ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
