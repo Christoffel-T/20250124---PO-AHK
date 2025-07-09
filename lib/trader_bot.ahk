@@ -100,7 +100,6 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
         sleep 100
         Send('{Escape 2}')
-
         this.CheckBalance()
         this.CheckPayout()
         if not this.PSearch()
@@ -957,14 +956,13 @@ class TraderBot {
         win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         win_rate := Format('{:.1f}', win_rate)
 
-        str := Map()
-        str.next_bal := '$1000: $99999999999999'
+        str_f := '$1000: $99999999999999'
 
         for v in this.amounts_tresholds {
             if this.balance.current > v[1] {
                 break
             }
-            str.next_bal := '$' v[2] ': ' v[1]
+            str_f := '$' v[2] ': ' v[1]
         }
 
         str_c := ''
@@ -1008,7 +1006,7 @@ class TraderBot {
                     str_d ',' 
                     str_e ',' 
                     '(' this.qualifiers.balance_mark.mark '|' this.qualifiers.balance_mark.mark_starting ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
-                    str.next_bal ',' 
+                    str_f ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
                     this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)' ',' 
@@ -1179,7 +1177,6 @@ class TraderBot {
             if val >= tresh[1] {
                 while this.amounts_tresholds.Length > _index
                     this.amounts_tresholds.Pop()        
-                this.qualifiers.balance_mark.mark_starting := tresh[1]
                 return tresh[2]
             }
         }
@@ -1362,6 +1359,13 @@ class TraderBot {
             this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
             return
         }
+        for v in this.amounts_tresholds {
+            if this.balance.current > v[1] {
+                this.qualifiers.balance_mark.mark_starting := v[1]
+                break
+            }
+        }
+
     }
 
     AddBalance(bal_amount) {
