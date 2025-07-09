@@ -462,6 +462,7 @@ class TraderBot {
 
         TradeLose() {
                 this.stats.%this.executed_trades[1]%.lose++
+                this.stats.%this.executed_trades[1]%.last_trade_result = 'lose'
                 if this.stats.streak >= 0
                     this.stats.streak := 0
                 else {
@@ -565,8 +566,9 @@ class TraderBot {
                     this.qualifiers.streak_reset.val := -3
                 }
                 this.stats.%this.executed_trades[1]%.win++  
+                this.stats.%this.executed_trades[1]%.last_trade_result = 'win'
                 this.qualifiers.streak_reset.cummulative -= this.amount*0.92
-                if this.qualifiers.streak_reset.cummulative < 0 {
+                if this.qualifiers.streak_reset.cummulative < 0 or (this.qualifiers.streak_reset.val = -2 and this.stats.streak = this.qualifiers.streak_reset.val) {
                     this.qualifiers.streak_reset.cummulative := 0
                     this.qualifiers.streak_reset.count := 0
                     this.qualifiers.streak_reset.val := -3
@@ -588,6 +590,7 @@ class TraderBot {
         }
         TradeDraw() {
             this.stats.%this.executed_trades[1]%.draw++
+            this.stats.%this.executed_trades[1]%.last_trade_result = 'draw'
             this.stats.draw++
         }
     }
@@ -1033,6 +1036,9 @@ class TraderBot {
         _name := action reason
         if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 5 and this.qualifiers.streak_reset.val = -2
             return false
+        if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 1 and this.stats.%_name%.last_trade_result = 'lose'
+            return false
+
 
         this.trade_opened := [true, A_TickCount]
         this.active_trade := ''
@@ -1073,7 +1079,7 @@ class TraderBot {
         while this.executed_trades.Length > 10
             this.executed_trades.Pop()
         if !this.stats.HasOwnProp(this.executed_trades[1]) {
-            this.stats.%this.executed_trades[1]% := {win:0, lose:0, draw:0}
+            this.stats.%this.executed_trades[1]% := {win:0, lose:0, draw:0, last_trade_result: ''}
         }
 
         this.active_trade := action
