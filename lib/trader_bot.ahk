@@ -44,7 +44,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 2500, reset_max: 5000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1750, reset_max: 3500, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -100,6 +100,7 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
         sleep 100
         Send('{Escape 2}')
+
         this.CheckBalance()
         this.CheckPayout()
         if not this.PSearch()
@@ -461,7 +462,6 @@ class TraderBot {
 
         TradeLose() {
                 this.stats.%this.executed_trades[1]%.lose++
-                this.stats.%this.executed_trades[1]%.last_trade_result = 'lose'
                 if this.stats.streak >= 0
                     this.stats.streak := 0
                 else {
@@ -488,7 +488,6 @@ class TraderBot {
                 ; }
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
-                    this.qualifiers.streak_reset.count++
                     if this.qualifiers.streak_reset.val = -3
                         this.qualifiers.streak_reset.val := -2
                     if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
@@ -508,8 +507,6 @@ class TraderBot {
                 } else if this.stats.streak = this.qualifiers.streak_reset.val {
                     if this.qualifiers.streak_reset.cummulative = 0 
                         this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
-                    else if this.qualifiers.streak_reset.count > 4
-                        this.amount := (this.qualifiers.streak_reset.cummulative)*0.75
                     else
                         this.amount := this.qualifiers.streak_reset.cummulative/0.92
                 } else {
@@ -557,19 +554,16 @@ class TraderBot {
 
                 this.stats.loss++
         }
-        TradeWin() { 
+        TradeWin() {
                 if this.balance.current >= this.qualifiers.balance_mark.mark + 100 and this.balance.current < this.qualifiers.balance_mark.mark_starting + 1750 {
                     this.qualifiers.balance_mark.mark += 100
                     this.qualifiers.balance_mark.count := 0
-                    this.qualifiers.streak_reset.count := 0
                     this.qualifiers.streak_reset.val := -3
                 }
                 this.stats.%this.executed_trades[1]%.win++  
-                this.stats.%this.executed_trades[1]%.last_trade_result = 'win'
                 this.qualifiers.streak_reset.cummulative -= this.amount*0.92
-                if this.qualifiers.streak_reset.cummulative < 0 or (this.qualifiers.streak_reset.val = -2 and this.stats.streak = this.qualifiers.streak_reset.val) {
+                if this.qualifiers.streak_reset.cummulative < 0 {
                     this.qualifiers.streak_reset.cummulative := 0
-                    this.qualifiers.streak_reset.count := 0
                     this.qualifiers.streak_reset.val := -3
                 }
                 this.amount := this.GetAmount(this.balance.current)
@@ -589,7 +583,6 @@ class TraderBot {
         }
         TradeDraw() {
             this.stats.%this.executed_trades[1]%.draw++
-            this.stats.%this.executed_trades[1]%.last_trade_result = 'draw'
             this.stats.draw++
         }
     }
@@ -956,13 +949,14 @@ class TraderBot {
         win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         win_rate := Format('{:.1f}', win_rate)
 
-        str_f := '$1000: $99999999999999'
+        str := Map()
+        str.next_bal := '$1000: $99999999999999'
 
         for v in this.amounts_tresholds {
             if this.balance.current > v[1] {
                 break
             }
-            str_f := '$' v[2] ': ' v[1]
+            str.next_bal := '$' v[2] ': ' v[1]
         }
 
         str_c := ''
@@ -982,7 +976,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := format('{:.2f}', this.amount)
-        str_e := format('{:.2f}', -this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.balance_mark.count '|' this.qualifiers.streak_reset.count ')'
+        str_e := format('{:.2f}', -this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.balance_mark.count ')'
         _count_reload := 0
         loop {
             _count_reload++
@@ -1006,7 +1000,7 @@ class TraderBot {
                     str_d ',' 
                     str_e ',' 
                     '(' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
-                    str_f ',' 
+                    str.next_bal ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
                     this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)' ',' 
@@ -1034,9 +1028,6 @@ class TraderBot {
         _name := action reason
         if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 5 and this.qualifiers.streak_reset.val = -2
             return false
-        if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 1 and this.stats.%_name%.last_trade_result = 'lose'
-            return false
-
 
         this.trade_opened := [true, A_TickCount]
         this.active_trade := ''
@@ -1077,7 +1068,7 @@ class TraderBot {
         while this.executed_trades.Length > 10
             this.executed_trades.Pop()
         if !this.stats.HasOwnProp(this.executed_trades[1]) {
-            this.stats.%this.executed_trades[1]% := {win:0, lose:0, draw:0, last_trade_result: ''}
+            this.stats.%this.executed_trades[1]% := {win:0, lose:0, draw:0}
         }
 
         this.active_trade := action
@@ -1177,6 +1168,7 @@ class TraderBot {
             if val >= tresh[1] {
                 while this.amounts_tresholds.Length > _index
                     this.amounts_tresholds.Pop()        
+                this.qualifiers.balance_mark.mark_starting := tresh[1]
                 return tresh[2]
             }
         }
@@ -1220,7 +1212,6 @@ class TraderBot {
                 this.qualifiers.balance_mark.mark := this.balance.starting
                 this.amount := Min(this.amount, this.balance.starting)
                 this.qualifiers.streak_reset.cummulative := 0
-                this.qualifiers.streak_reset.val := -3
             } else if this.balance.current >= this.balance.reset_max {
                 this.stats.streak := 0
                 this.stats.bal_win++
@@ -1228,7 +1219,6 @@ class TraderBot {
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
                 this.qualifiers.balance_mark.mark := this.balance.starting
                 this.qualifiers.streak_reset.cummulative := 0
-                this.qualifiers.streak_reset.val := -3
             }
             this.amount := Min(this.amount, this.balance.current)
 
@@ -1255,8 +1245,8 @@ class TraderBot {
             sleep 50
             ClipWait(0.5)
             try {
-                _compare1 := Floor(RegExReplace(A_Clipboard, '[^\d.]'))
-                _compare2 := Floor(RegExReplace(this.amount, '[^\d.]'))
+                _compare1 := Format('{:.0f}', RegExReplace(A_Clipboard, '[^\d.]'))
+                _compare2 := Format('{:.0f}', RegExReplace(this.amount, '[^\d.]'))
                 if _compare1 != _compare2 {
                     tooltip(_compare1 ' != ' _compare2)
                     sleep 300
@@ -1359,13 +1349,6 @@ class TraderBot {
             this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
             return
         }
-        for v in this.amounts_tresholds {
-            if this.balance.current > v[1] {
-                this.qualifiers.balance_mark.mark_starting := v[1]
-                break
-            }
-        }
-
     }
 
     AddBalance(bal_amount) {
