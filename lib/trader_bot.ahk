@@ -430,6 +430,7 @@ class TraderBot {
             this.balance.last_trade := this.balance.current 
 
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
+            this.stats.max_bal_diff := this.balance.max - this.balance.current
             if not win.ps and not draw.ps {
                 TradeLose()
             } else if win.ps {
@@ -488,6 +489,7 @@ class TraderBot {
                 ; }
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
+                    this.qualifiers.streak_reset.count++
                     if this.qualifiers.streak_reset.val = -3
                         this.qualifiers.streak_reset.val := -2
                     if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
@@ -497,7 +499,9 @@ class TraderBot {
                     } else if this.balance.current > this.qualifiers.balance_mark.mark + 0 and this.qualifiers.balance_mark.count < 2 {
                         this.qualifiers.balance_mark.count++
                     } else {
-                        if this.qualifiers.streak_reset.cummulative > 0
+                        if this.qualifiers.streak_reset.count > 3
+                            this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
+                        else if this.qualifiers.streak_reset.cummulative > 0
                             this.qualifiers.streak_reset.cummulative := (this.qualifiers.streak_reset.cummulative + 5)/0.92
                         else
                             this.qualifiers.streak_reset.cummulative := (this.amount + 4 + 5)/0.92
@@ -507,6 +511,8 @@ class TraderBot {
                 } else if this.stats.streak = this.qualifiers.streak_reset.val {
                     if this.qualifiers.streak_reset.cummulative = 0 
                         this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
+                    else if this.qualifiers.streak_reset.count > 3
+                        this.amount := (this.qualifiers.streak_reset.cummulative)*0.10
                     else
                         this.amount := this.qualifiers.streak_reset.cummulative/0.92
                 } else {
