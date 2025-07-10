@@ -557,7 +557,7 @@ class TraderBot {
 
                 this.stats.loss++
         }
-        TradeWin() {
+        TradeWin() { 
                 if this.balance.current >= this.qualifiers.balance_mark.mark + 100 and this.balance.current < this.qualifiers.balance_mark.mark_starting + 1750 {
                     this.qualifiers.balance_mark.mark += 100
                     this.qualifiers.balance_mark.count := 0
