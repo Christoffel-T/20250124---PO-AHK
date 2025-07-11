@@ -44,7 +44,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
-        this.balance := {starting: 1750, reset_max: 3500, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 500, reset_max: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
