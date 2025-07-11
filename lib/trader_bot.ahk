@@ -14,7 +14,7 @@ class TraderBot {
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
-        this.qualifiers.streak_reset := {val: -3, count: 0, cummulative: 0}
+        this.qualifiers.streak_reset := {val: -3, count: 0, cummulative: 0, count2: 0}
 
         Loop 10 {
             _index := A_Index
@@ -472,7 +472,7 @@ class TraderBot {
                     this.lose_streak.repeat[this.stats.streak].lose++
                 }
                 if this.qualifiers.streak_reset.cummulative > 0
-                    this.qualifiers.streak_reset.cummulative += this.amount
+                    this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
 
                 this.stats.streak--
 
@@ -489,9 +489,17 @@ class TraderBot {
                 ; }
 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
-                    this.qualifiers.streak_reset.count++
-                    if this.qualifiers.streak_reset.val = -3
+                    if this.qualifiers.streak_reset.val = -3 {
                         this.qualifiers.streak_reset.val := -2
+                        this.qualifiers.streak_reset.count := 1
+                    } else if this.qualifiers.streak_reset.val = -2 {
+                        this.qualifiers.streak_reset.count++
+                        this.qualifiers.streak_reset.count2++
+                        if this.qualifiers.streak_reset.count2 > 3 {
+                            this.qualifiers.streak_reset.count2 := 1
+                        }
+
+                    }
                     if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
                         this.qualifiers.balance_mark.count++
                     } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count < 4 {
@@ -501,20 +509,16 @@ class TraderBot {
                     } else {
                         if this.qualifiers.streak_reset.count > 3
                             this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
-                        else if this.qualifiers.streak_reset.cummulative > 0
-                            this.qualifiers.streak_reset.cummulative := (this.qualifiers.streak_reset.cummulative + 5)/0.92
-                        else
-                            this.qualifiers.streak_reset.cummulative := (this.amount + 4 + 5)/0.92
                     }
                     this.stats.streak := 1
                     this.amount := this.GetAmount(this.balance.current)
                 } else if this.stats.streak = this.qualifiers.streak_reset.val {
-                    if this.qualifiers.streak_reset.cummulative = 0 
+                    if this.qualifiers.streak_reset.cummulative = 0
                         this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
-                    else if this.qualifiers.streak_reset.count > 3
+                    else if this.qualifiers.streak_reset.count2 >= 3
                         this.amount := (this.qualifiers.streak_reset.cummulative)*0.10
                     else
-                        this.amount := this.qualifiers.streak_reset.cummulative/0.92
+                        this.amount := (this.qualifiers.streak_reset.cummulative+9)/0.92
                 } else {
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 }
@@ -567,9 +571,11 @@ class TraderBot {
                     this.qualifiers.streak_reset.val := -3
                 }
                 this.stats.%this.executed_trades[1]%.win++  
-                this.qualifiers.streak_reset.cummulative -= this.amount*0.92
+                this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 if this.qualifiers.streak_reset.cummulative < 0 {
                     this.qualifiers.streak_reset.cummulative := 0
+                    this.qualifiers.streak_reset.count := 0
+                    this.qualifiers.streak_reset.count2 := 0
                     this.qualifiers.streak_reset.val := -3
                 }
                 this.amount := this.GetAmount(this.balance.current)
