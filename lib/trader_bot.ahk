@@ -570,13 +570,14 @@ class TraderBot {
                     this.qualifiers.balance_mark.count := 0
                     this.qualifiers.streak_reset.val := -3
                 }
-                this.stats.%this.executed_trades[1]%.win++  
-                this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
-                if this.qualifiers.streak_reset.cummulative < 0 {
+                this.stats.%this.executed_trades[1]%.win++
+                if this.qualifiers.this.stats.max_bal_diff < 0 {
                     this.qualifiers.streak_reset.cummulative := 0
                     this.qualifiers.streak_reset.count := 0
                     this.qualifiers.streak_reset.count2 := 0
                     this.qualifiers.streak_reset.val := -3
+                } else {
+                    this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 }
                 this.amount := this.GetAmount(this.balance.current)
                 if this.stats.streak < 0 {
