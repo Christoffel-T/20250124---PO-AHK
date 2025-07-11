@@ -573,7 +573,6 @@ class TraderBot {
                 this.stats.%this.executed_trades[1]%.win++
                 if this.qualifiers.this.stats.max_bal_diff < 0 {
                     this.qualifiers.streak_reset.cummulative := 0
-                    this.qualifiers.streak_reset.count := 0
                     this.qualifiers.streak_reset.count2 := 0
                     this.qualifiers.streak_reset.val := -3
                 } else {
