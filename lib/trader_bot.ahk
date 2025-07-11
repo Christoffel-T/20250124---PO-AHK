@@ -571,7 +571,7 @@ class TraderBot {
                     this.qualifiers.streak_reset.val := -3
                 }
                 this.stats.%this.executed_trades[1]%.win++
-                if this.stats.max_bal_diff < 0 {
+                if this.stats.max_bal_diff <= 0 {
                     this.qualifiers.streak_reset.cummulative := 0
                     this.qualifiers.streak_reset.count2 := 0
                     this.qualifiers.streak_reset.val := -3
@@ -988,7 +988,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := format('{:.2f}', this.amount)
-        str_e := format('{:.2f}', -this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.balance_mark.count '|' this.qualifiers.streak_reset.count ')'
+        str_e := format('{:.2f}', -this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.balance_mark.count '|' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         _count_reload := 0
         loop {
             _count_reload++
