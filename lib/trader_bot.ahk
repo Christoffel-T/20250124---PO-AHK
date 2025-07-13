@@ -487,7 +487,7 @@ class TraderBot {
                 ; if this.balance.current < this.qualifiers.balance_mark.mark {
                 ;     this.qualifiers.streak_reset.val := -3
                 ; }
-
+ 
                 if this.stats.streak < this.qualifiers.streak_reset.val {
                     if this.qualifiers.streak_reset.val = -3 {
                         this.qualifiers.streak_reset.val := -2
