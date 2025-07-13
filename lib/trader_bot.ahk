@@ -498,7 +498,6 @@ class TraderBot {
                         if this.qualifiers.streak_reset.count2 > 3 {
                             this.qualifiers.streak_reset.count2 := 1
                         }
-
                     }
                     if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
                         this.qualifiers.balance_mark.count++
@@ -518,7 +517,7 @@ class TraderBot {
                     else if this.qualifiers.streak_reset.count2 >= 30
                         this.amount := (this.qualifiers.streak_reset.cummulative)*0.10
                     else
-                        this.amount := ((this.qualifiers.streak_reset.cummulative+9)/0.92)*0.5
+                        this.amount := ((this.qualifiers.streak_reset.cummulative+12)/0.92)*0.5
                 } else {
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
                 }
