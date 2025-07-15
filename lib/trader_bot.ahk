@@ -520,7 +520,7 @@ class TraderBot {
                 else if this.qualifiers.streak_reset.count2 >= 30
                     this.amount := (this.qualifiers.streak_reset.cummulative)*0.10
                 else {
-                    if this.stats.trade_history[1] = 'lose'
+                    if this.stats.trade_history[2] = 'lose'
                         this.amount := 5
                     else
                         this.amount := min(((this.qualifiers.streak_reset.cummulative+9)/0.92)*0.5, 60)
