@@ -523,7 +523,7 @@ class TraderBot {
                     if this.stats.trade_history[1] = 'lose'
                         this.amount := 5
                     else
-                        this.amount := min(((this.qualifiers.streak_reset.cummulative+19)/0.92)*0.5, 60)
+                        this.amount := min(((this.qualifiers.streak_reset.cummulative+9)/0.92)*0.5, 60)
                 }
             } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
