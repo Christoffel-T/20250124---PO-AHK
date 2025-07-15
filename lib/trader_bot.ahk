@@ -527,7 +527,7 @@ class TraderBot {
             } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
             }
-
+ 
             if this.state.32
                 this.stats.streak2--
             if this.stats.streak <= -4 and not this.state.32 {
