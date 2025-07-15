@@ -14,7 +14,7 @@ class TraderBot {
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
-        this.qualifiers.streak_reset := {val: -3, count: 0, cummulative: 0, count2: 0}
+        this.qualifiers.streak_reset := {trade_history: [''], val: -3, count: 0, cummulative: 0, count2: 0}
 
         Loop 10 {
             _index := A_Index
@@ -492,6 +492,10 @@ class TraderBot {
             ; }
 
             if this.stats.streak < this.qualifiers.streak_reset.val {
+                this.qualifiers.streak_reset.trade_history.InsertAt(1, 'lose')
+                while this.qualifiers.streak_reset.trade_history.Length > 10
+                    this.qualifiers.streak_reset.trade_history.Pop()
+
                 if this.qualifiers.streak_reset.val = -3 {
                     this.qualifiers.streak_reset.val := -2
                     this.qualifiers.streak_reset.count := 1
@@ -521,7 +525,7 @@ class TraderBot {
                     this.amount := (this.qualifiers.streak_reset.cummulative)*0.10
                 else {
                     this.amount := min(((this.qualifiers.streak_reset.cummulative+9)/0.92)*0.5, 60)
-                    if this.stats.trade_history[2] = 'lose' and this.amount = 60
+                    if this.qualifiers.streak_reset.trade_history[1] = 'lose' and this.amount = 60
                         this.amount := 5
                 }
             } else {
@@ -582,6 +586,9 @@ class TraderBot {
 
             if this.stats.streak = this.qualifiers.streak_reset.val {
                 if this.qualifiers.streak_reset.val = -2 {
+                    this.qualifiers.streak_reset.trade_history.InsertAt(1, 'lose')
+                    while this.qualifiers.streak_reset.trade_history.Length > 10
+                        this.qualifiers.streak_reset.trade_history.Pop()
                     this.qualifiers.streak_reset.count2++
                     if this.qualifiers.streak_reset.count2 > 3 {
                         this.qualifiers.streak_reset.count2 := 1
