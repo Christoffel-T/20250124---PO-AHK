@@ -1066,7 +1066,7 @@ class TraderBot {
         if this.trade_opened[1]
             return false
         _name := action reason
-        if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 5 and this.qualifiers.streak_reset.val = -2
+        if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 4 and this.qualifiers.streak_reset.val = this.stats.streak and this.qualifiers.streak_reset.val = -2
             return false
 
         this.trade_opened := [true, A_TickCount]
