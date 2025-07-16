@@ -586,7 +586,7 @@ class TraderBot {
 
             if this.stats.streak = this.qualifiers.streak_reset.val {
                 if this.qualifiers.streak_reset.val = -2 {
-                    this.qualifiers.streak_reset.trade_history.InsertAt(1, 'lose')
+                    this.qualifiers.streak_reset.trade_history.InsertAt(1, 'win')
                     while this.qualifiers.streak_reset.trade_history.Length > 10
                         this.qualifiers.streak_reset.trade_history.Pop()
                     this.qualifiers.streak_reset.count2++
