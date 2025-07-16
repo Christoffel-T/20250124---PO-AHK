@@ -15,6 +15,7 @@ class TraderBot {
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
         this.qualifiers.streak_reset := {trade_history: [''], val: -3, count: 0, cummulative: 0, count2: 0}
+        this.qualifiers.amount_limiter := false
 
         Loop 10 {
             _index := A_Index
@@ -490,8 +491,10 @@ class TraderBot {
             ; if this.balance.current < this.qualifiers.balance_mark.mark {
             ;     this.qualifiers.streak_reset.val := -3
             ; }
-
-            if this.stats.streak < this.qualifiers.streak_reset.val {
+            if this.stats.amount_limiter {
+                this.amount := this.GetAmount(this.balance.current)
+                this.stats.streak := -1
+            } else if this.stats.streak < this.qualifiers.streak_reset.val {
                 this.qualifiers.streak_reset.trade_history.InsertAt(1, 'lose')
                 while this.qualifiers.streak_reset.trade_history.Length > 10
                     this.qualifiers.streak_reset.trade_history.Pop()
@@ -517,6 +520,10 @@ class TraderBot {
                         this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 }
                 this.stats.streak := 1
+                if this.amount >= 40 {
+                    this.qualifiers.amount_limiter := true
+                }
+
                 this.amount := this.GetAmount(this.balance.current)
             } else if this.stats.streak = this.qualifiers.streak_reset.val {
                 if this.qualifiers.streak_reset.cummulative = 0
@@ -524,9 +531,7 @@ class TraderBot {
                 else if this.qualifiers.streak_reset.count2 >= 30
                     this.amount := (this.qualifiers.streak_reset.cummulative)*0.10
                 else {
-                    this.amount := min(((this.qualifiers.streak_reset.cummulative+25)/0.92)*0.5, 60)
-                    if this.qualifiers.streak_reset.trade_history[1] = 'lose' and this.amount = 60
-                        this.amount := 5
+                    this.amount := ((this.qualifiers.streak_reset.cummulative+25)/0.92)*0.5
                 }
             } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
@@ -600,10 +605,15 @@ class TraderBot {
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.val := -3
+                this.stats.amount_limiter := false
             } else {
                 this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
             }
             this.amount := this.GetAmount(this.balance.current)
+            if this.stats.amount_limiter {
+                this.amount := 20
+            }
+
             if this.stats.streak < 0 {
                 if not this.lose_streak.repeat.Has(this.stats.streak) {
                     this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
