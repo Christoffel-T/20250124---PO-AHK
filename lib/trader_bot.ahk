@@ -491,7 +491,7 @@ class TraderBot {
             ; if this.balance.current < this.qualifiers.balance_mark.mark {
             ;     this.qualifiers.streak_reset.val := -3
             ; }
-            if this.stats.amount_limiter {
+            if this.qualifiers.amount_limiter {
                 this.amount := this.GetAmount(this.balance.current)
                 this.stats.streak := -1
             } else if this.stats.streak < this.qualifiers.streak_reset.val {
@@ -605,12 +605,12 @@ class TraderBot {
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.val := -3
-                this.stats.amount_limiter := false
+                this.qualifiers.amount_limiter := false
             } else {
                 this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
             }
             this.amount := this.GetAmount(this.balance.current)
-            if this.stats.amount_limiter {
+            if this.qualifiers.amount_limiter {
                 this.amount := 20
             }
 
@@ -1076,7 +1076,7 @@ class TraderBot {
         if this.trade_opened[1]
             return false
         _name := action reason
-        if not this.stats.amount_limiter and this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 4 and this.qualifiers.streak_reset.val = this.stats.streak and this.qualifiers.streak_reset.val = -2
+        if not this.qualifiers.amount_limiter and this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 4 and this.qualifiers.streak_reset.val = this.stats.streak and this.qualifiers.streak_reset.val = -2
             return false
 
         this.trade_opened := [true, A_TickCount]
