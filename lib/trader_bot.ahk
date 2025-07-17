@@ -531,7 +531,7 @@ class TraderBot {
                 else if this.qualifiers.streak_reset.count2 >= 30
                     this.amount := (this.qualifiers.streak_reset.cummulative)*0.10
                 else {
-                    this.amount := ((this.qualifiers.streak_reset.cummulative+25)/0.92)*0.5
+                    this.amount := ((this.qualifiers.streak_reset.cummulative+30)/0.92)*0.5
                 }
             } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
