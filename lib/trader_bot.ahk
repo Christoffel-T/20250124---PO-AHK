@@ -1280,6 +1280,7 @@ class TraderBot {
     SetTradeAmount() {
         _count_reload := 0
         Loop {
+            Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
             _count_reload++
             if _count_reload > 1000 {
                 _count_reload := 0
@@ -1373,6 +1374,7 @@ class TraderBot {
     }
     
     CheckBalance() {
+        Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
         _count_reload := 0
         Loop {
             _count_reload++
@@ -1433,6 +1435,7 @@ class TraderBot {
     }
 
     AddBalance(bal_amount) {
+        Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
         if bal_amount < 0 {
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
             this.balance.max := 0
