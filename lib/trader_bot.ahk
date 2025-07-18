@@ -102,6 +102,7 @@ class TraderBot {
         sleep 100
         Send('{Escape 2}')
 
+        this.CheckStuck()
         this.CheckBalance()
         this.CheckPayout()
         if not this.PSearch()
@@ -125,6 +126,21 @@ class TraderBot {
         this.UpdateLog()
         sleep 100
     
+    }
+
+    CheckStuck() {
+        if this.candle_data.Length > 3 {
+            _reload := true
+            Loop 3 {
+                if not Utils.is_all_same(this.candle_data[A_Index].moving_prices) {
+                    _reload := false
+                    break
+                }
+            }
+            if _reload {
+                this.ReloadWebsite()
+            }
+        }
     }
     
     CheckPaused() {
@@ -492,8 +508,12 @@ class TraderBot {
             ;     this.qualifiers.streak_reset.val := -3
             ; }
             if this.qualifiers.amount_limiter {
-                this.amount := this.GetAmount(this.balance.current)
-                this.stats.streak := -1
+                if this.stats.streak = -2
+                    this.amount := 20
+                else
+                    this.amount := this.GetAmount(this.balance.current)
+                if this.stats.streak < -2
+                    this.stats.streak := 1
             } else if this.stats.streak < this.qualifiers.streak_reset.val {
                 this.qualifiers.streak_reset.trade_history.InsertAt(1, 'lose')
                 while this.qualifiers.streak_reset.trade_history.Length > 10
@@ -520,7 +540,7 @@ class TraderBot {
                         this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 }
                 this.stats.streak := 1
-                if this.amount >= 40 {
+                if this.amount >= 20 {
                     this.qualifiers.amount_limiter := true
                 }
 
@@ -589,6 +609,11 @@ class TraderBot {
             }
             this.stats.%this.executed_trades[1]%.win++
 
+            if this.amount >= 20 and not this.qualifiers.amount_limiter {
+                this.qualifiers.amount_limiter := true
+                this.amount := 1
+            }
+
             if this.stats.streak = this.qualifiers.streak_reset.val {
                 if this.qualifiers.streak_reset.val = -2 {
                     this.qualifiers.streak_reset.trade_history.InsertAt(1, 'win')
@@ -609,9 +634,13 @@ class TraderBot {
             } else {
                 this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
             }
-            this.amount := this.GetAmount(this.balance.current)
             if this.qualifiers.amount_limiter {
-                this.amount := 20
+                if this.amount < 20
+                    this.amount := 20
+                else
+                    this.amount := ((this.amount + 40)/0.92) * 0.5
+            } else {
+                this.amount := this.GetAmount(this.balance.current)
             }
 
             if this.stats.streak < 0 {
@@ -673,6 +702,7 @@ class TraderBot {
         this.candle_data[1].both_lines_touch := this.ps.r_touch_blue.state and this.ps.r_touch_orange.state or this.ps.g_touch_blue.state and this.ps.g_touch_orange.state
         this.candle_data[1].blue_line_y.Push(this.ps.blue.y)
         this.candle_data[1].moving_prices.InsertAt(1, this.ps.moving_price.y)
+            
         ; }
 
         if (Mod(A_Sec, 15) = 13 and A_MSec >= 500 or Mod(A_Sec, 15) = 14) {
@@ -697,6 +727,7 @@ class TraderBot {
 
     RunScenarios() {
         this.paused := this.CheckPaused()
+
         Scenario3b()
         Scenario3a()
         if this.stats.streak != -3 {
