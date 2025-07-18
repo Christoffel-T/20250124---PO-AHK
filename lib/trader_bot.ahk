@@ -549,7 +549,7 @@ class TraderBot {
                 if this.qualifiers.streak_reset.cummulative = 0
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
                 else if this.qualifiers.streak_reset.count2 >= 30
-                    this.amount := (this.qualifiers.streak_reset.cummulative)*0.10
+                    this.amount := (this.qualifiers.streak_reset.cummulative)*0.10  
                 else {
                     this.amount := ((this.qualifiers.streak_reset.cummulative+30)/0.92)*0.5
                 }
@@ -629,10 +629,12 @@ class TraderBot {
             if this.stats.max_bal_diff <= 0 {
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
+                this.qualifiers.streak_reset.count := 0
                 this.qualifiers.streak_reset.val := -3
                 this.qualifiers.amount_limiter := false
             } else {
-                this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
+                if this.qualifiers.streak_reset.cummulative > 0
+                    this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
             }
             if this.qualifiers.amount_limiter {
                 if this.amount < 20
