@@ -608,7 +608,7 @@ class TraderBot {
                 this.qualifiers.streak_reset.val := -3
             }
             this.stats.%this.executed_trades[1]%.win++
-
+ 
             if this.amount >= 20 and not this.qualifiers.amount_limiter {
                 this.qualifiers.amount_limiter := true
                 this.amount := 1
