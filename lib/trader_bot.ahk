@@ -527,7 +527,7 @@ class TraderBot {
                 } else if this.balance.current > this.qualifiers.balance_mark.mark + 0 and this.qualifiers.balance_mark.count < 2 {
                     this.qualifiers.balance_mark.count++
                 } else {
-                    if this.qualifiers.streak_reset.count > 3
+                    if this.qualifiers.streak_reset.val = -2
                         this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 }
                 this.stats.streak := 1
