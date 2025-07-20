@@ -495,13 +495,13 @@ class TraderBot {
 
             this.stats.streak--
 
-            if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count >= 5 {
-                this.qualifiers.streak_reset.val := -2
-            } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count >= 3 {
-                this.qualifiers.streak_reset.val := -2
-            } else if this.balance.current > this.qualifiers.balance_mark.mark + 00 and this.qualifiers.balance_mark.count >= 1 {
-                this.qualifiers.streak_reset.val := -2
-            }
+            ; if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count >= 5 {
+            ;     this.qualifiers.streak_reset.val := -2
+            ; } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count >= 3 {
+            ;     this.qualifiers.streak_reset.val := -2
+            ; } else if this.balance.current > this.qualifiers.balance_mark.mark + 00 and this.qualifiers.balance_mark.count >= 1 {
+            ;     this.qualifiers.streak_reset.val := -2
+            ; }
             
             ; if this.balance.current < this.qualifiers.balance_mark.mark {
             ;     this.qualifiers.streak_reset.val := -3
@@ -521,13 +521,13 @@ class TraderBot {
                         this.qualifiers.streak_reset.count2 := 0
                     this.qualifiers.streak_reset.count2--
                 }
-                if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
-                    this.qualifiers.balance_mark.count++
-                } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count < 4 {
-                    this.qualifiers.balance_mark.count++
-                } else if this.balance.current > this.qualifiers.balance_mark.mark + 0 and this.qualifiers.balance_mark.count < 2 {
-                    this.qualifiers.balance_mark.count++
-                }
+                ; if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count < 6 {
+                ;     this.qualifiers.balance_mark.count++
+                ; } else if this.balance.current > this.qualifiers.balance_mark.mark + 33 and this.qualifiers.balance_mark.count < 4 {
+                ;     this.qualifiers.balance_mark.count++
+                ; } else if this.balance.current > this.qualifiers.balance_mark.mark + 0 and this.qualifiers.balance_mark.count < 2 {
+                ;     this.qualifiers.balance_mark.count++
+                ; }
                 this.stats.streak := 1
                 if this.amount >= 20 {
                     this.qualifiers.amount_limiter := true
@@ -538,7 +538,7 @@ class TraderBot {
                 if this.qualifiers.streak_reset.cummulative = 0
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
                 else {
-                    this.amount := ((this.qualifiers.streak_reset.cummulative + Abs(this.qualifiers.streak_reset.count2-1))/0.92)*0.5
+                    this.amount := ((this.qualifiers.streak_reset.cummulative + Abs(this.qualifiers.streak_reset.count2-1)*1.5)/0.92)*0.5
                 }
             } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
@@ -591,7 +591,7 @@ class TraderBot {
                 this.stats.trade_history.Pop()
             if this.balance.current >= this.qualifiers.balance_mark.mark + 100 and this.balance.current < this.qualifiers.balance_mark.mark_starting + 1750 {
                 this.qualifiers.balance_mark.mark += 100
-                this.qualifiers.balance_mark.count := 0
+                ; this.qualifiers.balance_mark.count := 0
                 this.qualifiers.streak_reset.val := -3
             }
             this.stats.%this.executed_trades[1]%.win++
@@ -1036,7 +1036,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := format('{:.2f}', this.amount)
-        str_e := format('{:.2f}', -this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.balance_mark.count '|' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
+        str_e := format('{:.2f}', -this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         _count_reload := 0
         loop {
             _count_reload++
@@ -1282,6 +1282,7 @@ class TraderBot {
                 this.qualifiers.streak_reset.cummulative := 0
             }
             this.amount := Min(this.amount, this.balance.current)
+            this.amount := this.amount < 1 ? 1.25 : this.amount
 
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
