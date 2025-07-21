@@ -14,7 +14,7 @@ class TraderBot {
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
-        this.qualifiers.streak_reset := {trade_history: [''], val: -3, count: 0, cummulative: 0, count2: 0}
+        this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
 
         Loop 10 {
             _index := A_Index
@@ -504,14 +504,14 @@ class TraderBot {
             ; }
             
             ; if this.balance.current < this.qualifiers.balance_mark.mark {
-            ;     this.qualifiers.streak_reset.val := -3
+            ;     this.qualifiers.streak_reset.val := -4
             ; }
             if this.stats.streak < this.qualifiers.streak_reset.val {
                 this.qualifiers.streak_reset.trade_history.InsertAt(1, 'lose')
                 while this.qualifiers.streak_reset.trade_history.Length > 10
                     this.qualifiers.streak_reset.trade_history.Pop()
 
-                if this.qualifiers.streak_reset.val = -3 {
+                if this.qualifiers.streak_reset.val = -4 {
                     this.qualifiers.streak_reset.val := -2
                     this.qualifiers.streak_reset.count := 1
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
@@ -538,7 +538,7 @@ class TraderBot {
                 if this.qualifiers.streak_reset.cummulative = 0
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
                 else {
-                    this.amount := ((this.qualifiers.streak_reset.cummulative + Abs(this.qualifiers.streak_reset.count2-1)*1.5)/0.92)*0.5
+                    this.amount := ((this.qualifiers.streak_reset.cummulative + Abs(this.qualifiers.streak_reset.count2-1)*1.5)/0.92)*0.50
                 }
             } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
@@ -592,7 +592,7 @@ class TraderBot {
             if this.balance.current >= this.qualifiers.balance_mark.mark + 100 and this.balance.current < this.qualifiers.balance_mark.mark_starting + 1750 {
                 this.qualifiers.balance_mark.mark += 100
                 ; this.qualifiers.balance_mark.count := 0
-                this.qualifiers.streak_reset.val := -3
+                this.qualifiers.streak_reset.val := -4
             }
             this.stats.%this.executed_trades[1]%.win++
  
@@ -611,13 +611,13 @@ class TraderBot {
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.count := 0
-                this.qualifiers.streak_reset.val := -3
+                this.qualifiers.streak_reset.val := -4
             } else {
                 if this.qualifiers.streak_reset.cummulative > 0
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
             }
             if this.qualifiers.streak_reset.val = -2 and this.qualifiers.streak_reset.cummulative > 0 {
-                this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*0.5
+                this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*0.50
             } else {
                 this.amount := this.GetAmount(this.balance.current)
             }
@@ -1283,6 +1283,11 @@ class TraderBot {
             }
             this.amount := Min(this.amount, this.balance.current)
             this.amount := this.amount < 1 ? 1.25 : this.amount
+            if -this.qualifiers.streak_reset.cummulative > 0 and -this.qualifiers.streak_reset.cummulative < 10
+                this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*1.00
+            else if -this.qualifiers.streak_reset.cummulative > 40
+                this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*1.00
+
 
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
