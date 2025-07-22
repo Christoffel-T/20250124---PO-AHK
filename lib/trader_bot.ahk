@@ -15,6 +15,7 @@ class TraderBot {
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
+        this.qualifiers.1020 := {mark: 0, val: 10}
 
         Loop 10 {
             _index := A_Index
@@ -516,12 +517,6 @@ class TraderBot {
                     this.qualifiers.streak_reset.count := 1
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 } else if this.qualifiers.streak_reset.val = -2 {
-                    if this.qualifiers.streak_reset.cummulative > 160 or this.qualifiers.streak_reset.cummulative > this.balance.current {
-                        if !this.qualifiers.HasOwnProp('counter1020')
-                            this.qualifiers.counter1020 := 10
-                        else
-                            this.qualifiers.counter1020 := Min(160, this.qualifiers.counter1020*2)
-                    }
                     this.qualifiers.streak_reset.count++
                     if this.qualifiers.streak_reset.count2 > 0
                         this.qualifiers.streak_reset.count2 := 0
@@ -535,11 +530,22 @@ class TraderBot {
                 ;     this.qualifiers.balance_mark.count++
                 ; }
                 this.stats.streak := -1
-                if this.amount >= 20 {
-                    this.qualifiers.amount_limiter := true
-                }
-
                 this.amount := this.GetAmount(this.balance.current)
+                if this.qualifiers.streak_reset.cummulative >= 80 {
+                    if this.qualifiers.1020.mark < 80 {
+                        this.qualifiers.1020.mark := 80
+                        this.qualifiers.1020.val := 10
+                    } else {
+                        this.qualifiers.1020.val := Min(160, this.qualifiers.1020.val*2)
+                    }
+                } else if this.qualifiers.streak_reset.cummulative >= 20 {
+                    if this.qualifiers.1020.mark < 20 {
+                        this.qualifiers.1020.mark := 20
+                        this.qualifiers.1020.val := 10
+                    } else {
+                        this.qualifiers.1020.val := Min(160, this.qualifiers.1020.val*2)
+                    }
+                }
             } else if this.stats.streak = this.qualifiers.streak_reset.val {
                 if this.qualifiers.streak_reset.cummulative = 0
                     this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
@@ -548,6 +554,10 @@ class TraderBot {
                 }
             } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
+            }
+
+            if this.qualifiers.1020.mark > 0 {
+                this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
             }
  
             if this.state.32
@@ -618,6 +628,8 @@ class TraderBot {
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.count := 0
                 this.qualifiers.streak_reset.val := -4
+                this.qualifiers.1020.val := 10
+                this.qualifiers.1020.mark := 0
             } else {
                 if this.qualifiers.streak_reset.cummulative > 0
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
@@ -627,6 +639,12 @@ class TraderBot {
             } else {
                 this.amount := this.GetAmount(this.balance.current)
             }
+
+            if this.qualifiers.1020.mark > 0 {
+                this.qualifiers.1020.val := 10
+                this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
+            }
+
 
             if this.stats.streak < 0 {
                 if not this.lose_streak.repeat.Has(this.stats.streak) {
@@ -1290,13 +1308,6 @@ class TraderBot {
             this.amount := this.amount < 1 ? 1.25 : this.amount
             if this.qualifiers.streak_reset.cummulative > 0 and this.qualifiers.streak_reset.cummulative < 10
                 this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*1.00
-            else if this.qualifiers.streak_reset.cummulative > 20
-                this.amount := ((this.qualifiers.streak_reset.cummulative + 3)/0.92)*1.00
-            else if this.qualifiers.streak_reset.cummulative > 160 or this.qualifiers.streak_reset.cummulative > this.balance.current {
-                if !this.qualifiers.HasOwnProp('counter1020')
-                    this.qualifiers.counter1020 := 10
-                this.amount := ((this.qualifiers.counter1020 + 3)/0.92)*1.00
-            }
             this.amount := Min(this.amount, this.balance.current)
 
 
