@@ -1281,12 +1281,12 @@ class TraderBot {
                 this.qualifiers.balance_mark.mark := this.balance.starting
                 this.qualifiers.streak_reset.cummulative := 0
             }
-            this.amount := Min(this.amount, this.balance.current)
             this.amount := this.amount < 1 ? 1.25 : this.amount
             if this.qualifiers.streak_reset.cummulative > 0 and this.qualifiers.streak_reset.cummulative < 10
                 this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*1.00
             else if this.qualifiers.streak_reset.cummulative > 40
                 this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*1.00
+            this.amount := Min(this.amount, this.balance.current)
 
 
             if !WinActive(this.wtitle) {
