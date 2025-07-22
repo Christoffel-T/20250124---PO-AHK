@@ -1204,7 +1204,7 @@ class TraderBot {
 
             this.coords.area.x := min(this.coords.area.x + 1, A_ScreenWidth*0.95)
             this.coords.area.x2 := this.coords.area.x - 2
-            ToolTip('(' A_Sec '.' A_MSec ')' this.debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', this.balance.current), 5, 5, 11)
+            ToolTip('(' A_Sec '.' A_MSec ')' this.debug_str '`nCurrent this.last_trade: ' this.last_trade '`nCurrent balance: ' format('{:.2f}', this.balance.current), 5, A_ScreenHeight*0.9, 11)
         } else {
             this.coords.area.x := max(this.coords.area.x - 1, 100)
             if this.coords.area.x < this.min_x {
