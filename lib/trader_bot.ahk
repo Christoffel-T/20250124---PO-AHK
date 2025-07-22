@@ -516,6 +516,12 @@ class TraderBot {
                     this.qualifiers.streak_reset.count := 1
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 } else if this.qualifiers.streak_reset.val = -2 {
+                    if this.qualifiers.streak_reset.cummulative > 160 or this.qualifiers.streak_reset.cummulative > this.balance.current {
+                        if !this.qualifiers.HasOwnProp('counter1020')
+                            this.qualifiers.counter1020 := 10
+                        else
+                            this.qualifiers.counter1020 := Min(160, this.qualifiers.counter1020*2)
+                    }
                     this.qualifiers.streak_reset.count++
                     if this.qualifiers.streak_reset.count2 > 0
                         this.qualifiers.streak_reset.count2 := 0
@@ -528,7 +534,7 @@ class TraderBot {
                 ; } else if this.balance.current > this.qualifiers.balance_mark.mark + 0 and this.qualifiers.balance_mark.count < 2 {
                 ;     this.qualifiers.balance_mark.count++
                 ; }
-                this.stats.streak := 1
+                this.stats.streak := -1
                 if this.amount >= 20 {
                     this.qualifiers.amount_limiter := true
                 }
@@ -1284,8 +1290,13 @@ class TraderBot {
             this.amount := this.amount < 1 ? 1.25 : this.amount
             if this.qualifiers.streak_reset.cummulative > 0 and this.qualifiers.streak_reset.cummulative < 10
                 this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*1.00
-            else if this.qualifiers.streak_reset.cummulative > 40
-                this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*1.00
+            else if this.qualifiers.streak_reset.cummulative > 20
+                this.amount := ((this.qualifiers.streak_reset.cummulative + 3)/0.92)*1.00
+            else if this.qualifiers.streak_reset.cummulative > 160 or this.qualifiers.streak_reset.cummulative > this.balance.current {
+                if !this.qualifiers.HasOwnProp('counter1020')
+                    this.qualifiers.counter1020 := 10
+                this.amount := ((this.qualifiers.counter1020 + 3)/0.92)*1.00
+            }
             this.amount := Min(this.amount, this.balance.current)
 
 
