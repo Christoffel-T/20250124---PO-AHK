@@ -531,11 +531,16 @@ class TraderBot {
                 ; }
                 this.stats.streak := -1
                 this.amount := this.GetAmount(this.balance.current)
-                if this.qualifiers.streak_reset.cummulative >= 20 {
-                    if this.qualifiers.1020.mark != 20 {
-                        this.qualifiers.1020.mark := 20
+                if this.qualifiers.streak_reset.cummulative >= 80 {
+                    if this.qualifiers.1020.mark < 80 {
+                        this.qualifiers.1020.mark := 80
                         this.qualifiers.1020.val := 10
-                    } else if this.qualifiers.1020.val >= 80 {
+                    } else {
+                        this.qualifiers.1020.val := Min(160, this.qualifiers.1020.val*2)
+                    }
+                } else if this.qualifiers.streak_reset.cummulative >= 20 {
+                    if this.qualifiers.1020.mark < 20 {
+                        this.qualifiers.1020.mark := 20
                         this.qualifiers.1020.val := 10
                     } else {
                         this.qualifiers.1020.val := Min(160, this.qualifiers.1020.val*2)
@@ -552,7 +557,7 @@ class TraderBot {
             }
 
             if this.qualifiers.1020.mark > 0 {
-                this.amount := this.qualifiers.1020.val
+                this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
             }
  
             if this.state.32
@@ -637,7 +642,7 @@ class TraderBot {
 
             if this.qualifiers.1020.mark > 0 {
                 this.qualifiers.1020.val := 10
-                this.amount := this.qualifiers.1020.val
+                this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
             }
 
 
