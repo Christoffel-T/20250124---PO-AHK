@@ -557,7 +557,7 @@ class TraderBot {
             }
 
             if this.qualifiers.1020.mark > 0 {
-                this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
+                this.amount := ((this.qualifiers.1020.val + 4)/0.92)*1.00
             }
  
             if this.state.32
@@ -642,7 +642,7 @@ class TraderBot {
 
             if this.qualifiers.1020.mark > 0 {
                 this.qualifiers.1020.val := 10
-                this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
+                this.amount := ((this.qualifiers.1020.val + 4)/0.92)*1.00
             }
 
 
