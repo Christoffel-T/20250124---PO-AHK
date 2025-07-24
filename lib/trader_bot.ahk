@@ -623,7 +623,7 @@ class TraderBot {
                 }
             }
 
-            if this.stats.max_bal_diff <= 0 or (this.qualifiers.streak_reset.cummulative > 0 and this.qualifiers.streak_reset.cummulative < 10) {
+            if this.stats.max_bal_diff <= 0 or (this.qualifiers.streak_reset.cummulative > 0 and this.stats.max_bal_diff > 0 and this.stats.max_bal_diff < 10) {
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.count := 0
@@ -1306,8 +1306,6 @@ class TraderBot {
                 this.qualifiers.streak_reset.cummulative := 0
             }
             this.amount := this.amount < 1 ? 1.25 : this.amount
-            if this.qualifiers.streak_reset.cummulative > 0 and this.qualifiers.streak_reset.cummulative < 10
-                this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*1.00
             this.amount := Min(this.amount, this.balance.current)
 
 
