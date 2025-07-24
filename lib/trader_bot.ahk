@@ -33,6 +33,7 @@ class TraderBot {
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
         }
+
         this.start_time := A_TickCount
         this.log_file := 'log.csv'
         this.trade_opened := [false, A_TickCount]
@@ -45,6 +46,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
+        this.stats.side_balance := {val: 0, state: false}
         this.balance := {starting: 500, reset_max: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
@@ -66,7 +68,7 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,_3_loss,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,E,F,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -494,6 +496,19 @@ class TraderBot {
             if this.qualifiers.streak_reset.cummulative > 0
                 this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
 
+            if this.qualifiers.streak_reset.cummulative >= 50 and not this.stats.side_balance.state {
+                this.stats.side_balance.val += this.qualifiers.streak_reset.cummulative
+                this.stats.side_balance.state := true
+                this.amount_arr[1].InsertAt(1, 1.63, 4.63, 11.15, 25.32)
+
+                this.qualifiers.streak_reset.cummulative := 0
+                this.qualifiers.streak_reset.count2 := 0
+                this.qualifiers.streak_reset.count := 0
+                this.qualifiers.streak_reset.val := -4
+                this.qualifiers.1020.val := 10
+                this.qualifiers.1020.mark := 0
+            }
+
             this.stats.streak--
 
             ; if this.balance.current > this.qualifiers.balance_mark.mark + 66 and this.balance.current < this.qualifiers.balance_mark.mark + 100 and this.qualifiers.balance_mark.count >= 5 {
@@ -623,7 +638,24 @@ class TraderBot {
                 }
             }
 
+            this.stats.side_balance.val -= 0.5
+
+            if this.qualifiers.streak_reset.cummulative >= 50 and not this.stats.side_balance.state {
+                this.stats.side_balance.val += this.qualifiers.streak_reset.cummulative
+                this.stats.side_balance.state := true
+                this.amount_arr[1].InsertAt(1, 1.63, 4.63, 11.15, 25.32)
+
+                this.qualifiers.streak_reset.cummulative := 0
+                this.qualifiers.streak_reset.count2 := 0
+                this.qualifiers.streak_reset.count := 0
+                this.qualifiers.streak_reset.val := -4
+                this.qualifiers.1020.val := 10
+                this.qualifiers.1020.mark := 0
+            }
+
+
             if this.stats.max_bal_diff <= 0 or (this.qualifiers.streak_reset.cummulative > 0 and this.stats.max_bal_diff > 0 and this.stats.max_bal_diff < 10) {
+                this.amount_arr[1].RemoveAt(1, 4)
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.count := 0
@@ -1060,7 +1092,8 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := format('{:.2f}', this.amount)
-        str_e := format('{:.2f}', -this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
+        str_e := format('{:.2f}', this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
+        str_f := format('{:.2f}', this.stats.side_balance.val)
         _count_reload := 0
         loop {
             _count_reload++
@@ -1083,6 +1116,7 @@ class TraderBot {
                     str_c ',' 
                     str_d ',' 
                     str_e ',' 
+                    str_f ',' 
                     '(' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
                     this.last_trade ',' 

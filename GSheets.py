@@ -55,7 +55,7 @@ def append_to_google_sheets(data, row):
 
 def monitor_log(file_path):
 
-    header = ["date","time","active_trade","amount","_3_loss","balance",'next_target',"last_trade","payout (coin)","Streak (W|D|L|win_rate)","Streaks","ohlc","debug"]  # Adjust as needed
+    header = ["date","time","active_trade","amount","E","F","balance",'next_target',"last_trade","payout (coin)","Streak (W|D|L|win_rate)","Streaks","ohlc","debug"]  # Adjust as needed
     last_size = 0
 
     # Ensure the header is set before starting the loop
