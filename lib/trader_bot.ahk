@@ -642,6 +642,12 @@ class TraderBot {
                 this.stats.side_balance.val -= 0.5
             }
 
+            if this.stats.side_balance.state and this.stats.side_balance.val <= 0 {
+                this.amount_arr[1].RemoveAt(1, 4)
+                this.stats.side_balance.state := false
+                this.stats.side_balance.val := 0
+            }
+
             if this.qualifiers.streak_reset.cummulative >= 50 and not this.stats.side_balance.state {
                 this.stats.side_balance.val += this.qualifiers.streak_reset.cummulative
                 this.stats.side_balance.state := true
@@ -657,7 +663,10 @@ class TraderBot {
 
 
             if this.stats.max_bal_diff <= 0 or (this.qualifiers.streak_reset.cummulative > 0 and this.stats.max_bal_diff > 0 and this.stats.max_bal_diff < 10) {
-                this.amount_arr[1].RemoveAt(1, 4)
+                if this.stats.side_balance.state {
+                    this.amount_arr[1].RemoveAt(1, 4)
+                    this.stats.side_balance.state := false
+                }
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.count := 0
