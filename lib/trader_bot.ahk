@@ -638,7 +638,9 @@ class TraderBot {
                 }
             }
 
-            this.stats.side_balance.val -= 0.5
+            if this.stats.side_balance.state {
+                this.stats.side_balance.val -= 0.5
+            }
 
             if this.qualifiers.streak_reset.cummulative >= 50 and not this.stats.side_balance.state {
                 this.stats.side_balance.val += this.qualifiers.streak_reset.cummulative
