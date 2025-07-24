@@ -497,6 +497,7 @@ class TraderBot {
                 this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
 
             if this.qualifiers.streak_reset.cummulative >= 50 and not this.stats.side_balance.state {
+                this.stats.streak := 0
                 this.stats.side_balance.val += this.qualifiers.streak_reset.cummulative
                 this.stats.side_balance.state := true
                 this.amount_arr[1].InsertAt(1, 1.63, 4.63, 11.15, 25.32)
@@ -651,7 +652,7 @@ class TraderBot {
             if this.qualifiers.streak_reset.cummulative >= 50 and not this.stats.side_balance.state {
                 this.stats.side_balance.val += this.qualifiers.streak_reset.cummulative
                 this.stats.side_balance.state := true
-                this.amount_arr[1].InsertAt(1, 1.63, 4.63, 11.15, 25.32)
+                this.amount_arr[1].InsertAt(1, 2.71, 7.52, 17.98, 40.69)
 
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
