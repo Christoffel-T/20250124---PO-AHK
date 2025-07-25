@@ -512,6 +512,11 @@ class TraderBot {
             ; if this.balance.current < this.qualifiers.balance_mark.mark {
             ;     this.qualifiers.streak_reset.val := -4
             ; }
+
+            if this.stats.side_balance.state {
+                this.stats.side_balance.val += this.amount
+            }
+
             if this.stats.streak < this.qualifiers.streak_reset.val {
                 this.qualifiers.streak_reset.trade_history.InsertAt(1, 'lose')
                 while this.qualifiers.streak_reset.trade_history.Length > 10
@@ -644,7 +649,10 @@ class TraderBot {
                 if this.stats.side_balance.state {
                     this.amount_arr[1].RemoveAt(1, 4)
                     this.stats.side_balance.state := false
-                    this.stats.side_balance.val := 0
+                    if this.stats.max_bal_diff > 0
+                        this.stats.side_balance.val += this.stats.max_bal_diff
+                    else
+                        this.stats.side_balance.val := 0
                 }
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
@@ -692,7 +700,7 @@ class TraderBot {
         }
 
         CheckSideBalance() {
-            if this.qualifiers.streak_reset.cummulative >= 60 and not this.stats.side_balance.state {
+            if this.qualifiers.streak_reset.cummulative >= 50 and not this.stats.side_balance.state {
                 this.stats.side_balance.val += this.qualifiers.streak_reset.cummulative
                 this.stats.side_balance.state := true
                 this.amount_arr[1].InsertAt(1, 2.71, 7.52, 17.98, 40.69)
