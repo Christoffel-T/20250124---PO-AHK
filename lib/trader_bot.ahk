@@ -659,7 +659,8 @@ class TraderBot {
             if this.qualifiers.streak_reset.val = -2 and this.qualifiers.streak_reset.cummulative > 0 {
                 this.amount := ((this.qualifiers.streak_reset.cummulative + 1)/0.92)*0.50
             } else {
-                this.amount := this.GetAmount(this.balance.current)
+                this.amount := this.amount_arr[this.GetAmount(this.balance.current)][1]
+                
             }
 
             if this.qualifiers.1020.mark > 0 {
