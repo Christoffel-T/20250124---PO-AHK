@@ -523,6 +523,11 @@ class TraderBot {
                     this.qualifiers.streak_reset.trade_history.Pop()
 
                 if this.qualifiers.streak_reset.val = -4 {
+                    if this.stats.side_balance.state {
+                        Loop 4 {
+                            this.amount_arr[1][A_Index] *= 2
+                        }
+                    }
                     this.qualifiers.streak_reset.val := -2
                     this.qualifiers.streak_reset.count := 1
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
@@ -700,7 +705,7 @@ class TraderBot {
         }
 
         CheckSideBalance() {
-            if this.qualifiers.streak_reset.cummulative >= 50 and not this.stats.side_balance.state {
+            if this.qualifiers.streak_reset.cummulative >= 20 and not this.stats.side_balance.state {
                 this.stats.side_balance.val += this.qualifiers.streak_reset.cummulative
                 this.stats.side_balance.state := true
                 this.amount_arr[1].InsertAt(1, 2.71, 7.52, 17.98, 40.69)
