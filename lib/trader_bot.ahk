@@ -571,9 +571,9 @@ class TraderBot {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak] ; (default_amount + Floor(balance.current/1000)) * (-stats.streak) + (-stats.streak-1) * 1.5
             }
 
-            if this.qualifiers.1020.mark > 0 {
-                this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
-            }
+            ; if this.qualifiers.1020.mark > 0 {
+            ;     this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
+            ; }
  
             if this.state.32
                 this.stats.streak2--
