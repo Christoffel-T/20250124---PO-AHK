@@ -528,7 +528,7 @@ class TraderBot {
                             this.amount_arr[1][A_Index] *= 2
                         }
                     }
-                    this.qualifiers.streak_reset.val := -2
+                    ; this.qualifiers.streak_reset.val := -2
                     this.qualifiers.streak_reset.count := 1
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 } else if this.qualifiers.streak_reset.val = -2 {
@@ -676,10 +676,10 @@ class TraderBot {
                 
             }
 
-            if this.qualifiers.1020.mark > 0 {
-                this.qualifiers.1020.val := 10
-                this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
-            }
+            ; if this.qualifiers.1020.mark > 0 {
+            ;     this.qualifiers.1020.val := 10
+            ;     this.amount := ((this.qualifiers.1020.val + 3)/0.92)*1.00
+            ; }
 
 
             if this.stats.streak < 0 {
@@ -1346,13 +1346,14 @@ class TraderBot {
             }
             this.CheckBalance()
             if this.balance.current < 1 {
+                this.amount := 1
                 this.stats.streak := 0
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
                 this.qualifiers.balance_mark.mark := this.balance.starting
-                this.amount := Min(this.amount, this.balance.starting)
                 this.qualifiers.streak_reset.cummulative := 0
             } else if this.balance.current >= this.balance.reset_max {
+                this.amount := 1
                 this.stats.streak := 0
                 this.stats.bal_win++
                 this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
