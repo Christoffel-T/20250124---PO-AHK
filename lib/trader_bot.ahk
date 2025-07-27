@@ -612,6 +612,9 @@ class TraderBot {
                 Send '{Escape}'
                 sleep 200
             }
+            if this.qualifiers.streak_reset.cummulative >= 30 {
+                this.amount := 1                
+            }
 
             this.SetTradeAmount()
 
