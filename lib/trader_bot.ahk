@@ -16,6 +16,7 @@ class TraderBot {
         this.qualifiers.streak_sc := -4000
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
         this.qualifiers.1020 := {mark: 0, val: 10}
+        this.qualifiers.superloop := {state: true}
 
         Loop 10 {
             _index := A_Index
@@ -614,8 +615,12 @@ class TraderBot {
                 Send '{Escape}'
                 sleep 200
             }
+
             if this.qualifiers.streak_reset.cummulative >= 30 {
-                this.amount := 1                
+                this.qualifiers.superloop.state := false
+            }
+            if not this.qualifiers.superloop.state {
+                this.amount := 1
             }
 
             this.SetTradeAmount()
@@ -632,15 +637,10 @@ class TraderBot {
                 this.qualifiers.streak_reset.val := -4
             }
             this.stats.%this.executed_trades[1]%.win++
- 
             if this.stats.streak = this.qualifiers.streak_reset.val {
-                if this.qualifiers.streak_reset.val = -2 {
-                    this.qualifiers.streak_reset.trade_history.InsertAt(1, 'win')
-                    while this.qualifiers.streak_reset.trade_history.Length > 10
-                        this.qualifiers.streak_reset.trade_history.Pop()
-                    if this.qualifiers.streak_reset.count2 < 0
-                        this.qualifiers.streak_reset.count2 := 0
-                    this.qualifiers.streak_reset.count2++
+                if this.qualifiers.streak_reset.val = -4 {
+                    this.qualifiers.streak_reset.count := 1
+                    this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 }
             }
 
@@ -656,15 +656,10 @@ class TraderBot {
 
             CheckSideBalance()
 
-            if this.stats.max_bal_diff <= 0 or (this.qualifiers.streak_reset.cummulative > 0 and this.stats.max_bal_diff > 0 and this.stats.max_bal_diff < 10) {
-                if this.stats.side_balance.state {
-                    ; this.amount_arr[1].RemoveAt(1, 4)
-                    this.stats.side_balance.state := false
-                    if this.stats.max_bal_diff > 0
-                        this.stats.side_balance.val += this.stats.max_bal_diff
-                    else
-                        this.stats.side_balance.val := 0
-                }
+            if this.stats.max_bal_diff <= 0 {
+                this.qualifiers.superloop.state := true
+                this.stats.side_balance.state := false
+                this.stats.side_balance.val := 0
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.count := 0
@@ -700,8 +695,10 @@ class TraderBot {
                 this.stats.streak2++
             }
 
-            if this.qualifiers.streak_reset.cummulative >= 30 and this.stats.side_balance.state and this.stats.streak = 1 {
-                this.amount := 20                
+            if not this.qualifiers.superloop.state {
+                this.amount := 1
+                if this.stats.streak = 1
+                    this.amount := 20
             }
 
             this.SetTradeAmount()
