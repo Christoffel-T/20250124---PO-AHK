@@ -616,7 +616,7 @@ class TraderBot {
                 sleep 200
             }
 
-            if this.qualifiers.streak_reset.cummulative >= 30 {
+            if this.qualifiers.streak_reset.cummulative > 0 {
                 this.qualifiers.superloop.state := false
             }
             if not this.qualifiers.superloop.state {
