@@ -12,7 +12,7 @@ class TraderBot {
         this.amount_arr := []
         this.amount_arr.Push([1, 2.5, 4.5, 9.0, 21, 42, 87, 182, 350, 700, 1450])
         
-        this.win_amounts := [2.5, 2.25, 2, 1.75, 1.5, 1.25, 1, 2.5, 2.25, 2, 1.75]
+        this.win_amounts := [[2.5, 2.25, 2, 1.75, 1.5, 1.25, 1, 2.5, 2.25, 2, 1.75]]
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
@@ -30,12 +30,6 @@ class TraderBot {
             }
             _tresh := A_Index = 1 ? this.amount_arr[_index][9]*10 : this.amount_arr[_index][10]*10
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
-        }
-
-
-        str:=''
-        for v in this.amount_arr[1] {
-            str .= v '`n' 
         }
 
         this.start_time := A_TickCount
@@ -568,11 +562,11 @@ class TraderBot {
 
             this.amount := this.win_amounts[1][this.stats.streak]
             this.SetTradeAmount()
-            this.stats.win++            
+            this.stats.win++      
         }
         TradeDraw() {
             this.stats.trade_history.InsertAt(1, 'draw')
-            while this.stats.trade_history.Length > 10
+            while this.stats.trade_history.Length   > 10
                 this.stats.trade_history.Pop()
             this.stats.%this.executed_trades[1]%.draw++
             this.stats.draw++
