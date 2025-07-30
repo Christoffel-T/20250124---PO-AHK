@@ -37,7 +37,6 @@ class TraderBot {
         for v in this.amount_arr[1] {
             str .= v '`n' 
         }
-        MsgBox str
 
         this.start_time := A_TickCount
         this.log_file := 'log.csv'
