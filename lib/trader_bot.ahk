@@ -10,9 +10,9 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1, 2.5, 4.5, 9.0, 21, 42, 87, 182, 350, 700, 1450])
+        this.amount_arr.Push([1, 1.5, 3.5, 7, 15, 32, 68, 144, 310, 650, 1300])
         
-        this.win_amounts := [[2.5, 2.25, 2, 1.75, 1.5, 1.25, 1, 2.5, 2.25, 2, 1.75]]
+        this.win_amounts := [[3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75]]
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
@@ -45,7 +45,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 500, reset_max: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 650, reset_max: 1300, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
