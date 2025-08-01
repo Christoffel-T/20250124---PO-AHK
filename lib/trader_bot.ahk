@@ -12,7 +12,7 @@ class TraderBot {
         this.amount_arr := []
         this.amount_arr.Push([1, 1.5, 3.5, 7, 15, 32, 68, 144, 310, 650, 1300])
         
-        this.win_amounts := [[3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75]]
+        this.win_amounts := [[1, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75]]
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
@@ -1059,6 +1059,13 @@ class TraderBot {
     }
     ExecuteTrade(action, reason) {
         global
+        if this.stats.streak <= -5 {
+            if action = 'BUY' {
+                action := 'SELL'
+            } else if action = 'SELL' {
+                action := 'BUY'
+            }
+        }
         this.last_trade := action
         if this.trade_opened[1]
             return false
