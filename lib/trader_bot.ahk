@@ -10,9 +10,14 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1, 1.5, 3.5, 7, 15, 32, 68, 144, 310, 650, 1300])
+        this.amount_arr.Push([1, 2, 4, 8.5, 17.25, 36.25, 77, 160, 335, 690, 1450])
         
         this.win_amounts := [[1, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75]]
+        for v in this.win_amounts[1].Clone()
+            this.win_amounts[1].Push(v)
+        for v in this.win_amounts[1].Clone()
+            this.win_amounts[1].Push(v)
+
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
         this.qualifiers.streak_sc := -4000
@@ -1059,7 +1064,7 @@ class TraderBot {
     }
     ExecuteTrade(action, reason) {
         global
-        if this.stats.streak <= -5 {
+        if this.stats.streak <= -5 and this.stats.streak > -7 {
             if action = 'BUY' {
                 action := 'SELL'
             } else if action = 'SELL' {
