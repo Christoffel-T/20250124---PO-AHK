@@ -23,6 +23,7 @@ class TraderBot {
         this.qualifiers.streak_sc := -4000
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
         this.qualifiers.1020 := {mark: 0, val: 10}
+        this.qualifiers.flip_streak := {state: false, count: 10}
 
         Loop 10 {
             _index := A_Index
