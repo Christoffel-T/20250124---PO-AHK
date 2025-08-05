@@ -1069,11 +1069,13 @@ class TraderBot {
             this.qualifiers.flip_streak.state := true
             this.qualifiers.flip_streak.count := 0
         }
-        if this.qualifiers.flip_streak.state and this.qualifiers.flip_streak.count < 6 {
-            this.qualifiers.flip_streak.count++
-        } else if this.qualifiers.flip_streak.state {
-            this.qualifiers.flip_streak.state := false
-            this.qualifiers.flip_streak.count := 0
+        if this.qualifiers.flip_streak.state {
+            if this.qualifiers.flip_streak.count < 6 {
+                this.qualifiers.flip_streak.count++
+            } else {
+                this.qualifiers.flip_streak.state := false
+                this.qualifiers.flip_streak.count := 0
+            }
         }
         if this.qualifiers.flip_streak.state {
             if action = 'BUY' {
