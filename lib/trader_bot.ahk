@@ -10,7 +10,7 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1, 2, 4, 8.5, 17.25, 36.25, 77, 160, 335, 690, 1450])
+        this.amount_arr.Push([1, 1.40, 2.80, 6.0, 12.6, 26.75, 56.35, 115.25 , 237.75, 495.20, 1010.00])
         
         this.win_amounts := [[1, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75]]
         for v in this.win_amounts[1].Clone()
@@ -50,7 +50,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 650, reset_max: 1300, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1000, reset_max: 1500, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -1064,7 +1064,17 @@ class TraderBot {
     }
     ExecuteTrade(action, reason) {
         global
-        if this.stats.streak <= -5 and this.stats.streak > -7 {
+        if this.stats.streak = -5 {
+            this.qualifiers.flip_streak.state := true
+            this.qualifiers.flip_streak.count := 0
+        }
+        if this.qualifiers.flip_streak.state and this.qualifiers.flip_streak.count < 6 {
+            this.qualifiers.flip_streak.count++
+        } else if this.qualifiers.flip_streak.state {
+            this.qualifiers.flip_streak.state := false
+            this.qualifiers.flip_streak.count := 0
+        }
+        if this.qualifiers.flip_streak.state {
             if action = 'BUY' {
                 action := 'SELL'
             } else if action = 'SELL' {
