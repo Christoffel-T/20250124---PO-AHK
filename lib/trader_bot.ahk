@@ -10,9 +10,9 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1, 1.40, 2.80, 6.0, 12.6, 26.75, 56.35, 115.25 , 237.75, 495.20, 1010.00])
+        this.amount_arr.Push([1, 1.40, 2.80, 2.0, 12.6, 26.75, 56.35, 115.25 , 237.75, 495.20, 1010.00])
         
-        this.win_amounts := [[1, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75, 1.25, 3.0, 2.25, 1.75]]
+        this.win_amounts := [[1.0, 2.5, 1.7, 1.5, 1.25, 2.5, 1.7, 1.5, 1.25, 2.50]]
         for v in this.win_amounts[1].Clone()
             this.win_amounts[1].Push(v)
         for v in this.win_amounts[1].Clone()
@@ -496,6 +496,9 @@ class TraderBot {
 
             if this.stats.streak <= -3 {
                 ChangeCoin()
+            }
+            if this.stats.streak <= -4 {
+                this.stats.streak := -1
             }
             
             this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
