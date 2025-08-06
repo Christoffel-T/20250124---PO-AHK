@@ -23,7 +23,7 @@ class TraderBot {
         this.qualifiers.streak_sc := -4000
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
         this.qualifiers.1020 := {mark: 0, val: 10}
-        this.qualifiers.flip_streak := {state: false, count: 0}
+        this.qualifiers.flip_trade := {state: false, count: 0}
 
         Loop 10 {
             _index := A_Index
@@ -1065,19 +1065,16 @@ class TraderBot {
     }
     ExecuteTrade(action, reason) {
         global
-        if this.stats.streak = -5 {
-            this.qualifiers.flip_streak.state := true
-            this.qualifiers.flip_streak.count := 0
-        }
-        if this.qualifiers.flip_streak.state {
-            if this.qualifiers.flip_streak.count < 6 {
-                this.qualifiers.flip_streak.count++
-            } else {
-                this.qualifiers.flip_streak.state := false
-                this.qualifiers.flip_streak.count := 0
+        this.qualifiers.flip_trade.state := false
+
+        for v in [-6, -8, -10] {
+            if v = this.stats.streak {
+                this.qualifiers.flip_trade.state := true
+                break
             }
         }
-        if this.qualifiers.flip_streak.state {
+        
+        if this.qualifiers.flip_trade.state {
             if action = 'BUY' {
                 action := 'SELL'
             } else if action = 'SELL' {
