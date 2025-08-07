@@ -375,9 +375,9 @@ class TraderBot {
                 }
                 this.last_trade := ''
                 ToolTip('Waiting for payout to be 92 or higher... ' A_Index, 500, 5, 12)
-                MouseMove(this.coords.Payout.x, this.coords.Payout.y, 1, 5)
+                MouseMove(this.coords.Payout.x, this.coords.Payout.y, 5)
                 sleep 500
-                MouseMove(this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, 1, 5)
+                MouseMove(this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, 5)
                 sleep 500
                 MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
                 sleep 100
