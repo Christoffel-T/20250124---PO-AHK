@@ -411,6 +411,8 @@ class TraderBot {
                 sleep 100
                 MouseClick('L', this.coords.time_choice.x + Random(-2, 2), this.coords.time_choice.y + Random(-2, 2), 1, 2)
                 sleep 100
+                MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
+                sleep 100
                 Send '{Escape}'
                 sleep 1000
             }
