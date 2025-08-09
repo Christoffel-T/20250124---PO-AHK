@@ -10,9 +10,9 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
         this.amount_arr := []
-        this.amount_arr.Push([1, 1.60, 3.40, 7.2, 15, 31.25, 65.5, 137, 286, 600, 1260])
+        this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
         
-        this.win_amounts := [[1.0, 2.5 , 2.0, 1.50, 1.25, 2.5, 2.0, 1.5, 1.25, 2.5, 2.0]]
+        this.win_amounts := [[1.1, 2.25, 1.5, 1.5, 1.1, 2.25, 1.5, 1.5, 1.1, 2.25, 1.5]]
         for v in this.win_amounts[1].Clone()
             this.win_amounts[1].Push(v)
         for v in this.win_amounts[1].Clone()
