@@ -24,6 +24,7 @@ class TraderBot {
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
         this.qualifiers.1020 := {mark: 0, val: 10}
         this.qualifiers.flip_trade := {state: false, count: 0}
+        this.qualifiers.double_trade := {state: false, count: 0}
 
         Loop 10 {
             _index := A_Index
@@ -437,6 +438,12 @@ class TraderBot {
             if this.balance.current > this.balance.last_trade + 0.5 {
                 win := {ps:true}
                 draw := {ps:true}
+            } else if this.qualifiers.double_trade.state and this.balance.current >= this.balance.last_trade - this.amount*0.1 {
+                win := {ps:true}
+                draw := {ps:true}
+            } else if this.qualifiers.double_trade.state and this.balance.current < this.balance.last_trade - this.amount*0.1 {
+                win := {ps:false}
+                draw := {ps:false}
             } else if this.balance.current < this.balance.last_trade - 0.5 {
                 win := {ps:false}
                 draw := {ps:false}
@@ -531,6 +538,10 @@ class TraderBot {
                         this.qualifiers.streak_reset.count2 := 0
                     this.qualifiers.streak_reset.count2++
                 }
+            }
+
+            if this.qualifiers.double_trade.state {
+                this.qualifiers.double_trade.state := false
             }
 
             if this.stats.side_balance.state {
@@ -1074,21 +1085,11 @@ class TraderBot {
     ExecuteTrade(action, reason) {
         global
         this.qualifiers.flip_trade.state := false
-
-        for v in [-5, -7, -9] {
-            if v = this.stats.streak {
-                this.qualifiers.flip_trade.state := true
-                break
-            }
+        
+        if this.stats.streak = -5 {
+            this.qualifiers.double_trade.state := true
         }
-
-        if this.qualifiers.flip_trade.state {
-            if action = 'BUY' {
-                action := 'SELL'
-            } else if action = 'SELL' {
-                action := 'BUY'
-            }
-        }
+        
         this.last_trade := action
         if this.trade_opened[1]
             return false
@@ -1107,7 +1108,16 @@ class TraderBot {
             return
         }
         sleep 50
-        MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
+
+        if not this.qualifiers.double_trade.state {
+            MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
+        } else {
+            MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
+            sleep Random(800, 1200)
+            _act2 := action = 'BUY' ? 'SELL' : 'BUY'
+            MouseClick('L', this.coords.%_act2%.x + Random(-5, 5), this.coords.%_act2%.y + Random(-1, 1), 1, 2)
+        }
+        
         sleep 200
         MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
         sleep 50
