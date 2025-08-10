@@ -541,6 +541,7 @@ class TraderBot {
             }
 
             if this.qualifiers.double_trade.state {
+                this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 this.qualifiers.double_trade.state := false
             }
 
@@ -1298,6 +1299,9 @@ class TraderBot {
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
                 this.qualifiers.balance_mark.mark := this.balance.starting
                 this.qualifiers.streak_reset.cummulative := 0
+            }
+            if this.qualifiers.streak_reset.cummulative > 0 {
+                this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
             }
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
