@@ -498,6 +498,8 @@ class TraderBot {
                 }
                 this.lose_streak.repeat[this.stats.streak].lose++
             }
+
+            this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
             if this.qualifiers.streak_reset.cummulative > 0
                 this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
 
@@ -541,7 +543,6 @@ class TraderBot {
             }
 
             if this.qualifiers.double_trade.state {
-                this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
                 this.qualifiers.double_trade.state := false
             }
 
