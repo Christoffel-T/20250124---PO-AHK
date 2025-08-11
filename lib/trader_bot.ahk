@@ -1303,6 +1303,9 @@ class TraderBot {
             if this.qualifiers.streak_reset.cummulative > 0 {
                 this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
             }
+            if this.stats.streak <= -4 and Mod(this.stats.streak, 2) = 0 {
+                this.amount /= 2
+            }
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
 
