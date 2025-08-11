@@ -1282,7 +1282,7 @@ class TraderBot {
             if _count_reload > 1000 {
                 _count_reload := 0
                 this.ReloadWebsite()
-            }
+            } 
             this.CheckBalance()
             if this.balance.current < 1 {
                 this.amount := 1
