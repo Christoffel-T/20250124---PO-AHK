@@ -1088,7 +1088,7 @@ class TraderBot {
         global
         this.qualifiers.flip_trade.state := false
         
-        if this.stats.streak = -5 {
+        if this.stats.streak = -4 {
             this.qualifiers.double_trade.state := true
         }
         
@@ -1306,6 +1306,9 @@ class TraderBot {
             }
             if this.stats.streak <= -4 and Mod(this.stats.streak, 2) = 0 {
                 this.amount /= 2
+            }
+            if this.stats.side_balance.val >= 100 or this.qualifiers.streak_reset.cummulative >= 70 {
+                this.amount := 15
             }
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
