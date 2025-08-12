@@ -591,6 +591,11 @@ class TraderBot {
                 this.lose_streak.repeat[this.stats.streak].win++
                 this.stats.streak := 0
             }
+            
+            if this.stats.streak >= 4 {
+                this.stats.streak := 0
+            }
+            
             this.stats.streak++
 
             this.amount := this.win_amounts[1][this.stats.streak]
@@ -1317,7 +1322,16 @@ class TraderBot {
                 this.amount := this.amount * 0.25
             }
             if this.stats.side_balance.val >= 100 or this.qualifiers.streak_reset.cummulative >= 70 {
-                this.amount := 15
+                if !this.qualifiers.HasOwnProp('counter_15') {
+                    this.qualifiers.counter_15 := 0
+                }
+
+                if this.qualifiers.counter_15 >= 2 {
+                    this.qualifiers.counter_15 := 0
+                } else {
+                    this.qualifiers.counter_15++
+                    this.amount := 15
+                }
             }
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
