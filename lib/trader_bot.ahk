@@ -439,7 +439,7 @@ class TraderBot {
                 win := {ps:true}
                 draw := {ps:true}
             } else if this.qualifiers.double_trade.state and this.balance.current >= this.balance.last_trade - this.amount*0.1 {
-                if this.balance.currrent > this.balance.last_trade + this.amount*0.4 {
+                if this.balance.current > this.balance.last_trade + this.amount*0.4 {
                     this.qualifiers.double_trade.WW++
                 } else {
                     this.qualifiers.double_trade.WL++
