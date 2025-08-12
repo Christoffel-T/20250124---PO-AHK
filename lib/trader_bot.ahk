@@ -1321,7 +1321,7 @@ class TraderBot {
             if this.stats.streak <= -4 and Mod(this.stats.streak, 2) = 0 {
                 this.amount := this.amount * 0.25
             }
-            if this.stats.side_balance.val >= 100 or this.qualifiers.streak_reset.cummulative >= 70 {
+            if this.stats.side_balance.val >= 50 or this.qualifiers.streak_reset.cummulative >= 70 {
                 if !this.qualifiers.HasOwnProp('counter_15') {
                     this.qualifiers.counter_15 := 0
                 }
