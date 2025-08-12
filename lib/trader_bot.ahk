@@ -24,7 +24,7 @@ class TraderBot {
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
         this.qualifiers.1020 := {mark: 0, val: 10}
         this.qualifiers.flip_trade := {state: false, count: 0}
-        this.qualifiers.double_trade := {state: false, count: 0}
+        this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
 
         Loop 10 {
             _index := A_Index
@@ -73,7 +73,7 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,E,F,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,E,F,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,double_stats,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -439,9 +439,15 @@ class TraderBot {
                 win := {ps:true}
                 draw := {ps:true}
             } else if this.qualifiers.double_trade.state and this.balance.current >= this.balance.last_trade - this.amount*0.1 {
+                if this.balance.currrent > this.balance.last_trade + this.amount*0.4 {
+                    this.qualifiers.double_trade.WW++
+                } else {
+                    this.qualifiers.double_trade.WL++
+                }
                 win := {ps:true}
                 draw := {ps:true}
             } else if this.qualifiers.double_trade.state and this.balance.current < this.balance.last_trade - this.amount*0.1 {
+                this.qualifiers.double_trade.LL++
                 win := {ps:false}
                 draw := {ps:false}
             } else if this.balance.current < this.balance.last_trade - 0.5 {
@@ -987,9 +993,9 @@ class TraderBot {
             countdown_close_str := ''
         }
     
-        streaks_str := ''
+        str_l := ''
         for k, v in this.lose_streak.repeat {
-            streaks_str .= k '<' v.win '|' v.lose '> '
+            str_l .= k '<' v.win '|' v.lose '> '
         }
 
         try {    
@@ -1040,6 +1046,7 @@ class TraderBot {
         str_d := format('{:.2f}', this.amount)
         str_e := format('{:.2f}', this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_f := format('{:.2f}', this.stats.side_balance.val)
+        str_m := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
         _count_reload := 0
         loop {
             _count_reload++
@@ -1068,7 +1075,8 @@ class TraderBot {
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
                     this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)' ',' 
-                    streaks_str ',' 
+                    str_l ',' 
+                    str_m ',' 
                     str_ohlc ',' 
                     this.debug_str '`n',
                     this.log_file
@@ -1305,7 +1313,7 @@ class TraderBot {
                 this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
             }
             if this.stats.streak <= -4 and Mod(this.stats.streak, 2) = 0 {
-                this.amount /= 2
+                this.amount := this.amount * 0.25
             }
             if this.stats.side_balance.val >= 100 or this.qualifiers.streak_reset.cummulative >= 70 {
                 this.amount := 15
