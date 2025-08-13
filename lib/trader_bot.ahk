@@ -51,7 +51,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 1500, reset_max: 2000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1250, reset_max: 2500, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -437,12 +437,6 @@ class TraderBot {
             if this.balance.current > this.balance.last_trade + 0.5 {
                 win := {ps:true}
                 draw := {ps:true}
-            } else if this.qualifiers.double_trade.state and this.balance.current >= this.balance.last_trade - this.amount*0.1 {
-                win := {ps:true}
-                draw := {ps:true}
-            } else if this.qualifiers.double_trade.state and this.balance.current < this.balance.last_trade - this.amount*0.1 {
-                win := {ps:false}
-                draw := {ps:false}
             } else if this.balance.current < this.balance.last_trade - 0.5 {
                 win := {ps:false}
                 draw := {ps:false}
@@ -539,10 +533,6 @@ class TraderBot {
                         this.qualifiers.streak_reset.count2 := 0
                     this.qualifiers.streak_reset.count2++
                 }
-            }
-
-            if this.qualifiers.double_trade.state {
-                this.qualifiers.double_trade.state := false
             }
 
             if this.stats.side_balance.state {
@@ -1040,7 +1030,6 @@ class TraderBot {
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         str_f := format('{:.2f}', this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_g := format('{:.2f}', this.stats.side_balance.val)
-        str_m := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
         _count_reload := 0
         loop {
             _count_reload++
@@ -1090,10 +1079,6 @@ class TraderBot {
         global
         this.qualifiers.flip_trade.state := false
         
-        if this.stats.streak = -5 {
-            this.qualifiers.double_trade.state := true
-        }
-        
         this.last_trade := action
         if this.trade_opened[1]
             return false
@@ -1113,14 +1098,7 @@ class TraderBot {
         }
         sleep 50
 
-        if not this.qualifiers.double_trade.state {
-            MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
-        } else {
-            MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
-            sleep Random(800, 1200)
-            _act2 := action = 'BUY' ? 'SELL' : 'BUY'
-            MouseClick('L', this.coords.%_act2%.x + Random(-5, 5), this.coords.%_act2%.y + Random(-1, 1), 1, 2)
-        }
+        MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
         
         sleep 200
         MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
