@@ -24,7 +24,6 @@ class TraderBot {
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
         this.qualifiers.1020 := {mark: 0, val: 10}
         this.qualifiers.flip_trade := {state: false, count: 0}
-        this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
 
         Loop 10 {
             _index := A_Index
@@ -52,7 +51,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 750, reset_max: 1250, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1500, reset_max: 2000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -73,7 +72,7 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,E,F,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,double_stats,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,E,F,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -439,15 +438,9 @@ class TraderBot {
                 win := {ps:true}
                 draw := {ps:true}
             } else if this.qualifiers.double_trade.state and this.balance.current >= this.balance.last_trade - this.amount*0.1 {
-                if this.balance.current > this.balance.last_trade + this.amount*0.4 {
-                    this.qualifiers.double_trade.WW++
-                } else {
-                    this.qualifiers.double_trade.WL++
-                }
                 win := {ps:true}
                 draw := {ps:true}
             } else if this.qualifiers.double_trade.state and this.balance.current < this.balance.last_trade - this.amount*0.1 {
-                this.qualifiers.double_trade.LL++
                 win := {ps:false}
                 draw := {ps:false}
             } else if this.balance.current < this.balance.last_trade - 0.5 {
@@ -591,11 +584,6 @@ class TraderBot {
                 this.lose_streak.repeat[this.stats.streak].win++
                 this.stats.streak := 0
             }
-            
-            if this.stats.streak >= 4 {
-                this.stats.streak := 0
-            }
-            
             this.stats.streak++
 
             this.amount := this.win_amounts[1][this.stats.streak]
@@ -1082,7 +1070,7 @@ class TraderBot {
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
                     str_l ',' 
-                    str_m ',' 
+									
                     str_ohlc ',' 
                     this.debug_str '`n',
                     this.log_file
@@ -1102,7 +1090,7 @@ class TraderBot {
         global
         this.qualifiers.flip_trade.state := false
         
-        if this.stats.streak = -4 {
+        if this.stats.streak = -5 {
             this.qualifiers.double_trade.state := true
         }
         
@@ -1319,20 +1307,8 @@ class TraderBot {
                 this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
             }
             if this.stats.streak <= -4 and Mod(this.stats.streak, 2) = 0 {
-                this.amount := this.amount * 0.25
-            }
-            if this.stats.side_balance.val >= 50 or this.qualifiers.streak_reset.cummulative >= 70 {
-                if !this.qualifiers.HasOwnProp('counter_15') {
-                    this.qualifiers.counter_15 := 0
-                }
-
-                if this.qualifiers.counter_15 >= 2 {
-                    this.qualifiers.counter_15 := 0
-                } else {
-                    this.qualifiers.counter_15++
-                    this.amount := 15
-                }
-            }
+                this.amount := this.amount * 0.5 
+			}
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
 
