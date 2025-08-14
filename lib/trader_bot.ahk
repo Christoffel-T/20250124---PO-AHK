@@ -26,6 +26,7 @@ class TraderBot {
         this.qualifiers.1020 := {mark: 0, val: 10}
         this.qualifiers.flip_trade := {state: false, count: 0}
         this.qualifiers.pause_temp := {state: false, count: 0, state2: false}
+        this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
 
         Loop 10 {
             _index := A_Index
