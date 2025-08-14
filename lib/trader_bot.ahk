@@ -524,6 +524,7 @@ class TraderBot {
                 this.qualifiers.pause_temp.state2 := true
                 this.qualifiers.pause_temp.count := 0
                 this.amount := 1
+                this.stats.streak := 0
             }
             
             this.SetTradeAmount()
