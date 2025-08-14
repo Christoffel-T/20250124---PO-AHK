@@ -523,6 +523,7 @@ class TraderBot {
                 this.qualifiers.pause_temp.state := true
                 this.qualifiers.pause_temp.state2 := true
                 this.qualifiers.pause_temp.count := 0
+                this.amount := 1
             }
             
             this.SetTradeAmount()
@@ -1107,6 +1108,7 @@ class TraderBot {
             if this.qualifiers.pause_temp.count > 5 {
                 this.qualifiers.pause_temp.state := false
                 this.qualifiers.pause_temp.count := 0
+                this.stats.streak := 0
             } else {
                 return false
             }
