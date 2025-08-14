@@ -1310,11 +1310,11 @@ class TraderBot {
                 this.qualifiers.balance_mark.mark := this.balance.starting
                 this.qualifiers.streak_reset.cummulative := 0
             }
-            if this.qualifiers.streak_reset.cummulative > 0 {
+            if !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
                 this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
             }
             if this.stats.streak <= -4 and Mod(this.stats.streak, 2) = 0 {
-                this.amount := this.amount * 0.5 
+                this.amount := this.amount * 0.5
 			}
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
