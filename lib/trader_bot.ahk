@@ -2,6 +2,7 @@
 #Include OCR.ahk
 #Include utils.ahk
 
+
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -24,6 +25,7 @@ class TraderBot {
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
         this.qualifiers.1020 := {mark: 0, val: 10}
         this.qualifiers.flip_trade := {state: false, count: 0}
+        this.qualifiers.pause_temp := {state: false, count: 0, state2: false}
 
         Loop 10 {
             _index := A_Index
@@ -51,7 +53,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 1250, reset_max: 2500, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 500, reset_max: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -509,6 +511,20 @@ class TraderBot {
             }
             
             this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
+
+            if this.qualifiers.pause_temp.state2 {
+                this.amount := 1
+                Loop -this.stats.streak-1 {
+                    this.amount := this.amount*2 + 1
+                }
+            }
+            
+            if !this.qualifiers.pause_temp.state and this.stats.streak <= -4 {
+                this.qualifiers.pause_temp.state := true
+                this.qualifiers.pause_temp.state2 := true
+                this.qualifiers.pause_temp.count := 0
+            }
+            
             this.SetTradeAmount()
 
             this.stats.loss++
@@ -543,6 +559,7 @@ class TraderBot {
                 ; this.amount_arr[1].RemoveAt(1, 4)
                 this.stats.side_balance.state := false
                 this.stats.side_balance.val := 0
+                this.qualifiers.pause_temp.state2 := false
             }
 
             CheckSideBalance()
@@ -1010,7 +1027,7 @@ class TraderBot {
             str.next_bal := '$' v[2] ': ' v[1]
         }
 
-        str_c := ''
+        str_c := '(' this.qualifiers.pause_temp.count ') '
         for k, v in this.qualifiers.OwnProps() {
             if not Type(v) = 'Object' or not v.HasOwnProp('state')
                 continue
@@ -1085,6 +1102,15 @@ class TraderBot {
         _name := action reason
         if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 4 and this.qualifiers.streak_reset.val = this.stats.streak and this.qualifiers.streak_reset.val = -2
             return false
+        if this.qualifiers.pause_temp.state {
+            this.qualifiers.pause_temp.count++
+            if this.qualifiers.pause_temp.count > 5 {
+                this.qualifiers.pause_temp.state := false
+                this.qualifiers.pause_temp.count := 0
+            } else {
+                return false
+            }
+        }
 
         this.trade_opened := [true, A_TickCount]
         this.active_trade := ''
