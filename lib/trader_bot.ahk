@@ -518,6 +518,12 @@ class TraderBot {
             }
             
             this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
+            if this.qualifiers.pause_temp.state2 {
+                this.amount := 1
+                Loop -this.stats.streak-1 {
+                    this.amount := this.amount*2 + 1
+                }
+            }
 
             if !this.qualifiers.pause_temp.state and this.stats.streak <= -4 {
                 this.qualifiers.pause_temp.state := true
@@ -1326,7 +1332,7 @@ class TraderBot {
                 this.qualifiers.balance_mark.mark := this.balance.starting
                 this.qualifiers.streak_reset.cummulative := 0
             }
-            if this.qualifiers.streak_reset.cummulative > 0 {
+            if !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
                 this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
             }
             if this.stats.streak <= -4 and Mod(this.stats.streak, 2) = 0 {
