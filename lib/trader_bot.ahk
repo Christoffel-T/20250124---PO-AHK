@@ -555,7 +555,7 @@ class TraderBot {
 
             if this.qualifiers.double_trade.state {
                 this.qualifiers.double_trade.state := false
-            }
+            } 
 
             if this.stats.side_balance.state {
                 this.stats.side_balance.val -= this.amount*0.92
