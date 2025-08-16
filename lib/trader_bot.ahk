@@ -525,7 +525,10 @@ class TraderBot {
                 }
             }
 
-            if !this.qualifiers.pause_temp.state and this.stats.streak <= -4 {
+            if !this.qualifiers.pause_temp.state and this.stats.streak = -4 {
+                this.qualifiers.pause_temp.state := true
+            }
+            if !this.qualifiers.pause_temp.state2 and this.stats.streak <= -4 {
                 this.qualifiers.pause_temp.state := true
                 this.qualifiers.pause_temp.state2 := true
                 this.qualifiers.pause_temp.count := 0
