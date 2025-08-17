@@ -25,7 +25,7 @@ class TraderBot {
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
         this.qualifiers.1020 := {mark: 0, val: 10}
         this.qualifiers.flip_trade := {state: false, count: 0}
-        this.qualifiers.pause_temp := {state: false, count: 0, state2: false}
+        this.qualifiers.pause_temp := {state: false, count: 0, state2: false, amount: 1}
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
 
         Loop 10 {
@@ -519,10 +519,7 @@ class TraderBot {
             
             this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
             if this.qualifiers.pause_temp.state2 {
-                this.amount := 1
-                Loop -this.stats.streak-1 {
-                    this.amount := this.amount*2 + 1
-                }
+                this.amount := this.qualifiers.pause_temp.amount*2 + 1
             }
 
             if !this.qualifiers.pause_temp.state and this.stats.streak = -4 {
@@ -533,6 +530,7 @@ class TraderBot {
                 this.qualifiers.pause_temp.state := true
                 this.qualifiers.pause_temp.state2 := true
                 this.qualifiers.pause_temp.count := 0
+                this.qualifiers.pause_temp.amount := 1
                 this.amount := 1
                 this.stats.streak := 0
             }
@@ -1128,7 +1126,6 @@ class TraderBot {
             if this.qualifiers.pause_temp.count > 5 {
                 this.qualifiers.pause_temp.state := false
                 this.qualifiers.pause_temp.count := 0
-                this.stats.streak := 0
             } else {
                 return false
             }
