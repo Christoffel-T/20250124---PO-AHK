@@ -527,8 +527,9 @@ class TraderBot {
 
             if !this.qualifiers.pause_temp.state and this.stats.streak = -4 {
                 this.qualifiers.pause_temp.state := true
+                this.qualifiers.pause_temp.count := 0
             }
-            if !this.qualifiers.pause_temp.state2 and this.stats.streak <= -4 {
+            if !this.qualifiers.pause_temp.state2 and this.stats.streak = -4 {
                 this.qualifiers.pause_temp.state := true
                 this.qualifiers.pause_temp.state2 := true
                 this.qualifiers.pause_temp.count := 0
@@ -578,7 +579,7 @@ class TraderBot {
 
             CheckSideBalance()
 
-            if this.stats.max_bal_diff <= 0 or (this.qualifiers.streak_reset.cummulative > 0 and this.stats.max_bal_diff > 0 and this.stats.max_bal_diff < 10) {
+            if this.stats.max_bal_diff <= 0 {
                 if this.stats.side_balance.state {
                     ; this.amount_arr[1].RemoveAt(1, 4)
                     this.stats.side_balance.state := false
@@ -1338,9 +1339,6 @@ class TraderBot {
             if !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
                 this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
             }
-            if this.stats.streak <= -4 and Mod(this.stats.streak, 2) = 0 {
-                this.amount := this.amount * 0.5
-			}
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
 
