@@ -523,7 +523,7 @@ class TraderBot {
                 this.amount := this.qualifiers.pause_temp.amount
             }
 
-            if !this.qualifiers.pause_temp.state and this.stats.streak = -4 {
+            if !this.qualifiers.pause_temp.state and (this.stats.streak = -4 or this.amount = 63*2+1) {
                 this.qualifiers.pause_temp.state := true
                 this.qualifiers.pause_temp.count := 0
             }
