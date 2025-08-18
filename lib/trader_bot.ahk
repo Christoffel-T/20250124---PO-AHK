@@ -54,7 +54,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 750, reset_max: 1500, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1500, reset_max: 2500, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -75,7 +75,7 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,E,F,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,max_diff,side_bal,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -578,7 +578,7 @@ class TraderBot {
 
             CheckSideBalance()
 
-            if this.stats.max_bal_diff <= 0 {
+            if this.stats.max_bal_diff <= 10 {
                 if this.stats.side_balance.state {
                     ; this.amount_arr[1].RemoveAt(1, 4)
                     this.stats.side_balance.state := false
@@ -1319,20 +1319,14 @@ class TraderBot {
             } 
             this.CheckBalance()
             if this.balance.current < 1 {
-                this.amount := 1
-                this.stats.streak := 0
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
-                this.qualifiers.balance_mark.mark := this.balance.starting
-                this.qualifiers.streak_reset.cummulative := 0
+                BalanceReset()
             } else if this.balance.current >= this.balance.reset_max {
-                this.amount := 1
-                this.stats.streak := 0
                 this.stats.bal_win++
                 this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
-                this.qualifiers.balance_mark.mark := this.balance.starting
-                this.qualifiers.streak_reset.cummulative := 0
+                BalanceReset()
             }
             if !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
                 this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
@@ -1384,6 +1378,20 @@ class TraderBot {
             sleep 50
             MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
             return
+        }
+
+        BalanceReset() {
+            this.amount := 1
+            this.stats.streak := 0
+            this.qualifiers.balance_mark.mark := this.balance.starting
+            this.qualifiers.pause_temp.state2 := false
+            this.qualifiers.streak_reset.cummulative := 0
+            this.qualifiers.streak_reset.count := 0
+            this.qualifiers.streak_reset.count2 := 0
+            this.qualifiers.streak_reset.val := -4
+            this.qualifiers.1020.val := 10
+            this.qualifiers.1020.mark := 0
+            this.stats.max_bal_diff := 0
         }
     }
     
