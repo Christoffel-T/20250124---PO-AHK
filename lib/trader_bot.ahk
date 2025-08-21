@@ -25,7 +25,7 @@ class TraderBot {
         this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
         this.qualifiers.1020 := {mark: 0, val: 10}
         this.qualifiers.flip_trade := {state: false, count: 0}
-        this.qualifiers.pause_temp := {state: false, count: 0, state2: false, amount: 1}
+        this.qualifiers.pause_temp := {state: false, count: 0, state2: false, amount: 1, reset_F: 10}
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
 
         Loop 10 {
@@ -514,6 +514,8 @@ class TraderBot {
             this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
             if this.qualifiers.pause_temp.state2 {
                 this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
+                if this.qualifiers.pause_temp.amount >= 120
+                    this.qualifiers.pause_temp.amount := 1
                 this.amount := this.qualifiers.pause_temp.amount
             }
 
@@ -526,6 +528,7 @@ class TraderBot {
                 this.qualifiers.pause_temp.state2 := true
                 this.qualifiers.pause_temp.count := 0
                 this.qualifiers.pause_temp.amount := 1
+                this.qualifiers.pause_temp.reset_F := 10
                 this.amount := 1
                 this.stats.streak := 0
             }
@@ -568,7 +571,11 @@ class TraderBot {
 
             CheckSideBalance()
 
-            if this.stats.max_bal_diff <= 10 {
+            if this.stats.max_bal_diff > 30 {
+                this.qualifiers.pause_temp.reset_F := 30
+            }
+
+            if this.stats.max_bal_diff <= this.qualifiers.pause_temp.reset_F {
                 if this.stats.side_balance.state {
                     ; this.amount_arr[1].RemoveAt(1, 4)
                     this.stats.side_balance.state := false
@@ -578,6 +585,7 @@ class TraderBot {
                         this.stats.side_balance.val := 0
                 }
                 this.qualifiers.pause_temp.state2 := false
+                this.qualifiers.pause_temp.reset_F := 10
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.count := 0
@@ -1374,6 +1382,8 @@ class TraderBot {
             this.stats.streak := 0
             this.qualifiers.balance_mark.mark := this.balance.starting
             this.qualifiers.pause_temp.state2 := false
+            this.qualifiers.pause_temp.reset_F := 10
+            this.qualifiers.pause_temp.amount := 1
             this.qualifiers.streak_reset.cummulative := 0
             this.qualifiers.streak_reset.count := 0
             this.qualifiers.streak_reset.count2 := 0
