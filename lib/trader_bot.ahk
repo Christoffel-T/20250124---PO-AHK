@@ -514,8 +514,8 @@ class TraderBot {
             this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
             if this.qualifiers.pause_temp.state2 {
                 this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
-                if this.qualifiers.pause_temp.amount >= 120
-                    this.qualifiers.pause_temp.amount := 1
+                ; if this.qualifiers.pause_temp.amount >= 120
+                ;     this.qualifiers.pause_temp.amount := 1
                 this.amount := this.qualifiers.pause_temp.amount
             }
 
@@ -527,7 +527,7 @@ class TraderBot {
                 this.qualifiers.pause_temp.state := true
                 this.qualifiers.pause_temp.state2 := true
                 this.qualifiers.pause_temp.count := 0
-                this.qualifiers.pause_temp.amount := 1
+                this.qualifiers.pause_temp.amount := this.amount
                 this.qualifiers.pause_temp.reset_F := 10
                 this.amount := 1
                 this.stats.streak := 0
