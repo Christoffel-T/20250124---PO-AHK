@@ -54,7 +54,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 2500, reset_max: 5000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 2000, reset_max: 4000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -1042,7 +1042,7 @@ class TraderBot {
             str.next_bal := '$' v[2] ': ' v[1]
         }
 
-        str_c := '(' this.qualifiers.pause_temp.count ') '
+        str_c := ''
         for k, v in this.qualifiers.OwnProps() {
             if not Type(v) = 'Object' or not v.HasOwnProp('state')
                 continue
