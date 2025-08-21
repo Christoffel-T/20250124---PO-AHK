@@ -54,7 +54,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 1500, reset_max: 2500, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 2500, reset_max: 5000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -1058,7 +1058,7 @@ class TraderBot {
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
-        str_d := format('{:.2f}', this.amount)
+        str_d := '(' this.qualifiers.pause_temp.count ') ' format('{:.2f}', this.amount)
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         str_f := format('{:.2f}', this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_g := format('{:.2f}', this.stats.side_balance.val)
