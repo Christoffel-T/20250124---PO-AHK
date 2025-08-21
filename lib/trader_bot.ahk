@@ -440,12 +440,6 @@ class TraderBot {
             if this.balance.current > this.balance.last_trade + 0.5 {
                 win := {ps:true}
                 draw := {ps:true}
-            } else if this.qualifiers.double_trade.state and this.balance.current >= this.balance.last_trade - this.amount*0.1 {
-                win := {ps:true}
-                draw := {ps:true}
-            } else if this.qualifiers.double_trade.state and this.balance.current < this.balance.last_trade - this.amount*0.1 {
-                win := {ps:false}
-                draw := {ps:false}
             } else if this.balance.current < this.balance.last_trade - 0.5 {
                 win := {ps:false}
                 draw := {ps:false}
@@ -561,10 +555,6 @@ class TraderBot {
                     this.qualifiers.streak_reset.count2++
                 }
             }
-
-            if this.qualifiers.double_trade.state {
-                this.qualifiers.double_trade.state := false
-            } 
 
             if this.stats.side_balance.state {
                 this.stats.side_balance.val -= this.amount*0.92
@@ -1111,11 +1101,7 @@ class TraderBot {
     ExecuteTrade(action, reason) {
         global
         this.qualifiers.flip_trade.state := false
-        
-        if this.stats.streak = -5 {
-            this.qualifiers.double_trade.state := true
-        }
-        
+                
         this.last_trade := action
         if this.trade_opened[1]
             return false
