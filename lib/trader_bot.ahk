@@ -28,6 +28,7 @@ class TraderBot {
         this.qualifiers.pause_temp := {state: false, count: 0, state2: false, amount: 1, reset_F: 10}
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.halving := {mark: 200}
+        this.qualifiers.reducer := false
 
         Loop 10 {
             _index := A_Index
@@ -1344,6 +1345,13 @@ class TraderBot {
             }
             if this.amount < 200 {
                 this.qualifiers.halving.mark := 200
+            }
+            if this.qualifiers.reducer and this.amount > 75 {
+                this.qualifiers.reducer := false
+                this.amount := this.amount * 0.25
+            }
+            if !this.qualifiers.reducer and this.amount > 75 {
+                this.qualifiers.reducer := true
             }
 
             this.amount := this.amount < 1 ? 1.25 : this.amount
