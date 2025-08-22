@@ -591,7 +591,7 @@ class TraderBot {
                 }
                 this.qualifiers.pause_temp.state2 := false
                 this.qualifiers.pause_temp.reset_F := 10
-                this.qualifiers.halving := 200
+                this.qualifiers.halving.mark := 200
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.count := 0
@@ -1334,9 +1334,9 @@ class TraderBot {
                 else if this.stats.streak < 0
                     this.amount := this.qualifiers.streak_reset.cummulative + 1.25
             }
-            if this.amount > this.qualifiers.halving {
+            if this.amount > this.qualifiers.halving.mark {
                 this.amount := this.amount / 2
-                this.qualifiers.halving += 200
+                this.qualifiers.halving.mark += 200
             }
 
             this.amount := this.amount < 1 ? 1.25 : this.amount
@@ -1401,7 +1401,7 @@ class TraderBot {
             this.qualifiers.streak_reset.val := -4
             this.qualifiers.1020.val := 10
             this.qualifiers.1020.mark := 0
-            this.qualifiers.halving := 200
+            this.qualifiers.halving.mark := 200
             this.stats.max_bal_diff := 0
         }
     }
