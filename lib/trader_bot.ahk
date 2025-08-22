@@ -27,6 +27,7 @@ class TraderBot {
         this.qualifiers.flip_trade := {state: false, count: 0}
         this.qualifiers.pause_temp := {state: false, count: 0, state2: false, amount: 1, reset_F: 10}
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
+        this.qualifiers.halving := {mark: 200}
 
         Loop 10 {
             _index := A_Index
@@ -54,7 +55,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 2000, reset_max: 4000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1750, reset_max: 3500, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -524,10 +525,10 @@ class TraderBot {
                 this.qualifiers.pause_temp.count := 0
             }
             if !this.qualifiers.pause_temp.state2 and this.stats.streak = -4 {
+                this.qualifiers.pause_temp.amount := 1
                 this.qualifiers.pause_temp.state := true
                 this.qualifiers.pause_temp.state2 := true
                 this.qualifiers.pause_temp.count := 0
-                this.qualifiers.pause_temp.amount := this.amount
                 this.qualifiers.pause_temp.reset_F := 10
                 this.amount := 1
                 this.stats.streak := 0
@@ -559,6 +560,10 @@ class TraderBot {
                 }
             }
 
+            if this.qualifiers.pause_temp.state2 {
+                this.qualifiers.pause_temp.amount := this.qualifiers.streak_reset.cummulative
+            }
+
             if this.stats.side_balance.state {
                 this.stats.side_balance.val -= this.amount*0.92
             }
@@ -586,6 +591,7 @@ class TraderBot {
                 }
                 this.qualifiers.pause_temp.state2 := false
                 this.qualifiers.pause_temp.reset_F := 10
+                this.qualifiers.halving := 200
                 this.qualifiers.streak_reset.cummulative := 0
                 this.qualifiers.streak_reset.count2 := 0
                 this.qualifiers.streak_reset.count := 0
@@ -1325,9 +1331,14 @@ class TraderBot {
             if !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
                 if this.stats.streak <= -3
                     this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
-                else
-                    this.amount := this.qualifiers.streak_reset.cummulative + 1
+                else if this.stats.streak < 0
+                    this.amount := this.qualifiers.streak_reset.cummulative + 1.25
             }
+            if this.amount > this.qualifiers.halving {
+                this.amount := this.amount / 2
+                this.qualifiers.halving += 200
+            }
+
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
 
@@ -1390,6 +1401,7 @@ class TraderBot {
             this.qualifiers.streak_reset.val := -4
             this.qualifiers.1020.val := 10
             this.qualifiers.1020.mark := 0
+            this.qualifiers.halving := 200
             this.stats.max_bal_diff := 0
         }
     }
