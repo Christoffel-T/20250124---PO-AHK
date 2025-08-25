@@ -27,6 +27,7 @@ class TraderBot {
         this.qualifiers.flip_trade := {state: false, count: 0}
         this.qualifiers.pause_temp := {state: false, count: 0, state2: false, amount: 1, reset_F: 10}
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
+        this.qualifiers.win_after_31 := false
 
         Loop 10 {
             _index := A_Index
@@ -575,6 +576,7 @@ class TraderBot {
             CheckSideBalance()
 
             if this.stats.max_bal_diff <= this.qualifiers.pause_temp.reset_F {
+                this.qualifiers.win_after_31 := false
                 if this.stats.side_balance.state {
                     ; this.amount_arr[1].RemoveAt(1, 4)
                     this.stats.side_balance.state := false
@@ -595,6 +597,12 @@ class TraderBot {
                 if this.qualifiers.streak_reset.cummulative > 0
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
             }
+
+            if this.amount >= 31 and this.stats.max_bal_diff <= 50 {
+                this.qualifiers.win_after_31 := true
+                this.qualifiers.pause_temp.amount := this.stats.max_bal_diff
+            }
+
 
             if this.stats.streak < 0 {
                 if not this.lose_streak.repeat.Has(this.stats.streak) {
@@ -1321,7 +1329,7 @@ class TraderBot {
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
                 BalanceReset()
             }
-            if !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
+            if !this.qualifiers.win_after_31 and !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
                 if this.stats.streak <= -3
                     this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
                 else if this.stats.streak < 0
