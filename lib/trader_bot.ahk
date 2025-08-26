@@ -598,7 +598,7 @@ class TraderBot {
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
             }
 
-            if this.amount >= 31 and this.stats.max_bal_diff <= 50 {
+            if this.amount >= 31 and this.stats.max_bal_diff <= 100 {
                 this.qualifiers.win_after_31 := true
                 this.qualifiers.pause_temp.amount := this.stats.max_bal_diff
             }
