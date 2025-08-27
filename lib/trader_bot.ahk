@@ -1057,7 +1057,7 @@ class TraderBot {
             str.next_bal := '$' v[2] ': ' v[1]
         }
 
-        str_c := ''
+        str_c := '(130: ' this.qualifiers.trade_counter_after_130.count ') '
         for k, v in this.qualifiers.OwnProps() {
             if not Type(v) = 'Object' or not v.HasOwnProp('state')
                 continue
