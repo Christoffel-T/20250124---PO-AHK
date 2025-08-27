@@ -28,6 +28,7 @@ class TraderBot {
         this.qualifiers.pause_temp := {state: false, count: 0, state2: false, amount: 1, reset_F: 10}
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.win_after_31 := false
+        this.qualifiers.trade_counter_after_130 := {state:false, count: 5}
 
         Loop 10 {
             _index := A_Index
@@ -511,9 +512,11 @@ class TraderBot {
             if this.stats.streak <= -3 {
                 ChangeCoin()
             }
-            
-            this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
-            if this.qualifiers.pause_temp.state2 {
+            if this.qualifiers.trade_counter_after_130.state
+                this.amount := this.amount*2 + 1
+            else
+                this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
+            if this.qualifiers.pause_temp.state2 and !this.qualifiers.trade_counter_after_130.state {
                 this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
                 ; if this.stats.max_bal_diff > 0
                 ;     this.qualifiers.pause_temp.amount := Min(this.qualifiers.pause_temp.amount*2 + 1, this.stats.max_bal_diff*2 + 1)
@@ -535,6 +538,12 @@ class TraderBot {
                 this.qualifiers.pause_temp.reset_F := 10
                 this.amount := 1
                 this.stats.streak := 0
+            }
+
+            if this.amount + this.stats.max_bal_diff >= 130 and this.qualifiers.trade_counter_after_130.count >= 3 {
+                this.qualifiers.trade_counter_after_130.count := 0
+                this.qualifiers.trade_counter_after_130.state := true
+                this.amount := 20
             }
             
             this.SetTradeAmount()
@@ -585,6 +594,7 @@ class TraderBot {
                     else
                         this.stats.side_balance.val := 0
                 }
+                this.qualifiers.trade_counter_after_130.state := false
                 this.qualifiers.pause_temp.state2 := false
                 this.qualifiers.pause_temp.reset_F := 10
                 this.qualifiers.streak_reset.cummulative := 0
@@ -1132,6 +1142,7 @@ class TraderBot {
                 return false
             }
         }
+        this.qualifiers.trade_counter_after_130.count++
 
         this.trade_opened := [true, A_TickCount]
         this.active_trade := ''
@@ -1399,6 +1410,7 @@ class TraderBot {
             this.qualifiers.1020.val := 10
             this.qualifiers.1020.mark := 0
             this.stats.max_bal_diff := 0
+            this.qualifiers.trade_counter_after_130.state := false
         }
     }
     
