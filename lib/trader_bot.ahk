@@ -624,6 +624,8 @@ class TraderBot {
             this.stats.streak++
 
             this.amount := this.win_amounts[1][this.stats.streak]
+            if this.qualifiers.trade_counter_after_130.state
+                this.amount := 20
             this.SetTradeAmount()
             this.stats.win++      
         }
