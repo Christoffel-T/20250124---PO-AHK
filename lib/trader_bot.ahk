@@ -540,7 +540,7 @@ class TraderBot {
                 this.stats.streak := 0
             }
 
-            if this.amount + this.stats.max_bal_diff >= 130 and this.qualifiers.trade_counter_after_130.count >= 3 {
+            if !this.qualifiers.trade_counter_after_130.state and this.amount + this.stats.max_bal_diff >= 130 and this.qualifiers.trade_counter_after_130.count >= 3 {
                 this.qualifiers.trade_counter_after_130.count := 0
                 this.qualifiers.trade_counter_after_130.state := true
                 this.amount := 20
