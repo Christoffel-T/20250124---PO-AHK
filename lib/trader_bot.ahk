@@ -56,7 +56,7 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 2000, reset_max: 4000, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1650, reset_max: 3300, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -512,7 +512,9 @@ class TraderBot {
             if this.stats.streak <= -3 {
                 ChangeCoin()
             }
-            if this.qualifiers.trade_counter_after_130.state
+            if this.qualifiers.trade_counter_after_130.state = '150F'
+                this.amount := this.stats.max_bal_diff + 10
+            else if this.qualifiers.trade_counter_after_130.state
                 this.amount := this.amount*2 + 1
             else
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
@@ -549,6 +551,11 @@ class TraderBot {
                 this.qualifiers.trade_counter_after_130.count := 0
                 this.qualifiers.trade_counter_after_130.state := 200
                 this.amount := 35
+            }
+            if this.qualifiers.trade_counter_after_130.state != '150F' and this.amount + this.stats.max_bal_diff >= 200 and this.qualifiers.trade_counter_after_130.count >= 3 {
+                this.qualifiers.trade_counter_after_130.count := 0
+                this.qualifiers.trade_counter_after_130.state := '150F'
+                this.amount := this.stats.max_bal_diff + 10
             }
             
             this.SetTradeAmount()
