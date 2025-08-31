@@ -512,8 +512,11 @@ class TraderBot {
             if this.stats.streak <= -3 {
                 ChangeCoin()
             }
-            if this.qualifiers.trade_counter_after_130.state = '150F'
-                this.amount := this.amount*2 + 1
+            if this.qualifiers.trade_counter_after_130.state = '150F' {
+                this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
+                this.amount := this.qualifiers.pause_temp.amount
+
+            }
             else if this.qualifiers.trade_counter_after_130.state
                 this.amount := this.amount*2 + 1
             else
@@ -555,7 +558,8 @@ class TraderBot {
             if this.qualifiers.trade_counter_after_130.state != '150F' and this.stats.max_bal_diff >= 150 and this.qualifiers.trade_counter_after_130.count >= 3 {
                 this.qualifiers.trade_counter_after_130.count := 0
                 this.qualifiers.trade_counter_after_130.state := '150F'
-                this.amount := 50
+                this.qualifiers.pause_temp.amount := 40
+                this.amount := this.qualifiers.pause_temp.amount
             }
             
             this.SetTradeAmount()
