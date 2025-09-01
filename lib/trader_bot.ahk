@@ -554,7 +554,7 @@ class TraderBot {
                 this.qualifiers.trade_counter_after_130.count := 0
                 this.qualifiers.trade_counter_after_130.state := true
                 this.amount := 20
-            } else if this.qualifiers.trade_counter_after_130.state != 200 this.qualifiers.trade_counter_after_130.state != '150F' and this.amount + this.stats.max_bal_diff >= 200 and this.qualifiers.trade_counter_after_130.count >= 3 {
+            } else if this.qualifiers.trade_counter_after_130.state != 200 and this.qualifiers.trade_counter_after_130.state != '150F' and this.amount + this.stats.max_bal_diff >= 200 and this.qualifiers.trade_counter_after_130.count >= 3 {
                 this.qualifiers.trade_counter_after_130.count := 0
                 this.qualifiers.trade_counter_after_130.state := 200
                 this.amount := 35
