@@ -545,7 +545,7 @@ class TraderBot {
                 this.stats.streak := 0
             }
 
-            if this.qualifiers.trade_counter_after_130.state != '150F' and this.stats.max_bal_diff >= 150 and this.qualifiers.trade_counter_after_130.count >= 3 {
+            if this.qualifiers.trade_counter_after_130.state != '150F' and this.stats.max_bal_diff >= 150 {
                 this.qualifiers.trade_counter_after_130.count := 0
                 this.qualifiers.trade_counter_after_130.state := '150F'
                 this.qualifiers.pause_temp.amount := 40
@@ -637,11 +637,17 @@ class TraderBot {
             }
             this.stats.streak++
 
+            if this.stats.max_bal_diff < 150 and this.qualifiers.trade_counter_after_130.state = '150F'
+                this.qualifiers.trade_counter_after_130.state := true
+
             this.amount := this.win_amounts[1][this.stats.streak]
-            if this.qualifiers.trade_counter_after_130.state = 200
+            if this.qualifiers.trade_counter_after_130.state = '150F'
+                this.amount := 40
+            else if this.qualifiers.trade_counter_after_130.state = 200
                 this.amount := 35
             else if this.qualifiers.trade_counter_after_130.state
                 this.amount := 20
+            
             this.SetTradeAmount()
             this.stats.win++      
         }
