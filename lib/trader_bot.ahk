@@ -513,8 +513,8 @@ class TraderBot {
                 ChangeCoin()
             }
             if this.qualifiers.trade_counter_after_130.state = '150F' {
-                this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
-                this.amount := this.qualifiers.pause_temp.amount
+                ; this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
+                this.amount := this.amount*2 + 1
 
             }
             else if this.qualifiers.trade_counter_after_130.state
