@@ -28,7 +28,7 @@ class TraderBot {
         this.qualifiers.pause_temp := {state: false, count: 0, state2: false, amount: 1, reset_F: 10}
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.win_after_31 := false
-        this.qualifiers.trade_counter_after_130 := {state:false, count: 5}
+        this.qualifiers.custom_amount_modifier := {state:0, count: 5}
 
         Loop 10 {
             _index := A_Index
@@ -512,16 +512,16 @@ class TraderBot {
             if this.stats.streak <= -3 {
                 ChangeCoin()
             }
-            if this.qualifiers.trade_counter_after_130.state = '150F' {
-                ; this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
+            if this.qualifiers.custom_amount_modifier.state = 250 {
+                this.amount := this.amount*1.4
+            } else if this.qualifiers.custom_amount_modifier.state = 150 {
                 this.amount := this.amount*2 + 1
-
-            }
-            else if this.qualifiers.trade_counter_after_130.state
+            } else if this.qualifiers.custom_amount_modifier.state = 130 {
                 this.amount := this.amount*2 + 1
-            else
+            } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
-            if this.qualifiers.pause_temp.state2 and !this.qualifiers.trade_counter_after_130.state {
+            }
+            if this.qualifiers.pause_temp.state2 and !this.qualifiers.custom_amount_modifier.state {
                 this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
                 ; if this.stats.max_bal_diff > 0
                 ;     this.qualifiers.pause_temp.amount := Min(this.qualifiers.pause_temp.amount*2 + 1, this.stats.max_bal_diff*2 + 1)
@@ -545,19 +545,23 @@ class TraderBot {
                 this.stats.streak := 0
             }
 
-            if this.qualifiers.trade_counter_after_130.state != '150F' and this.stats.max_bal_diff >= 150 {
-                this.qualifiers.trade_counter_after_130.count := 0
-                this.qualifiers.trade_counter_after_130.state := '150F'
+            if this.qualifiers.custom_amount_modifier.state < 150 and this.stats.max_bal_diff >= 150 {
+                this.qualifiers.custom_amount_modifier.count := 0
+                this.qualifiers.custom_amount_modifier.state := 150
                 this.qualifiers.pause_temp.amount := 40
                 this.amount := this.qualifiers.pause_temp.amount
-            } else if !this.qualifiers.trade_counter_after_130.state and this.amount + this.stats.max_bal_diff >= 130 and this.qualifiers.trade_counter_after_130.count >= 3 {
-                this.qualifiers.trade_counter_after_130.count := 0
-                this.qualifiers.trade_counter_after_130.state := true
+            } else if this.qualifiers.custom_amount_modifier.state < 130 and this.amount + this.stats.max_bal_diff >= 130 and this.qualifiers.custom_amount_modifier.count >= 3 {
+                this.qualifiers.custom_amount_modifier.count := 0
+                this.qualifiers.custom_amount_modifier.state := true
                 this.amount := 20
-            } else if this.qualifiers.trade_counter_after_130.state != 200 and this.qualifiers.trade_counter_after_130.state != '150F' and this.amount + this.stats.max_bal_diff >= 200 and this.qualifiers.trade_counter_after_130.count >= 3 {
-                this.qualifiers.trade_counter_after_130.count := 0
-                this.qualifiers.trade_counter_after_130.state := 200
+            } else if this.qualifiers.custom_amount_modifier.state < 200 and this.qualifiers.custom_amount_modifier.state != 150 and this.amount + this.stats.max_bal_diff >= 200 and this.qualifiers.custom_amount_modifier.count >= 3 {
+                this.qualifiers.custom_amount_modifier.count := 0
+                this.qualifiers.custom_amount_modifier.state := 200
                 this.amount := 35
+            } else if this.qualifiers.custom_amount_modifier.state < 250 and this.amount + this.stats.max_bal_diff >= 250 and this.qualifiers.custom_amount_modifier.count >= 3 {
+                this.qualifiers.custom_amount_modifier.count := 0
+                this.qualifiers.custom_amount_modifier.state := 250
+                this.amount := 1
             }
             
             this.SetTradeAmount()
@@ -608,7 +612,7 @@ class TraderBot {
                     else
                         this.stats.side_balance.val := 0
                 }
-                this.qualifiers.trade_counter_after_130.state := false
+                this.qualifiers.custom_amount_modifier.state := 0
                 this.qualifiers.pause_temp.state2 := false
                 this.qualifiers.pause_temp.reset_F := 10
                 this.qualifiers.streak_reset.cummulative := 0
@@ -637,15 +641,17 @@ class TraderBot {
             }
             this.stats.streak++
 
-            if this.stats.max_bal_diff < 150 and this.qualifiers.trade_counter_after_130.state = '150F'
-                this.qualifiers.trade_counter_after_130.state := true
+            if this.stats.max_bal_diff < 150 and this.qualifiers.custom_amount_modifier.state = 150
+                this.qualifiers.custom_amount_modifier.state := 130
 
             this.amount := this.win_amounts[1][this.stats.streak]
-            if this.qualifiers.trade_counter_after_130.state = '150F'
+            if this.qualifiers.custom_amount_modifier.state = 150
                 this.amount := 40
-            else if this.qualifiers.trade_counter_after_130.state = 200
+            else if this.qualifiers.custom_amount_modifier.state = 200
                 this.amount := 35
-            else if this.qualifiers.trade_counter_after_130.state
+            else if this.qualifiers.custom_amount_modifier.state = 250
+                this.amount := this.amount*1.4
+            else if this.qualifiers.custom_amount_modifier.state
                 this.amount := 20
             
             this.SetTradeAmount()
@@ -1081,7 +1087,7 @@ class TraderBot {
             str.next_bal := '$' v[2] ': ' v[1]
         }
 
-        str_c := '(130: ' this.qualifiers.trade_counter_after_130.count ') '
+        str_c := '(130: ' this.qualifiers.custom_amount_modifier.count ') '
         for k, v in this.qualifiers.OwnProps() {
             if not Type(v) = 'Object' or not v.HasOwnProp('state')
                 continue
@@ -1166,7 +1172,7 @@ class TraderBot {
                 return false
             }
         }
-        this.qualifiers.trade_counter_after_130.count++
+        this.qualifiers.custom_amount_modifier.count++
 
         this.trade_opened := [true, A_TickCount]
         this.active_trade := ''
@@ -1434,7 +1440,7 @@ class TraderBot {
             this.qualifiers.1020.val := 10
             this.qualifiers.1020.mark := 0
             this.stats.max_bal_diff := 0
-            this.qualifiers.trade_counter_after_130.state := false
+            this.qualifiers.custom_amount_modifier.state := false
         }
     }
     
