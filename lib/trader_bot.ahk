@@ -558,7 +558,7 @@ class TraderBot {
                 this.qualifiers.custom_amount_modifier.count := 0
                 this.qualifiers.custom_amount_modifier.state := 200
                 this.amount := 35
-            } else if this.qualifiers.custom_amount_modifier.state < 250 and this.amount + this.stats.max_bal_diff >= 250 {
+            } else if this.qualifiers.custom_amount_modifier.state < 250 and this.stats.max_bal_diff >= 250 {
                 this.qualifiers.custom_amount_modifier.count := 0
                 this.qualifiers.custom_amount_modifier.state := 250
                 this.amount := 1
