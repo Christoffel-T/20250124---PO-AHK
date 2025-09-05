@@ -550,15 +550,15 @@ class TraderBot {
                 this.qualifiers.custom_amount_modifier.state := 150
                 this.qualifiers.pause_temp.amount := 40
                 this.amount := this.qualifiers.pause_temp.amount
-            } else if this.qualifiers.custom_amount_modifier.state < 130 and this.amount + this.stats.max_bal_diff >= 130 and this.qualifiers.custom_amount_modifier.count >= 3 {
+            } else if this.qualifiers.custom_amount_modifier.state < 130 and this.amount + this.stats.max_bal_diff >= 130 {
                 this.qualifiers.custom_amount_modifier.count := 0
                 this.qualifiers.custom_amount_modifier.state := true
                 this.amount := 20
-            } else if this.qualifiers.custom_amount_modifier.state < 200 and this.qualifiers.custom_amount_modifier.state != 150 and this.amount + this.stats.max_bal_diff >= 200 and this.qualifiers.custom_amount_modifier.count >= 3 {
+            } else if this.qualifiers.custom_amount_modifier.state < 200 and this.qualifiers.custom_amount_modifier.state != 150 and this.amount + this.stats.max_bal_diff >= 200 {
                 this.qualifiers.custom_amount_modifier.count := 0
                 this.qualifiers.custom_amount_modifier.state := 200
                 this.amount := 35
-            } else if this.qualifiers.custom_amount_modifier.state < 250 and this.amount + this.stats.max_bal_diff >= 250 and this.qualifiers.custom_amount_modifier.count >= 3 {
+            } else if this.qualifiers.custom_amount_modifier.state < 250 and this.amount + this.stats.max_bal_diff >= 250 {
                 this.qualifiers.custom_amount_modifier.count := 0
                 this.qualifiers.custom_amount_modifier.state := 250
                 this.amount := 1
