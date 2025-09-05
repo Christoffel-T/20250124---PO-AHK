@@ -643,8 +643,7 @@ class TraderBot {
 
             if this.stats.max_bal_diff < 150 and this.qualifiers.custom_amount_modifier.state = 150
                 this.qualifiers.custom_amount_modifier.state := 130
-
-            this.amount := this.win_amounts[1][this.stats.streak]
+            
             if this.qualifiers.custom_amount_modifier.state = 150
                 this.amount := 40
             else if this.qualifiers.custom_amount_modifier.state = 200
@@ -653,6 +652,8 @@ class TraderBot {
                 this.amount := this.amount*1.4
             else if this.qualifiers.custom_amount_modifier.state
                 this.amount := 20
+            else
+                this.amount := this.win_amounts[1][this.stats.streak]
             
             this.SetTradeAmount()
             this.stats.win++      
