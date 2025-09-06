@@ -512,57 +512,57 @@ class TraderBot {
             if this.stats.streak <= -3 {
                 ChangeCoin()
             }
-            if this.qualifiers.custom_amount_modifier.state = 250 {
-                this.amount := this.amount*1.4
-            } else if this.qualifiers.custom_amount_modifier.state = 150 {
-                this.amount := this.amount*2 + 1
-            } else if this.qualifiers.custom_amount_modifier.state = 130 {
-                this.amount := this.amount*2 + 1
-            } else {
+            ; if this.qualifiers.custom_amount_modifier.state = 250 {
+            ;     this.amount := this.amount*1.4
+            ; } else if this.qualifiers.custom_amount_modifier.state = 150 {
+            ;     this.amount := this.amount*2 + 1
+            ; } else if this.qualifiers.custom_amount_modifier.state = 130 {
+            ;     this.amount := this.amount*2 + 1
+            ; } else {
                 this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
-            }
-            if this.qualifiers.pause_temp.state2 and !this.qualifiers.custom_amount_modifier.state {
-                this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
-                ; if this.stats.max_bal_diff > 0
-                ;     this.qualifiers.pause_temp.amount := Min(this.qualifiers.pause_temp.amount*2 + 1, this.stats.max_bal_diff*2 + 1)
+            ; }
+            ; if this.qualifiers.pause_temp.state2 and !this.qualifiers.custom_amount_modifier.state {
+            ;     this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
+            ;     ; if this.stats.max_bal_diff > 0
+            ;     ;     this.qualifiers.pause_temp.amount := Min(this.qualifiers.pause_temp.amount*2 + 1, this.stats.max_bal_diff*2 + 1)
 
-                ; if this.qualifiers.pause_temp.amount >= 120
-                ;     this.qualifiers.pause_temp.amount := 1
-                this.amount := this.qualifiers.pause_temp.amount
-            }
+            ;     ; if this.qualifiers.pause_temp.amount >= 120
+            ;     ;     this.qualifiers.pause_temp.amount := 1
+            ;     this.amount := this.qualifiers.pause_temp.amount
+            ; }
 
-            if !this.qualifiers.pause_temp.state and (this.stats.streak = -4 or this.amount = 63*2+1) {
-                this.qualifiers.pause_temp.state := true
-                this.qualifiers.pause_temp.count := 0
-            }
-            if !this.qualifiers.pause_temp.state2 and this.stats.streak = -4 {
-                this.qualifiers.pause_temp.amount := 1
-                this.qualifiers.pause_temp.state := true
-                this.qualifiers.pause_temp.state2 := true
-                this.qualifiers.pause_temp.count := 0
-                this.qualifiers.pause_temp.reset_F := 10
-                this.amount := 1
-                this.stats.streak := 0
-            }
+            ; if !this.qualifiers.pause_temp.state and (this.stats.streak = -4 or this.amount = 63*2+1) {
+            ;     this.qualifiers.pause_temp.state := true
+            ;     this.qualifiers.pause_temp.count := 0
+            ; }
+            ; if !this.qualifiers.pause_temp.state2 and this.stats.streak = -4 {
+            ;     this.qualifiers.pause_temp.amount := 1
+            ;     this.qualifiers.pause_temp.state := true
+            ;     this.qualifiers.pause_temp.state2 := true
+            ;     this.qualifiers.pause_temp.count := 0
+            ;     this.qualifiers.pause_temp.reset_F := 10
+            ;     this.amount := 1
+            ;     this.stats.streak := 0
+            ; }
 
-            if this.qualifiers.custom_amount_modifier.state < 150 and this.stats.max_bal_diff >= 150 {
-                this.qualifiers.custom_amount_modifier.count := 0
-                this.qualifiers.custom_amount_modifier.state := 150
-                this.qualifiers.pause_temp.amount := 40
-                this.amount := this.qualifiers.pause_temp.amount
-            } else if this.qualifiers.custom_amount_modifier.state < 130 and this.amount + this.stats.max_bal_diff >= 130 {
-                this.qualifiers.custom_amount_modifier.count := 0
-                this.qualifiers.custom_amount_modifier.state := true
-                this.amount := 20
-            } else if this.qualifiers.custom_amount_modifier.state < 200 and this.qualifiers.custom_amount_modifier.state != 150 and this.amount + this.stats.max_bal_diff >= 200 {
-                this.qualifiers.custom_amount_modifier.count := 0
-                this.qualifiers.custom_amount_modifier.state := 200
-                this.amount := 35
-            } else if this.qualifiers.custom_amount_modifier.state < 250 and this.stats.max_bal_diff >= 250 {
-                this.qualifiers.custom_amount_modifier.count := 0
-                this.qualifiers.custom_amount_modifier.state := 250
-                this.amount := 1
-            }
+            ; if this.qualifiers.custom_amount_modifier.state < 150 and this.stats.max_bal_diff >= 150 {
+            ;     this.qualifiers.custom_amount_modifier.count := 0
+            ;     this.qualifiers.custom_amount_modifier.state := 150
+            ;     this.qualifiers.pause_temp.amount := 40
+            ;     this.amount := this.qualifiers.pause_temp.amount
+            ; } else if this.qualifiers.custom_amount_modifier.state < 130 and this.amount + this.stats.max_bal_diff >= 130 {
+            ;     this.qualifiers.custom_amount_modifier.count := 0
+            ;     this.qualifiers.custom_amount_modifier.state := true
+            ;     this.amount := 20
+            ; } else if this.qualifiers.custom_amount_modifier.state < 200 and this.qualifiers.custom_amount_modifier.state != 150 and this.amount + this.stats.max_bal_diff >= 200 {
+            ;     this.qualifiers.custom_amount_modifier.count := 0
+            ;     this.qualifiers.custom_amount_modifier.state := 200
+            ;     this.amount := 35
+            ; } else if this.qualifiers.custom_amount_modifier.state < 250 and this.stats.max_bal_diff >= 250 {
+            ;     this.qualifiers.custom_amount_modifier.count := 0
+            ;     this.qualifiers.custom_amount_modifier.state := 250
+            ;     this.amount := 1
+            ; }
             
             this.SetTradeAmount()
 
@@ -644,15 +644,15 @@ class TraderBot {
             if this.stats.max_bal_diff < 150 and this.qualifiers.custom_amount_modifier.state = 150
                 this.qualifiers.custom_amount_modifier.state := 130
             
-            if this.qualifiers.custom_amount_modifier.state = 150
-                this.amount := 40
-            else if this.qualifiers.custom_amount_modifier.state = 200
-                this.amount := 35
-            else if this.qualifiers.custom_amount_modifier.state = 250
-                this.amount := this.amount*1.4
-            else if this.qualifiers.custom_amount_modifier.state
-                this.amount := 20
-            else
+            ; if this.qualifiers.custom_amount_modifier.state = 150
+            ;     this.amount := 40
+            ; else if this.qualifiers.custom_amount_modifier.state = 200
+            ;     this.amount := 35
+            ; else if this.qualifiers.custom_amount_modifier.state = 250
+            ;     this.amount := this.amount*1.4
+            ; else if this.qualifiers.custom_amount_modifier.state
+            ;     this.amount := 20
+            ; else
                 this.amount := this.win_amounts[1][this.stats.streak]
             
             this.SetTradeAmount()
