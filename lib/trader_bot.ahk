@@ -10,6 +10,9 @@ class TraderBot {
         this.coords := settings_obj.coords
         this.colors := settings_obj.colors
         this.ps := Map()
+
+        this.balance := {starting: 1600, reset_max: 3200, current: 0, min: 999999999, max: 0, last_trade: 0}
+
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
         
@@ -29,6 +32,7 @@ class TraderBot {
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.win_after_31 := false
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
+        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3}
 
         Loop 10 {
             _index := A_Index
@@ -56,7 +60,6 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.side_balance := {val: 0, state: false}
-        this.balance := {starting: 1600, reset_max: 3200, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.qualifiers.balance_mark := {mark_starting:this.balance.starting, mark: this.balance.starting, count: 0}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -563,12 +566,27 @@ class TraderBot {
             ;     this.qualifiers.custom_amount_modifier.state := 250
             ;     this.amount := 1
             ; }
+            if this.balance.current <= this.qualifiers.loss_amount_modifier.balance - 1000 {
+                this.qualifiers.loss_amount_modifier.balance -= 1000
+                this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
+            }
+
+            if this.stats.streak >= this.qualifiers.loss_amount_modifier.streak {
+                this.amount := (this.stats.max_bal_diff + 10) / 0.92
+            } else {
+                this.amount := (this.stats.max_bal_diff) / 0.92
+            }
             
             this.SetTradeAmount()
 
             this.stats.loss++
         }
         TradeWin() {
+            if this.balance.current >= this.qualifiers.loss_amount_modifier.balance + 1000 {
+                this.qualifiers.loss_amount_modifier.balance += 1000
+                this.qualifiers.loss_amount_modifier.streak--
+            }
+            
             this.stats.trade_history.InsertAt(1, 'win')
             while this.stats.trade_history.Length > 10
                 this.stats.trade_history.Pop()
@@ -1428,6 +1446,7 @@ class TraderBot {
         }
 
         BalanceReset() {
+            this.qualifiers.loss_amount_modifier.balance := this.balance.starting
             this.amount := 1
             this.stats.streak := 0
             this.qualifiers.balance_mark.mark := this.balance.starting
