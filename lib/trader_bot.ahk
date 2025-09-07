@@ -638,6 +638,7 @@ class TraderBot {
                     else
                         this.stats.side_balance.val := 0
                 }
+                this.qualifiers.loss_amount_modifier.state := 0
                 this.qualifiers.custom_amount_modifier.state := 0
                 this.qualifiers.pause_temp.state2 := false
                 this.qualifiers.pause_temp.reset_F := 10
@@ -1454,6 +1455,7 @@ class TraderBot {
         }
 
         BalanceReset() {
+            this.qualifiers.loss_amount_modifier.state := 0
             this.qualifiers.loss_amount_modifier.balance := this.balance.starting
             this.amount := 1
             this.stats.streak := 0
