@@ -1398,12 +1398,12 @@ class TraderBot {
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
                 BalanceReset()
             }
-            if !this.qualifiers.win_after_31 and !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
-                if this.stats.streak <= -3
-                    this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
-                else if this.stats.streak < 0
-                    this.amount := this.qualifiers.streak_reset.cummulative + 1.25
-            }
+            ; if !this.qualifiers.win_after_31 and !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
+            ;     if this.stats.streak <= -3
+            ;         this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
+            ;     else if this.stats.streak < 0
+            ;         this.amount := this.qualifiers.streak_reset.cummulative + 1.25
+            ; }
 
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
