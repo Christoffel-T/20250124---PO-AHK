@@ -575,11 +575,15 @@ class TraderBot {
             if this.stats.streak < this.qualifiers.loss_amount_modifier.streak {
                 if this.qualifiers.loss_amount_modifier.state = 0 {
                     this.qualifiers.loss_amount_modifier.state := 1
-                    this.amount := 5
                 } else if this.qualifiers.loss_amount_modifier.state = 2 {
                     this.amount := (this.stats.max_bal_diff) / 0.92
                 }
             }
+            if this.qualifiers.loss_amount_modifier.state != 2 and this.stats.streak <= -4 {
+                this.qualifiers.loss_amount_modifier.state := 1
+                this.amount := 5
+            }
+
 
             this.SetTradeAmount()
 
