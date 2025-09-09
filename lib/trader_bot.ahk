@@ -570,18 +570,19 @@ class TraderBot {
                 this.qualifiers.loss_amount_modifier.balance -= 1000
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
             }
-
-            this.amount := (this.stats.max_bal_diff + 10) / 0.92            
+            this.amount := (this.stats.max_bal_diff + 10) / 0.92
+            if this.qualifiers.loss_amount_modifier.state = 1
+                this.amount := this.amount*2
             if this.stats.streak < this.qualifiers.loss_amount_modifier.streak {
                 if this.qualifiers.loss_amount_modifier.state = 0 {
                     this.qualifiers.loss_amount_modifier.state := 1
-                } else if this.qualifiers.loss_amount_modifier.state = 2 {
-                    this.amount := (this.stats.max_bal_diff) / 0.92
-                }
+                } 
             }
-            if this.qualifiers.loss_amount_modifier.state != 2 and this.stats.streak <= -4 {
+            if this.qualifiers.loss_amount_modifier.state = 2 {
+                this.amount := (0.5*(this.stats.max_bal_diff+5)) / 0.92
+            } else if this.qualifiers.loss_amount_modifier.state != 2 and this.stats.streak <= -4 {
                 this.qualifiers.loss_amount_modifier.state := 1
-                this.amount := 5
+                this.amount := 4
             }
 
 
@@ -1401,12 +1402,12 @@ class TraderBot {
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
                 BalanceReset()
             }
-            if this.qualifiers.loss_amount_modifier.state != 1 and !this.qualifiers.win_after_31 and !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
-                if this.stats.streak <= -3
-                    this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
-                else if this.stats.streak < 0
-                    this.amount := this.qualifiers.streak_reset.cummulative + 1.25
-            }
+            ; if this.qualifiers.loss_amount_modifier.state != 1 and !this.qualifiers.win_after_31 and !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
+            ;     if this.stats.streak <= -3
+            ;         this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
+            ;     else if this.stats.streak < 0
+            ;         this.amount := this.qualifiers.streak_reset.cummulative + 1.25
+            ; }
 
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
