@@ -91,15 +91,16 @@ class TraderBot {
         
         MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
         this.amount := 20000
-        while this.balance.current > this.balance.starting {
+        while this.balance.current >= this.balance.starting {
             this.SetTradeAmount()
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
             sleep 600
             this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
             sleep 6000
-            this.CheckBalance()
+            this.CheckBalance(false)
         }
         
+        this.CheckBalance()
         while this.balance.current < this.balance.starting {
             this.AddBalance(this.balance.starting-this.balance.current)
             sleep 2000
