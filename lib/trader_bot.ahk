@@ -430,6 +430,7 @@ class TraderBot {
         if (this.trade_opened[1]) {
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             sleep 50 
+            this.stats.max_bal_diff := this.balance.max - this.balance.current
             loop 3 {
                 if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
                     return
@@ -522,7 +523,7 @@ class TraderBot {
             ; } else if this.qualifiers.custom_amount_modifier.state = 130 {
             ;     this.amount := this.amount*2 + 1
             ; } else {
-                this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
+            ;    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
             ; }
             ; if this.qualifiers.pause_temp.state2 and !this.qualifiers.custom_amount_modifier.state {
             ;     this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
@@ -566,6 +567,7 @@ class TraderBot {
             ;     this.qualifiers.custom_amount_modifier.state := 250
             ;     this.amount := 1
             ; }
+            
             if this.balance.current <= this.qualifiers.loss_amount_modifier.balance - 1000 {
                 this.qualifiers.loss_amount_modifier.balance -= 1000
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
@@ -1223,9 +1225,9 @@ class TraderBot {
             MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
         } else {
             MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
-            sleep Random(800, 1200)
-            _act2 := action = 'BUY' ? 'SELL' : 'BUY'
-            MouseClick('L', this.coords.%_act2%.x + Random(-5, 5), this.coords.%_act2%.y + Random(-1, 1), 1, 2)
+            ; sleep Random(800, 1200)
+            ; _act2 := action = 'BUY' ? 'SELL' : 'BUY'
+            ; MouseClick('L', this.coords.%_act2%.x + Random(-5, 5), this.coords.%_act2%.y + Random(-1, 1), 1, 2)
         }
         
         sleep 200
@@ -1235,7 +1237,7 @@ class TraderBot {
             MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, 0)
             sleep 50
             ToolTip('waiting for trade to be opened', , , 12)
-            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 20) {
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 25) {
                 break
             }
             if A_Index > 400 {
