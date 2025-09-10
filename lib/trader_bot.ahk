@@ -599,7 +599,7 @@ class TraderBot {
                 this.amount := 4
             } else {
                 this.amount := (this.stats.max_bal_diff + 20) / 0.92
-    }
+            }
 
             this.SetTradeAmount()
 
