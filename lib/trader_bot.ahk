@@ -87,7 +87,7 @@ class TraderBot {
     StartLoop(*) {
         ToolTip('Running...', 5, 5, 1)
         this.ReloadWebsite()
-        this.CheckBalance()
+        this.CheckBalance(false)
         
         MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
         this.amount := 20000
