@@ -89,12 +89,22 @@ class TraderBot {
         this.ReloadWebsite()
         this.CheckBalance()
         
+        MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
+        while this.balance.current > this.balance.starting {
+            this.amount := 20000
+            this.SetTradeAmount()
+            this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
+            sleep 6000
+            this.CheckBalance()
+        }
+        
         while this.balance.current < this.balance.starting {
             this.AddBalance(this.balance.starting-this.balance.current)
             sleep 2000
             this.CheckBalance()
         }
-
+        
+        this.amount := this.GetAmount(this.balance.current)
         this.SetTradeAmount()
         sleep 100
         MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
@@ -1190,6 +1200,10 @@ class TraderBot {
     }
     ExecuteTrade(action, reason) {
         global
+        if reason = 'STARTING' {
+            MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
+            return
+        }
         this.qualifiers.flip_trade.state := false
                 
         this.last_trade := action
