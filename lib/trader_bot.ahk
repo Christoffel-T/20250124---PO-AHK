@@ -585,11 +585,9 @@ class TraderBot {
                 this.qualifiers.loss_amount_modifier.balance -= 1000
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
             }
-            if this.qualifiers.loss_amount_modifier.state = 1
+            if this.qualifiers.loss_amount_modifier.state = 1 {
                 this.amount := this.amount*2
-            else
-                this.amount := (this.stats.max_bal_diff + 20) / 0.92
-            if this.qualifiers.loss_amount_modifier.state = 2 {
+            } else if this.qualifiers.loss_amount_modifier.state = 2 {
                 if this.stats.streak <= -5
                     this.amount := this.amount*2
                 else if this.stats.streak = -4
@@ -599,8 +597,9 @@ class TraderBot {
             } else if this.qualifiers.loss_amount_modifier.state != 1 and this.stats.streak <= -4 {
                 this.qualifiers.loss_amount_modifier.state := 1
                 this.amount := 4
-            }
-
+            } else {
+                this.amount := (this.stats.max_bal_diff + 20) / 0.92
+    }
 
             this.SetTradeAmount()
 
