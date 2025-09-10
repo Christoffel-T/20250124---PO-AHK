@@ -87,17 +87,17 @@ class TraderBot {
     StartLoop(*) {
         ToolTip('Running...', 5, 5, 1)
         this.ReloadWebsite()
-        this.CheckBalance(false)
+        this.CheckBalance()
         
         MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
         this.amount := 20000
         while this.balance.current >= this.balance.starting {
-            this.SetTradeAmount()
+            this.SetTradeAmount(false)
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
             sleep 600
             this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
             sleep 6000
-            this.CheckBalance(false)
+            this.CheckBalance()
         }
         
         this.CheckBalance()
@@ -1402,7 +1402,7 @@ class TraderBot {
         return
     }
     
-    SetTradeAmount() {
+    SetTradeAmount(bal_mark:=true) {
         _count_reload := 0
         Loop {
             Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
@@ -1410,13 +1410,13 @@ class TraderBot {
             if _count_reload > 1000 {
                 _count_reload := 0
                 this.ReloadWebsite()
-            } 
+            }
             this.CheckBalance()
             if this.balance.current < 1 {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
                 BalanceReset()
-            } else if this.balance.current >= this.balance.reset_max {
+            } else if this.balance.current >= this.balance.reset_max and bal_mark {
                 this.stats.bal_win++
                 this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
@@ -1520,7 +1520,7 @@ class TraderBot {
         return
     }
     
-    CheckBalance(subtract:=true) {
+    CheckBalance() {
         Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
         _count_reload := 0
         Loop {
@@ -1573,10 +1573,7 @@ class TraderBot {
             if cur_bal >= 50000 {
                 MsgBox 'Balance too high.'
             }
-            if subtract
-                cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
-            else
-                cur_bal := Format('{:.2f}', cur_bal)
+            cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
             this.balance.current := cur_bal
             this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
             this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
