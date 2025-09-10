@@ -1517,7 +1517,7 @@ class TraderBot {
         return
     }
     
-    CheckBalance() {
+    CheckBalance(subtract:=true) {
         Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
         _count_reload := 0
         Loop {
@@ -1570,7 +1570,10 @@ class TraderBot {
             if cur_bal >= 50000 {
                 MsgBox 'Balance too high.'
             }
-            cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
+            if subtract
+                cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
+            else
+                cur_bal := Format('{:.2f}', cur_bal)
             this.balance.current := cur_bal
             this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
             this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
