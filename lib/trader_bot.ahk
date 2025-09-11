@@ -592,9 +592,9 @@ class TraderBot {
             if this.qualifiers.loss_amount_modifier.state = 1 {
                 this.amount := this.amount*2
             } else if this.qualifiers.loss_amount_modifier.state = 2 {
-                if this.stats.streak <= -5
+                if this.stats.streak <= -2
                     this.amount := this.amount*2
-                else if this.stats.streak = -4
+                else if this.stats.streak = -1
                     this.amount := 4
                 else
                     this.amount := (0.5*(this.stats.max_bal_diff+5)) / 0.92
