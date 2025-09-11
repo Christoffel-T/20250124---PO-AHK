@@ -32,6 +32,7 @@ class TraderBot {
         this.qualifiers.win_after_31 := false
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
         this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0}
+        this.qualifiers.win_amount_modifier := {state:0}
 
         Loop 10 {
             _index := A_Index
@@ -579,6 +580,10 @@ class TraderBot {
             ;     this.qualifiers.custom_amount_modifier.state := 250
             ;     this.amount := 1
             ; }
+
+            if this.stats.streak = -3 {
+                this.qualifiers.win_amount_modifier.state := 1
+            }
             
             if this.balance.current <= this.qualifiers.loss_amount_modifier.balance - 1000 {
                 this.qualifiers.loss_amount_modifier.balance -= 1000
@@ -656,6 +661,7 @@ class TraderBot {
                     else
                         this.stats.side_balance.val := 0
                 }
+                this.qualifiers.win_amount_modifier.state := 0
                 this.qualifiers.loss_amount_modifier.state := 0
                 this.qualifiers.custom_amount_modifier.state := 0
                 this.qualifiers.pause_temp.state2 := false
@@ -699,7 +705,7 @@ class TraderBot {
             ;     this.amount := 20
             ; else
                 this.amount := this.win_amounts[1][this.stats.streak]
-            if this.qualifiers.loss_amount_modifier.state = 2 {
+            if this.qualifiers.win_amount_modifier.state = 1 {
                 list := [1, 20, 7, 3]
                 this.amount := list[Mod(this.stats.streak - 1, list.Length) + 1]
             }
@@ -1481,6 +1487,7 @@ class TraderBot {
         }
 
         BalanceReset() {
+            this.qualifiers.win_amount_modifier.state := 0
             this.qualifiers.loss_amount_modifier.state := 0
             this.qualifiers.loss_amount_modifier.balance := this.balance.starting
             this.amount := 1
