@@ -701,7 +701,7 @@ class TraderBot {
                 this.amount := this.win_amounts[1][this.stats.streak]
             if this.qualifiers.loss_amount_modifier.state = 2 {
                 list := [1, 20, 7, 3]
-                this.amount := list[Mod(A_Index - 1, list.Length) + 1]
+                this.amount := list[Mod(this.stats.streak - 1, list.Length) + 1]
             }
             
             this.SetTradeAmount()
