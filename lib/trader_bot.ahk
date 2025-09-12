@@ -32,7 +32,7 @@ class TraderBot {
         this.qualifiers.win_after_31 := false
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
         this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 4}
-        this.qualifiers.win_amount_modifier := {state:0}
+        this.qualifiers.win_amount_modifier := {state:0, amount_at_2: 10}
 
         Loop 10 {
             _index := A_Index
@@ -503,6 +503,9 @@ class TraderBot {
         TradeLose() {
             this.stats.%this.executed_trades[1]%.lose++
             this.stats.trade_history.InsertAt(1, 'lose')
+            if this.stats.streak = 2 {
+                this.qualifiers.win_amount_modifier.amount_at_2 := this.qualifiers.win_amount_modifier.amount_at_2+1
+            }
             while this.stats.trade_history.Length > 10
                 this.stats.trade_history.Pop()
             if this.stats.streak >= 0
@@ -594,14 +597,6 @@ class TraderBot {
                     this.amount := (0.35*(this.stats.max_bal_diff+5)) / 0.92
                 } else {
                     this.qualifiers.loss_amount_modifier.amount *= 2
-                    this.amount := this.qualifiers.loss_amount_modifier.amount
-                }
-            } else if this.qualifiers.loss_amount_modifier.state = 20 or (this.qualifiers.loss_amount_modifier.state != 20 and this.amount = 20) {
-                if this.stats.streak <= -2 {
-                    this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount * 2 + 1
-                    this.amount := this.qualifiers.loss_amount_modifier.amount
-                } else if this.stats.streak = -1 {
-                    this.qualifiers.loss_amount_modifier.amount := 10
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 }
             } else if this.qualifiers.loss_amount_modifier.state = 2 {
@@ -725,6 +720,9 @@ class TraderBot {
             if this.qualifiers.win_amount_modifier.state = 1 {
                 list := [1, 20, 7, 3]
                 this.amount := list[Mod(this.stats.streak - 1, list.Length) + 1]
+            }
+            if this.stats.streak = 2 {
+                this.amount := this.qualifiers.win_amount_modifier.amount_at_2
             }
             
             this.SetTradeAmount()
