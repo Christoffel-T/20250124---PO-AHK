@@ -596,6 +596,14 @@ class TraderBot {
                     this.qualifiers.loss_amount_modifier.amount *= 2
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 }
+            } else if this.qualifiers.loss_amount_modifier.state = 20 or (this.qualifiers.loss_amount_modifier.state != 20 and this.amount = 20) {
+                if this.stats.streak <= -2 {
+                    this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount * 2 + 1
+                    this.amount := this.qualifiers.loss_amount_modifier.amount
+                } else if this.stats.streak = -1 {
+                    this.qualifiers.loss_amount_modifier.amount := 10
+                    this.amount := this.qualifiers.loss_amount_modifier.amount
+                }
             } else if this.qualifiers.loss_amount_modifier.state = 2 {
                 if this.stats.streak <= -2 {
                     this.qualifiers.loss_amount_modifier.amount *= 2
