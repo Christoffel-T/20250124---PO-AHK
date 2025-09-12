@@ -601,7 +601,8 @@ class TraderBot {
                     this.qualifiers.loss_amount_modifier.amount *= 2
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else if this.stats.streak = -1 {
-                    this.amount := 4
+                    this.qualifiers.loss_amount_modifier.amount := 4
+                    this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else {
                     this.amount := (0.5*(this.stats.max_bal_diff+5)) / 0.92
                 }
