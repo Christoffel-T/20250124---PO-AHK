@@ -31,7 +31,7 @@ class TraderBot {
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.win_after_31 := false
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0}
+        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 4}
         this.qualifiers.win_amount_modifier := {state:0}
 
         Loop 10 {
@@ -590,17 +590,25 @@ class TraderBot {
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
             }
             if this.qualifiers.loss_amount_modifier.state = 1 {
-                this.amount := this.amount*2
+                if this.stats.streak = -2 {
+                    this.amount := (0.35*(this.stats.max_bal_diff+5)) / 0.92
+                } else {
+                    this.qualifiers.loss_amount_modifier.amount *= 2
+                    this.amount := this.qualifiers.loss_amount_modifier.amount
+                }
             } else if this.qualifiers.loss_amount_modifier.state = 2 {
-                if this.stats.streak <= -2
-                    this.amount := this.amount*2
-                else if this.stats.streak = -1
+                if this.stats.streak <= -2 {
+                    this.qualifiers.loss_amount_modifier.amount *= 2
+                    this.amount := this.qualifiers.loss_amount_modifier.amount
+                } else if this.stats.streak = -1 {
                     this.amount := 4
-                else
+                } else {
                     this.amount := (0.5*(this.stats.max_bal_diff+5)) / 0.92
+                }
             } else if this.qualifiers.loss_amount_modifier.state != 1 and this.stats.streak <= -4 {
                 this.qualifiers.loss_amount_modifier.state := 1
-                this.amount := 4
+                this.qualifiers.loss_amount_modifier.amount := 4
+                this.amount := this.qualifiers.loss_amount_modifier.amount
             } else {
                 this.amount := (this.stats.max_bal_diff + 20) / 0.92
             }
