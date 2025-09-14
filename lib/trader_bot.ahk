@@ -504,7 +504,7 @@ class TraderBot {
             this.stats.%this.executed_trades[1]%.lose++
             this.stats.trade_history.InsertAt(1, 'lose')
             if this.stats.streak = 2 {
-                this.qualifiers.win_amount_modifier.amount_at_2 := this.qualifiers.win_amount_modifier.amount_at_2+1
+                this.qualifiers.win_amount_modifier.amount_at_2 := this.qualifiers.win_amount_modifier.amount_at_2*2+1
             }
             while this.stats.trade_history.Length > 10
                 this.stats.trade_history.Pop()
@@ -673,7 +673,9 @@ class TraderBot {
                     else
                         this.stats.side_balance.val := 0
                 }
+                this.qualifiers.win_amount_modifier.amount_at_2 := 10
                 this.qualifiers.win_amount_modifier.state := 0
+                this.qualifiers.loss_amount_modifier.amount := 4
                 this.qualifiers.loss_amount_modifier.state := 0
                 this.qualifiers.custom_amount_modifier.state := 0
                 this.qualifiers.pause_temp.state2 := false
@@ -702,6 +704,10 @@ class TraderBot {
                 this.lose_streak.repeat[this.stats.streak].win++
                 this.stats.streak := 0
             }
+            if this.stats.streak = 2 {
+                this.qualifiers.win_amount_modifier.amount_at_2 := 10
+            }
+
             this.stats.streak++
 
             if this.stats.max_bal_diff < 150 and this.qualifiers.custom_amount_modifier.state = 150
@@ -1503,6 +1509,8 @@ class TraderBot {
 
         BalanceReset() {
             this.qualifiers.win_amount_modifier.state := 0
+            this.qualifiers.win_amount_modifier.amount_at_2 := 10
+            this.qualifiers.loss_amount_modifier.amount := 4
             this.qualifiers.loss_amount_modifier.state := 0
             this.qualifiers.loss_amount_modifier.balance := this.balance.starting
             this.amount := 1
