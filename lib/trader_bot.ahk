@@ -673,19 +673,7 @@ class TraderBot {
                     else
                         this.stats.side_balance.val := 0
                 }
-                this.qualifiers.win_amount_modifier.amount_at_2 := 10
-                this.qualifiers.win_amount_modifier.state := 0
-                this.qualifiers.loss_amount_modifier.amount := 4
-                this.qualifiers.loss_amount_modifier.state := 0
-                this.qualifiers.custom_amount_modifier.state := 0
-                this.qualifiers.pause_temp.state2 := false
-                this.qualifiers.pause_temp.reset_F := 10
-                this.qualifiers.streak_reset.cummulative := 0
-                this.qualifiers.streak_reset.count2 := 0
-                this.qualifiers.streak_reset.count := 0
-                this.qualifiers.streak_reset.val := -4
-                this.qualifiers.1020.val := 10
-                this.qualifiers.1020.mark := 0
+                this.QualifiersReset()
             } else {
                 if this.qualifiers.streak_reset.cummulative > 0
                     this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
@@ -1451,6 +1439,8 @@ class TraderBot {
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
                 BalanceReset()
             }
+
+            sleep 300
             ; if this.qualifiers.loss_amount_modifier.state != 1 and !this.qualifiers.win_after_31 and !this.qualifiers.pause_temp.state2 and this.qualifiers.streak_reset.cummulative > 0 {
             ;     if this.stats.streak <= -3
             ;         this.amount := this.qualifiers.streak_reset.cummulative*2 + 1
@@ -1508,26 +1498,30 @@ class TraderBot {
         }
 
         BalanceReset() {
-            this.qualifiers.win_amount_modifier.state := 0
-            this.qualifiers.win_amount_modifier.amount_at_2 := 10
-            this.qualifiers.loss_amount_modifier.amount := 4
-            this.qualifiers.loss_amount_modifier.state := 0
-            this.qualifiers.loss_amount_modifier.balance := this.balance.starting
+            this.QualifiersReset()
             this.amount := 1
             this.stats.streak := 0
-            this.qualifiers.balance_mark.mark := this.balance.starting
-            this.qualifiers.pause_temp.state2 := false
-            this.qualifiers.pause_temp.reset_F := 10
-            this.qualifiers.pause_temp.amount := 1
-            this.qualifiers.streak_reset.cummulative := 0
-            this.qualifiers.streak_reset.count := 0
-            this.qualifiers.streak_reset.count2 := 0
-            this.qualifiers.streak_reset.val := -4
-            this.qualifiers.1020.val := 10
-            this.qualifiers.1020.mark := 0
             this.stats.max_bal_diff := 0
-            this.qualifiers.custom_amount_modifier.state := false
         }
+    }
+
+    QualifiersReset() {
+        this.qualifiers.win_amount_modifier.state := 0
+        this.qualifiers.win_amount_modifier.amount_at_2 := 10
+        this.qualifiers.loss_amount_modifier.amount := 4
+        this.qualifiers.loss_amount_modifier.state := 0
+        this.qualifiers.loss_amount_modifier.balance := this.balance.starting
+        this.qualifiers.custom_amount_modifier.state := 0
+        this.qualifiers.balance_mark.mark := this.balance.starting
+        this.qualifiers.pause_temp.state2 := false
+        this.qualifiers.pause_temp.reset_F := 10
+        this.qualifiers.pause_temp.amount := 1
+        this.qualifiers.streak_reset.cummulative := 0
+        this.qualifiers.streak_reset.count := 0
+        this.qualifiers.streak_reset.count2 := 0
+        this.qualifiers.streak_reset.val := -4
+        this.qualifiers.1020.val := 10
+        this.qualifiers.1020.mark := 0
     }
     
     SetTradeTime() {
