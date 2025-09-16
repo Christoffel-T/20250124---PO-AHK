@@ -722,7 +722,7 @@ class TraderBot {
             ;     this.amount := 20
             ; else
             this.amount := this.win_amounts[1][this.stats.streak]
-            if this.qualifiers.win_amount_modifier.state = 1 {
+            if this.qualifiers.win_amount_modifier.state = 1 and _num >= 0 {
                 this.amount := this.qualifiers.win_amount_modifier.amounts[_num+1]
             }
 
