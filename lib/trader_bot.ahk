@@ -720,11 +720,12 @@ class TraderBot {
             ; else
                 this.amount := this.win_amounts[1][this.stats.streak]
             list := [1, 10, 7, 3]
+            _num := Mod(this.stats.streak - 1, list.Length) + 1
             this.qualifiers.win_amount_modifier.amounts := list
             if this.qualifiers.win_amount_modifier.state = 1 {
-                this.amount := list[Mod(this.stats.streak - 1, list.Length) + 1]
+                this.amount := list[_num]
             }
-            this.amount := this.qualifiers.win_amount_modifier.amounts[this.stats.streak]
+            this.amount := this.qualifiers.win_amount_modifier.amounts[_num]
             
             this.SetTradeAmount()
             this.stats.win++      
