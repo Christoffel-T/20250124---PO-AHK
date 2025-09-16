@@ -503,8 +503,10 @@ class TraderBot {
         TradeLose() {
             this.stats.%this.executed_trades[1]%.lose++
             this.stats.trade_history.InsertAt(1, 'lose')
-            _num := Mod(this.stats.streak - 1, 4) + 1
-            this.qualifiers.win_amount_modifier.amounts[_num] := this.qualifiers.win_amount_modifier.amounts[_num]*2+1
+            if this.stats.streak > 0 {
+                _num := Mod(this.stats.streak - 1, 4) + 1
+                this.qualifiers.win_amount_modifier.amounts[_num] := this.qualifiers.win_amount_modifier.amounts[_num]*2+1
+            }
             if this.stats.streak = 2 and this.qualifiers.win_amount_modifier.amounts[_num] >= 87 {
                 this.qualifiers.win_amount_modifier.amounts[_num] := 10
                 this.amount := 4
