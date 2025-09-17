@@ -483,8 +483,7 @@ class TraderBot {
 
         RankScenarios() {
             sortableArray := ''
-            For key, value in this.stats.OwnProps()
-            {
+            For key, value in this.stats.OwnProps() {
                 if !InStr(key, 'BUY') and !InStr(key, 'SELL')
                     continue
                 if !this.stats.%key%.HasOwnProp('rank')
