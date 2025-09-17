@@ -592,13 +592,13 @@ class TraderBot {
             if this.stats.streak = -3 {
                 this.qualifiers.win_amount_modifier.state := 1
             }
-            
-            if this.stats.streak = -2 {
-                if this.qualifiers.loss_amount_modifier.state >= 1 {
-                    this.qualifiers.loss_amount_modifier.amount_2 := this.qualifiers.loss_amount_modifier.amount_2*2+1
-                } else {
-                    this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
-                }
+
+            if this.stats.streak = -3 and this.qualifiers.loss_amount_modifier.state >= 1 {
+                this.qualifiers.loss_amount_modifier.amount_2 := this.qualifiers.loss_amount_modifier.amount_2*2+1
+            }
+
+            if this.stats.streak = -2 and this.qualifiers.loss_amount_modifier.state >= 1 {
+                this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
             }
 
             if this.balance.current <= this.qualifiers.loss_amount_modifier.balance - 1000 {
