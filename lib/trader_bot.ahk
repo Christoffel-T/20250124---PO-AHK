@@ -503,7 +503,7 @@ class TraderBot {
         TradeLose() {
             this.stats.%this.executed_trades[1]%.lose++
             this.stats.trade_history.InsertAt(1, 'lose')
-            if this.stats.streak > 0 {
+            if this.stats.streak > 0 and this.qualifiers.win_amount_modifier.state = 1 {
                 _num := Mod(this.stats.streak - 1, 4) + 1
                 this.qualifiers.win_amount_modifier.amounts[_num] := this.qualifiers.win_amount_modifier.amounts[_num]*2+1
             }
@@ -1515,7 +1515,7 @@ class TraderBot {
 
     QualifiersReset() {
         this.qualifiers.win_amount_modifier.state := 0
-        this.qualifiers.win_amount_modifier.amounts[2] := 10
+        this.qualifiers.win_amount_modifier.amounts := [1, 10, 7, 3]
         this.qualifiers.loss_amount_modifier.amount := 4
         this.qualifiers.loss_amount_modifier.state := 0
         this.qualifiers.loss_amount_modifier.balance := this.balance.starting
