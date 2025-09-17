@@ -510,9 +510,11 @@ class TraderBot {
                     this.amount := 4
                 }
             }
-            if this.qualifiers.loss_amount_modifier.state >= 1 {
-                if this.stats.streak = -2 {
+            if this.stats.streak = -2 {
+                if this.qualifiers.loss_amount_modifier.state >= 1 {
                     this.qualifiers.loss_amount_modifier.amount_2 := this.qualifiers.loss_amount_modifier.amount_2*2+1
+                } else {
+                    this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
                 }
             }
 
