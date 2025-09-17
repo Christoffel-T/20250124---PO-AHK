@@ -506,10 +506,10 @@ class TraderBot {
             if this.stats.streak > 0 and this.qualifiers.win_amount_modifier.state = 1 {
                 _num := Mod(this.stats.streak - 1, 4) + 1
                 this.qualifiers.win_amount_modifier.amounts[_num] := this.qualifiers.win_amount_modifier.amounts[_num]*2+1
-            }
-            if this.stats.streak = 2 and this.qualifiers.win_amount_modifier.amounts[_num] >= 87 {
-                this.qualifiers.win_amount_modifier.amounts[_num] := 10
-                this.amount := 4
+                if this.stats.streak = 2 and this.qualifiers.win_amount_modifier.amounts[_num] >= 87 {
+                    this.qualifiers.win_amount_modifier.amounts[_num] := 10
+                    this.amount := 4
+                }
             }
             while this.stats.trade_history.Length > 10
                 this.stats.trade_history.Pop()
