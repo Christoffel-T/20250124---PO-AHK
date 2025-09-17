@@ -626,6 +626,10 @@ class TraderBot {
                 this.amount := (this.stats.max_bal_diff + 20) / 0.92
             }
 
+            if this.stats.streak >= -3 {
+                this.amount := [22.93, 47.86, 99.87][-this.stats.streak]
+            }
+
             this.SetTradeAmount()
 
             this.stats.loss++
