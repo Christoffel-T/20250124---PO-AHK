@@ -31,7 +31,7 @@ class TraderBot {
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.win_after_31 := false
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 4}
+        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 4, amount_2: 1}
         this.qualifiers.win_amount_modifier := {state:0, amounts: [1, 10, 7, 3]}
 
         Loop 10 {
@@ -599,7 +599,7 @@ class TraderBot {
 
             if this.qualifiers.loss_amount_modifier.state = 1 {
                 if this.stats.streak = -2 {
-                    this.amount := (0.35*(this.stats.max_bal_diff+5)) / 0.92
+                    this.amount := (0.10*(this.stats.max_bal_diff+5)) / 0.92
                 } else {
                     this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
                     this.amount := this.qualifiers.loss_amount_modifier.amount
@@ -608,7 +608,10 @@ class TraderBot {
                 if this.stats.streak = -6 {
                     this.qualifiers.loss_amount_modifier.amount := 4
                     this.amount := this.qualifiers.loss_amount_modifier.amount
-                } else if this.stats.streak <= -2 {
+                } else if this.stats.streak = -2 {
+                    this.qualifiers.loss_amount_modifier.amount_2 := this.qualifiers.loss_amount_modifier.amount_2
+                    this.amount := this.qualifiers.loss_amount_modifier.amount_2
+                } else if this.stats.streak < -2 {
                     this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else if this.stats.streak = -1 {
@@ -625,7 +628,7 @@ class TraderBot {
                 this.amount := (this.stats.max_bal_diff + 20) / 0.92
             }
 
-            if this.stats.streak >= -3 {
+            if this.stats.streak >= -3 and this.qualifiers.win_amount_modifier.state != 1 {
                 this.amount := [22.93, 47.86, 99.87][-this.stats.streak]
             }
 
