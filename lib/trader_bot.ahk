@@ -879,7 +879,7 @@ class TraderBot {
             _name := StrReplace(A_ThisFunc, 'Scenario', '')
             _name_buy := 'sc' _name 'B'
             _name_sell := 'sc' _name 'S'
-            condition_both := (A_TickCount - this.executed_trades[2])/1000 > delay
+            condition_both := (A_TickCount - this.trade_opened[2])/1000 > delay
 
             rand := Random(1, 2)
             
