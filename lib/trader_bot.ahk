@@ -636,6 +636,13 @@ class TraderBot {
             if this.stats.streak >= -3 and this.qualifiers.win_amount_modifier.state != 1 {
                 this.amount := [22.93, 47.86, 99.87][-this.stats.streak]
             }
+            
+            list := [4]
+            loop 15 
+                list.Push(list[-1]*3)
+            if this.stats.streak <= -6 {
+                this.amount := list[-this.stats.streak-5]
+            }
 
             this.SetTradeAmount()
 
