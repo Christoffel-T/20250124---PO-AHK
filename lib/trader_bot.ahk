@@ -604,8 +604,8 @@ class TraderBot {
 
             if this.qualifiers.loss_amount_modifier.state = 1 {
                 if this.stats.streak = -2 {
-                    this.qualifiers.loss_amount_modifier.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
-                    this.amount := this.qualifiers.loss_amount_modifier.amount
+                    this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
+                    this.amount := this.qualifiers.loss_amount_modifier.amount_2
                 } else {
                     this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
                     this.amount := this.qualifiers.loss_amount_modifier.amount
@@ -636,7 +636,7 @@ class TraderBot {
             if this.stats.streak >= -3 and this.qualifiers.win_amount_modifier.state != 1 {
                 this.amount := [22.93, 47.86, 99.87][-this.stats.streak]
             }
-            
+
             list := [4]
             loop 15 
                 list.Push(list[-1]*3)
@@ -890,6 +890,8 @@ class TraderBot {
 
             rand := Random(1, 2)
             
+            condition_buy  := false
+            condition_sell  := false
             if condition_both and this.candle_data[1].color = 'G' and rand = 1
                 condition_buy  := true
             if condition_both and this.candle_data[1].color = 'R' and rand = 2
