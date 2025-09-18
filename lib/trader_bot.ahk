@@ -604,7 +604,8 @@ class TraderBot {
 
             if this.qualifiers.loss_amount_modifier.state = 1 {
                 if this.stats.streak = -2 {
-                    this.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
+                    this.qualifiers.loss_amount_modifier.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
+                    this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else {
                     this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
                     this.amount := this.qualifiers.loss_amount_modifier.amount
@@ -861,6 +862,8 @@ class TraderBot {
     RunScenarios() {
         this.paused := this.CheckPaused()
 
+        ScenarioRandom(30)
+
         Scenario3b()
         Scenario3a()
         if this.stats.streak != -3 {
@@ -868,6 +871,29 @@ class TraderBot {
         }
         Scenario2()
         Scenario1()
+
+        ScenarioRandom(delay) {
+            if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
+                return false
+
+            _name := StrReplace(A_ThisFunc, 'Scenario', '')
+            _name_buy := 'sc' _name 'B'
+            _name_sell := 'sc' _name 'S'
+            condition_both := (A_TickCount - this.executed_trades[2])/1000 > delay
+
+            rand := Random(1, 2)
+            
+            if condition_both and this.candle_data[1].color = 'G' and rand = 1
+                condition_buy  := true
+            if condition_both and this.candle_data[1].color = 'R' and rand = 2
+                condition_sell  := true
+            
+            if (condition_buy) {
+                this.ExecuteTrade('BUY', _name)
+            } else if (condition_sell) {
+                this.ExecuteTrade('SELL', _name)
+            }
+        }
 
         Scenario1() {
             if this.paused or this.candle_data.Length < 2
@@ -1245,6 +1271,7 @@ class TraderBot {
             MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
             return
         }
+
         this.qualifiers.flip_trade.state := false
                 
         this.last_trade := action
