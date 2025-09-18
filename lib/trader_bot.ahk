@@ -615,7 +615,7 @@ class TraderBot {
                 }
             } else if this.qualifiers.loss_amount_modifier.state = 2 {
                 if this.stats.streak = -6 {
-                    this.qualifiers.loss_amount_modifier.amount := 4
+                    this.qualifiers.loss_amount_modifier.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else if this.stats.streak = -2 {
                     this.amount := this.qualifiers.loss_amount_modifier.amount_2
@@ -623,7 +623,7 @@ class TraderBot {
                     this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else if this.stats.streak = -1 {
-                    this.qualifiers.loss_amount_modifier.amount := 4
+                    this.qualifiers.loss_amount_modifier.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else {
                     this.amount := (0.5*(this.stats.max_bal_diff+5)) / 0.92
