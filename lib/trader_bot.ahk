@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
-scriptPath := A_ScriptFullPath
+scriptPath := A_LineFile
 
 ; Get last modified datetime
 modTime := FileGetTime(scriptPath, "M")
