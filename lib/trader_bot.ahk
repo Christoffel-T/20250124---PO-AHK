@@ -644,7 +644,7 @@ class TraderBot {
                 } else {
                     this.amount := (0.5*(this.stats.max_bal_diff+5)) / 0.92
                 }
-            } else if this.qualifiers.loss_amount_modifier.state != 1 and this.stats.streak <= -4 {
+            } else if this.qualifiers.loss_amount_modifier.state = 0 and this.stats.streak <= -4 {
                 this.qualifiers.loss_amount_modifier.state := 1
                 this.qualifiers.loss_amount_modifier.amount := 4
                 this.amount := this.qualifiers.loss_amount_modifier.amount
@@ -656,20 +656,20 @@ class TraderBot {
                 this.amount := [22.93, 47.86, 99.87][-this.stats.streak]
             }
 
-            list := [4]
-            loop 15 
-                list.Push(list[-1]*3)
-            if this.stats.streak <= -6 {
-                this.amount := list[-this.stats.streak-5]
-            }
+            ; list := [4]
+            ; loop 15 
+            ;     list.Push(list[-1]*3)
+            ; if this.stats.streak <= -6 {
+            ;     this.amount := list[-this.stats.streak-5]
+            ; }
 
             this.SetTradeAmount()
 
             this.stats.loss++
         }
         TradeWin() {
-            if this.qualifiers.win_lose_lose = 1 and this.stats.streak = -1 {
-                this.qualifiers.win_lose_lose := {state:0, amount:0}
+            if this.qualifiers.win_lose_lose.state = 1 and this.stats.streak = -1 {
+                this.qualifiers.win_lose_lose := {state:0, amount:(0.10*(this.stats.max_bal_diff)) / 0.92}
             }
             if this.qualifiers.loss_amount_modifier.state = 1 {
                 this.qualifiers.loss_amount_modifier.state := 2
