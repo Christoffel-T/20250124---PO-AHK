@@ -505,10 +505,6 @@ class TraderBot {
             if this.stats.streak > 0 and this.qualifiers.win_amount_modifier.state = 1 {
                 _num := Mod(this.stats.streak - 1, 4) + 1
                 this.qualifiers.win_amount_modifier.amounts[_num] := this.qualifiers.win_amount_modifier.amounts[_num]*2+1
-                if this.stats.streak = 2 and this.qualifiers.win_amount_modifier.amounts[_num] >= 87 {
-                    this.qualifiers.win_amount_modifier.amounts[_num] := 10
-                    this.amount := 4
-                }
             }
 
             while this.stats.trade_history.Length > 10
@@ -614,11 +610,10 @@ class TraderBot {
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 }
             } else if this.qualifiers.loss_amount_modifier.state = 2 {
-                if this.stats.streak = -6 {
-                    this.qualifiers.loss_amount_modifier.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
+                if this.stats.streak = -2 {
+                    ; this.amount := this.qualifiers.loss_amount_modifier.amount_2
+                    this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
                     this.amount := this.qualifiers.loss_amount_modifier.amount
-                } else if this.stats.streak = -2 {
-                    this.amount := this.qualifiers.loss_amount_modifier.amount_2
                 } else if this.stats.streak < -2 {
                     this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
                     this.amount := this.qualifiers.loss_amount_modifier.amount
