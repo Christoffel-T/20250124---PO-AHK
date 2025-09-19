@@ -1,6 +1,17 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
+scriptPath := A_ScriptFullPath
+
+; Get last modified datetime
+modTime := FileGetTime(scriptPath, "M")
+
+; Format nicely
+formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
+
+; Set tray tooltip
+traymenu := A_TrayMenu
+traymenu.Add("Last Modified: " formatted, (*) => '')
 
 class TraderBot {
     __New(settings_obj) {
@@ -33,6 +44,7 @@ class TraderBot {
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
         this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 4, amount_2: 1}
         this.qualifiers.win_amount_modifier := {state:0, amounts: [1, 10, 7, 3]}
+        this.qualifiers.win_lose_lose := {state:0, amount:0}
 
         Loop 10 {
             _index := A_Index
@@ -505,6 +517,12 @@ class TraderBot {
             if this.stats.streak > 0 and this.qualifiers.win_amount_modifier.state = 1 {
                 _num := Mod(this.stats.streak - 1, 4) + 1
                 this.qualifiers.win_amount_modifier.amounts[_num] := this.qualifiers.win_amount_modifier.amounts[_num]*2+1
+                if this.qualifiers.win_lose_lose.state = 0 {
+                    this.qualifiers.win_lose_lose.state := 1
+                    this.qualifiers.win_lose_lose.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
+                } else if this.qualifiers.win_lose_lose.state = 1 {
+                    this.qualifiers.win_lose_lose.amount := this.qualifiers.win_lose_lose.amount*2+1
+                }
             }
 
             while this.stats.trade_history.Length > 10
@@ -620,6 +638,9 @@ class TraderBot {
                 } else if this.stats.streak = -1 {
                     this.qualifiers.loss_amount_modifier.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
                     this.amount := this.qualifiers.loss_amount_modifier.amount
+                    if this.qualifiers.win_lose_lose.state = 1 {
+                        this.amount := this.qualifiers.win_lose_lose.amount
+                    }
                 } else {
                     this.amount := (0.5*(this.stats.max_bal_diff+5)) / 0.92
                 }
@@ -647,6 +668,9 @@ class TraderBot {
             this.stats.loss++
         }
         TradeWin() {
+            if this.qualifiers.win_lose_lose = 1 and this.stats.streak = -1 {
+                this.qualifiers.win_lose_lose := {state:0, amount:0}
+            }
             if this.qualifiers.loss_amount_modifier.state = 1 {
                 this.qualifiers.loss_amount_modifier.state := 2
             }
@@ -1561,6 +1585,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
+        this.qualifiers.win_lose_lose := {state:0, amount:0}
         this.qualifiers.win_amount_modifier.state := 0
         this.qualifiers.win_amount_modifier.amounts := [1, 10, 7, 3]
         this.qualifiers.loss_amount_modifier.amount := 4
