@@ -123,7 +123,8 @@ class TraderBot {
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
             sleep 600
             this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
-            this.CheckTradeClosed(true)
+            while !this.CheckTradeClosed(true)
+                sleep 100
             ; sleep 6000
             this.CheckBalance()
         }
@@ -473,14 +474,14 @@ class TraderBot {
             sleep 50 
             loop 3 {
                 if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
-                    return
+                    return false
                 }
                 sleep 50
             }
             sleep 500
             
             if just_check
-                return
+                return true
             
             this.stats.max_bal_diff := this.balance.max - this.balance.current
             this.active_trade := ''
