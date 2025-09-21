@@ -104,8 +104,8 @@ class TraderBot {
         this.CheckBalance()
         
         MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
-        this.amount := 20000
         while this.balance.current >= this.balance.starting {
+            this.amount := 20000
             this.SetTradeAmount(false)
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
             sleep 600
@@ -1706,7 +1706,7 @@ class TraderBot {
             }
             ToolTip
             cur_bal := StrReplace(match[], ',', '')
-            if cur_bal >= 50000 {
+            if cur_bal >= 500000 {
                 MsgBox 'Balance too high.'
             }
             cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
