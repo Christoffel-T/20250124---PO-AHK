@@ -108,11 +108,11 @@ class TraderBot {
         sleep 100
         MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
         sleep 100
-        MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y - 1*28, 1, 2)
+        MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y - 1*28, 1, 2)
         sleep 1000
         MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 1)*28, 1, 2)
         sleep 1000
-        MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
+        MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
         sleep 1000
         sleep 300
 
