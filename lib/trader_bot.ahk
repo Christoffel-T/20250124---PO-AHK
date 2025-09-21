@@ -1633,7 +1633,7 @@ class TraderBot {
 
     QualifiersReset() {
         this.qualifiers.win_lose_lose := {state:0, amount:0}
-        this.qualifiers.3losses := {state:0}
+        this.qualifiers.3losses := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
         this.qualifiers.win_amount_modifier.state := 0
         this.qualifiers.win_amount_modifier.amounts := [1, 10, 7, 3]
         this.qualifiers.loss_amount_modifier.amount := 4
