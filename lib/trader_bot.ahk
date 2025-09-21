@@ -114,8 +114,8 @@ class TraderBot {
         sleep 1000
         MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
         sleep 1000
+        MouseClick('L', this.coords.empty_area.x + Random(-2, 2), this.coords.empty_area.y, 1, 2)
         sleep 300
-
 
         while this.balance.current >= this.balance.starting {
             this.amount := 20000
