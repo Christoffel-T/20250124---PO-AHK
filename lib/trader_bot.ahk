@@ -104,16 +104,16 @@ class TraderBot {
         this.CheckBalance()
         
         MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
-        MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
-        sleep 100
-        MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
-        sleep 100
-        MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y - 1*28, 1, 2)
-        sleep 1000
-        MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + 0*28, 1, 2)
-        sleep 1000
-        MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
-        sleep 1000
+        ; MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
+        ; sleep 100
+        ; MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
+        ; sleep 100
+        ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y - 1*28, 1, 2)
+        ; sleep 1000
+        ; MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + 0*28, 1, 2)
+        ; sleep 1000
+        ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
+        ; sleep 1000
         MouseClick('L', this.coords.empty_area.x + Random(-2, 2), this.coords.empty_area.y, 1, 2)
         sleep 300
 
