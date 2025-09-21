@@ -123,7 +123,7 @@ class TraderBot {
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
             sleep 600
             this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
-            this.CheckTradeClosed()
+            this.CheckTradeClosed(true)
             ; sleep 6000
             this.CheckBalance()
         }
@@ -467,11 +467,10 @@ class TraderBot {
             }
         }
     }
-    CheckTradeClosed() {
-        if (this.trade_opened[1]) {
+    CheckTradeClosed(just_check:=false) {
+        if (this.trade_opened[1] or just_check) {
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             sleep 50 
-            this.stats.max_bal_diff := this.balance.max - this.balance.current
             loop 3 {
                 if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
                     return
@@ -479,6 +478,11 @@ class TraderBot {
                 sleep 50
             }
             sleep 500
+            
+            if just_check
+                return
+            
+            this.stats.max_bal_diff := this.balance.max - this.balance.current
             this.active_trade := ''
             this.trade_opened[1] := false
             MouseClick('L', this.coords.trades_closed.x + Random(-2, 2), this.coords.trades_closed.y + Random(-1, 1), 5, 2)
@@ -1551,7 +1555,7 @@ class TraderBot {
                 this.ReloadWebsite()
             }
             this.CheckBalance()
-            if this.balance.current < 1 {
+            if this.balance.current < 1 and bal_mark {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
                 BalanceReset()
