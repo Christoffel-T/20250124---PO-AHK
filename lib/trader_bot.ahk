@@ -45,7 +45,7 @@ class TraderBot {
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
         this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 4, amount_2: 1}
         this.qualifiers.win_amount_modifier := {state:0, amounts: [1, 10, 7, 3]}
-        this.qualifiers.3losses := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
+        this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
         this.qualifiers.win_lose_lose := {state:0, amount:0}
 
         Loop 10 {
@@ -624,7 +624,7 @@ class TraderBot {
             ;     this.amount := 1
             ; }
 
-            _obj := this.qualifiers.3losses.custom_map
+            _obj := this.qualifiers.1_5_state.custom_map
             if this.stats.streak > -3 {
                 _obj[-this.stats.streak] := this.amount
                 _obj['total'] := _obj[1] + _obj[2]
@@ -632,9 +632,9 @@ class TraderBot {
 
             if this.stats.streak = -3 {
                 this.qualifiers.win_amount_modifier.state := 1
-                if this.qualifiers.3losses.state = 0 {
-                    this.qualifiers.3losses.state := 1
-                }
+            }
+            if this.qualifiers.1_5_state.state = 0 and this.qualifiers.win_amount_modifier.state >= 1 and this.stats.streak = -3{
+                this.qualifiers.1_5_state.state := 1
             }
             if this.stats.streak = -2 {
                 this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
@@ -649,19 +649,7 @@ class TraderBot {
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
             }
 
-            new_q := false
-            if this.qualifiers.3losses.state = 1 {
-                if this.stats.streak = -3 {
-                    new_q := true
-                    this.amount := 1.5
-                } else if this.stats.streak = -1 or this.stats.streak = -1 {
-                    this.amount := _obj['total']/3
-                }
-            }
-
-            if new_q {
-                this.amount := this.amount
-            } else if this.qualifiers.loss_amount_modifier.state = 1 {
+            if this.qualifiers.loss_amount_modifier.state = 1 {
                 if this.stats.streak = -2 {
                     this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
                     this.amount := this.qualifiers.loss_amount_modifier.amount_2
@@ -694,13 +682,9 @@ class TraderBot {
                 this.amount := (this.stats.max_bal_diff + 20) / 0.92
             }
 
-            if this.stats.streak = -3 and this.qualifiers.3losses.state = 0 {
-                this.qualifiers.3losses.state := 1
-            }
-
             if this.stats.streak >= -3 and this.qualifiers.win_amount_modifier.state != 1 {
                 this.amount := [22.93, 47.86, 99.87][-this.stats.streak]
-            } else if this.stats.streak >= -3 and _obj[2] > 0 {
+            } else if this.qualifiers.1_5_state.state = 3 {
                 this.amount := [37.93, 62.86, 117.12][-this.stats.streak]
             }
 
@@ -1578,6 +1562,20 @@ class TraderBot {
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
 
+            if this.qualifiers.1_5_state.state = 2 {
+                if this.stats.trade_history[1] = 'win' and this.stats.trade_history[2] = 'lose' and this.stats.trade_history[3] = 'win' {
+                    this.qualifiers.1_5_state.state := 3
+                } else {
+                    this.amount := 1.5
+                }
+            } else if this.qualifiers.1_5_state.state = 1 {
+                if this.stats.streak >= -3 {
+                    this.amount := this.qualifiers.1_5_state.custom_map['total']/3
+                } else if this.stats.streak < -3 {
+                    this.qualifiers.1_5_state.state := 2
+                }
+            }
+
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
                 sleep 100
@@ -1634,7 +1632,7 @@ class TraderBot {
 
     QualifiersReset() {
         this.qualifiers.win_lose_lose := {state:0, amount:0}
-        this.qualifiers.3losses := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
+        this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
         this.qualifiers.win_amount_modifier.state := 0
         this.qualifiers.win_amount_modifier.amounts := [1, 10, 7, 3]
         this.qualifiers.loss_amount_modifier.amount := 4
