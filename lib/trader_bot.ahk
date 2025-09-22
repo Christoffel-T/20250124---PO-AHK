@@ -684,7 +684,7 @@ class TraderBot {
 
             if this.stats.streak >= -3 and this.qualifiers.win_amount_modifier.state != 1 {
                 this.amount := [22.93, 47.86, 99.87][-this.stats.streak]
-            } else if this.qualifiers.1_5_state.state = 3 {
+            } else if this.stats.streak >= -3 and this.qualifiers.1_5_state.state = 3 {
                 this.amount := [37.93, 62.86, 117.12][-this.stats.streak]
             }
 
@@ -1565,6 +1565,7 @@ class TraderBot {
             if this.qualifiers.1_5_state.state = 2 {
                 if this.stats.trade_history[1] = 'win' and this.stats.trade_history[2] = 'lose' and this.stats.trade_history[3] = 'win' {
                     this.qualifiers.1_5_state.state := 3
+                    this.amount := 1.5
                 } else {
                     this.amount := 1.5
                 }
