@@ -633,7 +633,7 @@ class TraderBot {
             if this.stats.streak = -3 {
                 this.qualifiers.win_amount_modifier.state := 1
             }
-            if this.qualifiers.1_5_state.state = 0 and this.qualifiers.win_amount_modifier.state >= 1 and this.stats.streak = -3{
+            if (this.qualifiers.1_5_state.state = 0 or this.qualifiers.1_5_state.state = 3) and this.qualifiers.win_amount_modifier.state >= 1 and this.stats.streak = -3 {
                 this.qualifiers.1_5_state.state := 1
             }
             if this.stats.streak = -2 {
