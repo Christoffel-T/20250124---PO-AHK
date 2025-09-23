@@ -22,7 +22,7 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
 
-        this.balance := {starting: 1600, reset_max: 3200, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 750, reset_max: 1500, current: 0, min: 999999999, max: 0, last_trade: 0}
 
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
@@ -1570,11 +1570,10 @@ class TraderBot {
                     this.amount := 1.5
                 }
             } else if this.qualifiers.1_5_state.state = 1 {
-                if this.stats.streak >= -3 {
-                    this.amount := this.qualifiers.1_5_state.custom_map['total']/3
-                } else if this.stats.streak < -3 {
+                if this.stats.streak < -2 {
                     this.qualifiers.1_5_state.state := 2
                 }
+                this.amount := 1.5
             }
 
             if !WinActive(this.wtitle) {
