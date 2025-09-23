@@ -633,8 +633,10 @@ class TraderBot {
             if this.stats.streak = -3 {
                 this.qualifiers.win_amount_modifier.state := 1
             }
-            if (this.qualifiers.1_5_state.state = 0 or this.qualifiers.1_5_state.state = 3) and this.qualifiers.win_amount_modifier.state >= 1 and this.stats.streak = -3 {
+            if (this.qualifiers.1_5_state.state = 0 or this.qualifiers.1_5_state.state = 4) and this.stats.streak = -4 {
                 this.qualifiers.1_5_state.state := 1
+            } else if this.qualifiers.1_5_state.state = 2 and this.stats.streak = -3 {
+                this.qualifiers.1_5_state.state := 3
             }
             if this.stats.streak = -2 {
                 this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
@@ -684,7 +686,7 @@ class TraderBot {
 
             if this.stats.streak >= -3 and this.qualifiers.win_amount_modifier.state != 1 {
                 this.amount := [22.93, 47.86, 99.87][-this.stats.streak]
-            } else if this.stats.streak >= -3 and this.qualifiers.1_5_state.state = 3 {
+            } else if this.stats.streak >= -3 and this.qualifiers.1_5_state.state = 4 {
                 this.amount := [37.93, 62.86, 117.12][-this.stats.streak]
             }
 
@@ -700,6 +702,10 @@ class TraderBot {
             this.stats.loss++
         }
         TradeWin() {
+            if this.qualifiers.1_5_state.state = 1 {
+                this.qualifiers.1_5_state.state := 2
+            }
+
             if this.qualifiers.win_lose_lose.state = 1 and this.stats.streak = -1 {
                 this.qualifiers.win_lose_lose := {state:0, amount:(0.10*(this.stats.max_bal_diff)) / 0.92}
             }
@@ -1562,17 +1568,14 @@ class TraderBot {
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
 
-            if this.qualifiers.1_5_state.state = 2 {
+            if this.qualifiers.1_5_state.state = 3 {
                 if this.stats.trade_history[1] = 'win' and this.stats.trade_history[2] = 'lose' and this.stats.trade_history[3] = 'win' {
-                    this.qualifiers.1_5_state.state := 3
+                    this.qualifiers.1_5_state.state := 4
                     this.amount := 1.5
                 } else {
                     this.amount := 1.5
                 }
             } else if this.qualifiers.1_5_state.state = 1 {
-                if this.stats.streak < -2 {
-                    this.qualifiers.1_5_state.state := 2
-                }
                 this.amount := 1.5
             }
 
