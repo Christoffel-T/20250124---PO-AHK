@@ -43,7 +43,7 @@ class TraderBot {
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.win_after_31 := false
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 4, amount_2: 1, amounts: [22.93, 47.86, 99.87]}
+        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 1, amount_2: 1, amounts: [22.93, 47.86, 1.6]}
         this.qualifiers.win_amount_modifier := {state:0, amounts: [1, 10, 7, 3]}
         this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
 
@@ -1551,6 +1551,7 @@ class TraderBot {
                 if this.stats.trade_history[1] = 'win' and this.stats.trade_history[2] = 'lose' and this.stats.trade_history[3] = 'win' {
                     this.qualifiers.1_5_state.state := 0
                     this.qualifiers.win_amount_modifier.state := 0
+                    this.qualifiers.loss_amount_modifier.state := 0
                     this.qualifiers.loss_amount_modifier.amounts := [37.93, 62.86, 1.6]
                 }
             } else if this.qualifiers.1_5_state.state = 1 {
@@ -1615,7 +1616,7 @@ class TraderBot {
         this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
         this.qualifiers.win_amount_modifier.state := 0
         this.qualifiers.win_amount_modifier.amounts := [1, 10, 7, 3]
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 4, amount_2: 1, amounts: [22.93, 47.86, 1.6]}
+        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 1, amount_2: 1, amounts: [22.93, 47.86, 1.6]}
         this.qualifiers.custom_amount_modifier.state := 0
         this.qualifiers.balance_mark.mark := this.balance.starting
         this.qualifiers.pause_temp.state2 := false
