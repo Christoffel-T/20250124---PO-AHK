@@ -638,13 +638,13 @@ class TraderBot {
 
             if this.qualifiers.1_5_state.state = 2 and this.stats.streak = -3 {
                 this.qualifiers.1_5_state.state := 3
-                this.qualifiers.loss_amount_modifier.amount := 1.6
+                this.qualifiers.loss_amount_modifier.amount := 51
                 this.amount := this.qualifiers.loss_amount_modifier.amount
             } else if this.qualifiers.loss_amount_modifier.state = 0 {
                 if this.stats.streak > -3 {
                     this.amount := this.qualifiers.loss_amount_modifier.amounts[-this.stats.streak]
                 } else if this.stats.streak = -3 {
-                    this.qualifiers.loss_amount_modifier.amount := 1.6
+                    this.qualifiers.loss_amount_modifier.amount := 51
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else if this.stats.streak <= -4 {
                     this.qualifiers.win_amount_modifier.state := 1
@@ -1550,7 +1550,10 @@ class TraderBot {
 
             this.amount := this.amount < 1 ? 1.25 : this.amount
             this.amount := Min(this.amount, this.balance.current)
-
+            custom_list := [25]
+            Loop 15 {
+                custom_list.Push(custom_list[-1]*2+1)
+            }
             if this.qualifiers.1_5_state.state = 3 {
                 if this.stats.trade_history[1] = 'win' and this.stats.trade_history[2] = 'lose' and this.stats.trade_history[3] = 'win' {
                     this.qualifiers.1_5_state.state := 0
@@ -1560,9 +1563,15 @@ class TraderBot {
                     this.qualifiers.loss_amount_modifier.amounts := [37.93, 62.86, 51]
                 } else {
                     this.amount := 1.5
+                    if this.stats.streak <= -5 {
+                        this.amount := custom_list[-this.stats.streak - 4]
+                    }
                 }
             } else if this.qualifiers.1_5_state.state = 1 {
                 this.amount := 1.5
+                if this.stats.streak <= -5 {
+                    this.amount := custom_list[-this.stats.streak - 4]
+                }
             }
 
             if !WinActive(this.wtitle) {
