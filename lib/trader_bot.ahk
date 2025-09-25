@@ -43,7 +43,7 @@ class TraderBot {
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.win_after_31 := false
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_2: 1, amounts: [22.93, 47.86, 1.6]}
+        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_2: 1, amounts: [22.93, 47.86, 51]}
         this.qualifiers.win_amount_modifier := {state:0, amounts: [1, 10, 7, 3]}
         this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
 
@@ -1557,7 +1557,9 @@ class TraderBot {
                     this.qualifiers.win_amount_modifier.state := 0
                     this.qualifiers.loss_amount_modifier.state := 0
                     this.qualifiers.loss_amount_modifier.state2 := 0
-                    this.qualifiers.loss_amount_modifier.amounts := [37.93, 62.86, 1.6]
+                    this.qualifiers.loss_amount_modifier.amounts := [37.93, 62.86, 51]
+                } else {
+                    this.amount := 1.5
                 }
             } else if this.qualifiers.1_5_state.state = 1 {
                 this.amount := 1.5
@@ -1621,7 +1623,7 @@ class TraderBot {
         this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
         this.qualifiers.win_amount_modifier.state := 0
         this.qualifiers.win_amount_modifier.amounts := [1, 10, 7, 3]
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_1: 1, amount_2: 1, amounts: [22.93, 47.86, 1.6]}
+        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_1: 1, amount_2: 1, amounts: [22.93, 47.86, 51]}
         this.qualifiers.custom_amount_modifier.state := 0
         this.qualifiers.balance_mark.mark := this.balance.starting
         this.qualifiers.pause_temp.state2 := false
