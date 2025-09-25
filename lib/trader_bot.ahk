@@ -43,7 +43,7 @@ class TraderBot {
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.win_after_31 := false
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 1, amount_2: 1, amounts: [22.93, 47.86, 1.6]}
+        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_2: 1, amounts: [22.93, 47.86, 1.6]}
         this.qualifiers.win_amount_modifier := {state:0, amounts: [1, 10, 7, 3]}
         this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
 
@@ -638,12 +638,14 @@ class TraderBot {
 
             if this.qualifiers.1_5_state.state = 2 and this.stats.streak = -3 {
                 this.qualifiers.1_5_state.state := 3
-                this.amount := 1.6
+                this.qualifiers.loss_amount_modifier.amount := 1.6
+                this.amount := this.qualifiers.loss_amount_modifier.amount
             } else if this.qualifiers.loss_amount_modifier.state = 0 {
                 if this.stats.streak > -3 {
                     this.amount := this.qualifiers.loss_amount_modifier.amounts[-this.stats.streak]
                 } else if this.stats.streak = -3 {
-                    this.amount := 1.6
+                    this.qualifiers.loss_amount_modifier.amount := 1.6
+                    this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else if this.stats.streak <= -4 {
                     this.qualifiers.win_amount_modifier.state := 1
                     this.qualifiers.loss_amount_modifier.state := 1
@@ -666,16 +668,18 @@ class TraderBot {
                     this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else if this.stats.streak = -1 {
-                    this.qualifiers.loss_amount_modifier.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
+                    if this.qualifiers.loss_amount_modifier.state2 = 0 {
+                        this.qualifiers.loss_amount_modifier.amount := (0.10*(this.stats.max_bal_diff)) / 0.92
+                        this.qualifiers.loss_amount_modifier.state2 := 1
+                    } else if this.qualifiers.loss_amount_modifier.state2 = 1 {
+                        this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
+                    }
                     this.amount := this.qualifiers.loss_amount_modifier.amount
                 } else {
                     this.amount := (0.5*(this.stats.max_bal_diff+5)) / 0.92
                 }
             } else {
                 this.amount := (this.stats.max_bal_diff + 20) / 0.92
-                if this.stats.streak = -3 {
-                    this.amount := 1.6
-                }
             }
 
 
@@ -1552,6 +1556,7 @@ class TraderBot {
                     this.qualifiers.1_5_state.state := 0
                     this.qualifiers.win_amount_modifier.state := 0
                     this.qualifiers.loss_amount_modifier.state := 0
+                    this.qualifiers.loss_amount_modifier.state2 := 0
                     this.qualifiers.loss_amount_modifier.amounts := [37.93, 62.86, 1.6]
                 }
             } else if this.qualifiers.1_5_state.state = 1 {
@@ -1616,7 +1621,7 @@ class TraderBot {
         this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
         this.qualifiers.win_amount_modifier.state := 0
         this.qualifiers.win_amount_modifier.amounts := [1, 10, 7, 3]
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, amount: 1, amount_2: 1, amounts: [22.93, 47.86, 1.6]}
+        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_1: 1, amount_2: 1, amounts: [22.93, 47.86, 1.6]}
         this.qualifiers.custom_amount_modifier.state := 0
         this.qualifiers.balance_mark.mark := this.balance.starting
         this.qualifiers.pause_temp.state2 := false
