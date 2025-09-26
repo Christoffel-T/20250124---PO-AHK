@@ -692,10 +692,16 @@ class TraderBot {
 
             Sub1() {
                 qual := this.qualifiers.loss_amount_modifier
-                if this.stats.streak < -1 {
+                if this.stats.streak < -3 {
+                    amts := [qual.amounts[3]*2+1]
+                    loop 15 {
+                        amts.Push(amts[-1]*2+1)
+                    }
+                    return amts[-this.stats.streak-3]
+                } else if this.stats.streak < -1 {
                     qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
+                    return qual.amounts[-this.stats.streak]
                 }
-                return qual.amounts[-this.stats.streak]
             }
         }
         TradeWin() {
@@ -1788,5 +1794,5 @@ class TraderBot {
 }
 
 class Constants {
-    static amounts_part1 := [22.93, 47.86, 20, [1,2,3]]
+    static amounts_part1 := [22.93, 47.86, 20]
 }
