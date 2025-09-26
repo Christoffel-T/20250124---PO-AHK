@@ -1571,12 +1571,15 @@ class TraderBot {
                     this.qualifiers.loss_amount_modifier.state2 := 0
                     this.qualifiers.loss_amount_modifier.amounts := [37.93, 62.86, 51]
                 } else {
-                    this.amount := 1.5
+                    if this.stats.streak != -3
+                        this.amount := 1.5
                     if this.stats.streak <= -5 {
                         this.amount := custom_list[-this.stats.streak - 4]
                     }
                 }
             } else if this.qualifiers.1_5_state.state = 1 {
+                if this.stats.streak != -3
+                    this.amount := 1.5
                 this.amount := 1.5
                 if this.stats.streak <= -5 {
                     this.amount := custom_list[-this.stats.streak - 4]
