@@ -692,15 +692,16 @@ class TraderBot {
 
             Sub1() {
                 qual := this.qualifiers.loss_amount_modifier
-                if this.stats.streak < -3 {
+                if this.stats.streak >= -3  {
+                    if this.stats.streak < -1
+                        qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
+                    return qual.amounts[-this.stats.streak]
+                } else {
                     amts := [qual.amounts[3]*2+1]
                     loop 15 {
                         amts.Push(amts[-1]*2+1)
                     }
                     return amts[-this.stats.streak-3]
-                } else if this.stats.streak < -1 {
-                    qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
-                    return qual.amounts[-this.stats.streak]
                 }
             }
         }
