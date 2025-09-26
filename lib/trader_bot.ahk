@@ -1580,7 +1580,6 @@ class TraderBot {
             } else if this.qualifiers.1_5_state.state = 1 {
                 if this.stats.streak != -3
                     this.amount := 1.5
-                this.amount := 1.5
                 if this.stats.streak <= -5 {
                     this.amount := custom_list[-this.stats.streak - 4]
                 }
