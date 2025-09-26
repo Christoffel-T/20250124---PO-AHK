@@ -702,6 +702,9 @@ class TraderBot {
                 this.qualifiers.loss_amount_modifier.balance += 1000
                 this.qualifiers.loss_amount_modifier.streak--
             }
+            if this.stats.streak = -1 {
+                this.qualifiers.loss_amount_modifier.amount_1 := (0.10*(this.stats.max_bal_diff)) / 0.92
+            }
             if this.stats.streak = -2 {
                 this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
             }
@@ -739,6 +742,9 @@ class TraderBot {
 
             CheckSideBalance()
 
+            if this.stats.max_bal_diff <= 50 {
+                this.qualifiers.loss_amount_modifier.amount_3 := 20
+            }
             if this.stats.max_bal_diff <= this.qualifiers.pause_temp.reset_F {
                 this.qualifiers.win_after_31 := false
                 if this.stats.side_balance.state {
