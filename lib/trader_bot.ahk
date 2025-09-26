@@ -693,6 +693,7 @@ class TraderBot {
         TradeWin() {
             if this.qualifiers.1_5_state.state = 1 {
                 this.qualifiers.1_5_state.state := 2
+                this.qualifiers.loss_amount_modifier.amount_3 := 20
             }
 
             if this.qualifiers.loss_amount_modifier.state = 1 {
@@ -1557,8 +1558,6 @@ class TraderBot {
             ;         this.amount := this.qualifiers.streak_reset.cummulative + 1.25
             ; }
 
-            this.amount := this.amount < 1 ? 1.25 : this.amount
-            this.amount := Min(this.amount, this.balance.current)
             custom_list := [25]
             Loop 15 {
                 custom_list.Push(custom_list[-1]*2+1)
@@ -1584,6 +1583,9 @@ class TraderBot {
                     this.amount := custom_list[-this.stats.streak - 4]
                 }
             }
+
+            this.amount := this.amount < 1 ? 1.25 : this.amount
+            this.amount := Min(this.amount, this.balance.current)
 
             if !WinActive(this.wtitle) {
                 WinActivate(this.wtitle)  
