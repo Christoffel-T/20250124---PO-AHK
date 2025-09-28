@@ -518,30 +518,29 @@ class TraderBot {
         }
 
         Loss2ndOverrider(streak, fetch_only:=false) {
-            static idx := 0
+            static idx := [1, 1]
             qual := this.qualifiers.loss_amount_modifier
-            if this.stats.max_bal_diff <= 75 {
-                qual.state_2ndloss[1] := 0
-                qual.state_2ndloss[2] := 0
-                idx := 0
-                return false
-            }
             if streak != 1 and streak != 2
                 return false
-
             list := [1,5]
             loop 15 {
                 list.Push(list[-1]*2+5)
             }
 
-            if fetch_only and qual.state_2ndloss[streak] >= 2 {
-                return list[Min(idx, list.Length)]
-            }
-
             if qual.state_2ndloss[streak] >= 2 {
-                idx++
+                if this.stats.max_bal_diff <= 75 {
+                    qual.state_2ndloss[1] := 0
+                    qual.state_2ndloss[2] := 0
+                    idx := [1, 1]
+                    return false
+                }
+                if fetch_only {
+                    return list[Min(idx[streak], list.Length)]
+                } else {
+                    idx[streak]++
+                }
             }
-            return 0
+            return false
         }
 
         RankScenarios() {
@@ -727,10 +726,10 @@ class TraderBot {
             Sub1() {
                 qual := this.qualifiers.loss_amount_modifier
                 if this.stats.streak >= -3  {
-                    if this.stats.streak < -1
+                    if this.stats.streak < -1 {
                         qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
-                    if this.stats.streak > -3
-                        qual.state_2ndloss[-this.stats.streak]++
+                        qual.state_2ndloss[-this.stats.streak-1]++
+                    }
                     return qual.amounts[-this.stats.streak]
                 } else {
                     amts := [qual.amounts[3]*2+2]
@@ -1331,7 +1330,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := '(' this.qualifiers.pause_temp.count ') ' format('{:.2f}', this.amount)
-        str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
+        str_e := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ')' this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         str_f := format('{:.2f}', this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_g := format('{:.2f}', this.stats.side_balance.val)
         str_m := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
