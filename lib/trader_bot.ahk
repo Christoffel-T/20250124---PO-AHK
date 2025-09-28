@@ -791,9 +791,6 @@ class TraderBot {
 
             CheckSideBalance()
 
-            if this.stats.max_bal_diff <= 50 {
-                this.qualifiers.loss_amount_modifier.amount_3 := 20
-            }
             if this.stats.max_bal_diff <= this.qualifiers.pause_temp.reset_F {
                 this.qualifiers.win_after_31 := false
                 if this.stats.side_balance.state {
@@ -1656,6 +1653,7 @@ class TraderBot {
             this.amount := 1
             this.stats.streak := 0
             this.stats.max_bal_diff := 0
+            this.SetTradeAmount()
         }
 
         AmountOverrider() {
