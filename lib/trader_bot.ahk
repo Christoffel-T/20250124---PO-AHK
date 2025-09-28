@@ -43,7 +43,7 @@ class TraderBot {
         this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
         this.qualifiers.win_after_31 := false
         this.qualifiers.custom_amount_modifier := {state:0, count: 5}
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_1: 1, amount_2: 1, amount_3: 20, amounts: Constants.amounts_part1.Clone()}
+        this.qualifiers.loss_amount_modifier := {state_2ndloss: Map(1, 0, 2, 0), balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_1: 1, amount_2: 1, amount_3: 20, amounts: Constants.amounts_part1.Clone()}
         this.qualifiers.win_amount_modifier := {state:0, amounts: [1, 10, 7, 3]}
         this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
 
@@ -502,15 +502,41 @@ class TraderBot {
 
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             this.stats.max_bal_diff := this.balance.max - this.balance.current
+            val := 0
             if not win.ps and not draw.ps {
                 TradeLose()
+                val := AmountOverrider()
             } else if win.ps {
                 TradeWin()
+                val := AmountOverrider()
             } else if draw.ps {
                 TradeDraw()
             }
+            if val
+                this.amount := val
             this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
             RankScenarios()
+        }
+
+        AmountOverrider() {
+            static idx := 0
+            qual := this.qualifiers.loss_amount_modifier
+            if this.stats.max_bal_diff <= 75 {
+                qual.state_2ndloss[1] := 0
+                qual.state_2ndloss[2] := 0
+                idx := 0
+                return false
+            }
+
+            if qual.state_2ndloss >= 2 {
+                idx++
+                list := [1,5]
+                loop 15 {
+                    list.Push(list[-1]*2+5)
+                }
+                return list[Min(idx, list.Length)]
+            }
+            return 0
         }
 
         RankScenarios() {
@@ -695,11 +721,13 @@ class TraderBot {
                 if this.stats.streak >= -3  {
                     if this.stats.streak < -1
                         qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
+                    if this.stats.streak > -3
+                        qual.state_2ndloss[-this.stats.streak]++
                     return qual.amounts[-this.stats.streak]
                 } else {
-                    amts := [qual.amounts[3]*2+1]
+                    amts := [qual.amounts[3]*2+2]
                     loop 15 {
-                        amts.Push(amts[-1]*2+1)
+                        amts.Push(amts[-1]*2+2)
                     }
                     return amts[-this.stats.streak-3]
                 }
@@ -1552,7 +1580,7 @@ class TraderBot {
     SetTradeAmount(bal_mark:=true) {
         _count_reload := 0
 
-        Overrider()
+        AmountOverrider()
 
         Loop {
             Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
@@ -1630,7 +1658,7 @@ class TraderBot {
             this.stats.max_bal_diff := 0
         }
 
-        Overrider() {
+        AmountOverrider() {
             custom_list := [25]
             Loop 15 {
                 custom_list.Push(custom_list[-1]*2+1)
@@ -1656,6 +1684,7 @@ class TraderBot {
                     this.amount := custom_list[-this.stats.streak - 4]
                 }
             }
+            return this.amount
         }
     }
 
@@ -1663,7 +1692,7 @@ class TraderBot {
         this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
         this.qualifiers.win_amount_modifier.state := 0
         this.qualifiers.win_amount_modifier.amounts := [1, 10, 7, 3]
-        this.qualifiers.loss_amount_modifier := {balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_1: 1, amount_2: 1, amount_3: 20, amounts: Constants.amounts_part1.Clone()}
+        this.qualifiers.loss_amount_modifier := {state_2ndloss: Map(1, 0, 2, 0), balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_1: 1, amount_2: 1, amount_3: 20, amounts: Constants.amounts_part1.Clone()}
         this.qualifiers.custom_amount_modifier.state := 0
         this.qualifiers.balance_mark.mark := this.balance.starting
         this.qualifiers.pause_temp.state2 := false
