@@ -503,22 +503,25 @@ class TraderBot {
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             this.stats.max_bal_diff := this.balance.max - this.balance.current
             val := 0
+            streak_prev := -this.stats.streak
             if not win.ps and not draw.ps {
                 TradeLose()
-                val := AmountOverrider()
+                if streak_prev = 1 or streak_prev = 2 {
+                    Loss2ndOverrider(streak_prev)
+                }
             } else if win.ps {
                 TradeWin()
-                val := AmountOverrider()
+                if streak_prev = 1 or streak_prev = 2 {
+                    Loss2ndOverrider(streak_prev)
+                }
             } else if draw.ps {
                 TradeDraw()
             }
-            if val
-                this.amount := val
             this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
             RankScenarios()
         }
 
-        AmountOverrider() {
+        Loss2ndOverrider(streak, fetch_only:=false) {
             static idx := 0
             qual := this.qualifiers.loss_amount_modifier
             if this.stats.max_bal_diff <= 75 {
@@ -528,13 +531,17 @@ class TraderBot {
                 return false
             }
 
-            if qual.state_2ndloss >= 2 {
-                idx++
-                list := [1,5]
-                loop 15 {
-                    list.Push(list[-1]*2+5)
-                }
+            list := [1,5]
+            loop 15 {
+                list.Push(list[-1]*2+5)
+            }
+
+            if fetch_only and qual.state_2ndloss[streak] >= 2 {
                 return list[Min(idx, list.Length)]
+            }
+
+            if qual.state_2ndloss[streak] >= 2 {
+                idx++
             }
             return 0
         }
@@ -712,6 +719,9 @@ class TraderBot {
             ; }
 
             this.amount := Sub1()
+            if amt := Loss2ndOverrider(this.stats.streak, true) {
+                this.amount := amt
+            }
             this.SetTradeAmount()
 
             this.stats.loss++
