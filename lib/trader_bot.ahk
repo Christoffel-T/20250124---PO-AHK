@@ -506,14 +506,10 @@ class TraderBot {
             streak_prev := -this.stats.streak
             if not win.ps and not draw.ps {
                 TradeLose()
-                if streak_prev = 1 or streak_prev = 2 {
-                    Loss2ndOverrider(streak_prev)
-                }
+                Loss2ndOverrider(streak_prev)
             } else if win.ps {
                 TradeWin()
-                if streak_prev = 1 or streak_prev = 2 {
-                    Loss2ndOverrider(streak_prev)
-                }
+                Loss2ndOverrider(streak_prev)
             } else if draw.ps {
                 TradeDraw()
             }
@@ -530,6 +526,8 @@ class TraderBot {
                 idx := 0
                 return false
             }
+            if streak != 1 and streak != 2
+                return false
 
             list := [1,5]
             loop 15 {
