@@ -528,12 +528,12 @@ class TraderBot {
             }
 
             if qual.state_2ndloss[streak] >= 2 {
-                if this.stats.max_bal_diff <= 75 {
-                    qual.state_2ndloss[1] := 0
-                    qual.state_2ndloss[2] := 0
-                    idx := [1, 1]
-                    return false
-                }
+                ; if this.stats.max_bal_diff <= 75 {
+                ;     qual.state_2ndloss[1] := 0
+                ;     qual.state_2ndloss[2] := 0
+                ;     idx := [1, 1]
+                ;     return false
+                ; }
                 if fetch_only {
                     return list[Min(idx[streak], list.Length)]
                 } else {
