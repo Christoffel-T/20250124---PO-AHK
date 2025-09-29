@@ -1333,7 +1333,7 @@ class TraderBot {
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
             str_e := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_e
-        str_f := format('{:.2f}', this.qualifiers.streak_reset.cummulative) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
+        str_f := format('{:.2f}', this.stats.max_bal_diff) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_g := format('{:.2f}', this.stats.side_balance.val)
         str_m := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
         _count_reload := 0
