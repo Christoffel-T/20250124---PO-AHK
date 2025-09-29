@@ -511,12 +511,6 @@ class TraderBot {
             qual := this.qualifiers.loss_amount_modifier
             if streak != 1 and streak != 2
                 return false
-            if qual.idx[streak] > 1 and qual.state_2ndloss[streak] > 0 and this.stats.max_bal_diff <= 50 {
-                qual.state_2ndloss[1] := 0
-                qual.state_2ndloss[2] := 0
-                qual.idx := [1, 1]
-                return false
-            }
             list := [1,5]
             loop 15 {
                 list.Push(list[-1]*2+5)
