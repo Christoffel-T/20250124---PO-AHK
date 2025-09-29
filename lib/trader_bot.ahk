@@ -716,7 +716,7 @@ class TraderBot {
             ; }
 
             this.amount := Sub1()
-            if amt := Loss2ndOverrider(this.stats.streak, true) {
+            if amt := Loss2ndOverrider(-this.stats.streak, true) {
                 this.amount := amt
             }
             this.SetTradeAmount()
