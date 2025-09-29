@@ -35,17 +35,7 @@ class TraderBot {
 
         this.amounts_tresholds := [[0, 1]]
         this.qualifiers := {}
-        this.qualifiers.streak_sc := -4000
-        this.qualifiers.streak_reset := {trade_history: [''], val: -4, count: 0, cummulative: 0, count2: 0}
-        this.qualifiers.1020 := {mark: 0, val: 10}
-        this.qualifiers.flip_trade := {state: false, count: 0}
-        this.qualifiers.pause_temp := {state: false, count: 0, state2: false, amount: 1, reset_F: 10}
-        this.qualifiers.double_trade := {state: false, count: 0, WW: 0, WL: 0, LL: 0}
-        this.qualifiers.win_after_31 := false
-        this.qualifiers.custom_amount_modifier := {state:0, count: 5}
-        this.qualifiers.loss_amount_modifier := {state_2ndloss: Map(1, 0, 2, 0), balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_1: 1, amount_2: 1, amount_3: 20, amounts: Constants.amounts_part1.Clone()}
-        this.qualifiers.win_amount_modifier := {state:0, amounts: [1, 10, 7, 3]}
-        this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
+        this.QualifiersReset()
 
         Loop 10 {
             _index := A_Index
@@ -518,9 +508,14 @@ class TraderBot {
             RankScenarios()
         }
 
-        Loss2ndOverrider(streak, fetch_only:=false) {
-            static idx := [1, 1]
+        Loss2ndOverrider(streak, fetch_only:=false, reset:=false) {
             qual := this.qualifiers.loss_amount_modifier
+            if qual.idx[streak] > 1 and qual.state_2ndloss[streak] > 0 and this.stats.max_bal_diff <= 50 {
+                qual.state_2ndloss[1] := 0
+                qual.state_2ndloss[2] := 0
+                qual.idx := [1, 1]
+                return false
+            }
             if streak != 1 and streak != 2
                 return false
             list := [1,5]
@@ -529,16 +524,16 @@ class TraderBot {
             }
 
             if qual.state_2ndloss[streak] >= 2 {
-                ; if this.stats.max_bal_diff <= 75 {
-                ;     qual.state_2ndloss[1] := 0
-                ;     qual.state_2ndloss[2] := 0
-                ;     idx := [1, 1]
-                ;     return false
-                ; }
+                if this.stats.max_bal_diff <= 50 {
+                    qual.state_2ndloss[1] := 0
+                    qual.state_2ndloss[2] := 0
+                    qual.idx := [1, 1]
+                    return false
+                }
                 if fetch_only {
-                    return list[Min(idx[streak], list.Length)]
+                    return list[Min(qual.idx[streak], list.Length)]
                 } else {
-                    idx[streak]++
+                    qual.idx[streak]++
                 }
             }
             return false
@@ -1697,21 +1692,68 @@ class TraderBot {
     }
 
     QualifiersReset() {
-        this.qualifiers.1_5_state := {state:0, custom_map: Map(1, 0, 2, 0, 'total', 0)}
-        this.qualifiers.win_amount_modifier.state := 0
-        this.qualifiers.win_amount_modifier.amounts := [1, 10, 7, 3]
-        this.qualifiers.loss_amount_modifier := {state_2ndloss: Map(1, 0, 2, 0), balance: this.balance.starting, streak: -3, state: 0, state2: 0, amount: 1, amount_1: 1, amount_2: 1, amount_3: 20, amounts: Constants.amounts_part1.Clone()}
-        this.qualifiers.custom_amount_modifier.state := 0
-        this.qualifiers.balance_mark.mark := this.balance.starting
-        this.qualifiers.pause_temp.state2 := false
-        this.qualifiers.pause_temp.reset_F := 10
-        this.qualifiers.pause_temp.amount := 1
-        this.qualifiers.streak_reset.cummulative := 0
-        this.qualifiers.streak_reset.count := 0
-        this.qualifiers.streak_reset.count2 := 0
-        this.qualifiers.streak_reset.val := -4
-        this.qualifiers.1020.val := 10
-        this.qualifiers.1020.mark := 0
+        this.qualifiers := {
+            streak_sc: -4000,
+            streak_reset: {
+                trade_history: [''],
+                val: -4,           ; Consolidated from later update
+                count: 0,          ; Consolidated from later update
+                cummulative: 0,    ; Consolidated from later update
+                count2: 0          ; Consolidated from later update
+            },
+            1020: {
+                mark: 0,           ; Consolidated from later update
+                val: 10            ; Consolidated from later update
+            },
+            flip_trade: {
+                state: false,
+                count: 0
+            },
+            pause_temp: {
+                state: false,
+                count: 0,
+                state2: false,     ; Consolidated from later update
+                amount: 1,         ; Consolidated from later update
+                reset_F: 10        ; Consolidated from later update
+            },
+            double_trade: {
+                state: false,
+                count: 0,
+                WW: 0,
+                WL: 0,
+                LL: 0
+            },
+            win_after_31: false,
+            custom_amount_modifier: {
+                state: 0,          ; Consolidated from later update (from `this.qualifiers.custom_amount_modifier.state := 0`)
+                count: 5
+            },
+            ; Note: For loss_amount_modifier and win_amount_modifier, the later lines 
+            ; were setting the object keys again (state, amounts, etc.) but the object 
+            ; structure was already mostly defined in the first pass. I've kept the 
+            ; most complete definition and removed the duplicates.
+            loss_amount_modifier: {
+                idx: [1, 1],
+                state_2ndloss: Map(1, 0, 2, 0), ; Map() should be a function call
+                balance: this.balance.starting,
+                streak: -3,
+                state: 0,
+                state2: 0,
+                amount: 1,
+                amount_1: 1,
+                amount_2: 1,
+                amount_3: 20,
+                amounts: Constants.amounts_part1.Clone()
+            },
+            win_amount_modifier: {
+                state: 0,          ; Consolidated from later update
+                amounts: [1, 10, 7, 3] ; Consolidated from later update
+            },
+            1_5_state: {
+                state: 0,
+                custom_map: Map(1, 0, 2, 0, 'total', 0)
+            },
+        }
     }
     
     SetTradeTime() {
