@@ -720,7 +720,7 @@ class TraderBot {
                     }
                     return qual.amounts[-this.stats.streak]
                 } else {
-                    amts := [qual.amounts[3]*2+2]
+                    amts := [qual.amounts[3]*2+2, qual.amounts[3]*2+2]
                     loop 15 {
                         amts.Push(amts[-1]*2+2)
                     }
