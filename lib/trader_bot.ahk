@@ -68,7 +68,6 @@ class TraderBot {
         this.blockers := Map()
         this.state := {coin_change_streak: false, 5loss: false, 32:false}
         this.min_x := this.coords.area.x - 50
-        this.amount := this.GetAmount(this.balance.current)
         this._time := 15
         this._time += 4
         this.payout := 92
@@ -76,10 +75,11 @@ class TraderBot {
         this.stats.reset_date := SubStr(this.datetime, 1, -6)
         this.coin_name := OCR.FromRect(this.coords.coin.x - 15, this.coords.coin.y - 15, 130, 40).Text
         this.marked_time_refresh := A_TickCount
-
+        
         this.pause_based_on_timeframe := ''
         this.qualifiers := {}
         this.QualifiersReset()
+        this.amount := this.GetAmount(this.balance.current)
 
         if !FileExist(this.log_file) {
             FileAppend('date,time,active_trade,max_diff,side_bal,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
