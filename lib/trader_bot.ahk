@@ -34,8 +34,6 @@ class TraderBot {
             this.win_amounts[1].Push(v)
 
         this.amounts_tresholds := [[0, 1]]
-        this.qualifiers := {}
-        this.QualifiersReset()
 
         Loop 10 {
             _index := A_Index
@@ -80,6 +78,8 @@ class TraderBot {
         this.marked_time_refresh := A_TickCount
 
         this.pause_based_on_timeframe := ''
+        this.qualifiers := {}
+        this.QualifiersReset()
 
         if !FileExist(this.log_file) {
             FileAppend('date,time,active_trade,max_diff,side_bal,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
