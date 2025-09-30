@@ -511,7 +511,7 @@ class TraderBot {
             qual := this.qualifiers.loss_amount_modifier
             if streak != 1 and streak != 2
                 return false
-            list := [1,5]
+            list := [1,1,5]
             loop 15 {
                 list.Push(list[-1]*2+5)
             }
@@ -523,7 +523,9 @@ class TraderBot {
                     return false
                 }
                 if fetch_only {
-                    return list[Min(qual.idx[streak], list.Length)]
+                    if qual.state_2ndloss[2] >= 2
+                        return list[Min(qual.idx[streak], list.Length)]
+                    return false
                 } else {
                     qual.idx[streak]++
                 }
