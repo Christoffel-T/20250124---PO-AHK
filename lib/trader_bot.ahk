@@ -63,7 +63,6 @@ class TraderBot {
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, reset_date: 0}
         this.stats.max_bal_diff := 0
-        this.stats.side_balance := {val: 0, state: false}
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
         this.lose_streak := {max: 0, repeat: Map()}
@@ -497,14 +496,53 @@ class TraderBot {
             if not win.ps and not draw.ps {
                 TradeLose()
                 Loss2ndOverrider(streak_prev)
+                Overrider3x()
             } else if win.ps {
                 TradeWin()
                 Loss2ndOverrider(streak_prev)
+                Overrider3x()
             } else if draw.ps {
                 TradeDraw()
             }
             this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
             RankScenarios()
+        }
+
+        Overrider3x() {
+            qual := this.qualifiers.loss_amount_modifier
+            gbal := this.stats.G_balance
+
+            list := [1]
+            loop 15 {
+                list.Push(list[-1]*3)
+            }
+
+            
+            if gbal.state = 0 {
+                if qual.state_2ndloss[2] >= 2 and this.stats.max_bal_diff > 150 {
+                    gbal.state := 1
+                }
+            } else if gbal.state = 1 {
+                if this.stats.max_bal_diff <= 150 {
+                    gbal.state := 2
+                    gbal.val := this.stats.max_bal_diff
+                    gbal.mark := gbal.val
+                } else if this.stats.max_bal_diff > 200 {
+                    gbal.state := 2
+                    gbal.val := this.stats.max_bal_diff
+                    gbal.mark := gbal.val
+                }
+            } else if gbal.state = 2 {
+                if this.stats.streak = -2 {
+                    if gbal.val <= gbal.mark - 15 {
+                        gbal.count := 0
+                    }
+                    gbal.count++
+                    this.amount := list[Min(gbal.count, list.Length)]
+                } else {
+                    this.amount := 1
+                }
+            }
         }
 
         Loss2ndOverrider(streak, fetch_only:=false, reset:=false) {
@@ -552,6 +590,9 @@ class TraderBot {
         }
 
         TradeLose() {
+            if this.stats.G_balance.state {
+                this.stats.G_balance.val += this.amount
+            }
             this.stats.%this.executed_trades[1]%.lose++
             this.stats.trade_history.InsertAt(1, 'lose')
             if this.stats.streak > 0 and this.qualifiers.win_amount_modifier.state = 1 {
@@ -574,13 +615,8 @@ class TraderBot {
             if this.qualifiers.streak_reset.cummulative > 0
                 this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
 
-            CheckSideBalance()
-
             this.stats.streak--
 
-            if this.stats.side_balance.state {
-                this.stats.side_balance.val += this.amount
-            }
 
             if this.stats.streak <= -3 {
                 ChangeCoin()
@@ -731,6 +767,9 @@ class TraderBot {
             }
         }
         TradeWin() {
+            if this.stats.G_balance.state {
+                this.stats.G_balance.val -= this.amount*0.92
+            }
             qual := this.qualifiers.loss_amount_modifier
             if this.stats.streak = -1 or this.stats.streak = -2 {
                 if qual.state_2ndloss[-this.stats.streak] < 2
@@ -780,28 +819,15 @@ class TraderBot {
                 }
             }
 
-            if this.stats.side_balance.state {
-                this.stats.side_balance.val -= this.amount*0.92
-            }
-
-            if this.stats.side_balance.state and this.stats.side_balance.val <= 0 {
+            if this.stats.G_balance.state and this.stats.G_balance.val <= 0 {
                 ; this.amount_arr[1].RemoveAt(1, 4)
-                this.stats.side_balance.state := false
-                this.stats.side_balance.val := 0
+                this.stats.G_balance.state := false
+                this.stats.G_balance.val := 0
+                this.stats.G_balance.count := 0
             }
-
-            CheckSideBalance()
 
             if this.stats.max_bal_diff <= this.qualifiers.pause_temp.reset_F {
                 this.qualifiers.win_after_31 := false
-                if this.stats.side_balance.state {
-                    ; this.amount_arr[1].RemoveAt(1, 4)
-                    this.stats.side_balance.state := false
-                    if this.stats.max_bal_diff > 0
-                        this.stats.side_balance.val += this.stats.max_bal_diff
-                    else
-                        this.stats.side_balance.val := 0
-                }
                 this.QualifiersReset()
             } else {
                 if this.qualifiers.streak_reset.cummulative > 0
@@ -887,22 +913,6 @@ class TraderBot {
             sleep 100
             Send '{Escape}'
             sleep 200
-        }
-        CheckSideBalance() {
-            if this.qualifiers.streak_reset.cummulative >= 1 and not this.stats.side_balance.state {
-                this.stats.side_balance.val += this.qualifiers.streak_reset.cummulative
-                this.stats.side_balance.state := true
-                ; this.amount_arr[1].InsertAt(1, 2.71, 7.52, 17.98, 40.69)
-
-                ; this.qualifiers.streak_reset.cummulative := 0
-                this.qualifiers.streak_reset.count2 := 0
-                this.qualifiers.streak_reset.count := 0
-                this.qualifiers.streak_reset.val := -4
-                this.qualifiers.1020.val := 10
-                this.qualifiers.1020.mark := 0
-                return true
-            }
-            return false
         }
     }
 
@@ -1328,7 +1338,7 @@ class TraderBot {
         if this.stats.streak = -1 or this.stats.streak = -2
             str_e := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_e
         str_f := format('{:.2f}', this.stats.max_bal_diff) ' (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
-        str_g := format('{:.2f}', this.stats.side_balance.val)
+        str_g := format('{:.2f}', this.stats.G_balance.val)
         str_m := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
         _count_reload := 0
         loop {
@@ -1690,6 +1700,8 @@ class TraderBot {
     }
 
     QualifiersReset() {
+        this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
+
         this.qualifiers := {
             streak_sc: -4000,
             streak_reset: {
