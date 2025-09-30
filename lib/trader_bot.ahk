@@ -519,7 +519,7 @@ class TraderBot {
                 if this.stats.max_bal_diff <= 50 {
                     qual.state_2ndloss[1] := 0
                     qual.state_2ndloss[2] := 0
-                    qual.idx := [1, 1]
+                    qual.idx := [0, 0]
                     return false
                 }
                 if fetch_only {
@@ -1729,7 +1729,7 @@ class TraderBot {
             ; structure was already mostly defined in the first pass. I've kept the 
             ; most complete definition and removed the duplicates.
             loss_amount_modifier: {
-                idx: [1, 1],
+                idx: [0, 0],
                 state_2ndloss: Map(1, 0, 2, 0), ; Map() should be a function call
                 balance: this.balance.starting,
                 streak: -3,
