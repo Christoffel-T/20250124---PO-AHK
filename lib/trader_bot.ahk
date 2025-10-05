@@ -474,8 +474,6 @@ class TraderBot {
             this.stats.max_bal_diff := this.balance.max - this.balance.current
             this.active_trade := ''
             this.trade_opened[1] := false
-            MouseClick('L', this.coords.trades_closed.x + Random(-2, 2), this.coords.trades_closed.y + Random(-1, 1), 5, 2)
-            sleep 500
             this.CheckBalance()
             if this.balance.current > this.balance.last_trade + 0.5 {
                 win := {ps:true}
@@ -489,7 +487,6 @@ class TraderBot {
             }
             this.balance.last_trade := this.balance.current 
 
-            MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             this.stats.max_bal_diff := this.balance.max - this.balance.current
             val := 0
             streak_prev := -this.stats.streak
@@ -504,6 +501,7 @@ class TraderBot {
             } else if draw.ps {
                 TradeDraw()
             }
+            this.SetTradeAmount()
             this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
             RankScenarios()
         }
@@ -745,7 +743,6 @@ class TraderBot {
             if amt := Loss2ndOverrider(-this.stats.streak, true) {
                 this.amount := amt
             }
-            this.SetTradeAmount()
 
             this.stats.loss++
 
@@ -873,7 +870,6 @@ class TraderBot {
                 this.amount := this.qualifiers.win_amount_modifier.amounts[_num]
             }
 
-            this.SetTradeAmount()
             this.stats.win++
         }
         TradeDraw() {
