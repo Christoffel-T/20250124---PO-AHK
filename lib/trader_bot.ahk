@@ -532,9 +532,9 @@ class TraderBot {
                 }
             } else if gbal.state = 2 {
                 if this.stats.streak = -2 {
-                    if gbal.val <= gbal.mark - 15 {
-                        gbal.count := 0
-                    }
+                    ; if gbal.val <= gbal.mark - 15 {
+                    ;     gbal.count := 0
+                    ; }
                     gbal.count++
                     this.amount := list[Min(gbal.count, list.Length)]
                 } else {
