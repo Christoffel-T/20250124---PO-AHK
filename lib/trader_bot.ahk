@@ -168,10 +168,6 @@ class TraderBot {
                 this.lose_streak.repeat[this.stats.streak].lose++
             }
 
-            this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
-            if this.qualifiers.streak_reset.cummulative > 0
-                this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
-
             this.stats.streak--
 
             if this.balance.current <= this.qualifiers.loss_amount_modifier.balance - 1000 {
@@ -185,12 +181,28 @@ class TraderBot {
 
             LossModifier() {
                 qual := this.qualifiers.loss_amount_modifier
-                if this.stats.streak >= -3  {
-                    if this.stats.streak < -1 {
-                        qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
-                        qual.state_2ndloss[-this.stats.streak-1]++
+                if this.stats.streak >= -3 {
+                    if qual.state1 = 0 {
+                        if this.stats.streak < -1 {
+                            qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
+                            qual.state_2ndloss[-this.stats.streak-1]++
+                        }
+                        if qual.state_2ndloss[2] >= 2 and this.stats.streak = -3 {
+                            qual.state1 = 1
+                        }
+                        return qual.amounts[-this.stats.streak]
+                    } else if qual.state1 = 1 {
+                        amts := Constants.GetAmounts2()
+                        if this.stats.streak < -1 {
+                            qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
+                            qual.idx[-this.stats.streak-1]++
+                        }
+                        if this.stats.streak = -3 {
+                            return qual.amounts[-this.stats.streak]
+                        } else {
+                            return amts[-this.stats.streak][qual.idx[-this.stats.streak]]
+                        }
                     }
-                    return qual.amounts[-this.stats.streak]
                 } else {
                     amts := [qual.amounts[3]*2+2, qual.amounts[3]*2+2]
                     loop 15 {
@@ -209,6 +221,13 @@ class TraderBot {
             if this.stats.streak = -1 or this.stats.streak = -2 {
                 if qual.state_2ndloss[-this.stats.streak] < 2
                     qual.state_2ndloss[-this.stats.streak] := 0
+                
+                qual.idx[-this.stats.streak] := 1
+
+                if this.stats.streak = -2 {
+                    qual.idx[1] := 1
+                    qual.idx[2] := 1
+                }
             }
             if this.stats.streak < 0 and this.stats.streak >= -3 {
                 qual.amounts[-this.stats.streak] := Constants.GetAmounts1()[-this.stats.streak]
@@ -256,9 +275,6 @@ class TraderBot {
             if this.stats.max_bal_diff <= this.qualifiers.pause_temp.reset_F {
                 this.qualifiers.win_after_31 := false
                 this.QualifiersReset()
-            } else {
-                if this.qualifiers.streak_reset.cummulative > 0
-                    this.qualifiers.streak_reset.cummulative := this.stats.max_bal_diff
             }
 
             if this.amount >= 31 and this.stats.max_bal_diff <= 100 {
@@ -425,7 +441,6 @@ class TraderBot {
                 trade_history: [''],
                 val: -4,           ; Consolidated from later update
                 count: 0,          ; Consolidated from later update
-                cummulative: 0,    ; Consolidated from later update
                 count2: 0          ; Consolidated from later update
             },
             1020: {
@@ -439,7 +454,6 @@ class TraderBot {
             pause_temp: {
                 state: false,
                 count: 0,
-                state2: false,     ; Consolidated from later update
                 amount: 1,         ; Consolidated from later update
                 reset_F: 10        ; Consolidated from later update
             },
@@ -460,17 +474,15 @@ class TraderBot {
             ; structure was already mostly defined in the first pass. I've kept the 
             ; most complete definition and removed the duplicates.
             loss_amount_modifier: {
-                idx: [0, 0],
+                idx: Map('1', 1, '2', 1),
                 state_2ndloss: Map(1, 0, 2, 0), ; Map() should be a function call
                 balance: this.balance.starting,
                 streak: -3,
                 state1: 0,
-                state2: 0,
-                amount: 1,
                 amount_1: 1,
                 amount_2: 1,
                 amount_3: 20,
-                amounts: Constants.GetAmounts1().Clone()
+                amounts: Constants.GetAmounts1()
             },
             win_amount_modifier: {
                 state: 0,          ; Consolidated from later update
