@@ -1,7 +1,6 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
-
 scriptPath := A_LineFile
 
 ; Get last modified datetime
@@ -86,376 +85,6 @@ class TraderBot {
         }
     }
 
-    StartLoop(*) {
-        ToolTip('Running...', 5, 5, 1)
-        this.ReloadWebsite()
-        this.CheckBalance()
-        
-        MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
-        ; MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
-        ; sleep 100
-        ; MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
-        ; sleep 100
-        ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y - 1*28, 1, 2)
-        ; sleep 1000
-        ; MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + 0*28, 1, 2)
-        ; sleep 1000
-        ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
-        ; sleep 1000
-        MouseClick('L', this.coords.empty_area.x + Random(-2, 2), this.coords.empty_area.y, 1, 2)
-        sleep 300
-
-        while this.balance.current >= this.balance.starting {
-            this.amount := 20000
-            this.SetTradeAmount(false)
-            MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,3,2)
-            sleep 600
-            this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
-            while !this.CheckTradeClosed(true)
-                sleep 100
-            ; sleep 6000
-            this.CheckBalance()
-        }
-        
-        this.CheckBalance()
-        while this.balance.current < this.balance.starting {
-            this.AddBalance(this.balance.starting-this.balance.current)
-            sleep 2000
-            this.CheckBalance()
-        }
-        
-        this.amount := this.GetAmount(this.balance.current)
-        this.SetTradeAmount()
-        sleep 100
-        MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
-        sleep 100
-        MouseClick('L', this.coords.time_choice.x + Random(-2, 2), this.coords.time_choice.y + Random(-2, 2), 1, 2)
-        sleep 100
-        MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
-        sleep 100
-        this.CheckPayout(true)
-        SetTimer(this.Main.Bind(this), 100)
-    }
-
-    Main() {
-        if !WinActive(this.wtitle) {
-            WinActivate(this.wtitle)
-            sleep 100
-        }
-        MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
-        sleep 100
-        Send('{Escape 2}')
-
-        this.CheckStuck()
-        this.CheckBalance()
-        this.CheckPayout()
-        if not this.PSearch()
-            return
-        this.CheckTradeClosed()
-        
-        this.datetime := A_Now
-        if this.stats.reset_date != SubStr(this.datetime, 1, -6) {
-            this.stats.win := 0
-            this.stats.loss := 0
-            this.stats.draw := 0
-            this.lose_streak := {max: 0, repeat: Map()}
-        }
-        this.stats.reset_date := SubStr(this.datetime, 1, -6)
-        
-        if this.ps.blue.state and this.ps.orange.state {
-            this.BothLinesDetected()
-            this.RunScenarios()
-        }
-    
-        this.UpdateLog()
-        sleep 100
-    
-    }
-
-    CheckStuck() {
-        if this.candle_data.Length > 3 {
-            _reload := true
-            Loop 3 {
-                if not Utils.is_all_same(this.candle_data[A_Index].moving_prices) {
-                    _reload := false
-                    break
-                }
-            }
-            if _reload {
-                this.ReloadWebsite()
-            }
-        }
-    }
-    
-    CheckPaused() {
-
-        ; key := 'pause-3'
-
-        ; _bottom := 0
-        ; _top := 99999999
-
-        ; if this.candle_data.Length >= 2 {
-        ;     for v in this.candle_data[2].blue_line_y {
-        ;         _bottom := max(_bottom, v)
-        ;         _top := min(_top, v)
-        ;     }
-        ; }
-
-        ; if this.stats.streak <= -3 and Mod(A_Sec, 15) >= 1 and Mod(A_Sec, 15) <= 3
-        ; and (this.ps.blue.y > _top and this.candle_data[1].color = 'G' or this.ps.blue.y < _top and this.candle_data[1].color = 'R')
-        ;     this.pause_based_on_timeframe := Utils.get_timeframe(15,0)
-
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if this.pause_based_on_timeframe = this.candle_data[1].timeframe {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := 'PAUSE_blue_touch_top/bottom'
-
-        ; if (this.ps.blue.y >= this.candle_data[1].O - 10 and this.ps.blue.y <= this.candle_data[1].O + 10)
-        ; or (this.ps.blue.y >= this.candle_data[1].C - 10 and this.ps.blue.y <= this.candle_data[1].C + 10)
-        ;     this.pause_based_on_timeframe := Utils.get_timeframe(15,0)
-
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if this.pause_based_on_timeframe = this.candle_data[1].timeframe {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-        ; if this.blockers[key].state and 
-
-        ; key := 'PAUSE'
-        ; pause_buy  := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y > this.candle_data[1].O - (this.candle_data[1].size/2) and this.candle_data[1].color = 'G'
-        ; pause_sell := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y < this.candle_data[1].O + (this.candle_data[1].size/2) and this.candle_data[1].color = 'R'
-
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if this.candle_data.Length >= 2 and pause_buy or pause_sell {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; }
-        ; if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := '2cr'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if (this.crossovers_arr.Length >= 2 and A_TickCount - this.crossovers_arr[-2].time <= 30000) {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; }
-        ; if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := 'not_3G3R'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if Mod(A_Sec, 15) >= 13 and (candle_data.Length >=3 and candle_data[1].color = candle_data[2].color and candle_data[1].color = candle_data [3].color) {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else if candle_data.Length < 3 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; }
-
-        ; key := 'GRRG'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if Mod(A_Sec, 15) >= 13 and (this.candle_data.Length >=4 and this.candle_data[4].color = 'G' and this.candle_data[3].color = 'R' and this.candle_data[2].color = 'R' and this.candle_data[1].color = 'G') {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := 'RGGR'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if Mod(A_Sec, 15) >= 13 and (this.candle_data.Length >=4 and this.candle_data[4].color = 'R' and this.candle_data[3].color = 'G' and this.candle_data[2].color = 'G' and this.candle_data[1].color = 'R') {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := 'GRG'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if Mod(A_Sec, 15) >= 13 and (this.candle_data.Length >=3 and this.candle_data[3].color = 'G' and this.candle_data[2].color = 'R' and this.candle_data[1].color = 'G') {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := 'RGR'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if Mod(A_Sec, 15) >= 13 and (this.candle_data.Length >=3 and this.candle_data[3].color = 'R' and this.candle_data[2].color = 'G' and this.candle_data[1].color = 'R') {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := '3sCc'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if not Utils.is_all_same(candle_data[1].colors_12) {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := '2px'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if this.ps.blue.state and this.ps.orange.state and Abs(this.ps.orange.y - this.ps.blue.y) <= 2 {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := 'candle_engulfed'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if candle_data.Length >= 3 and candle_data[2].H > candle_data[3].H and candle_data[2].L < candle_data[3].L {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := '2candle_diff'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if Mod(A_Sec, 15) >= 13 and candle_data.Length >= 3 and candle_data[2].color != candle_data[3].color and this.ps.orange.y < min(candle_data[1].H, candle_data[1].L) and this.ps.blue.y > max(candle_data[1].H, candle_data[1].L) {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 30000 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := 'small_body'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if Mod(A_Sec, 15) >= 13 and candle_data.Length >= 3 and abs(candle_data[3].O - candle_data[3].C)/abs(candle_data[3].H - candle_data[3].L) <= 0.1 and abs(candle_data[2].O - candle_data[2].C)/abs(candle_data[2].H - candle_data[2].L) <= 0.1 {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        
-        ; key := '4losses'
-        ; coin_change_streak := -4
-        ; if this.state.5loss and this.stats.streak != coin_change_streak
-        ;     this.state.5loss := false
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if this.stats.streak = coin_change_streak and not this.state.5loss {
-        ;     this.state.5loss := true
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else if Mod(A_Sec, 15) >= 13 and this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 and this.candle_data.Length >= 4 and this.candle_data[1].color = this.candle_data[2].color and this.candle_data[2].color = this.candle_data[3].color and this.candle_data[3].color = this.candle_data[4].color {
-        ;     this.state.5loss := true
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        ; key := 'color_ch3'
-        ; if not this.blockers.Has(key)
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; if candle_data[1].color_changes.Length > 3 {
-        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
-        ; } else if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 45000 {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; } else {
-        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
-        ; }
-
-        for k, v in this.blockers {
-            if v.state
-                return true
-        }
-        return false
-    }
-
-    CheckPayout(change_anyway := false) {
-        coin_change_streak := -4
-        this.marked_time_refresh := A_TickCount
-        if not this.state.coin_change_streak and this.stats.streak != coin_change_streak
-            this.state.coin_change_streak := true
-        _count_reload := 0
-        Loop {
-            _count_reload++
-            if _count_reload > 100 {
-                _count_reload := 0
-                this.ReloadWebsite()
-            }
-            if A_TickCount > this.marked_time_refresh + 2*60*1000 {
-                this.marked_time_refresh := A_TickCount
-                this.ReloadWebsite()
-                ; reload
-            }    
-            if not change_anyway and (this.stats.streak != coin_change_streak or not this.state.coin_change_streak) and ImageSearch(&outx, &outy, this.coords.Payout.x, this.coords.Payout.y, this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, '*10 payout.png') {
-                this.payout := 92
-                break
-            } else {
-                change_anyway := false
-                Loop 19 {
-                    ToolTip(,,,A_Index+1)
-                }
-                this.last_trade := ''
-                ToolTip('Waiting for payout to be 92 or higher... ' A_Index, 500, 5, 12)
-                MouseMove(this.coords.Payout.x, this.coords.Payout.y, 5)
-                sleep 500
-                MouseMove(this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, 5)
-                sleep 500
-                MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
-                sleep 100
-                MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
-                sleep 100
-                if this.state.coin_change_streak and this.stats.streak = coin_change_streak {
-                    this.state.coin_change_streak := false
-                    _count_reload := 0
-                    Loop {
-                        _count_reload++
-                        if _count_reload > 20 {
-                            _count_reload := 0
-                            this.ReloadWebsite()
-                        }
-                        MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
-                        sleep 300
-                        new_cname := OCR.FromRect(this.coords.coin.x - 25, this.coords.coin.y - 25, 150, 50,, 3).Text
-                        ToolTip('Waiting coin name change (' this.coin_name ' vs ' new_cname ') ' A_Index, 500, 5, 12)
-                        if this.coin_name != new_cname {
-                            this.coin_name := new_cname
-                            break
-                        }
-                    }
-                } else {
-                    MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
-                }
-                sleep 100
-                MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
-                sleep 500
-                MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
-                sleep 100
-                MouseClick('L', this.coords.time_choice.x + Random(-2, 2), this.coords.time_choice.y + Random(-2, 2), 1, 2)
-                sleep 100
-                MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
-                sleep 100
-                Send '{Escape}'
-                sleep 1000
-            }
-        }
-    }
     CheckTradeClosed(just_check:=false) {
         if (this.trade_opened[1] or just_check) {
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
@@ -471,7 +100,6 @@ class TraderBot {
             if just_check
                 return true
             
-            this.stats.max_bal_diff := this.balance.max - this.balance.current
             this.active_trade := ''
             this.trade_opened[1] := false
             this.CheckBalance()
@@ -487,9 +115,7 @@ class TraderBot {
             }
             this.balance.last_trade := this.balance.current 
 
-            this.stats.max_bal_diff := this.balance.max - this.balance.current
-            val := 0
-            streak_prev := -this.stats.streak
+            streak_prev := this.stats.streak
             if not win.ps and not draw.ps {
                 TradeLose()
             } else if win.ps {
@@ -548,11 +174,6 @@ class TraderBot {
 
             this.stats.streak--
 
-
-            if this.stats.streak <= -3 {
-                ChangeCoin()
-            }
-
             if this.balance.current <= this.qualifiers.loss_amount_modifier.balance - 1000 {
                 this.qualifiers.loss_amount_modifier.balance -= 1000
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
@@ -590,12 +211,9 @@ class TraderBot {
                     qual.state_2ndloss[-this.stats.streak] := 0
             }
             if this.stats.streak < 0 and this.stats.streak >= -3 {
-                qual.amounts[-this.stats.streak] := Constants.amounts_part1[-this.stats.streak]
+                qual.amounts[-this.stats.streak] := Constants.GetAmounts1()[-this.stats.streak]
             }
 
-            if this.qualifiers.loss_amount_modifier.state = 1 {
-                this.qualifiers.loss_amount_modifier.state := 2
-            }
             if this.balance.current >= this.qualifiers.loss_amount_modifier.balance + 1000 {
                 this.qualifiers.loss_amount_modifier.balance += 1000
                 this.qualifiers.loss_amount_modifier.streak--
@@ -846,13 +464,13 @@ class TraderBot {
                 state_2ndloss: Map(1, 0, 2, 0), ; Map() should be a function call
                 balance: this.balance.starting,
                 streak: -3,
-                state: 0,
+                state1: 0,
                 state2: 0,
                 amount: 1,
                 amount_1: 1,
                 amount_2: 1,
                 amount_3: 20,
-                amounts: Constants.amounts_part1.Clone()
+                amounts: Constants.GetAmounts1().Clone()
             },
             win_amount_modifier: {
                 state: 0,          ; Consolidated from later update
@@ -865,6 +483,199 @@ class TraderBot {
 
     }
     
+    StartLoop(*) {
+        ToolTip('Running...', 5, 5, 1)
+        this.ReloadWebsite()
+        this.CheckBalance()
+        
+        MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
+        ; MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
+        ; sleep 100
+        ; MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
+        ; sleep 100
+        ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y - 1*28, 1, 2)
+        ; sleep 1000
+        ; MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + 0*28, 1, 2)
+        ; sleep 1000
+        ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
+        ; sleep 1000
+        MouseClick('L', this.coords.empty_area.x + Random(-2, 2), this.coords.empty_area.y, 1, 2)
+        sleep 300
+
+        while this.balance.current >= this.balance.starting {
+            this.amount := 20000
+            this.SetTradeAmount(false)
+            MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,3,2)
+            sleep 600
+            this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
+            while !this.CheckTradeClosed(true)
+                sleep 100
+            ; sleep 6000
+            this.CheckBalance()
+        }
+        
+        this.CheckBalance()
+        while this.balance.current < this.balance.starting {
+            this.AddBalance(this.balance.starting-this.balance.current)
+            sleep 2000
+            this.CheckBalance()
+        }
+        
+        this.amount := this.GetAmount(this.balance.current)
+        this.SetTradeAmount()
+        sleep 100
+        MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
+        sleep 100
+        MouseClick('L', this.coords.time_choice.x + Random(-2, 2), this.coords.time_choice.y + Random(-2, 2), 1, 2)
+        sleep 100
+        MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
+        sleep 100
+        this.CheckPayout(true)
+        SetTimer(this.Main.Bind(this), 100)
+    }
+
+    Main() {
+        if !WinActive(this.wtitle) {
+            WinActivate(this.wtitle)
+            sleep 100
+        }
+        MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
+        sleep 100
+        Send('{Escape 2}')
+
+        this.CheckStuck()
+        this.CheckBalance()
+        this.CheckPayout()
+        if not this.PSearch()
+            return
+        this.CheckTradeClosed()
+        
+        this.datetime := A_Now
+        if this.stats.reset_date != SubStr(this.datetime, 1, -6) {
+            this.stats.win := 0
+            this.stats.loss := 0
+            this.stats.draw := 0
+            this.lose_streak := {max: 0, repeat: Map()}
+        }
+        this.stats.reset_date := SubStr(this.datetime, 1, -6)
+        
+        if this.ps.blue.state and this.ps.orange.state {
+            this.BothLinesDetected()
+            this.RunScenarios()
+        }
+    
+        this.UpdateLog()
+        sleep 100
+    
+    }
+
+    CheckStuck() {
+        if this.candle_data.Length > 3 {
+            _reload := true
+            Loop 3 {
+                if not Utils.is_all_same(this.candle_data[A_Index].moving_prices) {
+                    _reload := false
+                    break
+                }
+            }
+            if _reload {
+                this.ReloadWebsite()
+            }
+        }
+    }
+    
+    CheckPaused() {
+        ; key := 'PAUSE'
+        ; pause_buy  := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y > this.candle_data[1].O - (this.candle_data[1].size/2) and this.candle_data[1].color = 'G'
+        ; pause_sell := Mod(A_Sec, 15) >= 13 and this.ps.moving_price.y < this.candle_data[1].O + (this.candle_data[1].size/2) and this.candle_data[1].color = 'R'
+
+        ; if not this.blockers.Has(key)
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; if this.candle_data.Length >= 2 and pause_buy or pause_sell {
+        ;     this.blockers[key] := {state: true, tick_count: A_TickCount}
+        ; }
+        ; if this.blockers[key].state and A_TickCount > this.blockers[key].tick_count + 15000 {
+        ;     this.blockers[key] := {state: false, tick_count: A_TickCount}
+        ; }
+
+        for k, v in this.blockers {
+            if v.state
+                return true
+        }
+        return false
+    }
+
+    CheckPayout(change_anyway := false) {
+        coin_change_streak := -4
+        this.marked_time_refresh := A_TickCount
+        if not this.state.coin_change_streak and this.stats.streak != coin_change_streak
+            this.state.coin_change_streak := true
+        _count_reload := 0
+        Loop {
+            _count_reload++
+            if _count_reload > 100 {
+                _count_reload := 0
+                this.ReloadWebsite()
+            }
+            if A_TickCount > this.marked_time_refresh + 2*60*1000 {
+                this.marked_time_refresh := A_TickCount
+                this.ReloadWebsite()
+                ; reload
+            }    
+            if not change_anyway and (this.stats.streak != coin_change_streak or not this.state.coin_change_streak) and ImageSearch(&outx, &outy, this.coords.Payout.x, this.coords.Payout.y, this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, '*10 payout.png') {
+                this.payout := 92
+                break
+            } else {
+                change_anyway := false
+                Loop 19 {
+                    ToolTip(,,,A_Index+1)
+                }
+                this.last_trade := ''
+                ToolTip('Waiting for payout to be 92 or higher... ' A_Index, 500, 5, 12)
+                MouseMove(this.coords.Payout.x, this.coords.Payout.y, 5)
+                sleep 500
+                MouseMove(this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, 5)
+                sleep 500
+                MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
+                sleep 100
+                MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
+                sleep 100
+                if this.state.coin_change_streak and this.stats.streak = coin_change_streak {
+                    this.state.coin_change_streak := false
+                    _count_reload := 0
+                    Loop {
+                        _count_reload++
+                        if _count_reload > 20 {
+                            _count_reload := 0
+                            this.ReloadWebsite()
+                        }
+                        MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
+                        sleep 300
+                        new_cname := OCR.FromRect(this.coords.coin.x - 25, this.coords.coin.y - 25, 150, 50,, 3).Text
+                        ToolTip('Waiting coin name change (' this.coin_name ' vs ' new_cname ') ' A_Index, 500, 5, 12)
+                        if this.coin_name != new_cname {
+                            this.coin_name := new_cname
+                            break
+                        }
+                    }
+                } else {
+                    MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
+                }
+                sleep 100
+                MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
+                sleep 500
+                MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
+                sleep 100
+                MouseClick('L', this.coords.time_choice.x + Random(-2, 2), this.coords.time_choice.y + Random(-2, 2), 1, 2)
+                sleep 100
+                MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
+                sleep 100
+                Send '{Escape}'
+                sleep 1000
+            }
+        }
+    }
+
     BothLinesDetected() {
         ToolTip('blue', this.ps.blue.x-200, this.ps.blue.y, 2)
         ToolTip('orange', this.ps.orange.x-200, this.ps.orange.y, 3)
@@ -1334,6 +1145,7 @@ class TraderBot {
             }
         }
     }
+
     ExecuteTrade(action, reason) {
         global
         if reason = 'STARTING' {
@@ -1615,6 +1427,8 @@ class TraderBot {
             this.balance.current := cur_bal
             this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
             this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
+
+            this.stats.max_bal_diff := this.balance.max - this.balance.current
             return
         }
     }
@@ -1654,5 +1468,9 @@ class TraderBot {
 }
 
 class Constants {
-    static amounts_part1 := [22.93, 47.86, 20]
+    static GetAmounts1() => [22.93, 47.86, 20]
+    static GetAmounts2() => Map(
+                                1, [5, 12, 26, 54, 110, 222, 446, 894],
+                                2, [11, 24, 50, 104, 210, 422, 846, 1694]
+                            )
 }
