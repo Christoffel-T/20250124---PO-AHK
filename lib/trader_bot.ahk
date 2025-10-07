@@ -492,82 +492,14 @@ class TraderBot {
             streak_prev := -this.stats.streak
             if not win.ps and not draw.ps {
                 TradeLose()
-                Loss2ndOverrider(streak_prev)
-                Overrider3x()
             } else if win.ps {
                 TradeWin()
-                Loss2ndOverrider(streak_prev)
-                Overrider3x()
             } else if draw.ps {
                 TradeDraw()
             }
             this.SetTradeAmount()
             this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
             RankScenarios()
-        }
-
-        Overrider3x() {
-            qual := this.qualifiers.loss_amount_modifier
-            gbal := this.stats.G_balance
-
-            list := [1]
-            loop 15 {
-                list.Push(list[-1]*3)
-            }
-
-            
-            if gbal.state = 0 {
-                if qual.state_2ndloss[2] >= 2 and this.stats.max_bal_diff > 150 {
-                    gbal.state := 1
-                }
-            } else if gbal.state = 1 {
-                if this.stats.max_bal_diff <= 150 {
-                    gbal.state := 2
-                    gbal.val := this.stats.max_bal_diff
-                    gbal.mark := gbal.val
-                } else if this.stats.max_bal_diff > 200 {
-                    gbal.state := 2
-                    gbal.val := this.stats.max_bal_diff
-                    gbal.mark := gbal.val
-                }
-            } else if gbal.state = 2 {
-                if this.stats.streak = -2 {
-                    if gbal.val <= gbal.mark - 15 {
-                        gbal.count := 0
-                        gbal.mark := gbal.val
-                    }
-                    gbal.count++
-                    this.amount := list[Min(gbal.count, list.Length)]
-                } else {
-                    this.amount := 1
-                }
-            }
-        }
-
-        Loss2ndOverrider(streak, fetch_only:=false, reset:=false) {
-            qual := this.qualifiers.loss_amount_modifier
-            if streak != 1 and streak != 2
-                return false
-            list := [1,1,5]
-            loop 15 {
-                list.Push(list[-1]*2+5)
-            }
-            if qual.state_2ndloss[streak] >= 2 {
-                if this.stats.max_bal_diff <= 50 {
-                    qual.state_2ndloss[1] := 0
-                    qual.state_2ndloss[2] := 0
-                    qual.idx := [0, 0]
-                    return false
-                }
-                if fetch_only {
-                    if qual.state_2ndloss[2] >= 2
-                        return list[Min(qual.idx[streak], list.Length)]
-                    return false
-                } else {
-                    qual.idx[streak]++
-                }
-            }
-            return false
         }
 
         RankScenarios() {
@@ -620,134 +552,17 @@ class TraderBot {
             if this.stats.streak <= -3 {
                 ChangeCoin()
             }
-            ; if this.qualifiers.custom_amount_modifier.state = 250 {
-            ;     this.amount := this.amount*1.4
-            ; } else if this.qualifiers.custom_amount_modifier.state = 150 {
-            ;     this.amount := this.amount*2 + 1
-            ; } else if this.qualifiers.custom_amount_modifier.state = 130 {
-            ;     this.amount := this.amount*2 + 1
-            ; } else {
-            ;    this.amount := this.amount_arr[this.GetAmount(this.balance.current+this.amount*2.2)][-this.stats.streak]
-            ; }
-            ; if this.qualifiers.pause_temp.state2 and !this.qualifiers.custom_amount_modifier.state {
-            ;     this.qualifiers.pause_temp.amount := this.qualifiers.pause_temp.amount*2 + 1
-            ;     ; if this.stats.max_bal_diff > 0
-            ;     ;     this.qualifiers.pause_temp.amount := Min(this.qualifiers.pause_temp.amount*2 + 1, this.stats.max_bal_diff*2 + 1)
-
-            ;     ; if this.qualifiers.pause_temp.amount >= 120
-            ;     ;     this.qualifiers.pause_temp.amount := 1
-            ;     this.amount := this.qualifiers.pause_temp.amount
-            ; }
-
-            ; if !this.qualifiers.pause_temp.state and (this.stats.streak = -4 or this.amount = 63*2+1) {
-            ;     this.qualifiers.pause_temp.state := true
-            ;     this.qualifiers.pause_temp.count := 0
-            ; }
-            ; if !this.qualifiers.pause_temp.state2 and this.stats.streak = -4 {
-            ;     this.qualifiers.pause_temp.amount := 1
-            ;     this.qualifiers.pause_temp.state := true
-            ;     this.qualifiers.pause_temp.state2 := true
-            ;     this.qualifiers.pause_temp.count := 0
-            ;     this.qualifiers.pause_temp.reset_F := 10
-            ;     this.amount := 1
-            ;     this.stats.streak := 0
-            ; }
-
-            ; if this.qualifiers.custom_amount_modifier.state < 150 and this.stats.max_bal_diff >= 150 {
-            ;     this.qualifiers.custom_amount_modifier.count := 0
-            ;     this.qualifiers.custom_amount_modifier.state := 150
-            ;     this.qualifiers.pause_temp.amount := 40
-            ;     this.amount := this.qualifiers.pause_temp.amount
-            ; } else if this.qualifiers.custom_amount_modifier.state < 130 and this.amount + this.stats.max_bal_diff >= 130 {
-            ;     this.qualifiers.custom_amount_modifier.count := 0
-            ;     this.qualifiers.custom_amount_modifier.state := true
-            ;     this.amount := 20
-            ; } else if this.qualifiers.custom_amount_modifier.state < 200 and this.qualifiers.custom_amount_modifier.state != 150 and this.amount + this.stats.max_bal_diff >= 200 {
-            ;     this.qualifiers.custom_amount_modifier.count := 0
-            ;     this.qualifiers.custom_amount_modifier.state := 200
-            ;     this.amount := 35
-            ; } else if this.qualifiers.custom_amount_modifier.state < 250 and this.stats.max_bal_diff >= 250 {
-            ;     this.qualifiers.custom_amount_modifier.count := 0
-            ;     this.qualifiers.custom_amount_modifier.state := 250
-            ;     this.amount := 1
-            ; }
-
-            _obj := this.qualifiers.1_5_state.custom_map
-            if this.stats.streak > -3 {
-                _obj[-this.stats.streak] := this.amount
-                _obj['total'] := _obj[1] + _obj[2]
-            }
 
             if this.balance.current <= this.qualifiers.loss_amount_modifier.balance - 1000 {
                 this.qualifiers.loss_amount_modifier.balance -= 1000
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
             }
 
-            ; if (this.qualifiers.1_5_state.state = 0 or this.qualifiers.1_5_state.state = 4) and this.stats.streak = -4 {
-            ;     this.qualifiers.1_5_state.state := 1
-            ; }
-           
-            ; if this.stats.streak = -3 and this.qualifiers.loss_amount_modifier.state >= 1 {
-            ;     this.qualifiers.loss_amount_modifier.amount_2 := this.qualifiers.loss_amount_modifier.amount_2*2+1
-            ; }
-
-            ; if this.qualifiers.1_5_state.state = 2 and this.stats.streak = -3 {
-            ;     this.qualifiers.1_5_state.state := 3
-            ;     this.amount := this.qualifiers.loss_amount_modifier.amount_3
-            ;     this.qualifiers.loss_amount_modifier.amount_3 := this.qualifiers.loss_amount_modifier.amount_3*2+1
-            ; } else if this.qualifiers.loss_amount_modifier.state = 0 {
-            ;     if this.stats.streak > -3 {
-            ;         this.amount := this.qualifiers.loss_amount_modifier.amounts[-this.stats.streak]
-            ;     } else if this.stats.streak = -3 {
-            ;         this.amount := this.qualifiers.loss_amount_modifier.amount_3
-            ;         this.qualifiers.loss_amount_modifier.amount_3 := this.qualifiers.loss_amount_modifier.amount_3*2+1
-            ;     } else if this.stats.streak <= -4 {
-            ;         this.qualifiers.win_amount_modifier.state := 1
-            ;         this.qualifiers.loss_amount_modifier.state := 1
-            ;         this.amount := this.qualifiers.loss_amount_modifier.amount
-            ;     }
-            ; } else if this.qualifiers.loss_amount_modifier.state = 1 {
-            ;     if this.stats.streak = -2 {
-            ;         this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
-            ;         this.amount := this.qualifiers.loss_amount_modifier.amount_2
-            ;     } else if this.stats.streak = -1 {
-            ;         if this.qualifiers.loss_amount_modifier.amount_1 = 1 {
-            ;             this.qualifiers.loss_amount_modifier.amount_1 := (0.10*(this.stats.max_bal_diff)) / 0.92
-            ;         }
-            ;         this.amount := this.qualifiers.loss_amount_modifier.amount_1
-            ;     } else {
-            ;         this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
-            ;         this.amount := this.qualifiers.loss_amount_modifier.amount
-            ;     }
-            ; } else if this.qualifiers.loss_amount_modifier.state = 2 {
-            ;     if this.stats.streak = -2 {
-            ;         this.qualifiers.loss_amount_modifier.amount_1 := this.qualifiers.loss_amount_modifier.amount_1*2+1
-            ;         ; this.amount := this.qualifiers.loss_amount_modifier.amount_2
-            ;         this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount_2*2+1
-            ;         this.amount := this.qualifiers.loss_amount_modifier.amount_2
-            ;     } else if this.stats.streak < -2 {
-            ;         this.qualifiers.loss_amount_modifier.amount := this.qualifiers.loss_amount_modifier.amount*2+1
-            ;         this.amount := this.qualifiers.loss_amount_modifier.amount
-            ;     } else if this.stats.streak = -1 {
-            ;         if this.qualifiers.loss_amount_modifier.amount_1 = 1 {
-            ;             this.qualifiers.loss_amount_modifier.amount_1 := (0.10*(this.stats.max_bal_diff)) / 0.92
-            ;         }
-            ;         this.amount := this.qualifiers.loss_amount_modifier.amount_1
-            ;     } else {
-            ;         this.amount := (0.5*(this.stats.max_bal_diff+5)) / 0.92
-            ;     }
-            ; } else {
-            ;     this.amount := (this.stats.max_bal_diff + 20) / 0.92
-            ; }
-
-            this.amount := Sub1()
-            if amt := Loss2ndOverrider(-this.stats.streak, true) {
-                this.amount := amt
-            }
+            this.amount := LossModifier()
 
             this.stats.loss++
 
-            Sub1() {
+            LossModifier() {
                 qual := this.qualifiers.loss_amount_modifier
                 if this.stats.streak >= -3  {
                     if this.stats.streak < -1 {
@@ -764,6 +579,7 @@ class TraderBot {
                 }
             }
         }
+
         TradeWin() {
             if this.stats.G_balance.state {
                 this.stats.G_balance.val -= this.amount*0.92
@@ -775,11 +591,6 @@ class TraderBot {
             }
             if this.stats.streak < 0 and this.stats.streak >= -3 {
                 qual.amounts[-this.stats.streak] := Constants.amounts_part1[-this.stats.streak]
-            }
-
-            if this.qualifiers.1_5_state.state = 1 {
-                this.qualifiers.1_5_state.state := 2
-                this.qualifiers.loss_amount_modifier.amount_3 := 20
             }
 
             if this.qualifiers.loss_amount_modifier.state = 1 {
@@ -857,15 +668,6 @@ class TraderBot {
             if this.stats.max_bal_diff < 150 and this.qualifiers.custom_amount_modifier.state = 150
                 this.qualifiers.custom_amount_modifier.state := 130
             
-            ; if this.qualifiers.custom_amount_modifier.state = 150
-            ;     this.amount := 40
-            ; else if this.qualifiers.custom_amount_modifier.state = 200
-            ;     this.amount := 35
-            ; else if this.qualifiers.custom_amount_modifier.state = 250
-            ;     this.amount := this.amount*1.4
-            ; else if this.qualifiers.custom_amount_modifier.state
-            ;     this.amount := 20
-            ; else
             this.amount := this.win_amounts[1][this.stats.streak]
             if this.qualifiers.win_amount_modifier.state = 1 {
                 this.amount := this.qualifiers.win_amount_modifier.amounts[_num]
@@ -873,6 +675,7 @@ class TraderBot {
 
             this.stats.win++
         }
+
         TradeDraw() {
             this.stats.trade_history.InsertAt(1, 'draw')
             while this.stats.trade_history.Length   > 10
@@ -913,6 +716,155 @@ class TraderBot {
         }
     }
 
+    SetTradeAmount(bal_mark:=true) {
+        _count_reload := 0
+
+        Loop {
+            Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
+            _count_reload++
+            if _count_reload > 1000 {
+                _count_reload := 0
+                this.ReloadWebsite()
+            }
+            this.CheckBalance()
+            if this.balance.current < 1 and bal_mark {
+                this.stats.bal_lose++
+                this.AddBalance(this.balance.starting-this.balance.current)
+                BalanceReset()
+            } else if this.balance.current >= this.balance.reset_max and bal_mark {
+                this.stats.bal_win++
+                this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
+                this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
+                BalanceReset()
+            }
+
+            sleep 300
+            this.amount := this.amount < 1 ? 1.25 : this.amount
+            this.amount := Min(this.amount, this.balance.current)
+
+            if !WinActive(this.wtitle) {
+                WinActivate(this.wtitle)  
+                sleep 100
+            }
+            sleep 80
+            Send('^f')
+            sleep 80
+            Send('^a{BS}')
+            sleep 80
+            Utils.PasteText('amount')
+            sleep 80
+            Send('{enter}{Escape}')
+            sleep 80
+            Send('{tab}')
+            sleep 80
+            Utils.PasteText(this.amount)
+            sleep 80
+            A_Clipboard := ''
+            sleep 50
+            Send('^a^c')
+            sleep 50
+            ClipWait(0.5)
+            try {
+                _compare1 := Floor(RegExReplace(A_Clipboard, '[^\d.]'))
+                _compare2 := Floor(RegExReplace(this.amount, '[^\d.]'))
+                if _compare1 != _compare2 {
+                    tooltip(_compare1 ' != ' _compare2)
+                    sleep 300
+                    continue
+                }
+            } catch as e {
+                ToolTip(e.Message)
+                sleep 300
+                continue
+            }
+            tooltip
+            sleep 80
+            A_Clipboard := ''
+            Send('{Tab}^f')
+            sleep 80
+            Send('USD{enter}{Escape}')
+            sleep 50
+            MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
+            return
+        }
+
+        BalanceReset() {
+            this.QualifiersReset()
+            this.amount := 1
+            this.stats.streak := 0
+            this.stats.max_bal_diff := 0
+            this.SetTradeAmount()
+        }
+
+    }
+
+    QualifiersReset() {
+        this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
+
+        this.qualifiers := {
+            streak_sc: -4000,
+            streak_reset: {
+                trade_history: [''],
+                val: -4,           ; Consolidated from later update
+                count: 0,          ; Consolidated from later update
+                cummulative: 0,    ; Consolidated from later update
+                count2: 0          ; Consolidated from later update
+            },
+            1020: {
+                mark: 0,           ; Consolidated from later update
+                val: 10            ; Consolidated from later update
+            },
+            flip_trade: {
+                state: false,
+                count: 0
+            },
+            pause_temp: {
+                state: false,
+                count: 0,
+                state2: false,     ; Consolidated from later update
+                amount: 1,         ; Consolidated from later update
+                reset_F: 10        ; Consolidated from later update
+            },
+            double_trade: {
+                state: false,
+                count: 0,
+                WW: 0,
+                WL: 0,
+                LL: 0
+            },
+            win_after_31: false,
+            custom_amount_modifier: {
+                state: 0,          ; Consolidated from later update (from `this.qualifiers.custom_amount_modifier.state := 0`)
+                count: 5
+            },
+            ; Note: For loss_amount_modifier and win_amount_modifier, the later lines 
+            ; were setting the object keys again (state, amounts, etc.) but the object 
+            ; structure was already mostly defined in the first pass. I've kept the 
+            ; most complete definition and removed the duplicates.
+            loss_amount_modifier: {
+                idx: [0, 0],
+                state_2ndloss: Map(1, 0, 2, 0), ; Map() should be a function call
+                balance: this.balance.starting,
+                streak: -3,
+                state: 0,
+                state2: 0,
+                amount: 1,
+                amount_1: 1,
+                amount_2: 1,
+                amount_3: 20,
+                amounts: Constants.amounts_part1.Clone()
+            },
+            win_amount_modifier: {
+                state: 0,          ; Consolidated from later update
+                amounts: [1, 10, 7, 3] ; Consolidated from later update
+            },
+            balance_mark : {
+                mark_starting:this.balance.starting, mark: this.balance.starting, count: 0
+            },
+        }
+
+    }
+    
     BothLinesDetected() {
         ToolTip('blue', this.ps.blue.x-200, this.ps.blue.y, 2)
         ToolTip('orange', this.ps.orange.x-200, this.ps.orange.y, 3)
@@ -1582,189 +1534,6 @@ class TraderBot {
         Send('{Escape 2}')
 
         return
-    }
-    
-    SetTradeAmount(bal_mark:=true) {
-        _count_reload := 0
-
-        AmountOverrider()
-
-        Loop {
-            Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
-            _count_reload++
-            if _count_reload > 1000 {
-                _count_reload := 0
-                this.ReloadWebsite()
-            }
-            this.CheckBalance()
-            if this.balance.current < 1 and bal_mark {
-                this.stats.bal_lose++
-                this.AddBalance(this.balance.starting-this.balance.current)
-                BalanceReset()
-            } else if this.balance.current >= this.balance.reset_max and bal_mark {
-                this.stats.bal_win++
-                this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
-                this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
-                BalanceReset()
-            }
-
-            sleep 300
-            this.amount := this.amount < 1 ? 1.25 : this.amount
-            this.amount := Min(this.amount, this.balance.current)
-
-            if !WinActive(this.wtitle) {
-                WinActivate(this.wtitle)  
-                sleep 100
-            }
-            sleep 80
-            Send('^f')
-            sleep 80
-            Send('^a{BS}')
-            sleep 80
-            Utils.PasteText('amount')
-            sleep 80
-            Send('{enter}{Escape}')
-            sleep 80
-            Send('{tab}')
-            sleep 80
-            Utils.PasteText(this.amount)
-            sleep 80
-            A_Clipboard := ''
-            sleep 50
-            Send('^a^c')
-            sleep 50
-            ClipWait(0.5)
-            try {
-                _compare1 := Floor(RegExReplace(A_Clipboard, '[^\d.]'))
-                _compare2 := Floor(RegExReplace(this.amount, '[^\d.]'))
-                if _compare1 != _compare2 {
-                    tooltip(_compare1 ' != ' _compare2)
-                    sleep 300
-                    continue
-                }
-            } catch as e {
-                ToolTip(e.Message)
-                sleep 300
-                continue
-            }
-            tooltip
-            sleep 80
-            A_Clipboard := ''
-            Send('{Tab}^f')
-            sleep 80
-            Send('USD{enter}{Escape}')
-            sleep 50
-            MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
-            return
-        }
-
-        BalanceReset() {
-            this.QualifiersReset()
-            this.amount := 1
-            this.stats.streak := 0
-            this.stats.max_bal_diff := 0
-            this.SetTradeAmount()
-        }
-
-        AmountOverrider() {
-            custom_list := [25]
-            Loop 15 {
-                custom_list.Push(custom_list[-1]*2+1)
-            }
-            if this.qualifiers.1_5_state.state = 3 {
-                if this.stats.trade_history[1] = 'win' and this.stats.trade_history[2] = 'lose' and this.stats.trade_history[3] = 'win' {
-                    this.qualifiers.1_5_state.state := 0
-                    this.qualifiers.win_amount_modifier.state := 0
-                    this.qualifiers.loss_amount_modifier.state := 0
-                    this.qualifiers.loss_amount_modifier.state2 := 0
-                    this.qualifiers.loss_amount_modifier.amounts := [37.93, 62.86, 20]
-                } else {
-                    if this.stats.streak != -3
-                        this.amount := 1.5
-                    if this.stats.streak <= -5 {
-                        this.amount := custom_list[-this.stats.streak - 4]
-                    }
-                }
-            } else if this.qualifiers.1_5_state.state = 1 {
-                if this.stats.streak != -3
-                    this.amount := 1.5
-                if this.stats.streak <= -5 {
-                    this.amount := custom_list[-this.stats.streak - 4]
-                }
-            }
-            return this.amount
-        }
-    }
-
-    QualifiersReset() {
-        this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
-
-        this.qualifiers := {
-            streak_sc: -4000,
-            streak_reset: {
-                trade_history: [''],
-                val: -4,           ; Consolidated from later update
-                count: 0,          ; Consolidated from later update
-                cummulative: 0,    ; Consolidated from later update
-                count2: 0          ; Consolidated from later update
-            },
-            1020: {
-                mark: 0,           ; Consolidated from later update
-                val: 10            ; Consolidated from later update
-            },
-            flip_trade: {
-                state: false,
-                count: 0
-            },
-            pause_temp: {
-                state: false,
-                count: 0,
-                state2: false,     ; Consolidated from later update
-                amount: 1,         ; Consolidated from later update
-                reset_F: 10        ; Consolidated from later update
-            },
-            double_trade: {
-                state: false,
-                count: 0,
-                WW: 0,
-                WL: 0,
-                LL: 0
-            },
-            win_after_31: false,
-            custom_amount_modifier: {
-                state: 0,          ; Consolidated from later update (from `this.qualifiers.custom_amount_modifier.state := 0`)
-                count: 5
-            },
-            ; Note: For loss_amount_modifier and win_amount_modifier, the later lines 
-            ; were setting the object keys again (state, amounts, etc.) but the object 
-            ; structure was already mostly defined in the first pass. I've kept the 
-            ; most complete definition and removed the duplicates.
-            loss_amount_modifier: {
-                idx: [0, 0],
-                state_2ndloss: Map(1, 0, 2, 0), ; Map() should be a function call
-                balance: this.balance.starting,
-                streak: -3,
-                state: 0,
-                state2: 0,
-                amount: 1,
-                amount_1: 1,
-                amount_2: 1,
-                amount_3: 20,
-                amounts: Constants.amounts_part1.Clone()
-            },
-            win_amount_modifier: {
-                state: 0,          ; Consolidated from later update
-                amounts: [1, 10, 7, 3] ; Consolidated from later update
-            },
-            1_5_state: {
-                state: 0,
-                custom_map: Map(1, 0, 2, 0, 'total', 0)
-            },
-            balance_mark : {
-                mark_starting:this.balance.starting, mark: this.balance.starting, count: 0
-            },
-        }
-
     }
     
     SetTradeTime() {
