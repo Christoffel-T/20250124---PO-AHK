@@ -188,7 +188,7 @@ class TraderBot {
                             qual.state_2ndloss[-this.stats.streak-1]++
                         }
                         if qual.state_2ndloss[2] >= 2 and this.stats.streak = -3 {
-                            qual.state1 = 1
+                            qual.state1 := 1
                         }
                         return qual.amounts[-this.stats.streak]
                     } else if qual.state1 = 1 {
