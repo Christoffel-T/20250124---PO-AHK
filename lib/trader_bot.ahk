@@ -183,9 +183,11 @@ class TraderBot {
                 qual := this.qualifiers.loss_amount_modifier
                 if this.stats.streak >= -3 {
                     if qual.state1 = 0 {
-                        if this.stats.streak < -1 {
-                            qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
-                            qual.state_2ndloss[-this.stats.streak-1]++
+                        if this.stats.streak = -3 {
+                            qual.amounts[1] := qual.amounts[1]*2+1
+                            qual.amounts[2] := qual.amounts[2]*2+1
+                            qual.state_2ndloss[1]++
+                            qual.state_2ndloss[2]++
                         }
                         if qual.state_2ndloss[2] >= 2 and this.stats.streak = -3 {
                             qual.state1 := 1
@@ -193,14 +195,11 @@ class TraderBot {
                         return qual.amounts[-this.stats.streak]
                     } else if qual.state1 = 1 {
                         amts := Constants.GetAmounts2()
-                        if this.stats.streak < -1 {
-                            qual.amounts[-this.stats.streak-1] := qual.amounts[-this.stats.streak-1]*2+1
-                            qual.idx[-this.stats.streak-1]++
-                        }
                         if this.stats.streak = -3 {
+                            qual.idx[2]++
                             return qual.amounts[-this.stats.streak]
                         } else {
-                            return amts[-this.stats.streak][qual.idx[-this.stats.streak]]
+                            return amts[-this.stats.streak][qual.idx[2]]
                         }
                     }
                 } else {
