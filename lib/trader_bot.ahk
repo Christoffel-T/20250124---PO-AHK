@@ -473,7 +473,7 @@ class TraderBot {
             ; structure was already mostly defined in the first pass. I've kept the 
             ; most complete definition and removed the duplicates.
             loss_amount_modifier: {
-                idx: Map('1', 1, '2', 1),
+                idx: Map(1, 1, 2, 1),
                 state_2ndloss: Map(1, 0, 2, 0), ; Map() should be a function call
                 balance: this.balance.starting,
                 streak: -3,
