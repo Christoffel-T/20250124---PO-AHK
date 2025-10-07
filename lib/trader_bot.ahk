@@ -199,7 +199,7 @@ class TraderBot {
                             qual.idx[2]++
                             return qual.amounts[-this.stats.streak]
                         } else {
-                            return amts[-this.stats.streak][qual.idx[2]]
+                            return amts[-this.stats.streak][Min(qual.idx[2], amts[-this.stats.streak].Length)]
                         }
                     }
                 } else {
@@ -224,8 +224,7 @@ class TraderBot {
                 qual.idx[-this.stats.streak] := 1
 
                 if this.stats.streak = -2 {
-                    qual.idx[1] := 1
-                    qual.idx[2] := 1
+                    qual.idx[2] := Max(qual.idx[2]-1, 1)
                 }
             }
             if this.stats.streak < 0 and this.stats.streak >= -3 {
