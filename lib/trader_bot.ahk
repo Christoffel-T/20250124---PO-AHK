@@ -139,7 +139,7 @@ class TraderBot {
                     saved_amt.l1 := 2
 
                 if this.stats.streak = 1
-                    return saved_amt.w1
+                    return saved_amt.l1
                 else
                     return 1
             } else if this.stats.streak < 0 {
@@ -149,7 +149,7 @@ class TraderBot {
                     saved_amt.l1 := saved_amt.l1*2.5
                 
                 if this.stats.streak = -1 {
-                    return saved_amt.l1
+                    return saved_amt.w1
                 } else if this.stats.streak <= -7 {
                     amts := [2]
                     loop 20 {
