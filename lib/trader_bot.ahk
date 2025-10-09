@@ -123,9 +123,45 @@ class TraderBot {
             } else if draw.ps {
                 TradeDraw()
             }
+            if amt := AmountOverride(streak_prev)
+                this.amount := amt
             this.SetTradeAmount()
             this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
             RankScenarios()
+        }
+
+        AmountOverride(streak_prev) {
+            static saved_amt := {w1: 2, l1: 2}
+            if this.stats.streak > 0 {
+                if streak_prev = 1
+                    saved_amt.w1 := 2
+                else if streak_prev = -1
+                    saved_amt.l1 := 2
+
+                if this.stats.streak = 1
+                    return saved_amt.w1
+                else
+                    return 1
+            } else if this.stats.streak < 0 {
+                if streak_prev = 1
+                    saved_amt.w1 := saved_amt.w1*2.5
+                else if streak_prev = -1
+                    saved_amt.l1 := saved_amt.l1*2.5
+                
+                if this.stats.streak = -1 {
+                    return saved_amt.l1
+                } else if this.stats.streak <= -7 {
+                    amts := [2]
+                    loop 20 {
+                        amts.Push(amts[-1]*2.5)
+                    }
+                    return amts[-this.stats.streak - 6]
+                } else {
+                    return 1
+                }
+            }
+
+            return false
         }
 
         RankScenarios() {
