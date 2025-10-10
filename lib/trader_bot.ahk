@@ -152,6 +152,10 @@ class TraderBot {
                 if this.stats.streak = 2 {
                     saved_amt.both := 2
                 }
+                if this.stats.streak >= 2 {
+                    list := [5, 2.5, 1]
+                    return list[Mod(this.stats.streak-1-1, list.Length)+1]
+                }
                 return 1
             }
 
