@@ -131,34 +131,28 @@ class TraderBot {
         }
 
         AmountOverride(streak_prev) {
-            static saved_amt := {w1: 2, l1: 2}
-            if this.stats.streak > 0 {
-                if streak_prev = 1
-                    saved_amt.w1 := 2
-                else if streak_prev = -1
-                    saved_amt.l1 := 2
-
-                if this.stats.streak = 1
-                    return saved_amt.l1
-                else
-                    return 1
-            } else if this.stats.streak < 0 {
-                if streak_prev = 1
-                    saved_amt.w1 := saved_amt.w1*2.5
-                else if streak_prev = -1
-                    saved_amt.l1 := saved_amt.l1*2.5
-                
-                if this.stats.streak = -1 {
-                    return saved_amt.w1
-                } else if this.stats.streak <= -7 {
-                    amts := [2]
-                    loop 20 {
-                        amts.Push(amts[-1]*2.5)
+            static saved_amt := {w1: 2, l1: 2, both: 2}
+            if this.stats.streak = -1 or this.stats.streak = 1 {
+                if streak_prev = -this.stats.streak {
+                    if this.stats.streak = -1  {
+                        saved_amt.both := saved_amt.both*2.5
                     }
-                    return amts[-this.stats.streak - 6]
-                } else {
-                    return 1
+                    if this.stats.streak = 1 {
+                        saved_amt.both := 2
+                    }
                 }
+                return saved_amt.both
+            } else if this.stats.streak <= -7 {
+                amts := [2]
+                loop 20 {
+                    amts.Push(amts[-1]*2.5)
+                }
+                return amts[-this.stats.streak - 6]
+            } else {
+                if this.stats.streak = 2 {
+                    saved_amt.both := 2
+                }
+                return 1
             }
 
             return false
