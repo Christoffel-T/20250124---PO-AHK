@@ -116,6 +116,7 @@ class TraderBot {
             this.balance.last_trade := this.balance.current 
 
             streak_prev := this.stats.streak
+            amt_prev := this.amount
             if not win.ps and not draw.ps {
                 TradeLose()
             } else if win.ps {
@@ -123,18 +124,20 @@ class TraderBot {
             } else if draw.ps {
                 TradeDraw()
             }
-            if amt := AmountOverride(streak_prev)
+            if amt := AmountOverride(streak_prev, amt_prev)
                 this.amount := amt
             this.SetTradeAmount()
             this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
             RankScenarios()
         }
 
-        AmountOverride(streak_prev) {
+        AmountOverride(streak_prev, amt_prev) {
             static saved_amt := {w1: 2, l1: 2, both: 2}
             if this.stats.streak = -1 or this.stats.streak = 1 {
                 if streak_prev = -this.stats.streak {
                     saved_amt.both := saved_amt.both*2.5
+                } else {
+                    saved_amt.both := amt_prev.both*2.5
                 }
                 return saved_amt.both
             } else if this.stats.streak <= -7 {
