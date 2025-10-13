@@ -136,7 +136,9 @@ class TraderBot {
             if this.stats.streak = -1 or this.stats.streak = 1 {
                 if streak_prev = -this.stats.streak {
                     saved_amt.both := saved_amt.both*2.5
-                } else {
+                } else if streak_prev < 0 {
+                    saved_amt.both := saved_amt.both*2.5
+                } else if streak_prev > 0 {
                     saved_amt.both := amt_prev*2.5
                 }
                 return saved_amt.both
