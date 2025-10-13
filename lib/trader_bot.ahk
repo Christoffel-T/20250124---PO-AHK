@@ -85,6 +85,48 @@ class TraderBot {
         }
     }
 
+    AmountOverride(streak_prev, amt_prev) {
+        static saved_amt := {w1: 2, l1: 2, both: 2}
+        if (streak_prev = "RESET") {
+            saved_amt := {w1: 2, l1: 2, both: 2}
+            return
+        }
+        if this.stats.streak = -1 or this.stats.streak = 1 {
+            if streak_prev = -this.stats.streak {
+                saved_amt.both := saved_amt.both*2.5
+            } else if streak_prev = this.stats.streak {
+                ; IGNORED: Same streak value
+            } else if streak_prev < 0 {
+                if amt_prev = 1
+                    saved_amt.both := saved_amt.both*2.5
+                else if amt_prev > 100
+                    saved_amt.both := amt_prev*0.3
+                else
+                    saved_amt.both := amt_prev*0.5
+            } else if streak_prev > 0 {
+                saved_amt.both := amt_prev*2.5
+            }
+            return saved_amt.both
+        } else if this.stats.streak <= -7 {
+            amts := [2]
+            loop 20 {
+                amts.Push(amts[-1]*2.5)
+            }
+            return amts[-this.stats.streak - 6]
+        } else {
+            if this.stats.streak = 2 {
+                saved_amt.both := 2
+            }
+            if this.stats.streak >= 2 {
+                list := [7, 3, 1.5]
+                return list[Mod(this.stats.streak-1-1, list.Length)+1]
+            }
+            return 1
+        }
+
+        return false
+    }
+
     CheckTradeClosed(just_check:=false) {
         if (this.trade_opened[1] or just_check) {
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
@@ -124,44 +166,11 @@ class TraderBot {
             } else if draw.ps {
                 TradeDraw()
             }
-            if amt := AmountOverride(streak_prev, amt_prev)
+            if amt := this.AmountOverride(streak_prev, amt_prev)
                 this.amount := amt
             this.SetTradeAmount()
             this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
             RankScenarios()
-        }
-
-        AmountOverride(streak_prev, amt_prev) {
-            static saved_amt := {w1: 2, l1: 2, both: 2}
-            if this.stats.streak = -1 or this.stats.streak = 1 {
-                if streak_prev = -this.stats.streak {
-                    saved_amt.both := saved_amt.both*2.5
-                } else if streak_prev = this.stats.streak {
-                    ; IGNORED: Same streak value
-                } else if streak_prev < 0 {
-                    saved_amt.both := saved_amt.both*2.5
-                } else if streak_prev > 0 {
-                    saved_amt.both := amt_prev*2.5
-                }
-                return saved_amt.both
-            } else if this.stats.streak <= -7 {
-                amts := [2]
-                loop 20 {
-                    amts.Push(amts[-1]*2.5)
-                }
-                return amts[-this.stats.streak - 6]
-            } else {
-                if this.stats.streak = 2 {
-                    saved_amt.both := 2
-                }
-                if this.stats.streak >= 2 {
-                    list := [7, 3, 1.5]
-                    return list[Mod(this.stats.streak-1-1, list.Length)+1]
-                }
-                return 1
-            }
-
-            return false
         }
 
         RankScenarios() {
@@ -465,6 +474,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
+        this.AmountOverride("RESET", 1)
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
