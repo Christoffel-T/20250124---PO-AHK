@@ -86,27 +86,36 @@ class TraderBot {
     }
 
     AmountOverride(streak_prev, amt_prev) {
-        static saved_amt := {w1: 2, l1: 2, both: 2}
-        if (streak_prev = "RESET") {
-            saved_amt := {w1: 2, l1: 2, both: 2}
-            return
+        if streak_prev = -1 and this.stats.streak = -2 and amt_prev >= 70 {
+            this.saved_amt.lastAmount70 := amt_prev
         }
+        
         if this.stats.streak = -1 or this.stats.streak = 1 {
+            if this.stats.streak = 1 and this.saved_amt.lastAmount70 > 0 {
+                return this.saved_amt.lastAmount70*0.85
+            }
+            
             if streak_prev = -this.stats.streak {
-                saved_amt.both := saved_amt.both*2.5
+                this.saved_amt.amountAt1 := this.saved_amt.amountAt1*2.5
             } else if streak_prev = this.stats.streak {
                 ; IGNORED: Same streak value
             } else if streak_prev < 0 {
                 if amt_prev = 1
-                    saved_amt.both := saved_amt.both*2.5
+                    this.saved_amt.amountAt1 := this.saved_amt.amountAt1*2.5
                 else if amt_prev > 100
-                    saved_amt.both := amt_prev*0.3
+                    this.saved_amt.amountAt1 := amt_prev*0.3
                 else
-                    saved_amt.both := amt_prev*0.5
+                    this.saved_amt.amountAt1 := amt_prev*0.5
             } else if streak_prev > 0 {
-                saved_amt.both := amt_prev*2.5
+                this.saved_amt.amountAt1 := amt_prev*2.5
             }
-            return saved_amt.both
+            return this.saved_amt.amountAt1
+        } else if this.stats.streak <= -2 and this.saved_amt.lastAmount70 > 0 {
+            amts := [this.saved_amt.lastAmount70*0.15]
+            loop 20 {
+                amts.Push(amts[-1]*2.1)
+            }
+            return amts[-this.stats.streak - 1]
         } else if this.stats.streak <= -7 {
             amts := [2]
             loop 20 {
@@ -115,7 +124,7 @@ class TraderBot {
             return amts[-this.stats.streak - 6]
         } else {
             if this.stats.streak = 2 {
-                saved_amt.both := 2
+                this.saved_amt.amountAt1 := 2
             }
             if this.stats.streak >= 2 {
                 list := [7, 3, 1.5]
@@ -474,7 +483,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
-        this.AmountOverride("RESET", 1)
+        this.saved_amt := {lastAmount70: 0, amountAt1: 2}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
