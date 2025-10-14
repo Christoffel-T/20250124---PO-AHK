@@ -89,12 +89,24 @@ class TraderBot {
         if streak_prev = -1 and this.stats.streak = -2 and amt_prev >= 70 {
             this.saved_amt.lastAmount70 := amt_prev
         }
-        
-        if this.stats.streak = -1 or this.stats.streak = 1 {
-            if this.stats.streak = 1 and this.saved_amt.lastAmount70 > 0 {
-                return this.saved_amt.lastAmount70*0.85
+
+        if this.saved_amt.lastAmount70 > 0 {
+            if this.stats.streak = 1 {
+                return this.saved_amt.lastAmount70*0.25
             }
-            
+            if this.stats.streak <= -2 {
+                amts := [this.saved_amt.lastAmount70*0.15]
+                loop 20 {
+                    amts.Push(amts[-1]*2.1)
+                }
+                return amts[-this.stats.streak - 1]
+            }
+            if this.stats.streak = 2 {
+                this.saved_amt.lastAmount70 := 0
+            }
+        }
+        
+        if this.stats.streak = -1 or this.stats.streak = 1 {            
             if streak_prev = -this.stats.streak {
                 this.saved_amt.amountAt1 := this.saved_amt.amountAt1*2.5
             } else if streak_prev = this.stats.streak {
@@ -110,12 +122,6 @@ class TraderBot {
                 this.saved_amt.amountAt1 := amt_prev*2.5
             }
             return this.saved_amt.amountAt1
-        } else if this.stats.streak <= -2 and this.saved_amt.lastAmount70 > 0 {
-            amts := [this.saved_amt.lastAmount70*0.15]
-            loop 20 {
-                amts.Push(amts[-1]*2.1)
-            }
-            return amts[-this.stats.streak - 1]
         } else if this.stats.streak <= -7 {
             amts := [2]
             loop 20 {
