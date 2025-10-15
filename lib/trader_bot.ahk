@@ -86,20 +86,21 @@ class TraderBot {
     }
 
     AmountOverride(streak_prev, amt_prev) {
-        if streak_prev = -1 and this.stats.streak = -2 and amt_prev*2.5 >= 70 {
-            this.saved_amt.lastAmount70 := amt_prev
-        }
-
         if this.saved_amt.lastAmount70 > 0 {
+            if this.stats.streak = -1 {
+                if this.saved_amt.lastAmount70 >= 70 {
+                    this.saved_amt.lastAmount70 := this.saved_amt.lastAmount70*0.15
+                }
+                return this.saved_amt.lastAmount70
+            }
             if this.stats.streak = 1 {
                 return this.saved_amt.lastAmount70*0.25
             }
             if this.stats.streak <= -2 {
-                amts := [this.saved_amt.lastAmount70*0.15]
-                loop 20 {
-                    amts.Push(amts[-1]*2.1)
+                if this.stats.streak = -2 {
+                    this.saved_amt.lastAmount70 := this.saved_amt.lastAmount70*2.5
                 }
-                return amts[-this.stats.streak - 1]
+                return 1
             }
             if this.stats.streak = 2 {
                 this.saved_amt.lastAmount70 := 0
@@ -120,6 +121,11 @@ class TraderBot {
                     this.saved_amt.amountAt1 := amt_prev*0.5
             } else if streak_prev > 0 {
                 this.saved_amt.amountAt1 := amt_prev*2.5
+            }
+
+            if this.saved_amt.amountAt1 >= 70 and this.stats.streak = -1 {
+                this.saved_amt.lastAmount70 := this.saved_amt.amountAt1
+                return this.saved_amt.lastAmount70*0.15
             }
             return this.saved_amt.amountAt1
         } else if this.stats.streak <= -7 {
