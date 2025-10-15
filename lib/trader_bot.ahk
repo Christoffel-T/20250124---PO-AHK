@@ -86,7 +86,7 @@ class TraderBot {
     }
 
     AmountOverride(streak_prev, amt_prev) {
-        if streak_prev = -1 and this.stats.streak = -2 and amt_prev >= 70 {
+        if streak_prev = -1 and this.stats.streak = -2 and amt_prev*2.5 >= 70 {
             this.saved_amt.lastAmount70 := amt_prev
         }
 
@@ -125,6 +125,9 @@ class TraderBot {
         } else if this.stats.streak <= -7 {
             amts := [2]
             loop 20 {
+                if this.stats.streak <= -11 and A_Index = 11 - 6 {
+                    amts[-1] := amts[-1] + 50
+                }
                 amts.Push(amts[-1]*2.5)
             }
             return amts[-this.stats.streak - 6]
