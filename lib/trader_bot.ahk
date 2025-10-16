@@ -86,6 +86,7 @@ class TraderBot {
     }
 
     AmountOverride(streak_prev, amt_prev) {
+        CUSTOM_LOSS_STREAK_START := -6
         if this.stats.max_bal_diff >= 100 {
             this.saved_amt.win2.state := 1
         }
@@ -99,24 +100,24 @@ class TraderBot {
             if this.stats.streak = 3 {
                 this.saved_amt.win2.count_win++
                 this.saved_amt.win2.count_loss := 0
-                if this.saved_amt.win2.count_win >= 4 {
+                if this.saved_amt.win2.count_win >= 2 {
                     this.saved_amt.win2.count_win := 0
                     this.saved_amt.win2.count := 0
                 }
                 return 1
             }
             if this.stats.streak = 2 {
-                if this.saved_amt.win2.count_loss >= 4 {
+                if this.saved_amt.win2.count_loss >= 3 {
                     return 1
                 }
                 this.saved_amt.win2.count++
-                amts := [1.5]
+                amts := [2.25]
                 loop 20 {
-                    amts.Push(amts[-1]*1.5)
+                    amts.Push(amts[-1]*2.25)
                 }
                 return amts[this.saved_amt.win2.count]
             }
-            if this.stats.streak > -7 {
+            if this.stats.streak > CUSTOM_LOSS_STREAK_START {
                 return 1
             }
         }
@@ -131,7 +132,7 @@ class TraderBot {
             if this.stats.streak = 1 {
                 return this.saved_amt.lastAmount70*0.25
             }
-            if this.stats.streak <= -2 {
+            if this.stats.streak <= -2 and this.stats.streak > CUSTOM_LOSS_STREAK_START {
                 if this.stats.streak = -2 {
                     this.saved_amt.lastAmount70 := this.saved_amt.lastAmount70*2.5
                 }
@@ -163,15 +164,9 @@ class TraderBot {
                 return this.saved_amt.lastAmount70*0.15
             }
             return this.saved_amt.amountAt1
-        } else if this.stats.streak <= -7 {
-            amts := [2]
-            loop 20 {
-                if this.stats.streak <= -11 and A_Index = 11 - 6 {
-                    amts[-1] := amts[-1] + 50
-                }
-                amts.Push(amts[-1]*2.5)
-            }
-            return amts[-this.stats.streak - 6]
+        } else if this.stats.streak <= CUSTOM_LOSS_STREAK_START {
+            amts := [10, 50, 150, 300, 600, 1200, 2400]
+            return amts[1 + (-this.stats.streak ) - (-CUSTOM_LOSS_STREAK_START)]
         } else {
             if this.stats.streak = 2 {
                 this.saved_amt.amountAt1 := 2
