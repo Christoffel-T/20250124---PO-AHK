@@ -86,6 +86,34 @@ class TraderBot {
     }
 
     AmountOverride(streak_prev, amt_prev) {
+        if this.stats.max_bal_diff >= 100 {
+            this.saved_amt.win2.state := 1
+        }
+        if this.stats.max_bal_diff <= 0 {
+            this.saved_amt.win2.state := 0
+        }
+        if this.saved_amt.win2.state = 1 {
+            if this.stats.streak = 3 {
+                this.saved_amt.win2.count_win++
+                if this.saved_amt.w2.count_win >= 4 {
+                    this.saved_amt.win2.count_win := 0
+                    this.saved_amt.win2.count := 0
+                }
+                return 1
+            }
+            if this.stats.streak = 2 {
+                this.saved_amt.win2.count++
+                amts := [1.5]
+                loop 20 {
+                    amts.Push(amts[-1]*1.5)
+                }
+                return amts[this.saved_amt.win2.count]
+            }
+            if this.stats.streak > -7 {
+                return 1
+            }
+        }
+        
         if this.saved_amt.lastAmount70 > 0 {
             if this.stats.streak = -1 {
                 if this.saved_amt.lastAmount70 >= 70 {
@@ -498,7 +526,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
-        this.saved_amt := {lastAmount70: 0, amountAt1: 2}
+        this.saved_amt := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, state:0}}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
