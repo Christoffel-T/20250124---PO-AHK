@@ -93,8 +93,12 @@ class TraderBot {
             this.saved_amt.win2.state := 0
         }
         if this.saved_amt.win2.state = 1 {
+            if this.stats.streak = -1 and streak_prev = 2 {
+                this.saved_amt.win2.count_loss++
+            }
             if this.stats.streak = 3 {
                 this.saved_amt.win2.count_win++
+                this.saved_amt.win2.count_loss := 0
                 if this.saved_amt.w2.count_win >= 4 {
                     this.saved_amt.win2.count_win := 0
                     this.saved_amt.win2.count := 0
@@ -102,6 +106,9 @@ class TraderBot {
                 return 1
             }
             if this.stats.streak = 2 {
+                if this.saved_amt.win2.count_loss >= 4 {
+                    return 1
+                }
                 this.saved_amt.win2.count++
                 amts := [1.5]
                 loop 20 {
@@ -526,7 +533,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
-        this.saved_amt := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, state:0}}
+        this.saved_amt := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0}}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
