@@ -99,7 +99,7 @@ class TraderBot {
             if this.stats.streak = 3 {
                 this.saved_amt.win2.count_win++
                 this.saved_amt.win2.count_loss := 0
-                if this.saved_amt.w2.count_win >= 4 {
+                if this.saved_amt.win2.count_win >= 4 {
                     this.saved_amt.win2.count_win := 0
                     this.saved_amt.win2.count := 0
                 }
