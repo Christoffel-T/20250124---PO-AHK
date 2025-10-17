@@ -94,13 +94,16 @@ class TraderBot {
             this.saved_amt.win2.state := 0
         }
         if this.saved_amt.win2.state = 1 {
+            ; if amt := _helper_8lose()
+            ;     return amt
             if amt := _helper_1_2()
                 return amt
             if this.stats.streak = -1 and streak_prev = 2 {
                 this.saved_amt.win2.count_loss++
             }
             if this.stats.streak = 3 {
-                this.saved_amt.win2.count_win++
+                if streak_prev != this.stats.streak
+                    this.saved_amt.win2.count_win++
                 this.saved_amt.win2.count_loss := 0
                 if this.saved_amt.win2.count_win >= 5 {
                     this.saved_amt.win2.count_win := 0
@@ -114,7 +117,8 @@ class TraderBot {
                     this.saved_amt.win2.multiplier := 2.65
                     return 1
                 }
-                this.saved_amt.win2.count++
+                if streak_prev != this.stats.streak
+                    this.saved_amt.win2.count++
                 amts := [2.25]
                 loop 30 {
                     if A_Index >= this.saved_amt.win2.count
@@ -198,7 +202,7 @@ class TraderBot {
                     return 1
                 return qual.%streak%
             }
-            if streak = -3 {
+            if streak = -3 and streak_prev != streak {
                 qual.losses_in_arow++
                 qual.1 := qual.1*4.5
                 qual.2 := qual.2*4.5
@@ -206,6 +210,32 @@ class TraderBot {
             if streak = 1 and (streak_prev = -1 or streak_prev = -2) {
                 if qual.losses_in_arow < 2
                     qual := Constants.GetAmounts3()
+                else
+                    qual.losses_in_arow := 0
+            }
+            return 0
+        }
+        _helper_8lose() {
+            streak := this.stats.streak
+            qual := this.saved_amt.lose8
+            if streak = -8 and streak_prev != streak {
+                qual.state := 1
+            }
+
+            if !qual.state
+                return 0
+
+            if streak = -1 or streak = -2 {
+                if qual.losses_in_arow >= 2
+                    return 1
+                return qual.%streak%
+            }
+            if streak = -3 {
+                qual.losses_in_arow++
+            }
+            if streak = 1 and (streak_prev = -1 or streak_prev = -2) {
+                if qual.losses_in_arow < 2
+                    qual := Constants.GetAmounts4()
                 else
                     qual.losses_in_arow := 0
             }
@@ -560,7 +590,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
-        this.saved_amt := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3()}
+        this.saved_amt := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
@@ -1614,4 +1644,5 @@ class Constants {
                                 2, [11, 24, 50, 104, 210, 422, 846, 1694]
                             )
     static GetAmounts3() => {1:4, 2:9, losses_in_arow:0}
+    static GetAmounts4() => {state:0, 1:50, 2:100, losses_in_arow:0}
 }
