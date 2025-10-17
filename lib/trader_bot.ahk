@@ -94,6 +94,8 @@ class TraderBot {
             this.saved_amt.win2.state := 0
         }
         if this.saved_amt.win2.state = 1 {
+            if amt := _helper_1_2()
+                return amt
             if this.stats.streak = -1 and streak_prev = 2 {
                 this.saved_amt.win2.count_loss++
             }
@@ -187,6 +189,28 @@ class TraderBot {
         }
 
         return false
+
+        _helper_1_2() {
+            streak := this.stats.streak
+            qual := this.saved_amt.lose12
+            if streak = -1 or streak = -2 {
+                if qual.losses_in_arow >= 2
+                    return 1
+                return qual.%streak%
+            }
+            if streak = -3 {
+                qual.losses_in_arow++
+                qual.1 := qual.1*4.5
+                qual.2 := qual.2*4.5
+            }
+            if streak = 1 and (streak_prev = -1 or streak_prev = -2) {
+                if qual.losses_in_arow < 2
+                    qual := Constants.GetAmounts3()
+                else
+                    qual.losses_in_arow := 0
+            }
+            return 0
+        }
     }
 
     CheckTradeClosed(just_check:=false) {
@@ -536,7 +560,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
-        this.saved_amt := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}}
+        this.saved_amt := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3()}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
@@ -1589,4 +1613,5 @@ class Constants {
                                 1, [5, 12, 26, 54, 110, 222, 446, 894],
                                 2, [11, 24, 50, 104, 210, 422, 846, 1694]
                             )
+    static GetAmounts3() => {1:4, 2:9, losses_in_arow:0}
 }
