@@ -86,7 +86,7 @@ class TraderBot {
     }
 
     AmountOverride(streak_prev, amt_prev) {
-        CUSTOM_LOSS_STREAK_START := -6
+        CUSTOM_LOSS_STREAK_START := -5
         if this.stats.max_bal_diff >= 100 {
             this.saved_amt.win2.state := 1
         }
@@ -165,7 +165,10 @@ class TraderBot {
             }
             return this.saved_amt.amountAt1
         } else if this.stats.streak <= CUSTOM_LOSS_STREAK_START {
-            amts := [10, 50, 150, 300, 600, 1200, 2400]
+            amts := [4.5, 25, 50, 150, 25]
+            loop 20 {
+                amts.Push(amts[-1]*2.5)
+            }
             return amts[1 + (-this.stats.streak ) - (-CUSTOM_LOSS_STREAK_START)]
         } else {
             if this.stats.streak = 2 {
