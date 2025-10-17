@@ -200,7 +200,7 @@ class TraderBot {
             if streak = -1 or streak = -2 {
                 if qual.losses_in_arow >= 2
                     return 1
-                return qual.%streak%
+                return qual.%-streak%
             }
             if streak = -3 and streak_prev != streak {
                 qual.losses_in_arow++
@@ -228,7 +228,7 @@ class TraderBot {
             if streak = -1 or streak = -2 {
                 if qual.losses_in_arow >= 2
                     return 1
-                return qual.%streak%
+                return qual.%-streak%
             }
             if streak = -3 {
                 qual.losses_in_arow++
