@@ -94,8 +94,8 @@ class TraderBot {
             this.saved_amt.win2.state := 0
         }
         if this.saved_amt.win2.state = 1 {
-            ; if amt := _helper_8lose()
-            ;     return amt
+            if amt := _helper_8lose()
+                return amt
             if amt := _helper_1_2()
                 return amt
             if this.stats.streak = -1 and streak_prev = 2 {
