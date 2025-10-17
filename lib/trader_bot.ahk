@@ -680,7 +680,7 @@ class TraderBot {
             this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
             while !this.CheckTradeClosed(true)
                 sleep 100
-            ; sleep 6000
+            sleep 1000
             this.CheckBalance()
         }
         
