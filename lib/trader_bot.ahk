@@ -1514,6 +1514,7 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
         sleep 100
         Send('{Escape 2}')
+        this.SetTradeAmount()
 
         return
     }
