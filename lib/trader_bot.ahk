@@ -207,7 +207,7 @@ class TraderBot {
                 qual.1 := qual.1*4.5
                 qual.2 := qual.2*4.5
             }
-            if streak = 1 and (streak_prev = -1 or streak_prev = -2) {
+            if streak = 2 {
                 if qual.losses_in_arow < 2
                     qual := Constants.GetAmounts3()
                 else
@@ -233,7 +233,7 @@ class TraderBot {
             if streak = -3 {
                 qual.losses_in_arow++
             }
-            if streak = 1 and (streak_prev = -1 or streak_prev = -2) {
+            if streak = 2 {
                 if qual.losses_in_arow < 2
                     qual := Constants.GetAmounts4()
                 else
