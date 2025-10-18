@@ -21,7 +21,7 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
 
-        this.balance := {starting: 2500, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {starting: 1000, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance.reset_max := this.balance.starting*2
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
@@ -176,6 +176,9 @@ class TraderBot {
             }
             return this.saved_amt.amountAt1
         } else if this.stats.streak <= CUSTOM_LOSS_STREAK_START {
+            if this.stats.streak < -8 {
+                return 1
+            }
             amts := [4.5, 25, 50, 150, 25]
             loop 20 {
                 amts.Push(amts[-1]*2.5)
@@ -218,7 +221,7 @@ class TraderBot {
         _helper_8lose() {
             streak := this.stats.streak
             qual := this.saved_amt.lose8
-            if streak = -8 and streak_prev != streak {
+            if (streak = -8 and streak_prev != streak) or (this.stats.max_bal_diff >= 225) {
                 qual.state := 1
             }
 
