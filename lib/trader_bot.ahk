@@ -206,9 +206,11 @@ class TraderBot {
                     return 1
                 return qual.%-streak%
             }
+            if streak = -2 and this.streak_prev[1] != streak {
+                qual.1 := qual.1*4.5
+            }
             if streak = -3 and this.streak_prev[1] != streak {
                 qual.losses_in_arow++
-                qual.1 := qual.1*4.5
                 qual.2 := qual.2*4.5
             }
             if streak = 2 {
