@@ -242,7 +242,7 @@ class TraderBot {
                 else
                     qual.losses_in_arow := 0
             }
-            return 0
+            return 1
         }
     }
 
