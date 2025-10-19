@@ -684,6 +684,8 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x + Random(-2, 2), this.coords.empty_area.y, 1, 2)
         sleep 300
 
+        MsgBox this.balance.current
+
         while this.balance.current > this.balance.starting {
             this.amount := 20000
             this.SetTradeAmount(false)
