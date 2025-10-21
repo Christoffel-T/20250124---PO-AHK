@@ -755,12 +755,13 @@ class TraderBot {
         while this.balance.current > this.balance.starting {
             this.amount := 20000
             this.SetTradeAmount(false)
+            sleep 200
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,3,2)
             sleep 600
             this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
-            while !this.CheckTradeClosed(true)
+            start_time := A_TickCount
+            while !this.CheckTradeClosed(true) or A_TickCount - start_time <= 6500
                 sleep 100
-            sleep 1000
             this.CheckBalance()
         }
         
