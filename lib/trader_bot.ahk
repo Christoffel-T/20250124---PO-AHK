@@ -97,7 +97,7 @@ class TraderBot {
         }
 
         if this.amount_override.win2.state = 1 {
-            for helper in [_helper_3_8lose_225, _helper_1, _helper_A] {
+            for helper in [_helper_3_175, _helper_1, _helper_A] {
                 if amt := helper()
                     return amt
             }
@@ -157,15 +157,15 @@ class TraderBot {
                     return this.amount_override.lastAmount70*0.15
                 }
                 return this.amount_override.amountAt1
-            } else if this.stats.streak <= CUSTOM_LOSS_STREAK_START {
-                if this.stats.streak < -8 {
-                    return 1
-                }
-                amts := [4.5, 25, 50, 150, 25]
-                loop 20 {
-                    amts.Push(amts[-1]*2.5)
-                }
-                return amts[1 + (-this.stats.streak ) - (-CUSTOM_LOSS_STREAK_START)]
+            ; } else if this.stats.streak <= CUSTOM_LOSS_STREAK_START {
+            ;     if this.stats.streak < -8 {
+            ;         return 1
+            ;     }
+            ;     amts := [4.5, 25, 50, 150, 25]
+            ;     loop 20 {
+            ;         amts.Push(amts[-1]*2.5)
+            ;     }
+            ;     return amts[1 + (-this.stats.streak ) - (-CUSTOM_LOSS_STREAK_START)]
             } else {
                 if this.stats.streak = 2 {
                     this.amount_override.amountAt1 := 2
@@ -268,14 +268,14 @@ class TraderBot {
             return 1
         }
 
-        _helper_3_8lose_225() {
+        _helper_3_175() {
             streak := this.stats.streak
             qual := this.amount_override.helper3
             streak_prev := this.streak_prev[1]
 
-            amts := [7, 62, 130]
+            amts := [7, 30, 62, 130]
             
-            if (streak = -8 and this.streak_prev[1] != streak) or (this.stats.max_bal_diff >= 225) {
+            if (this.stats.max_bal_diff >= 175) {
                 qual.state := 1
             }
             if !qual.state
@@ -290,7 +290,7 @@ class TraderBot {
                 }
             }
 
-            if streak = 1 {
+            if streak = 1 and streak_prev != -1 {
                 return qual.amt.1
             }
             if streak = 2 or (streak = 1 and streak_prev = -1) {
@@ -299,12 +299,12 @@ class TraderBot {
             }
             
             if streak != streak_prev {
-                if streak = -1 and streak_prev = 1 {
+                if (streak = -1 or streak = 1) and streak_prev = -streak {
                     qual.amt.count++
                     qual.amt.1 := amts[Min(qual.amt.count, amts.Length)]
                     return qual.amt.1
                 }
-                if streak = -2 and qual.amt.count >= 3 {
+                if streak = -2 and qual.amt.count >= 4 {
                     qual.state := 'pause'
                 }
             }
