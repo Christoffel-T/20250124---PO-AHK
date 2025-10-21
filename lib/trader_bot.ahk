@@ -202,7 +202,7 @@ class TraderBot {
             streak := this.stats.streak
             qual := this.saved_amt.lose12
             if streak = -1 or streak = -2 {
-                if qual.losses_in_arow >= 2
+                if qual.losses_ina_row >= 2
                     return 1
                 return qual.%-streak%
             }
@@ -210,14 +210,14 @@ class TraderBot {
                 qual.1 := qual.1*4.5
             }
             if streak = -3 and this.streak_prev[1] != streak {
-                qual.losses_in_arow++
+                qual.losses_ina_row++
                 qual.2 := qual.2*4.5
             }
             if streak = 2 {
-                if qual.losses_in_arow < 2
+                if qual.losses_ina_row < 2
                     qual := Constants.GetAmounts3()
                 else
-                    qual.losses_in_arow := 0
+                    qual.losses_ina_row := 0
             }
             return 0
         }
@@ -232,20 +232,23 @@ class TraderBot {
                 return 0
 
             if streak = -1 or streak = -2 {
-                if qual.losses_in_arow.%-streak% >= 2
+                if qual.losses_ina_row.%-streak% >= 2
                     return 1
                 return qual.%-streak%
             }
             if streak = -3 {
-                qual.losses_in_arow.%-streak%++
+                qual.losses_ina_row.1++
+                qual.losses_ina_row.2++
             }
             if streak = 2 {
-                if qual.losses_in_arow.%-this.streak_prev[2]% < 2
-                    qual.losses_in_arow.%-this.streak_prev[2]% := 0
-            else
-                qual.losses_in_arow.%-this.streak_prev[2]% := 0
+                qual.losses_ina_row.1 := 0
+                qual.losses_ina_row.2 := 0
+                if qual.losses_ina_row.%-this.streak_prev[2]% < 2
+                    qual.losses_ina_row.%-this.streak_prev[2]% := 0
+                else
+                    qual.losses_ina_row.%-this.streak_prev[2]% := 0
             }
-            if qual.losses_in_arow.1 = 0 and qual.losses_in_arow.2 = 0 {
+            if qual.losses_ina_row.1 = 0 and qual.losses_ina_row.2 = 0 {
                 qual := Constants.GetAmounts4()
             }
             return 1
@@ -1657,6 +1660,6 @@ class Constants {
                                 1, [5, 12, 26, 54, 110, 222, 446, 894],
                                 2, [11, 24, 50, 104, 210, 422, 846, 1694]
                             )
-    static GetAmounts3() => {1:4, 2:9, losses_in_arow:0}
-    static GetAmounts4() => {state:0, 1:50, 2:100, losses_in_arow:{1:0, 2:0}}
+    static GetAmounts3() => {1:4, 2:9, losses_ina_row:0}
+    static GetAmounts4() => {state:0, 1:50, 2:100, losses_ina_row:{1:0, 2:0}}
 }
