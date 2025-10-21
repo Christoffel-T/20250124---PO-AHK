@@ -207,11 +207,11 @@ class TraderBot {
                 return qual.%-streak%
             }
             if streak = -2 and this.streak_prev[1] != streak {
-                qual.1 := qual.1*4.5
+                qual.1 := qual.1*2.5
             }
             if streak = -3 and this.streak_prev[1] != streak {
                 qual.losses_ina_row++
-                qual.2 := qual.2*4.5
+                qual.2 := qual.2*2.5
             }
             if streak = 2 {
                 if qual.losses_ina_row < 2
@@ -258,7 +258,7 @@ class TraderBot {
     CheckTradeClosed(just_check:=false) {
         if (this.trade_opened[1] or just_check) {
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
-            sleep 50 
+            sleep 50
             loop 3 {
                 if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
                     return false
