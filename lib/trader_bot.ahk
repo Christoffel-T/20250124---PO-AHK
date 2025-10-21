@@ -275,7 +275,7 @@ class TraderBot {
 
             amts := [7, 30, 62, 130]
             
-            if (this.stats.max_bal_diff >= 175) {
+            if (this.stats.max_bal_diff >= 175) and !qual.state {
                 qual.state := 1
             }
             if !qual.state
@@ -306,6 +306,9 @@ class TraderBot {
                 }
                 if streak = -2 and qual.count >= 4 {
                     qual.state := 'pause'
+                    qual.count := 1
+                    qual.amt.1 := amts[1]
+
                 }
             }
             return 1
