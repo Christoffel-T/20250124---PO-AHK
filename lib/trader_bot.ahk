@@ -283,7 +283,7 @@ class TraderBot {
             if qual.state = 'pause' {
                 if streak = 1 and streak_prev = -1 and this.streak_prev[2] = 1 {
                     qual.state := 1
-                    qual.amt.count := 1
+                    qual.count := 1
                     qual.amt.1 := amts[1]
                 } else {
                     return 1
@@ -294,17 +294,17 @@ class TraderBot {
                 return qual.amt.1
             }
             if streak = 2 or (streak = 1 and streak_prev = -1) {
-                qual.amt.count := 1
+                qual.count := 1
                 qual.amt.1 := amts[1]
             }
             
             if streak != streak_prev {
                 if (streak = -1 or streak = 1) and streak_prev = -streak {
-                    qual.amt.count++
-                    qual.amt.1 := amts[Min(qual.amt.count, amts.Length)]
+                    qual.count++
+                    qual.amt.1 := amts[Min(qual.count, amts.Length)]
                     return qual.amt.1
                 }
-                if streak = -2 and qual.amt.count >= 4 {
+                if streak = -2 and qual.count >= 4 {
                     qual.state := 'pause'
                 }
             }
