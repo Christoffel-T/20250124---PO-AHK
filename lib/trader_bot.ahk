@@ -304,11 +304,14 @@ class TraderBot {
                     qual.amt.1 := amts[Min(qual.count, amts.Length)]
                     return qual.amt.1
                 }
-                if streak = -2 and qual.count >= 4 {
+                if streak = -2 {
+                    qual.count++
+                    qual.amt.1 := amts[Min(qual.count, amts.Length)]
+                }
+                if qual.count > 4 {
                     qual.state := 'pause'
                     qual.count := 1
                     qual.amt.1 := amts[1]
-
                 }
             }
             return 1
