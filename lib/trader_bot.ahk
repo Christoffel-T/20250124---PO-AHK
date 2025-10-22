@@ -282,7 +282,8 @@ class TraderBot {
             }
             if !qual.state
                 return 0
-            if qual.countWin1 > 4 or qual.countLose1 > 4 {
+            ; if qual.countWin1 > 4 or qual.countLose1 > 4 {
+            if qual.countLose1 > 4 {
                 qual.state := 'pause'
                 qual.countWin1 := 1
                 qual.amtWin1 := amts_win[1]
