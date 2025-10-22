@@ -274,6 +274,7 @@ class TraderBot {
             streak_prev := this.streak_prev[1]
 
             amts_win := [7, 30, 62, 130]
+            amts_win := [1]
             amts_lose := [8,31,63,131]
             
             if (this.stats.max_bal_diff >= 175) and !qual.state {
