@@ -273,46 +273,51 @@ class TraderBot {
             qual := this.amount_override.helper3
             streak_prev := this.streak_prev[1]
 
-            amts := [7, 30, 62, 130]
+            amts_win := [7, 30, 62, 130]
+            amts_lose := [8,31,63,131]
             
             if (this.stats.max_bal_diff >= 175) and !qual.state {
                 qual.state := 1
             }
             if !qual.state
                 return 0
+            if qual.countWin1 > 4 or qual.countLose1 > 4 {
+                qual.state := 'pause'
+                qual.countWin1 := 1
+                qual.amtWin1 := amts_win[1]
+                qual.countLose1 := 1
+                qual.amtLose1 := amts_lose[1]
+            }
             if qual.state = 'pause' {
                 if streak = 1 and streak_prev = -1 and this.streak_prev[2] = 1 {
                     qual.state := 1
-                    qual.count := 1
-                    qual.amt.1 := amts[1]
-                } else {
-                    return 1
                 }
+                return 1
             }
 
-            if streak = 1 and streak_prev != -1 {
-                return qual.amt.1
+            if streak = 2 and streak_prev = 1 {
+                qual.countWin1 := 1
+                qual.amtWin1 := amts_win[1]
+                return 1
             }
-            if streak = 2 or (streak = 1 and streak_prev = -1) {
-                qual.count := 1
-                qual.amt.1 := amts[1]
+            if streak = -2 and streak_prev = -1 {
+                qual.countLose1++
+                qual.amtLose1 := amts_lose[Min(qual.countLose1, amts_lose.Length)]
+                return 1
             }
-            
-            if streak != streak_prev {
-                if (streak = -1 or streak = 1) and streak_prev = -streak {
-                    qual.count++
-                    qual.amt.1 := amts[Min(qual.count, amts.Length)]
-                    return qual.amt.1
+            if streak = 1 {
+                if streak_prev = -1 {
+                    qual.countLose1 := 1
+                    qual.amtLose1 := amts_lose[1]
                 }
-                if streak = -2 {
-                    qual.count++
-                    qual.amt.1 := amts[Min(qual.count, amts.Length)]
+                return qual.amtWin1
+            }
+            if streak = -1 {
+                if streak_prev = 1 {
+                    qual.countWin1++
+                    qual.amtWin1 := amts_win[Min(qual.countWin1, amts_win.Length)]
                 }
-                if qual.count > 4 {
-                    qual.state := 'pause'
-                    qual.count := 1
-                    qual.amt.1 := amts[1]
-                }
+                return qual.amtLose1
             }
             return 1
         }
@@ -669,7 +674,7 @@ class TraderBot {
 
     QualifiersReset() {
         this.amount_override := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
-        this.amount_override.helper3 := {state:0, amt:{1:7}, count:1}
+        this.amount_override.helper3 := {state:0, amtWin1:7, amtLose1:8, countWin1:1, countLose1:1}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
