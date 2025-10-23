@@ -97,19 +97,102 @@ class TraderBot {
         }
 
         if this.amount_override.win2.state = 1 {
-            for helper in [_helper_3_175, _helper_1, _helper_A] {
+            for helper in [_helper_4_175, _helper_1, _helper_A] {
                 if amt := helper()
                     return amt
             }
             return 1
         }
         
-        for helper in [_helper_B_amt70, _helper_C] {
+        for helper in [_helper_C] {
             if amt := helper()
                 return amt
         }
         
         return 0
+
+        _helper_4_175() {
+            streak := this.stats.streak
+            streak_prev := this.streak_prev[1]
+            qual := this.amount_override.helper4
+
+            if (this.stats.max_bal_diff >= 175) and !qual.state {
+                qual.state := 1
+            }
+            if !qual.state
+                return 0
+
+            amts_lose := [1]
+            loop 20 {
+                amts_lose.Push(amts_lose[-1]*3)
+            }
+            
+            if streak = 1 {
+                if streak_prev = -1 and this.streak_prev[2] > 0 {
+                    return 100
+                }
+            }
+            if streak < 0 {
+                return amts_lose[-streak]
+            }
+            return 1
+        }
+
+        _helper_3_175() {
+            streak := this.stats.streak
+            qual := this.amount_override.helper3
+            streak_prev := this.streak_prev[1]
+
+            amts_win := [7, 30, 62, 130]
+            amts_win := [1]
+            amts_lose := [8,31,63,131]
+            
+            if (this.stats.max_bal_diff >= 175) and !qual.state {
+                qual.state := 1
+            }
+            if !qual.state
+                return 0
+            ; if qual.countWin1 > 4 or qual.countLose1 > 4 {
+            if qual.countLose1 > 4 {
+                qual.state := 'pause'
+                qual.countWin1 := 1
+                qual.amtWin1 := amts_win[1]
+                qual.countLose1 := 1
+                qual.amtLose1 := amts_lose[1]
+            }
+            if qual.state = 'pause' {
+                if streak = 1 and streak_prev = -1 and this.streak_prev[2] = 1 {
+                    qual.state := 1
+                }
+                return 1
+            }
+
+            if streak = 2 and streak_prev = 1 {
+                qual.countWin1 := 1
+                qual.amtWin1 := amts_win[1]
+                return 1
+            }
+            if streak = -2 and streak_prev = -1 {
+                qual.countLose1++
+                qual.amtLose1 := amts_lose[Min(qual.countLose1, amts_lose.Length)]
+                return 1
+            }
+            if streak = 1 {
+                if streak_prev = -1 {
+                    qual.countLose1 := 1
+                    qual.amtLose1 := amts_lose[1]
+                }
+                return qual.amtWin1
+            }
+            if streak = -1 {
+                if streak_prev = 1 {
+                    qual.countWin1++
+                    qual.amtWin1 := amts_win[Min(qual.countWin1, amts_win.Length)]
+                }
+                return qual.amtLose1
+            }
+            return 1
+        }
 
         _helper_B_amt70() {
             if this.amount_override.lastAmount70 > 0 {
@@ -142,11 +225,9 @@ class TraderBot {
                 } else if this.streak_prev[1] = this.stats.streak {
                     ; IGNORED: Same streak value
                 } else if this.streak_prev[1] < 0 {
-                    if amt_prev = 1
-                        this.amount_override.amountAt1 := this.amount_override.amountAt1*2.5
-                    else if amt_prev > 100
+                    if amt_prev > 100
                         this.amount_override.amountAt1 := amt_prev*0.3
-                    else
+                    else if amt_prev > 1
                         this.amount_override.amountAt1 := amt_prev*0.5
                 } else if this.streak_prev[1] > 0 {
                     this.amount_override.amountAt1 := amt_prev*2.5
@@ -268,61 +349,6 @@ class TraderBot {
             return 1
         }
 
-        _helper_3_175() {
-            streak := this.stats.streak
-            qual := this.amount_override.helper3
-            streak_prev := this.streak_prev[1]
-
-            amts_win := [7, 30, 62, 130]
-            amts_win := [1]
-            amts_lose := [8,31,63,131]
-            
-            if (this.stats.max_bal_diff >= 175) and !qual.state {
-                qual.state := 1
-            }
-            if !qual.state
-                return 0
-            ; if qual.countWin1 > 4 or qual.countLose1 > 4 {
-            if qual.countLose1 > 4 {
-                qual.state := 'pause'
-                qual.countWin1 := 1
-                qual.amtWin1 := amts_win[1]
-                qual.countLose1 := 1
-                qual.amtLose1 := amts_lose[1]
-            }
-            if qual.state = 'pause' {
-                if streak = 1 and streak_prev = -1 and this.streak_prev[2] = 1 {
-                    qual.state := 1
-                }
-                return 1
-            }
-
-            if streak = 2 and streak_prev = 1 {
-                qual.countWin1 := 1
-                qual.amtWin1 := amts_win[1]
-                return 1
-            }
-            if streak = -2 and streak_prev = -1 {
-                qual.countLose1++
-                qual.amtLose1 := amts_lose[Min(qual.countLose1, amts_lose.Length)]
-                return 1
-            }
-            if streak = 1 {
-                if streak_prev = -1 {
-                    qual.countLose1 := 1
-                    qual.amtLose1 := amts_lose[1]
-                }
-                return qual.amtWin1
-            }
-            if streak = -1 {
-                if streak_prev = 1 {
-                    qual.countWin1++
-                    qual.amtWin1 := amts_win[Min(qual.countWin1, amts_win.Length)]
-                }
-                return qual.amtLose1
-            }
-            return 1
-        }
     }
 
     CheckTradeClosed(just_check:=false) {
@@ -677,6 +703,7 @@ class TraderBot {
     QualifiersReset() {
         this.amount_override := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
         this.amount_override.helper3 := {state:0, amtWin1:7, amtLose1:8, countWin1:1, countLose1:1}
+        this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
