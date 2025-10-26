@@ -96,15 +96,15 @@ class TraderBot {
             this.amount_override.win2.state := 0
         }
 
-        if this.amount_override.win2.state = 1 {
-            for helper in [_helper_4_175, _helper_1, _helper_A] {
-                if amt := helper()
-                    return amt
-            }
-            return 1
-        }
+        ; if this.amount_override.win2.state = 1 {
+        ;     for helper in [_helper_4_175, _helper_1, _helper_A] {
+        ;         if amt := helper()
+        ;             return amt
+        ;     }
+        ;     return 1
+        ; }
         
-        for helper in [_helper_C] {
+        for helper in [_helper_2610] {
             if amt := helper()
                 return amt
         }
@@ -190,6 +190,15 @@ class TraderBot {
                     qual.amtWin1 := amts_win[Min(qual.countWin1, amts_win.Length)]
                 }
                 return qual.amtLose1
+            }
+            return 1
+        }
+
+        _helper_2610() {
+            streak := this.stats.streak
+            if streak < 0 {
+                amts := [1.5, 2.71, 6.75, 15.17, 32.75, 69.44, 146, 305.78, 639.24, 1335.16, 2786, 5817.9]
+                return amts[-streak]
             }
             return 1
         }
