@@ -197,8 +197,8 @@ class TraderBot {
         _helper_2610() {
             streak := this.stats.streak
             if streak < 0 {
-                amts := [1.5, 2.71, 6.75, 15.17, 32.75, 69.44, 146, 305.78, 639.24, 1335.16, 2786, 5817.9]
-                return amts[-streak]
+                amts := [1.5, 2.71, 6.75, 15.17, 17, 1]
+                return amts[Min(-streak, amts.Length)]
             }
             return 1
         }
