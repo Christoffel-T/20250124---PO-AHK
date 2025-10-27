@@ -21,8 +21,9 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
 
-        this.balance := {starting: 500, current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance.reset_max := this.balance.starting*2
+        this.balance := {starting: 1800, current: 0, min: 999999999, max: 0, last_trade: 0}
+        ; this.balance.reset_max := this.balance.starting*2
+        this.balance.reset_max := 2500
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
         
@@ -197,7 +198,7 @@ class TraderBot {
         _helper_2610() {
             streak := this.stats.streak
             if streak < 0 {
-                amts := [1.5, 2.71, 6.75, 15.17, 1, 1, 2, 5, 15, 65, 125, 300, 1]
+                amts := [1.10, 1.42 , 3.06, 6.50, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
                 return amts[Min(-streak, amts.Length)]
             }
             return 1
