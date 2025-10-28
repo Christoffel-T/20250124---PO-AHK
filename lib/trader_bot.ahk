@@ -89,6 +89,10 @@ class TraderBot {
 
     AmountOverride(amt_prev) {
         CUSTOM_LOSS_STREAK_START := -5
+        streak := this.stats.streak
+        if streak <= -5 {
+            this.qualifiers.random.state := false
+        }
 
         if this.stats.max_bal_diff >= 100 {
             this.amount_override.win2.state := 1
@@ -199,6 +203,9 @@ class TraderBot {
             streak := this.stats.streak
             if streak < 0 {
                 amts := [1.10, 1.42 , 3.06, 6.50, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
+                if streak <= -5 and Mod(streak, 2) = 1 {
+                    return 1
+                }
                 return amts[Min(-streak, amts.Length)]
             }
             return 1
@@ -717,6 +724,9 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
+            random: {
+                state: true
+            },
             streak_sc: -4000,
             streak_reset: {
                 trade_history: [''],
@@ -1044,6 +1054,8 @@ class TraderBot {
         Scenario1()
 
         ScenarioRandom(delay) {
+            if !this.qualifiers.random.state
+                return false
             if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
                 return false
 
@@ -1389,6 +1401,9 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := '(' this.qualifiers.pause_temp.count ') ' format('{:.2f}', this.amount)
+        if this.stats.streak <= -5 and Mod(this.stats.streak, 2) = 1 {
+            str_d := 'SKIP ' str_d
+        }
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
             str_e := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_e
