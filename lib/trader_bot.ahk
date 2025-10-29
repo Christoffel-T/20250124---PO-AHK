@@ -2,7 +2,6 @@
 #Include OCR.ahk
 #Include utils.ahk
 scriptPath := A_LineFile
-
 ; Get last modified datetime
 modTime := FileGetTime(scriptPath, "M")
 
@@ -204,7 +203,7 @@ class TraderBot {
             streak := this.stats.streak
             if streak < 0 {
                 amts := [1.10, 1.42 , 3.06, 6.50, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
-                if streak <= -5 and Mod(streak, 2) = 1 {
+                if streak <= -5 and Mod(-streak, 2) = 1 {
                     return 1
                 }
                 return amts[Min(-streak, amts.Length)]
@@ -1402,7 +1401,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := '(' this.qualifiers.pause_temp.count ') ' format('{:.2f}', this.amount)
-        if this.stats.streak <= -5 and Mod(this.stats.streak, 2) = 1 {
+        if this.stats.streak <= -5 and Mod(-this.stats.streak, 2) = 1 {
             str_d := 'SKIP ' str_d
         }
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
