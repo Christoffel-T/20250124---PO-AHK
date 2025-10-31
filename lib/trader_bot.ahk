@@ -12,10 +12,6 @@ formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
 
-MsgBox Helper_Skip(-5)
-MsgBox Helper_Skip(-5, 1)
-MsgBox Helper_Skip(-5)
-
 Helper_Skip(streak, only_get:=false, only_read:=true) {
     static last_streak := 0
     if streak = last_streak {
