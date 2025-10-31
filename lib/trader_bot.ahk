@@ -12,12 +12,17 @@ formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
 
-Helper_Skip(streak) {
+Helper_Skip(streak, only_get:=false) {
     static last_streak := 0
+    if only_get and streak = last_streak {
+        return 1
+    }
     if streak <= -5 and Mod(-streak, 2) = 1 and streak != last_streak {
         last_streak := streak
         return 1
     }
+    last_streak := 0
+    return 0
 }
 
 class TraderBot {
@@ -211,7 +216,7 @@ class TraderBot {
             streak := this.stats.streak
             if streak < 0 {
                 amts := [1.10, 1.42 , 3.06, 6.50, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
-                if Helper_Skip(streak) {
+                if Helper_Skip(streak, true) {
                     return 1
                 }
                 return amts[Min(-streak, amts.Length)]
@@ -421,7 +426,6 @@ class TraderBot {
             } else if win.ps {
                 if Helper_Skip(this.stats.streak) {
                     TradeWin(false)
-                    this.stats.streak--
                 } else {
                     TradeWin()
                 }
