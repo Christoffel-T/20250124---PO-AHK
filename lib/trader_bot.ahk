@@ -15,6 +15,7 @@ traymenu.Add("Last Modified: " formatted, (*) => '')
 Helper_Skip(streak, only_get:=false) {
     static last_streak := 0
     if only_get and streak = last_streak {
+        last_streak := 0
         return 1
     }
     if streak <= -5 and Mod(-streak, 2) = 1 and streak != last_streak {
@@ -1429,7 +1430,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := '(' this.qualifiers.pause_temp.count ') ' format('{:.2f}', this.amount)
-        if this.stats.streak <= -5 and Mod(-this.stats.streak, 2) = 1 {
+        if Helper_Skip(this.stats.streak, true) {
             str_d := 'SKIP ' str_d
         }
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
