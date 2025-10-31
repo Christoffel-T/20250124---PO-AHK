@@ -12,10 +12,11 @@ formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
 
-Helper_Skip(streak, only_get:=false) {
+Helper_Skip(streak, only_get:=false, reset:=true) {
     static last_streak := 0
     if only_get and streak = last_streak {
-        last_streak := 0
+        if reset
+            last_streak := 0
         return 1
     }
     if streak <= -5 and Mod(-streak, 2) = 1 and streak != last_streak {
