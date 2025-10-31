@@ -12,18 +12,25 @@ formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
 
-Helper_Skip(streak, only_get:=false, reset:=true) {
+MsgBox Helper_Skip(-5)
+MsgBox Helper_Skip(-5, 1)
+MsgBox Helper_Skip(-5)
+
+Helper_Skip(streak, only_get:=false, only_read:=true) {
     static last_streak := 0
-    if only_get and streak = last_streak {
-        if reset
+    if streak = last_streak {
+        if only_read {
+            return 1
+        } 
+        if only_get {
             last_streak := 0
-        return 1
+            return 1
+        }
     }
     if streak <= -5 and Mod(-streak, 2) = 1 and streak != last_streak {
         last_streak := streak
         return 1
     }
-    last_streak := 0
     return 0
 }
 
@@ -384,62 +391,64 @@ class TraderBot {
     }
 
     CheckTradeClosed(just_check:=false) {
-        if (this.trade_opened[1] or just_check) {
-            MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
-            sleep 50
-            loop 3 {
-                if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
-                    return false
-                }
-                sleep 50
-            }
-            sleep 500
-            
-            if just_check
-                return true
-            
-            this.active_trade := ''
-            this.trade_opened[1] := false
-            this.CheckBalance()
-            if this.balance.current > this.balance.last_trade + 0.5 {
-                win := {ps:true}
-                draw := {ps:true}
-            } else if this.balance.current < this.balance.last_trade - 0.5 {
-                win := {ps:false}
-                draw := {ps:false}
-            } else {
-                win := {ps:false}
-                draw := {ps:true}
-            }
-            this.balance.last_trade := this.balance.current 
-
-            this.streak_prev.InsertAt(1, this.stats.streak)
-            while this.streak_prev.Length >= 10 {
-                this.streak_prev.Pop()
-            }
-            amt_prev := this.amount
-            if not win.ps and not draw.ps {
-                if Helper_Skip(this.stats.streak) {
-                    TradeLose(false)
-                } else {
-                    TradeLose()
-                }
-            } else if win.ps {
-                if Helper_Skip(this.stats.streak) {
-                    TradeWin(false)
-                } else {
-                    TradeWin()
-                }
-            } else if draw.ps {
-                TradeDraw()
-            }
-
-            if amt := this.AmountOverride(amt_prev)
-                this.amount := amt
-            this.SetTradeAmount()
-            this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
-            RankScenarios()
+        if not this.trade_opened[1] and not just_check {
+            return false
         }
+        
+        MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
+        sleep 50
+        loop 3 {
+            if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
+                return false
+            }
+            sleep 50
+        }
+        sleep 500
+        
+        if just_check
+            return true
+        
+        this.active_trade := ''
+        this.trade_opened[1] := false
+        this.CheckBalance()
+        if this.balance.current > this.balance.last_trade + 0.5 {
+            win := {ps:true}
+            draw := {ps:true}
+        } else if this.balance.current < this.balance.last_trade - 0.5 {
+            win := {ps:false}
+            draw := {ps:false}
+        } else {
+            win := {ps:false}
+            draw := {ps:true}
+        }
+        this.balance.last_trade := this.balance.current 
+
+        this.streak_prev.InsertAt(1, this.stats.streak)
+        while this.streak_prev.Length >= 10 {
+            this.streak_prev.Pop()
+        }
+        amt_prev := this.amount
+        if not win.ps and not draw.ps {
+            if Helper_Skip(this.stats.streak) {
+                TradeLose(false)
+            } else {
+                TradeLose()
+            }
+        } else if win.ps {
+            if Helper_Skip(this.stats.streak) {
+                TradeWin(false)
+            } else {
+                TradeWin()
+            }
+        } else if draw.ps {
+            TradeDraw()
+        }
+
+        if amt := this.AmountOverride(amt_prev)
+            this.amount := amt
+        this.SetTradeAmount()
+        this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
+        RankScenarios()
 
         RankScenarios() {
             sortableArray := ''
@@ -1431,7 +1440,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := '(' this.qualifiers.pause_temp.count ') ' format('{:.2f}', this.amount)
-        if Helper_Skip(this.stats.streak, true) {
+        if Helper_Skip(this.stats.streak,, true) {
             str_d := 'SKIP ' str_d
         }
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
