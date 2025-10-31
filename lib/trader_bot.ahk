@@ -12,6 +12,14 @@ formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
 
+Helper_Skip(streak) {
+    static last_streak := 0
+    if streak <= -5 and Mod(-streak, 2) = 1 and streak != last_streak {
+        last_streak := streak
+        return 1
+    }
+}
+
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -203,7 +211,7 @@ class TraderBot {
             streak := this.stats.streak
             if streak < 0 {
                 amts := [1.10, 1.42 , 3.06, 6.50, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
-                if streak <= -5 and Mod(-streak, 2) = 1 {
+                if Helper_Skip(streak) {
                     return 1
                 }
                 return amts[Min(-streak, amts.Length)]
@@ -406,10 +414,15 @@ class TraderBot {
             if not win.ps and not draw.ps {
                 TradeLose()
             } else if win.ps {
-                TradeWin()
+                if Helper_Skip(this.stats.streak) {
+                    TradeWin(false)
+                } else {
+                    TradeWin()
+                }
             } else if draw.ps {
                 TradeDraw()
             }
+
             if amt := this.AmountOverride(amt_prev)
                 this.amount := amt
             this.SetTradeAmount()
@@ -501,7 +514,7 @@ class TraderBot {
             }
         }
 
-        TradeWin() {
+        TradeWin(streak_change:=true) {
             if this.stats.G_balance.state {
                 this.stats.G_balance.val -= this.amount*0.92
             }
@@ -573,26 +586,29 @@ class TraderBot {
                 this.qualifiers.win_amount_modifier.amounts[_num] := list[_num]
             }
 
-            if this.stats.streak < 0 {
-                if not this.lose_streak.repeat.Has(this.stats.streak) {
-                    this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
+            if streak_change {
+                if this.stats.streak < 0 {
+                    if not this.lose_streak.repeat.Has(this.stats.streak) {
+                        this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
+                    }
+                    this.lose_streak.repeat[this.stats.streak].win++
+                    this.stats.streak := 0
                 }
-                this.lose_streak.repeat[this.stats.streak].win++
-                this.stats.streak := 0
+                this.stats.streak++
+                this.stats.win++
             }
 
-            this.stats.streak++
-            _num := Mod(this.stats.streak - 1, list.Length) + 1
-
-            if this.stats.max_bal_diff < 150 and this.qualifiers.custom_amount_modifier.state = 150
-                this.qualifiers.custom_amount_modifier.state := 130
-            
-            this.amount := this.win_amounts[1][this.stats.streak]
-            if this.qualifiers.win_amount_modifier.state = 1 {
-                this.amount := this.qualifiers.win_amount_modifier.amounts[_num]
+            if this.stats.streak > 0 {
+                _num := Mod(this.stats.streak - 1, list.Length) + 1
+                
+                if this.stats.max_bal_diff < 150 and this.qualifiers.custom_amount_modifier.state = 150
+                    this.qualifiers.custom_amount_modifier.state := 130
+                
+                this.amount := this.win_amounts[1][this.stats.streak]
+                if this.qualifiers.win_amount_modifier.state = 1 {
+                    this.amount := this.qualifiers.win_amount_modifier.amounts[_num]
+                }
             }
-
-            this.stats.win++
         }
 
         TradeDraw() {
