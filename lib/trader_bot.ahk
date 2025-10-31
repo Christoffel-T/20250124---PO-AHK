@@ -417,7 +417,6 @@ class TraderBot {
             }
             amt_prev := this.amount
             if not win.ps and not draw.ps {
-                TradeLose()
                 if Helper_Skip(this.stats.streak) {
                     TradeLose(false)
                 } else {
