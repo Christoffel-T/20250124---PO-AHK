@@ -14,6 +14,8 @@ traymenu.Add("Last Modified: " formatted, (*) => '')
 
 Helper_Skip(streak, only_get:=false, only_read:=true) {
     static last_streak := 0
+    if streak = 0 
+        return 0
     if streak = last_streak {
         if only_read {
             return 1
@@ -496,7 +498,8 @@ class TraderBot {
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
             }
 
-            this.amount := LossModifier()
+            if this.stats.streak < 0
+                this.amount := LossModifier()
 
             this.stats.loss++
 
