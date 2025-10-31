@@ -421,6 +421,7 @@ class TraderBot {
             } else if win.ps {
                 if Helper_Skip(this.stats.streak) {
                     TradeWin(false)
+                    this.stats.streak--
                 } else {
                     TradeWin()
                 }
