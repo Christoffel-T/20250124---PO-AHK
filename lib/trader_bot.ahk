@@ -413,6 +413,11 @@ class TraderBot {
             amt_prev := this.amount
             if not win.ps and not draw.ps {
                 TradeLose()
+                if Helper_Skip(this.stats.streak) {
+                    TradeLose(false)
+                } else {
+                    TradeLose()
+                }
             } else if win.ps {
                 if Helper_Skip(this.stats.streak) {
                     TradeWin(false)
@@ -448,7 +453,7 @@ class TraderBot {
             }
         }
 
-        TradeLose() {
+        TradeLose(streak_change:=true) {
             if this.stats.G_balance.state {
                 this.stats.G_balance.val += this.amount
             }
@@ -461,16 +466,19 @@ class TraderBot {
 
             while this.stats.trade_history.Length > 10
                 this.stats.trade_history.Pop()
-            if this.stats.streak >= 0
-                this.stats.streak := 0
-            else {
+            
+            if this.stats.streak < 0 {
                 if not this.lose_streak.repeat.Has(this.stats.streak) {
                     this.lose_streak.repeat[this.stats.streak] := {win: 0, lose: 0}
                 }
                 this.lose_streak.repeat[this.stats.streak].lose++
             }
 
-            this.stats.streak--
+            if streak_change {
+                if this.stats.streak >= 0
+                    this.stats.streak := 0
+                this.stats.streak--
+            }
 
             if this.balance.current <= this.qualifiers.loss_amount_modifier.balance - 1000 {
                 this.qualifiers.loss_amount_modifier.balance -= 1000
