@@ -56,8 +56,6 @@ tester(tst) {
 Helper_Skip(streak, only_read:=false, just_check:=false) {
     static last_streak := 0
     static repeat_flag := 0
-
-    ToolTip(streak ' vs ' last_streak ' = ' repeat_flag, 1000, 0, 2)
     
     if only_read {
         if streak = last_streak and repeat_flag > 0 {
@@ -72,13 +70,11 @@ Helper_Skip(streak, only_read:=false, just_check:=false) {
                 return 1
             return 0 
         }
-        last_streak := streak
         repeat_flag++
         if repeat_flag > 1 {
             repeat_flag := 0
             return 0
         }
-        ToolTip(streak ' vs ' last_streak ' = ' repeat_flag, 1000, 20, 3)
         return 1
     }
 
