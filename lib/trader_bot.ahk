@@ -12,25 +12,80 @@ formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
 
-Helper_Skip(streak, only_get:=false, only_read:=false) {
-    static last_streak := 0
-    if streak = 0
-        return 0
-    if streak = last_streak {
-        if only_read {
-            return 1
-        } 
-        if only_get {
-            last_streak := 0
-            return 1
+tester(tst) {
+    static amt := 1
+    static streak := 0
+    if not tst {
+        if Helper_Skip(streak,, true) {
+        } else {
+            if streak > 0 {
+                streak := 0
+            }
+            streak--
+        }
+    } else {
+        if Helper_Skip(streak,, true) {
+        } else {
+            if streak < 0 {
+                streak := 0
+            }            
+            streak++
         }
     }
-    if streak <= -5 and Mod(-streak, 2) = 1 and streak != last_streak {
+    if Helper_Skip(streak) {
+        amt := 1
+    } else {
+        amt := -streak*10
+    }
+
+    str_d := 'Streak: ' streak
+    if Helper_Skip(streak, true) {
+        str_d := 'SKIP ' str_d
+    }
+    tooltip(str_d '`namt: ' amt)
+}
+
+; F1:: {
+;     tester(1)
+; }
+
+; F2:: {
+;     tester(0)
+; }
+
+Helper_Skip(streak, only_read:=false, just_check:=false) {
+    static last_streak := 0
+    static repeat_flag := 0
+
+    ToolTip(streak ' vs ' last_streak ' = ' repeat_flag, 1000, 0, 2)
+    
+    if only_read {
+        if streak = last_streak and repeat_flag > 0 {
+            return 1
+        }
+        return 0
+    }
+
+    if streak <= -3 and Mod(-streak, 2) = 1 {
+        if just_check {
+            if repeat_flag
+                return 1
+            return 0 
+        }
         last_streak := streak
+        repeat_flag++
+        if repeat_flag > 1 {
+            repeat_flag := 0
+            return 0
+        }
+        ToolTip(streak ' vs ' last_streak ' = ' repeat_flag, 1000, 20, 3)
         return 1
     }
+
     return 0
 }
+
+
 
 class TraderBot {
     __New(settings_obj) {
@@ -223,7 +278,7 @@ class TraderBot {
             streak := this.stats.streak
             if streak < 0 {
                 amts := [1.10, 1.42 , 3.06, 6.50, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
-                if Helper_Skip(streak, true) {
+                if Helper_Skip(streak) {
                     return 1
                 }
                 return amts[Min(-streak, amts.Length)]
@@ -427,13 +482,13 @@ class TraderBot {
         }
         amt_prev := this.amount
         if not win.ps and not draw.ps {
-            if Helper_Skip(this.stats.streak) {
+            if Helper_Skip(this.stats.streak,, true) {
                 TradeLose(false)
             } else {
                 TradeLose()
             }
         } else if win.ps {
-            if Helper_Skip(this.stats.streak) {
+            if Helper_Skip(this.stats.streak,, true) {
                 TradeWin(false)
             } else {
                 TradeWin()
@@ -1439,7 +1494,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := '(' this.qualifiers.pause_temp.count ') ' format('{:.2f}', this.amount)
-        if Helper_Skip(this.stats.streak,, true) {
+        if Helper_Skip(this.stats.streak, true) {
             str_d := 'SKIP ' str_d
         }
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
