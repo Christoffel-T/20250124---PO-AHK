@@ -45,13 +45,13 @@ tester(tst) {
     tooltip(str_d '`namt: ' amt)
 }
 
-F1:: {
-    tester(1)
-}
+; F1:: {
+;     tester(1)
+; }
 
-F2:: {
-    tester(0)
-}
+; F2:: {
+;     tester(0)
+; }
 
 Helper_Skip(streak, only_read:=false, just_check:=false) {
     static last_streak := 0
