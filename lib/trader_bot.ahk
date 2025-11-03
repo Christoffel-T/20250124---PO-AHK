@@ -15,7 +15,7 @@ traymenu.Add("Last Modified: " formatted, (*) => '')
 tester(tst) {
     static amt := 1
     static streak := 0
-    if not tst {
+    if tst = 0 {
         if Helper_Skip(streak,, true) {
         } else {
             if streak > 0 {
@@ -23,7 +23,7 @@ tester(tst) {
             }
             streak--
         }
-    } else {
+    } else if tst = 1 {
         if Helper_Skip(streak,, true) {
         } else {
             if streak < 0 {
@@ -31,6 +31,7 @@ tester(tst) {
             }            
             streak++
         }
+    } else if tst = 2 {
     }
     if Helper_Skip(streak) {
         amt := 1
@@ -53,8 +54,13 @@ tester(tst) {
 ;     tester(0)
 ; }
 
+; F3:: {
+;     tester(2)
+; }
+
 Helper_Skip(streak, only_read:=false, just_check:=false) {
     static last_streak := 0
+    static streak_skipped := 0
     static repeat_flag := 0
     
     if only_read {
@@ -64,16 +70,25 @@ Helper_Skip(streak, only_read:=false, just_check:=false) {
         return 0
     }
 
+    if streak > 0 {
+        last_streak := 0
+        streak_skipped := 0
+    }
+
     if streak <= -3 and Mod(-streak, 2) = 1 {
+        if streak = streak_skipped {
+            return 0
+        }
         if just_check {
             if repeat_flag
                 return 1
-            return 0 
+            return 0
         }
         repeat_flag++
         last_streak := streak
         if repeat_flag > 1 {
             repeat_flag := 0
+            streak_skipped := last_streak
             return 0
         }
         return 1
@@ -673,8 +688,8 @@ class TraderBot {
                     this.stats.streak := 0
                 }
                 this.stats.streak++
-                this.stats.win++
             }
+            this.stats.win++
 
             if this.stats.streak > 0 {
                 _num := Mod(this.stats.streak - 1, list.Length) + 1
