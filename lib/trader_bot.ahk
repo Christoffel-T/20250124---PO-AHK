@@ -494,10 +494,10 @@ class TraderBot {
             TradeDraw()
         }
 
-        if not draw.ps {
-            if amt := this.AmountOverride(amt_prev)
-                this.amount := amt
-        } else {
+        if amt := this.AmountOverride(amt_prev)
+            this.amount := amt
+        
+        if draw.ps {
             this.amount := amt_prev
         }
         this.SetTradeAmount()
