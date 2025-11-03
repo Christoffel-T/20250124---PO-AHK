@@ -494,8 +494,12 @@ class TraderBot {
             TradeDraw()
         }
 
-        if amt := this.AmountOverride(amt_prev)
-            this.amount := amt
+        if not draw.ps {
+            if amt := this.AmountOverride(amt_prev)
+                this.amount := amt
+        } else {
+            this.amount := amt_prev
+        }
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
