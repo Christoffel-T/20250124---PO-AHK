@@ -203,6 +203,18 @@ class TraderBot {
         
         return 0
 
+        _helper_2610() {
+            streak := this.stats.streak
+            if streak < 0 {
+                amts := [1.10, 1.42 , 3.06, 6.50, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
+                if Helper_Skip(streak) {
+                    return 1
+                }
+                return amts[Min(-streak, amts.Length)]
+            }
+            return 1
+        }
+
         _helper_4_175() {
             streak := this.stats.streak
             streak_prev := this.streak_prev[1]
@@ -282,18 +294,6 @@ class TraderBot {
                     qual.amtWin1 := amts_win[Min(qual.countWin1, amts_win.Length)]
                 }
                 return qual.amtLose1
-            }
-            return 1
-        }
-
-        _helper_2610() {
-            streak := this.stats.streak
-            if streak < 0 {
-                amts := [1.10, 1.42 , 3.06, 6.50, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
-                if Helper_Skip(streak) {
-                    return 1
-                }
-                return amts[Min(-streak, amts.Length)]
             }
             return 1
         }
@@ -512,9 +512,9 @@ class TraderBot {
         if amt := this.AmountOverride(amt_prev)
             this.amount := amt
         
-        if draw.ps and not win.ps {
-            this.amount := amt_prev
-        }
+        ; if draw.ps and not win.ps {
+        ;     this.amount := amt_prev
+        ; }
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
