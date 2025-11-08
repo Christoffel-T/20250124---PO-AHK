@@ -222,7 +222,7 @@ class TraderBot {
         ;     return 1
         ; }
         
-        for helper in [Helper0811_4Loss(streak, this.streak_prev, this.stats.max_bal_diff)] {
+        for helper in [Helper0811_4Loss.Bind(streak, this.streak_prev, this.stats.max_bal_diff)] {
             if return_val := helper() {
                 this.stats.streak := return_val.streak
                 this.qualifiers.req0811_4loss.level := return_val.level
