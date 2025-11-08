@@ -97,6 +97,33 @@ Helper_Skip(streak, only_read:=false, just_check:=false) {
     return 0
 }
 
+Helper0811_4Loss(streak, streak_prev_list, max_bal_diff) {
+    static obj_return := {amt:1, streak:streak, level:1}
+    obj_return.amt := 1
+    obj_return.streak := streak
+    
+    amts := [[1.35, 1.79, 3.85, 8.14], 
+            [1.79, 3.85, 8.14, 17.10], 
+            [3.85, 8.14, 17.10, 45.00], 
+            [8.14, 17.10, 35.80, 102.00], 
+            [17.10, 35.80, 74.82, 230.00], 
+            [35.80, 74.82, 156.25, 500.00]]
+            
+    if obj_return.streak = 1 and streak_prev_list[1] = -4 or max_bal_diff <= 0 {
+        obj_return.level := 1
+        return obj_return
+    }
+    if obj_return.streak < -4 {
+        obj_return.streak := -1
+        obj_return.level := Min(amts.Length, obj_return.level+1)
+    }
+    if obj_return.streak < 0 {
+        obj_return.amt := amts[obj_return.level][-obj_return.streak]
+        return obj_return
+    }
+
+    return obj_return
+}
 
 class TraderBot {
     __New(settings_obj) {
@@ -195,9 +222,12 @@ class TraderBot {
         ;     return 1
         ; }
         
-        for helper in [_helper_2610] {
-            if amt := helper()
-                return amt
+        for helper in [Helper0811_4Loss(streak, this.streak_prev, this.stats.max_bal_diff)] {
+            if return_val := helper() {
+                this.stats.streak := return_val.streak
+                this.qualifiers.req0811_4loss.level := return_val.level
+                return return_val.amt
+            }
         }
         
         return 0
@@ -832,6 +862,7 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
+            req0811_4loss: {level: 1},
             random: {
                 state: true
             },
@@ -1508,7 +1539,7 @@ class TraderBot {
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
-        str_d := '(' this.qualifiers.pause_temp.count ') ' format('{:.2f}', this.amount)
+        str_d := '(' this.qualifiers.req0811_4loss.level ') ' format('{:.2f}', this.amount)
         if Helper_Skip(this.stats.streak, true) {
             str_d := 'S ' str_d
         }
