@@ -98,7 +98,6 @@ Helper_Skip(streak, only_read:=false, just_check:=false) {
 }
 
 
-
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
