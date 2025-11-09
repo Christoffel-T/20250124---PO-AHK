@@ -102,12 +102,12 @@ Helper0811_4Loss(streak, streak_prev_list, max_bal_diff) {
     obj_return.amt := 1
     obj_return.streak := streak
     
-    amts := [[1.35, 1.79, 3.85, 8.14], 
-            [1.79, 3.85, 8.14, 17.10], 
-            [3.85, 8.14, 17.10, 45.00], 
-            [8.14, 17.10, 35.80, 102.00], 
-            [17.10, 35.80, 74.82, 230.00], 
-            [35.80, 74.82, 156.25, 500.00]]
+    amts := [[2.35, 3.65, 7.8, 16.60], 
+             [4.73, 10.95, 23.95, 78.5], 
+             [10.95, 23.95, 51.06, 260], 
+             [23.95, 51.06, 108, 748], 
+             [51.06, 108, 226, 1890], 
+             [108, 226, 473, 5000]]
             
     if obj_return.streak = 1 and streak_prev_list[1] = -4 or max_bal_diff <= 0 {
         obj_return.level := 1
@@ -203,9 +203,9 @@ class TraderBot {
     AmountOverride(amt_prev) {
         CUSTOM_LOSS_STREAK_START := -5
         streak := this.stats.streak
-        if streak <= -5 {
-            this.qualifiers.random.state := false
-        }
+        ; if streak <= -5 {
+        ;     this.qualifiers.random.state := false
+        ; }
 
         if this.stats.max_bal_diff >= 100 {
             this.amount_override.win2.state := 1
