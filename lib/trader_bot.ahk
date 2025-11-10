@@ -224,7 +224,6 @@ class TraderBot {
         
         for helper in [_helper0811_4Loss] {
             if return_val := helper() {
-                this.stats.streak := return_val.streak
                 return return_val
             }
         }
@@ -233,6 +232,7 @@ class TraderBot {
 
         _helper0811_4Loss() {
             return_val := Helper0811_4Loss(streak, this.streak_prev, this.stats.max_bal_diff)
+            this.stats.streak := return_val.streak
             this.qualifiers.req0811_4loss.level := return_val.level
             if this.qualifiers.req0811_4loss.level = 2 and streak = -4 {
                 this.qualifiers.flip_trade.state := true
