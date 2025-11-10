@@ -222,15 +222,29 @@ class TraderBot {
         ;     return 1
         ; }
         
-        for helper in [Helper0811_4Loss.Bind(streak, this.streak_prev, this.stats.max_bal_diff)] {
+        for helper in [_helper0811_4Loss] {
             if return_val := helper() {
                 this.stats.streak := return_val.streak
-                this.qualifiers.req0811_4loss.level := return_val.level
-                return return_val.amt
+                return return_val
             }
         }
         
         return 0
+
+        _helper0811_4Loss() {
+            return_val := Helper0811_4Loss.Bind(streak, this.streak_prev, this.stats.max_bal_diff)
+            this.qualifiers.req0811_4loss.level := return_val.level
+            if this.qualifiers.req0811_4loss.level = 2 and streak = -4 {
+                this.qualifiers.flip_trade.state := true
+                this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
+            }
+            
+            if this.qualifiers.flip_trade.state and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.5 {
+                this.qualifiers.flip_trade.state := false
+                this.qualifiers.flip_trade.marked_winrate := 0
+            }
+            return return_val.amt
+        }
 
         _helper_2610() {
             streak := this.stats.streak
@@ -537,6 +551,7 @@ class TraderBot {
         } else if draw.ps {
             TradeDraw()
         }
+        this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
         if amt := this.AmountOverride(amt_prev)
             this.amount := amt
@@ -879,6 +894,7 @@ class TraderBot {
             },
             flip_trade: {
                 state: false,
+                marked_winrate: 0,
                 count: 0
             },
             pause_temp: {
@@ -1510,8 +1526,7 @@ class TraderBot {
         }
         paused_str := this.paused ? 'Paused (' _pauser ')' : '()'
         err := 0
-        win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
-        win_rate := Format('{:.1f}', win_rate)
+        win_rate := Format('{:.1f}', this.stats.win_rate)
 
         str := Map()
         str.next_bal := '$1000: $99999999999999'
@@ -1540,6 +1555,9 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := '(' this.qualifiers.req0811_4loss.level ') ' format('{:.2f}', this.amount)
+        if this.qualifiers.flip_trade.state {
+            str_d := 'FLIPPED ' str_d
+        }
         if Helper_Skip(this.stats.streak, true) {
             str_d := 'S ' str_d
         }
@@ -1602,8 +1620,10 @@ class TraderBot {
             return
         }
 
-        this.qualifiers.flip_trade.state := false
-                
+        if this.qualifiers.flip_trade.state {
+            action := (action = "buy") ? "sell" : "buy"
+        }
+
         this.last_trade := action
         if this.trade_opened[1]
             return false
