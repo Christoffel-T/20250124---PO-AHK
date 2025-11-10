@@ -232,7 +232,7 @@ class TraderBot {
         return 0
 
         _helper0811_4Loss() {
-            return_val := Helper0811_4Loss.Bind(streak, this.streak_prev, this.stats.max_bal_diff)
+            return_val := Helper0811_4Loss(streak, this.streak_prev, this.stats.max_bal_diff)
             this.qualifiers.req0811_4loss.level := return_val.level
             if this.qualifiers.req0811_4loss.level = 2 and streak = -4 {
                 this.qualifiers.flip_trade.state := true
