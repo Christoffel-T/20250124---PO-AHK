@@ -263,7 +263,7 @@ class TraderBot {
                     this.qualifiers.flip_trade.state := true
                     this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
                 }
-                if this.stats.max_bal_diff <= 20 or streak >= 1 {
+                if this.stats.max_bal_diff <= 20 {
                     Helper0811_4Loss.SetLevel(1)
                 }
             }
