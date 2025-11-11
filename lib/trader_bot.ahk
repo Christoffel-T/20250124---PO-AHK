@@ -97,32 +97,50 @@ Helper_Skip(streak, only_read:=false, just_check:=false) {
     return 0
 }
 
-Helper0811_4Loss(streak, streak_prev_list, max_bal_diff) {
-    static obj_return := {amt:1, streak:streak, level:1}
-    obj_return.amt := 1
-    obj_return.streak := streak
-    
-    amts := [[2.35, 3.65, 7.8, 16.60], 
-             [4.73, 10.95, 23.95, 78.5], 
-             [10.95, 23.95, 51.06, 260], 
-             [23.95, 51.06, 108, 748], 
-             [51.06, 108, 226, 1890], 
-             [108, 226, 473, 5000]]
-            
-    if obj_return.streak = 1 and streak_prev_list[1] = -4 or max_bal_diff <= 0 {
-        obj_return.level := 1
-        return obj_return
-    }
-    if obj_return.streak < -4 {
-        obj_return.streak := -1
-        obj_return.level := Min(amts.Length, obj_return.level+1)
-    }
-    if obj_return.streak < 0 {
-        obj_return.amt := amts[obj_return.level][-obj_return.streak]
-        return obj_return
+class Helper0811_4Loss {
+    static _inst := {amt:1, streak:0, level:1}
+
+    static Update(streak, streak_prev_list, max_bal_diff) {
+        inst := Helper0811_4Loss._inst
+        inst.amt := 1
+        inst.streak := streak
+
+        if (inst.streak = 1 && streak_prev_list[1] = -4) || (max_bal_diff <= 0) {
+            inst.level := 1
+            return inst
+        }
+
+        amts := [[2.35, 3.65, 7.8, 16.60],
+                 [4.73, 10.95, 23.95, 78.5],
+                 [10.95, 23.95, 51.06, 260],
+                 [23.95, 51.06, 108, 748],
+                 [51.06, 108, 226, 1890],
+                 [108, 226, 473, 5000]]
+
+        if (inst.streak < -4) {
+            inst.streak := -1
+            inst.level := Min(amts.Length, inst.level + 1)
+        }
+
+        if (inst.streak < 0)
+            inst.amt := amts[inst.level][-inst.streak]
+
+        return inst
     }
 
-    return obj_return
+    static Get() {
+        return Helper0811_4Loss._inst
+    }
+
+    static SetLevel(level) {
+        Helper0811_4Loss._inst.level := level
+        return Helper0811_4Loss._inst
+    }
+
+    static Reset() {
+        Helper0811_4Loss._inst := {amt:1, streak:0, level:1}
+        return Helper0811_4Loss._inst
+    }
 }
 
 class TraderBot {
@@ -231,19 +249,23 @@ class TraderBot {
         return 0
 
         _helper0811_4Loss() {
-            return_val := Helper0811_4Loss(streak, this.streak_prev, this.stats.max_bal_diff)
-            this.stats.streak := return_val.streak
-            this.qualifiers.req0811_4loss.level := return_val.level
-            if this.qualifiers.req0811_4loss.level = 2 and streak = -3 {
-                this.qualifiers.flip_trade.state := true
-                this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
+            Helper0811_4Loss.Update(streak, this.streak_prev, this.stats.max_bal_diff)
+            this.stats.streak := Helper0811_4Loss.Get().streak
+            if Helper0811_4Loss.Get().level = 2 {
+                if streak = -3 {
+                    this.qualifiers.flip_trade.state := true
+                    this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
+                }
+                if this.stats.max_bal_diff <= 20 {
+                    Helper0811_4Loss.SetLevel(1)
+                }
             }
             
             if this.qualifiers.flip_trade.state and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
                 this.qualifiers.flip_trade.state := false
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
-            return return_val.amt
+            return Helper0811_4Loss.Get().amt
         }
 
         _helper_2610() {
@@ -877,7 +899,6 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
-            req0811_4loss: {level: 1},
             random: {
                 state: true
             },
@@ -1554,7 +1575,7 @@ class TraderBot {
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
-        str_d := '(' this.qualifiers.req0811_4loss.level ') ' format('{:.2f}', this.amount)
+        str_d := '(' Helper0811_4Loss.Get().level ') ' format('{:.2f}', this.amount)
         if this.qualifiers.flip_trade.state {
             str_d := 'FLIP ' str_d
         }
