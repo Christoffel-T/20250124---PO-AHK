@@ -234,12 +234,12 @@ class TraderBot {
             return_val := Helper0811_4Loss(streak, this.streak_prev, this.stats.max_bal_diff)
             this.stats.streak := return_val.streak
             this.qualifiers.req0811_4loss.level := return_val.level
-            if this.qualifiers.req0811_4loss.level = 2 and streak = -4 {
+            if this.qualifiers.req0811_4loss.level = 2 and streak = -3 {
                 this.qualifiers.flip_trade.state := true
                 this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
             }
             
-            if this.qualifiers.flip_trade.state and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.5 {
+            if this.qualifiers.flip_trade.state and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
                 this.qualifiers.flip_trade.state := false
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
@@ -1556,7 +1556,7 @@ class TraderBot {
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := '(' this.qualifiers.req0811_4loss.level ') ' format('{:.2f}', this.amount)
         if this.qualifiers.flip_trade.state {
-            str_d := 'FLIPPED ' str_d
+            str_d := 'FLIP ' str_d
         }
         if Helper_Skip(this.stats.streak, true) {
             str_d := 'S ' str_d
