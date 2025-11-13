@@ -105,16 +105,12 @@ class Helper0811_4Loss {
         inst.amt := 1
         inst.streak := streak
 
-        if (inst.streak = 1 && streak_prev_list[1] = -4) || (max_bal_diff <= 0) {
-            inst.level := 1
-            return inst
-        }
-
         amts := [[2.35, 3.65, 7.8, 16.60],
-                 [4.73, 10.95, 2.35+2, 3.65+5.5],
-                 [7.8+15.125, 16.60+41.6, 4.73+114.4, 10.95+314.6],
-                 [23.95, 51.06, 108, 748],
-                 [51.06, 108, 226, 1890],
+                 [4.73, 20.95, 1.10, 1.20],
+                 [45.0, 95, 195.0, 410.0],
+                 [60.0, 120.0, 240.0, 500],
+                 [23.95, 51.06, 108.0, 748.0],
+                 [51.06, 108.0, 226.0, 1890.0],
                  [108, 226, 473, 5000]]
 
         ; amts := [[2.35, 3.65, 7.8, 16.60],
@@ -124,9 +120,20 @@ class Helper0811_4Loss {
         ;          [51.06, 108, 226, 1890],
         ;          [108, 226, 473, 5000]]
 
-        if (inst.streak < -4) {
-            inst.streak := -1
-            inst.level := Min(amts.Length, inst.level + 1)
+        if max_bal_diff <= 0 {
+            inst.level := 1
+            return inst
+        }
+
+        if (streak_prev_list[1] = -4) {
+            if inst.streak < -4 {
+                inst.streak := -1
+                inst.level := Min(amts.Length, inst.level + 1)
+            } else if inst.level = 2 {
+                inst.level := Min(amts.Length, inst.level + 1)
+            } else if inst.streak = 1 {
+                inst.level := 1
+            }
         }
 
         if (inst.streak < 0)
