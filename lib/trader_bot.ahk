@@ -1949,7 +1949,7 @@ class TraderBot {
                 this.ReloadWebsite()
             }
             if !RegExMatch(A_Clipboard, 'USD') {
-                if RegExMatch(A_Clipboard, 'SIGN IN') {
+                if RegExMatch(A_Clipboard, 'i)SIGN IN') {
                     ClickOnPage('SIGN IN')
                 }
                 tooltip('Error: No balance found`n' A_Clipboard)
@@ -1961,7 +1961,7 @@ class TraderBot {
                 continue
             }
             if !RegExMatch(A_Clipboard, 'm)^\d{1,3}(,\d{3})*(\.\d{2})*$', &match) {
-                if RegExMatch(A_Clipboard, 'SIGN IN') {
+                if RegExMatch(A_Clipboard, 'i)SIGN IN') {
                     ClickOnPage('SIGN IN')
                 }
                 tooltip('Error: No balance found`n' A_Clipboard)
