@@ -97,8 +97,29 @@ Helper_Skip(streak, only_read:=false, just_check:=false) {
     return 0
 }
 
+ClickOnPage(text, press_enter:=true, tabs:=0) {
+    default_delay1 := 200
+    default_delay2 := 300
+    SendEvent('^f')
+    sleep default_delay1
+    SendEvent('^a{Delete}')
+    sleep default_delay1
+    SendEvent(text)
+    sleep default_delay2
+    SendEvent('{Enter}{Escape}')
+    sleep default_delay1
+    if press_enter {
+        SendEvent('{Enter}')
+        sleep default_delay1
+    }
+    if tabs > 0 {
+        SendEvent('{Tab ' tabs '}')
+        sleep default_delay1
+    }
+}
+
 class Helper0811_4Loss {
-    static _inst := {amt:1, streak:0, level:1}
+    static _inst := {amt:1, streak:0, level:1, wins:0, idx_loss:0}
 
     static Update(streak, streak_prev_list, max_bal_diff) {
         inst := Helper0811_4Loss._inst
@@ -107,7 +128,7 @@ class Helper0811_4Loss {
 
         amts := [[2.35, 3.65, 7.8, 16.60],
                  [4.73, 20.95, 1.10, 1.20],
-                 [45.0, 95, 195.0, 410.0],
+                 [45.0, 95, 1.10, 1.20],
                  [60.0, 120.0, 240.0, 500],
                  [23.95, 51.06, 108.0, 748.0],
                  [51.06, 108.0, 226.0, 1890.0],
@@ -124,21 +145,43 @@ class Helper0811_4Loss {
             inst.level := 1
             return inst
         }
+        if max_bal_diff <= 20 and inst.level = 4 {
+            inst.level := 1
+            return inst
+        }
+        if streak = 1 and streak != streak_prev_list[1] {
+            inst.wins++
+            inst.idx_loss := 0
+        }
 
         if (streak_prev_list[1] = -4 and streak != streak_prev_list[1]) {
             if inst.streak < -4 {
                 inst.streak := -1
                 inst.level := Min(amts.Length, inst.level + 1)
-            } else if inst.level = 2 {
+                inst.wins := 0
+            } else if inst.level = 2 || inst.level = 3 {
                 inst.level := Min(amts.Length, inst.level + 1)
+                inst.wins := 0
             } else if inst.streak = 1 {
                 inst.level := 1
+                inst.wins := 0
             }
         }
 
         if (inst.streak < 0)
             inst.amt := amts[inst.level][-inst.streak]
-
+        
+        if inst.wins = 0 {
+            if inst.level = 2 and inst.streak = -4 {
+                inst.idx_loss := 1
+                inst.amt := (max_bal_diff + 20*inst.idx_loss)/0.92
+            }
+            if inst.level >= 3 and streak != streak_prev_list[1] {
+                inst.idx_loss++
+                inst.amt := (max_bal_diff + 20*inst.idx_loss)/0.92
+            }
+        }
+        
         return inst
     }
 
@@ -1906,6 +1949,9 @@ class TraderBot {
                 this.ReloadWebsite()
             }
             if !RegExMatch(A_Clipboard, 'USD') {
+                if RegExMatch(A_Clipboard, 'SIGN IN') {
+                    ClickOnPage('SIGN IN')
+                }
                 tooltip('Error: No balance found`n' A_Clipboard)
                 sleep 80
                 Send('^f')
@@ -1915,6 +1961,9 @@ class TraderBot {
                 continue
             }
             if !RegExMatch(A_Clipboard, 'm)^\d{1,3}(,\d{3})*(\.\d{2})*$', &match) {
+                if RegExMatch(A_Clipboard, 'SIGN IN') {
+                    ClickOnPage('SIGN IN')
+                }
                 tooltip('Error: No balance found`n' A_Clipboard)
                 sleep 80
                 Send('^f')
