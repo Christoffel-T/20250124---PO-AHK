@@ -126,7 +126,7 @@ class Helper0811_4Loss {
         inst.amt := 1
         inst.streak := streak
 
-        amts := [[2.35, 3.65, 7.8, 16.60],
+        amts := [[2.35+0.25, 3.65+0.5, 7.8+1, 16.60+2],
                  [4.73, 20.95, 1.10, 1.20],
                  [45.0, 95, 1.10, 1.20],
                  [60.0, 120.0, 240.0, 500],
@@ -176,7 +176,7 @@ class Helper0811_4Loss {
             if inst.level = 3 and inst.streak = -1 {
                 inst.idx_loss := 1
                 inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
-            } else if inst.level >= 3 and streak != streak_prev_list[1] {
+            } else if inst.le1vel >= 3 and streak != streak_prev_list[1] and streak < 0 {
                 inst.idx_loss++
                 inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
             }
@@ -279,7 +279,7 @@ class TraderBot {
         CUSTOM_LOSS_STREAK_START := -5
         streak := this.stats.streak
         ; if streak <= -5 {
-        ;     this.qualifiers.random.state := false
+        ;     this.qualifiers.random_trade.state := false
         ; }
 
         if this.stats.max_bal_diff >= 100 {
@@ -318,9 +318,18 @@ class TraderBot {
                 }
             }
             
-            if this.qualifiers.flip_trade.state and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
+            if this.qualifiers.flip_trade.state = 1 and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
                 this.qualifiers.flip_trade.state := false
                 this.qualifiers.flip_trade.marked_winrate := 0
+            }
+            if streak <= -9 and streak >= -11 {
+                if this.qualifiers.flip_trade.state = 1
+                    this.qualifiers.flip_trade.state := 'temp'
+                this.qualifiers.random_trade.state := false
+                return Helper0811_4Loss.Get().amt/2
+            } else {
+                if this.qualifiers.flip_trade.state = 'temp'
+                    this.qualifiers.flip_trade.state := false
             }
             return Helper0811_4Loss.Get().amt
         }
@@ -957,7 +966,7 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
-            random: {
+            random_trade: {
                 state: true
             },
             streak_sc: -4000,
@@ -1288,7 +1297,7 @@ class TraderBot {
         Scenario1()
 
         ScenarioRandom(delay) {
-            if !this.qualifiers.random.state
+            if !this.qualifiers.random_trade.state
                 return false
             if this.paused or this.candle_data.Length < 2 or this.trade_opened[1] 
                 return false
@@ -1634,7 +1643,7 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := '(' Helper0811_4Loss.Get().level ') ' format('{:.2f}', this.amount)
-        if this.qualifiers.flip_trade.state {
+        if this.qualifiers.flip_trade.state = 1 {
             str_d := 'FLIP ' str_d
         }
         if Helper_Skip(this.stats.streak, true) {
@@ -1699,7 +1708,7 @@ class TraderBot {
             return
         }
 
-        if this.qualifiers.flip_trade.state {
+        if this.qualifiers.flip_trade.state = 1 {
             action := (action = "buy") ? "sell" : "buy"
         }
 
