@@ -149,7 +149,7 @@ class Helper0811_4Loss {
             inst.level := 1
             return inst
         }
-        if streak = 1 and streak != streak_prev_list[1] {
+        if streak = 1 and streak != streak_prev_list[1] and inst.level > 1 {
             inst.wins++
             inst.idx_loss := 0
         }
@@ -165,6 +165,7 @@ class Helper0811_4Loss {
             } else if inst.streak = 1 {
                 inst.level := 1
                 inst.wins := 0
+                inst.idx_loss := 0
             }
         }
 
@@ -172,13 +173,12 @@ class Helper0811_4Loss {
             inst.amt := amts[inst.level][-inst.streak]
         
         if inst.wins = 0 {
-            if inst.level = 2 and inst.streak = -4 {
+            if inst.level = 3 and inst.streak = -1 {
                 inst.idx_loss := 1
-                inst.amt := (max_bal_diff + 20*inst.idx_loss)/0.92
-            }
-            if inst.level >= 3 and streak != streak_prev_list[1] {
+                inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
+            } else if inst.level >= 3 and streak != streak_prev_list[1] {
                 inst.idx_loss++
-                inst.amt := (max_bal_diff + 20*inst.idx_loss)/0.92
+                inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
             }
         }
         
@@ -195,7 +195,7 @@ class Helper0811_4Loss {
     }
 
     static Reset() {
-        Helper0811_4Loss._inst := {amt:1, streak:0, level:1}
+        Helper0811_4Loss._inst := {amt:1, streak:0, level:1, wins:0, idx_loss:0}
         return Helper0811_4Loss._inst
     }
 }
@@ -314,7 +314,7 @@ class TraderBot {
                     this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
                 }
                 if this.stats.max_bal_diff <= 20 {
-                    Helper0811_4Loss.SetLevel(1)
+                    Helper0811_4Loss.Reset()
                 }
             }
             
@@ -950,6 +950,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
+        Helper0811_4Loss.Reset()
         this.amount_override := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
         this.amount_override.helper3 := {state:0, amtWin1:7, amtLose1:8, countWin1:1, countLose1:1}
         this.amount_override.helper4 := {state:0}
