@@ -176,7 +176,7 @@ class Helper0811_4Loss {
             if inst.level = 3 and inst.streak = -1 {
                 inst.idx_loss := 1
                 inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
-            } else if inst.le1vel >= 3 and streak != streak_prev_list[1] and streak < 0 {
+            } else if inst.level >= 3 and streak != streak_prev_list[1] and streak < 0 {
                 inst.idx_loss++
                 inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
             }
