@@ -159,7 +159,14 @@ class Helper0811_4Loss {
                 inst.streak := -1
                 inst.level := Min(amts.Length, inst.level + 1)
                 inst.wins := 0
-            } else if inst.level = 2 || inst.level = 3 {
+            } else if inst.level = 2 {
+                if max_bal_diff <= 20 {
+                    inst.level := 1
+                    inst.wins := 0
+                } else {
+                    inst.level := 2
+                }
+            } else if inst.level = 3 {
                 inst.level := Min(amts.Length, inst.level + 1)
                 inst.wins := 0
             } else if inst.streak = 1 {
