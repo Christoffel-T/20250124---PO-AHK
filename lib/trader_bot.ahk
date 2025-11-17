@@ -119,7 +119,7 @@ ClickOnPage(text, press_enter:=true, tabs:=0) {
 }
 
 class Helper0811_4Loss {
-    static _inst := {amt:1, streak:0, level:1, wins:0, idx_loss:0}
+    static _inst := {amt:1, streak:0, level:1, wins:0, idx_loss:0, state_tier3:0}
 
     static Update(streak, streak_prev_list, max_bal_diff) {
         inst := Helper0811_4Loss._inst
@@ -129,7 +129,7 @@ class Helper0811_4Loss {
         amts := [[2.35+0.25, 3.65+0.5, 7.8+1, 16.60+2],
                  [4.73, 20.95, 1.10, 1.20],
                  [45.0, 95, 1.10, 1.20],
-                 [60.0, 120.0, 240.0, 500],
+                 [1.3, 120.0, 240.0, 500],
                  [23.95, 51.06, 108.0, 748.0],
                  [51.06, 108.0, 226.0, 1890.0],
                  [108, 226, 473, 5000]]
@@ -181,8 +181,35 @@ class Helper0811_4Loss {
                 inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
             }
         }
+
+        if inst.state_tier3 = 0 and inst.streak = -2 and inst.level = 3 {
+            inst.state_tier3 := 1
+        }
+
+        if inst.state_tier3 = 1 {
+            if inst.streak = 1 {
+                inst.amt := Helper0811_4Loss.Tier3CustomAt2(1)
+                inst.level := 3
+            } else {
+                inst.amt := Helper0811_4Loss.Tier3CustomAt2()
+            }
+        }
         
         return inst
+    }
+
+    static Tier3CustomAt2(i:=0) {
+        static idx := 0
+        idx++
+        if i {
+            idx := i
+        }
+        inst := Helper0811_4Loss._inst
+        amts := [2]
+        Loop 20 {
+            amts.Push(amts[-1]*2.2)
+        }
+        return amts[idx]
     }
 
     static Get() {
@@ -195,7 +222,7 @@ class Helper0811_4Loss {
     }
 
     static Reset() {
-        Helper0811_4Loss._inst := {amt:1, streak:0, level:1, wins:0, idx_loss:0}
+        Helper0811_4Loss._inst := {amt:1, streak:0, level:1, wins:0, idx_loss:0, state_tier3:0}
         return Helper0811_4Loss._inst
     }
 }
