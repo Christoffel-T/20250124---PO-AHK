@@ -128,8 +128,8 @@ class Helper0811_4Loss {
 
         amts := [[2.35+0.25, 3.65+0.5, 7.8+1, 16.60+2],
                  [4.73, 20.95, 1.10, 1.20],
-                 [45.0, 95, 1.10, 1.20],
-                 [1.3, 120.0, 240.0, 500],
+                 [1.3, 95, 1.10, 1.20],
+                 [60.0, 120.0, 240.0, 500],
                  [23.95, 51.06, 108.0, 748.0],
                  [51.06, 108.0, 226.0, 1890.0],
                  [108, 226, 473, 5000]]
@@ -195,21 +195,25 @@ class Helper0811_4Loss {
 
         if inst.state_tier3 = 1 {
             if inst.streak = 1 {
-                inst.amt := Helper0811_4Loss.Tier3CustomAt2(1)
+                inst.amt := Helper0811_4Loss.Tier3CustomAt2('reset')
                 inst.level := 3
             } else {
-                inst.amt := Helper0811_4Loss.Tier3CustomAt2()
+                if streak = streak_prev_list[1]
+                    inst.amt := Helper0811_4Loss.Tier3CustomAt2('draw')
+                else if streak < 0
+                    inst.amt := Helper0811_4Loss.Tier3CustomAt2()
             }
         }
         
         return inst
     }
 
-    static Tier3CustomAt2(i:=0) {
+    static Tier3CustomAt2(state:='') {
         static idx := 0
-        idx++
-        if i {
-            idx := i
+        if state != 'draw'
+            idx++
+        if state = 'reset' {
+            idx := 1
         }
         inst := Helper0811_4Loss._inst
         amts := [2]
