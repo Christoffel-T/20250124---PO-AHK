@@ -182,10 +182,10 @@ class Helper0811_4Loss {
         if inst.wins = 0 {
             if inst.level = 3 and inst.streak = -1 {
                 inst.idx_loss := 1
-                inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
+                ; inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
             } else if inst.level >= 3 and streak != streak_prev_list[1] and streak < 0 {
-                inst.idx_loss++
                 inst.amt := (max_bal_diff + 5*inst.idx_loss)/0.92
+                inst.idx_loss++
             }
         }
 
@@ -213,7 +213,8 @@ class Helper0811_4Loss {
         if state != 'draw'
             idx++
         if state = 'reset' {
-            idx := 1
+            idx := 0
+            return 1
         }
         inst := Helper0811_4Loss._inst
         amts := [2]
