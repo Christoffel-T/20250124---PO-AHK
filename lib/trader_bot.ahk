@@ -142,14 +142,16 @@ class Helper0811_4Loss {
         ;          [108, 226, 473, 5000]]
 
         if max_bal_diff <= 0 {
-            inst.level := 1
+            Helper0811_4Loss.Reset()
             return inst
         }
         if max_bal_diff <= 20 and inst.level = 4 {
             inst.level := 1
+            Helper0811_4Loss.Tier3CustomAt2('reset')
             return inst
         }
         if streak = 1 and streak != streak_prev_list[1] and inst.level > 1 {
+            Helper0811_4Loss.Tier3CustomAt2('reset')
             inst.wins++
             inst.idx_loss := 0
         }
@@ -189,7 +191,7 @@ class Helper0811_4Loss {
             }
         }
 
-        if inst.state_tier3 = 0 and inst.streak = -2 and inst.level = 3 {
+        if inst.state_tier3 = 0 and inst.streak = -1 and inst.level = 3 {
             inst.state_tier3 := 1
         }
 
@@ -217,7 +219,7 @@ class Helper0811_4Loss {
             return 1
         }
         inst := Helper0811_4Loss._inst
-        amts := [2]
+        amts := [1.3, 2]
         Loop 20 {
             amts.Push(amts[-1]*2.2)
         }
@@ -235,6 +237,7 @@ class Helper0811_4Loss {
 
     static Reset() {
         Helper0811_4Loss._inst := {amt:1, streak:0, level:1, wins:0, idx_loss:0, state_tier3:0}
+        Helper0811_4Loss.Tier3CustomAt2('reset')
         return Helper0811_4Loss._inst
     }
 }
