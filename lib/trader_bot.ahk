@@ -221,7 +221,7 @@ class Helper0811_4Loss {
         Loop 20 {
             amts.Push(amts[-1]*2.2)
         }
-        return amts[idx]
+        return amts[Max(idx, 1)]
     }
 
     static Get() {
