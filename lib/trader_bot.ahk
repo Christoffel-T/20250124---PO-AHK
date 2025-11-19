@@ -142,8 +142,7 @@ class Helper0811_4Loss {
         ;          [108, 226, 473, 5000]]
 
         if max_bal_diff <= 0 {
-            Helper0811_4Loss.Reset()
-            return inst
+            return Helper0811_4Loss.Reset()
         }
         if max_bal_diff <= 20 and inst.level = 4 {
             inst.level := 1
