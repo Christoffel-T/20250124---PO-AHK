@@ -4,7 +4,6 @@
 scriptPath := A_LineFile
 ; Get last modified datetime
 modTime := FileGetTime(scriptPath, "M")
-
 ; Format nicely
 formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 
@@ -212,8 +211,8 @@ class Helper0811_4Loss {
     static Tier3CustomAt2(state:='', count13:=1) {
         static idx := 0
         static amts := []
-        if not amts {
-            amts.Push(1.3)
+        if amts.Length < 10 {
+            amts := [1.3]
             amts.Push(2)
             Loop 20 {
                 amts.Push(amts[-1]*2.2)
