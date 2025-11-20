@@ -196,7 +196,7 @@ class Helper0811_4Loss {
 
         if inst.state_tier3 = 1 {
             if inst.streak = 1 {
-                inst.amt := Helper0811_4Loss.Tier3CustomAt2('reset')
+                inst.amt := Helper0811_4Loss.Tier3CustomAt2('reset', 3)
                 inst.level := 3
             } else {
                 if streak = streak_prev_list[1]
@@ -209,19 +209,34 @@ class Helper0811_4Loss {
         return inst
     }
 
-    static Tier3CustomAt2(state:='') {
+    static Tier3CustomAt2(state:='', count13:=1) {
         static idx := 0
+        static amts := []
+        if not amts {
+            amts.Push(1.3)
+            amts.Push(2)
+            Loop 20 {
+                amts.Push(amts[-1]*2.2)
+            }
+        }
+        if count13 > 1 {
+            amts := []
+            Loop count13 {
+                amts.Push(1.3)
+            }
+            amts.Push(2)
+            Loop 20 {
+                amts.Push(amts[-1]*2.2)
+            }
+        }
         if state != 'draw'
             idx++
         if state = 'reset' {
             idx := 0
+            amts := []
             return 1
         }
         inst := Helper0811_4Loss._inst
-        amts := [1.3, 2]
-        Loop 20 {
-            amts.Push(amts[-1]*2.2)
-        }
         return amts[Max(idx, 1)]
     }
 
@@ -250,8 +265,8 @@ class TraderBot {
         this.ps := Map()
 
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance.starting  := 1500
-        this.balance.reset_max := 2000
+        this.balance.starting  := 2250
+        this.balance.reset_max := 2750
         ; this.balance.reset_max := this.balance.starting*2
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
