@@ -149,7 +149,7 @@ class Helper0811_4Loss {
             return inst
         }
         if streak = 1 and streak != streak_prev_list[1] and inst.level > 1 {
-            Helper0811_4Loss.Tier3CustomAt2('reset')
+            Helper0811_4Loss.Tier3CustomAt2('resetidx')
             inst.wins++
             inst.idx_loss := 0
         }
@@ -230,6 +230,8 @@ class Helper0811_4Loss {
         }
         if state != 'draw'
             idx++
+        if state = 'resetidx'
+            idx := 0
         if state = 'reset' {
             idx := 0
             amts := []
