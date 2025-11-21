@@ -224,11 +224,6 @@ class Helper0811_4Loss {
                 amts.Push(amts[-1]*2.2)
             }
         }
-        _ := amts.Length '`n'
-        for v in amts {
-            _ .= v '`n'
-        }
-        tooltip(_, Random(10, 20), Random(10, 20), 2)
         if state != 'draw'
             idx++
         if state = 'resetidx'
