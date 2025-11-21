@@ -11,39 +11,35 @@ formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
 
-tester(tst) {
-    static amt := 1
-    static streak := 0
-    if tst = 0 {
-        if Helper_Skip(streak,, true) {
-        } else {
-            if streak > 0 {
-                streak := 0
-            }
-            streak--
-        }
-    } else if tst = 1 {
-        if Helper_Skip(streak,, true) {
-        } else {
-            if streak < 0 {
-                streak := 0
-            }            
-            streak++
-        }
-    } else if tst = 2 {
-    }
-    if Helper_Skip(streak) {
-        amt := 1
-    } else {
-        amt := -streak*10
-    }
-
-    str_d := 'Streak: ' streak
-    if Helper_Skip(streak, true) {
-        str_d := 'SKIP ' str_d
-    }
-    tooltip(str_d '`namt: ' amt)
-}
+; tester(tst) {
+;     static inst := {streak: 1, amt: 1, level: 3}
+;     static streak_prev_list := [1]
+;     if tst = 1 {
+;         if inst.streak < 0
+;             inst.streak := 0
+;         inst.streak++
+;     }
+;     if tst = 0 {
+;         if inst.streak > 0
+;             inst.streak := 0
+;         inst.streak--
+;     }
+;     streak := inst.streak
+    
+;     if true {
+;         if inst.streak = 1 {
+;             inst.amt := Helper0811_4Loss.Tier3CustomAt2('resetidx', 3)
+;             inst.level := 3
+;         } else {
+;             if streak = streak_prev_list[1]
+;                 inst.amt := Helper0811_4Loss.Tier3CustomAt2('draw')
+;             else if streak < 0
+;                 inst.amt := Helper0811_4Loss.Tier3CustomAt2()
+;         }
+;     }
+;     streak_prev_list.InsertAt(1, streak)
+;     tooltip inst.streak ' = ' inst.amt
+; }
 
 ; F1:: {
 ;     tester(1)
@@ -195,7 +191,7 @@ class Helper0811_4Loss {
 
         if inst.state_tier3 = 1 {
             if inst.streak = 1 {
-                inst.amt := Helper0811_4Loss.Tier3CustomAt2('reset', 3)
+                inst.amt := Helper0811_4Loss.Tier3CustomAt2('resetidx', 3)
                 inst.level := 3
             } else {
                 if streak = streak_prev_list[1]
@@ -228,6 +224,11 @@ class Helper0811_4Loss {
                 amts.Push(amts[-1]*2.2)
             }
         }
+        _ := amts.Length '`n'
+        for v in amts {
+            _ .= v '`n'
+        }
+        tooltip(_, Random(10, 20), Random(10, 20), 2)
         if state != 'draw'
             idx++
         if state = 'resetidx'
@@ -237,7 +238,6 @@ class Helper0811_4Loss {
             amts := []
             return 1
         }
-        inst := Helper0811_4Loss._inst
         return amts[Max(idx, 1)]
     }
 
