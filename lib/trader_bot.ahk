@@ -128,6 +128,15 @@ class Helper0811_4Loss {
                  [23.95, 51.06, 108.0, 748.0],
                  [51.06, 108.0, 226.0, 1890.0],
                  [108, 226, 473, 5000]]
+        
+        amts[1][1] += 0.2
+        amts[1][2] += 0.5
+        amts[1][3] += 1.1
+        amts[1][4] += 2.3
+        amts[2][1] += 0.2
+        amts[2][2] += 0.5
+        amts[2][3] += 1.1
+        amts[2][4] += 2.3
 
         ; amts := [[2.35, 3.65, 7.8, 16.60],
         ;          [4.73, 10.95, 23.95, 78.5],
@@ -136,7 +145,7 @@ class Helper0811_4Loss {
         ;          [51.06, 108, 226, 1890],
         ;          [108, 226, 473, 5000]]
 
-        if max_bal_diff <= 0 {
+        if max_bal_diff <= 40 and inst.level > 1 {
             return Helper0811_4Loss.Reset()
         }
         if max_bal_diff <= 20 and inst.level = 4 {
@@ -215,10 +224,7 @@ class Helper0811_4Loss {
             }
         }
         if count13 > 1 {
-            amts := []
-            Loop count13 {
-                amts.Push(1.3)
-            }
+            amts := [1.25, 2.20, 4.55, 10.10, 22.00]
             amts.Push(2)
             Loop 20 {
                 amts.Push(amts[-1]*2.2)
