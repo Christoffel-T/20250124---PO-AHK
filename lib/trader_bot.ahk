@@ -223,7 +223,7 @@ class Helper0811_4Loss {
         if amts.Length < 10 {
             amts := [1.3]
             amts.Push(2)
-            Loop 20 {
+            Loop 100 {
                 amts.Push(amts[-1]*2.2)
             }
         }
@@ -237,14 +237,16 @@ class Helper0811_4Loss {
                 amts[A_Index] := amts[A_Index]*count_loss_at_tier3+1
             }
             amts.Push(2)
-            Loop 20 {
+            Loop 100 {
                 amts.Push(amts[-1]*2.2)
             }
         }
 
         if state != 'draw' {
             idx++
-        } else if state = 'resetidx' {
+        }
+
+        if state = 'resetidx' {
             idx := 0
         } else if state = 'reset' {
             idx := 0
