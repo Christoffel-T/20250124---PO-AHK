@@ -200,11 +200,13 @@ class Helper0811_4Loss {
 
         if inst.state_tier3 = 1 {
             if inst.streak = 1 {
-                inst.amt := Helper0811_4Loss.Tier3CustomAt2('resetidx', 3)
+                inst.amt := Helper0811_4Loss.Tier3CustomAt2('resetidx', 1)
                 inst.level := 3
             } else {
                 if streak = streak_prev_list[1]
                     inst.amt := Helper0811_4Loss.Tier3CustomAt2('draw')
+                else if streak < 0 and streak_prev_list[2] > 0
+                    inst.amt := Helper0811_4Loss.Tier3CustomAt2(, 'tier3loss')
                 else if streak < 0
                     inst.amt := Helper0811_4Loss.Tier3CustomAt2()
             }
@@ -213,9 +215,11 @@ class Helper0811_4Loss {
         return inst
     }
 
-    static Tier3CustomAt2(state:='', count13:=1) {
+    static Tier3CustomAt2(state:='', state2:=0) {
         static idx := 0
+        static count_loss_at_tier3 := 0
         static amts := []
+
         if amts.Length < 10 {
             amts := [1.3]
             amts.Push(2)
@@ -223,22 +227,32 @@ class Helper0811_4Loss {
                 amts.Push(amts[-1]*2.2)
             }
         }
-        if count13 > 1 {
+         
+        if state2 {
+            if state2 = 'tier3loss' {
+                count_loss_at_tier3++
+            }
             amts := [1.25, 2.20, 4.55, 10.10, 22.00]
+            Loop 5 {
+                amts[A_Index] := amts[A_Index]*count_loss_at_tier3+1
+            }
             amts.Push(2)
             Loop 20 {
                 amts.Push(amts[-1]*2.2)
             }
         }
-        if state != 'draw'
+
+        if state != 'draw' {
             idx++
-        if state = 'resetidx'
+        } else if state = 'resetidx' {
             idx := 0
-        if state = 'reset' {
+        } else if state = 'reset' {
             idx := 0
+            count_loss_at_tier3 := 0
             amts := []
             return 1
         }
+
         return amts[Max(idx, 1)]
     }
 
@@ -253,6 +267,7 @@ class Helper0811_4Loss {
 
     static Reset() {
         Helper0811_4Loss._inst := {amt:1, streak:0, level:1, wins:0, idx_loss:0, state_tier3:0}
+        Helper0811_4Loss.count_loss_at_tier3 := 0
         Helper0811_4Loss.Tier3CustomAt2('reset')
         return Helper0811_4Loss._inst
     }
