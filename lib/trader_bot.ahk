@@ -138,14 +138,14 @@ class Helper0811_4Loss {
         amts[2][3] += 1.1
         amts[2][4] += 2.3
 
-        if max_bal_diff <= 40 and inst.level > 1 {
-            return Helper0811_4Loss.Reset()
-        }
-        if max_bal_diff <= 20 and inst.level = 4 {
-            inst.level := 1
-            Helper0811_4Loss.Tier3CustomAt2('reset')
-            return inst
-        }
+        ; if max_bal_diff <= 40 and inst.level > 1 {
+        ;     return Helper0811_4Loss.Reset()
+        ; }
+        ; if max_bal_diff <= 20 and inst.level = 4 {
+        ;     inst.level := 1
+        ;     Helper0811_4Loss.Tier3CustomAt2('reset')
+        ;     return inst
+        ; }
         if streak = 1 and streak != streak_prev_list[1] and inst.level > 1 {
             Helper0811_4Loss.Tier3CustomAt2('resetidx')
             inst.wins++
@@ -158,7 +158,7 @@ class Helper0811_4Loss {
                 inst.level := Min(amts.Length, inst.level + 1)
                 inst.wins := 0
             } else if inst.level = 2 {
-                if max_bal_diff <= 20 {
+                if max_bal_diff <= 0 {
                     inst.level := 1
                     inst.wins := 0
                 } else {
@@ -381,7 +381,7 @@ class TraderBot {
                     this.qualifiers.flip_trade.state := true
                     this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
                 }
-                if this.stats.max_bal_diff <= 20 {
+                if this.stats.max_bal_diff <= 0 {
                     Helper0811_4Loss.Reset()
                 }
             }
