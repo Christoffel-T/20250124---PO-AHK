@@ -1354,7 +1354,7 @@ class TraderBot {
     RunScenarios() {
         this.paused := this.CheckPaused()
 
-        ScenarioRandom(30)
+        ScenarioRandom(15)
 
         Scenario3b()
         Scenario3a()
