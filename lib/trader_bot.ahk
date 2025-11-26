@@ -129,15 +129,6 @@ class Helper0811_4Loss {
                  [51.06, 108.0, 226.0, 1890.0],
                  [108, 226, 473, 5000]]
         
-        amts[1][1] += 0.2
-        amts[1][2] += 0.5
-        amts[1][3] += 1.1
-        amts[1][4] += 2.3
-        amts[2][1] += 0.2
-        amts[2][2] += 0.5
-        amts[2][3] += 1.1
-        amts[2][4] += 2.3
-
         ; if max_bal_diff <= 40 and inst.level > 1 {
         ;     return Helper0811_4Loss.Reset()
         ; }
