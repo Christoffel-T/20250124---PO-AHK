@@ -187,23 +187,23 @@ class Helper0811_4Loss {
             }
         }
 
-        if inst.state_tier3 = 0 and inst.streak = -1 and inst.level = 3 {
-            inst.state_tier3 := 1
-        }
+        ; if inst.state_tier3 = 0 and inst.streak = -1 and inst.level = 3 {
+        ;     inst.state_tier3 := 1
+        ; }
 
-        if inst.state_tier3 = 1 {
-            if inst.streak = 1 {
-                inst.amt := Helper0811_4Loss.Tier3CustomAt2('resetidx', 1)
-                inst.level := 3
-            } else {
-                if streak = streak_prev_list[1]
-                    inst.amt := Helper0811_4Loss.Tier3CustomAt2('draw')
-                ; else if streak < 0 and streak_prev_list[2] > 0
-                ;     inst.amt := Helper0811_4Loss.Tier3CustomAt2(, 'tier3loss')
-                else if streak < 0
-                    inst.amt := Helper0811_4Loss.Tier3CustomAt2()
-            }
-        }
+        ; if inst.state_tier3 = 1 {
+        ;     if inst.streak = 1 {
+        ;         inst.amt := Helper0811_4Loss.Tier3CustomAt2('resetidx', 1)
+        ;         inst.level := 3
+        ;     } else {
+        ;         if streak = streak_prev_list[1]
+        ;             inst.amt := Helper0811_4Loss.Tier3CustomAt2('draw')
+        ;         ; else if streak < 0 and streak_prev_list[2] > 0
+        ;         ;     inst.amt := Helper0811_4Loss.Tier3CustomAt2(, 'tier3loss')
+        ;         else if streak < 0
+        ;             inst.amt := Helper0811_4Loss.Tier3CustomAt2()
+        ;     }
+        ; }
         
         return inst
     }
