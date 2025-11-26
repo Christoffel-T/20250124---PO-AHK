@@ -367,6 +367,18 @@ class TraderBot {
         _helper0811_4Loss() {
             Helper0811_4Loss.Update(streak, this.streak_prev, this.stats.max_bal_diff)
             this.stats.streak := Helper0811_4Loss.Get().streak
+
+            if Helper0811_4Loss.Get().level >= 2 {
+                inst := Helper0811_4Loss.Get()
+                if inst.wins > 0 and (inst.level = 2 and streak <= -2 or inst.level > 2) {
+                    this.qualifiers.flip_trade.state := false
+                    this.qualifiers.random_trade.state := false
+                } else {
+                    this.qualifiers.flip_trade.state := true
+                    this.qualifiers.random_trade.state := true
+                }
+            }
+
             if Helper0811_4Loss.Get().level = 2 {
                 if streak = -3 {
                     this.qualifiers.flip_trade.state := true
