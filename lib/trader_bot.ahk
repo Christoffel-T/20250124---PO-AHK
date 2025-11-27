@@ -368,19 +368,23 @@ class TraderBot {
             Helper0811_4Loss.Update(streak, this.streak_prev, this.stats.max_bal_diff)
             this.stats.streak := Helper0811_4Loss.Get().streak
 
-            if Helper0811_4Loss.Get().level >= 2 {
-                inst := Helper0811_4Loss.Get()
-                if inst.wins > 0 and (inst.level = 2 and streak <= -2 or inst.level > 2) {
+            inst := Helper0811_4Loss.Get()
+            if inst.level >= 2 {
+                if (inst.level = 2 and streak = -4) {
                     this.qualifiers.flip_trade.state := false
                     this.qualifiers.random_trade.state := false
-                } else {
+                } else if (inst.level = 2 and streak <= -2) {
                     this.qualifiers.flip_trade.state := true
-                    this.qualifiers.random_trade.state := true
+                } else {
+                    if not this.qualifiers.random_trade.state and streak >= 1 {
+                        this.qualifiers.random_trade.state := true
+                        this.qualifiers.flip_trade.state := true
+                    }
                 }
             }
 
             if Helper0811_4Loss.Get().level = 2 {
-                if streak = -3 {
+                if streak = -2 {
                     this.qualifiers.flip_trade.state := true
                     this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
                 }
@@ -390,18 +394,18 @@ class TraderBot {
             }
             
             if this.qualifiers.flip_trade.state = 1 and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
-                this.qualifiers.flip_trade.state := false
+                ; this.qualifiers.flip_trade.state := false
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
-            if streak <= -9 and streak >= -11 {
-                if this.qualifiers.flip_trade.state = 1
-                    this.qualifiers.flip_trade.state := 'temp'
-                this.qualifiers.random_trade.state := false
-                return Helper0811_4Loss.Get().amt/2
-            } else {
-                if this.qualifiers.flip_trade.state = 'temp'
-                    this.qualifiers.flip_trade.state := false
-            }
+            ; if streak <= -9 and streak >= -11 {
+            ;     if this.qualifiers.flip_trade.state = 1
+            ;         this.qualifiers.flip_trade.state := 'temp'
+            ;     this.qualifiers.random_trade.state := false
+            ;     return Helper0811_4Loss.Get().amt/2
+            ; } else {
+            ;     if this.qualifiers.flip_trade.state = 'temp'
+            ;         this.qualifiers.flip_trade.state := false
+            ; }
             return Helper0811_4Loss.Get().amt
         }
 
