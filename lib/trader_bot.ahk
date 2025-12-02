@@ -307,6 +307,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
+        this.stats.win := 7
         this.stats.max_bal_diff := 0
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -1833,6 +1834,10 @@ class TraderBot {
             sleep 50
             ToolTip('waiting for trade to be opened', , , 12)
             if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 25) {
+                break
+            }
+            this.CheckBalance()
+            if this.balance.current != this.balance.last_trade {
                 break
             }
             if A_Index > 400 {
