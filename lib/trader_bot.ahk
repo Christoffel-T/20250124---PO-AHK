@@ -1,57 +1,57 @@
 #Requires AutoHotkey v2.0
 #Include OCR.ahk
 #Include utils.ahk
+;{
 scriptPath := A_LineFile
-; Get last modified datetime
 modTime := FileGetTime(scriptPath, "M")
-; Format nicely
 formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
-
-; Set tray tooltip
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
-
-; tester(tst) {
-;     static inst := {streak: 1, amt: 1, level: 3}
-;     static streak_prev_list := [1]
-;     if tst = 1 {
-;         if inst.streak < 0
-;             inst.streak := 0
-;         inst.streak++
-;     }
-;     if tst = 0 {
-;         if inst.streak > 0
-;             inst.streak := 0
-;         inst.streak--
-;     }
-;     streak := inst.streak
+/*
+tester(tst) {
+    static inst := {streak: 1, amt: 1, level: 3}
+    static streak_prev_list := [1]
+    if tst = 1 {
+        if inst.streak < 0
+            inst.streak := 0
+        inst.streak++
+    }
+    if tst = 0 {
+        if inst.streak > 0
+            inst.streak := 0
+        inst.streak--
+    }
+    streak := inst.streak
     
-;     if true {
-;         if inst.streak = 1 {
-;             inst.amt := Helper0811_4Loss.Tier3CustomAt2('resetidx', 3)
-;             inst.level := 3
-;         } else {
-;             if streak = streak_prev_list[1]
-;                 inst.amt := Helper0811_4Loss.Tier3CustomAt2('draw')
-;             else if streak < 0
-;                 inst.amt := Helper0811_4Loss.Tier3CustomAt2()
-;         }
-;     }
-;     streak_prev_list.InsertAt(1, streak)
-;     tooltip inst.streak ' = ' inst.amt
-; }
+    if true {
+        if inst.streak = 1 {
+            inst.amt := Helper0811_4Loss.Tier3CustomAt2('resetidx', 3)
+            inst.level := 3
+        } else {
+            if streak = streak_prev_list[1]
+                inst.amt := Helper0811_4Loss.Tier3CustomAt2('draw')
+            else if streak < 0
+                inst.amt := Helper0811_4Loss.Tier3CustomAt2()
+        }
+    }
+    streak_prev_list.InsertAt(1, streak)
+    tooltip inst.streak ' = ' inst.amt
+}
 
-; F1:: {
-;     tester(1)
-; }
+F1:: {
+    tester(1)
+}
 
-; F2:: {
-;     tester(0)
-; }
+F2:: {
+    tester(0)
+}
 
-; F3:: {
-;     tester(2)
-; }
+F3:: {
+    tester(2)
+}
+*/
+
+;}
 
 Helper_Skip(streak, only_read:=false, just_check:=false) {
     static last_streak := 0
@@ -385,6 +385,9 @@ class TraderBot {
             }
 
             if Helper0811_4Loss.Get().level = 2 {
+                if streak = 1 and streak != this.streak_prev[1] {
+                    this.ChangeCoin()
+                }
                 if streak = -2 {
                     this.qualifiers.flip_trade.state := true
                     this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
@@ -919,37 +922,45 @@ class TraderBot {
             this.stats.%this.executed_trades[1]%.draw++
             this.stats.draw++
         }
+    }
 
-        ChangeCoin() {
-            ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
-            MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
-            sleep 100
-            MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
-            sleep 100
-            _count_reload := 0
-            Loop {
-                _count_reload++
-                if _count_reload > 50 {
-                    _count_reload := 0
-                    this.ReloadWebsite()
-                }
-                MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
-                sleep 200
-                new_cname := OCR.FromRect(this.coords.coin.x - 25, this.coords.coin.y - 25, 150, 50,, 3).Text
-                ToolTip('Waiting coin name change (' this.coin_name ' vs ' new_cname ') ' A_Index, 500, 5, 12)
-                if this.coin_name != new_cname {
-                    this.coin_name := new_cname
-                    break
-                }
+    ChangeCoin(_random:=true) {
+        ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
+        MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
+        sleep 100
+        MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
+        sleep 100
+        _count_reload := 0
+        Loop {
+            _count_reload++
+            if _count_reload > 20 {
+                _count_reload := 0
+                this.ReloadWebsite()
             }
-            sleep 100
-            MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
-            sleep 100
-            MouseClick('L', this.coords.time_choice.x + Random(-2, 2), this.coords.time_choice.y + Random(-2, 2), 1, 2)
-            sleep 100
-            Send '{Escape}'
-            sleep 200
+            if _random {
+                MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
+            } else {
+                MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
+            }
+            sleep 300
+            new_cname := OCR.FromRect(this.coords.coin.x - 25, this.coords.coin.y - 25, 150, 50,, 3).Text
+            ToolTip('Waiting coin name change (' this.coin_name ' vs ' new_cname ') ' A_Index, 500, 5, 12)
+            if this.coin_name != new_cname {
+                this.coin_name := new_cname
+                break
+            }
         }
+        sleep 100
+        MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
+        sleep 500
+        MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
+        sleep 100
+        MouseClick('L', this.coords.time_choice.x + Random(-2, 2), this.coords.time_choice.y + Random(-2, 2), 1, 2)
+        sleep 100
+        MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
+        sleep 100
+        Send '{Escape}'
+        sleep 500
     }
 
     SetTradeAmount(bal_mark:=true) {
@@ -1256,46 +1267,12 @@ class TraderBot {
                 }
                 this.last_trade := ''
                 ToolTip('Waiting for payout to be 92 or higher... ' A_Index, 500, 5, 12)
-                MouseMove(this.coords.Payout.x, this.coords.Payout.y, 5)
-                sleep 500
-                MouseMove(this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, 5)
-                sleep 500
-                MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
-                sleep 100
-                MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
-                sleep 100
                 if this.state.coin_change_streak and this.stats.streak = coin_change_streak {
                     this.state.coin_change_streak := false
-                    _count_reload := 0
-                    Loop {
-                        _count_reload++
-                        if _count_reload > 20 {
-                            _count_reload := 0
-                            this.ReloadWebsite()
-                        }
-                        MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
-                        sleep 300
-                        new_cname := OCR.FromRect(this.coords.coin.x - 25, this.coords.coin.y - 25, 150, 50,, 3).Text
-                        ToolTip('Waiting coin name change (' this.coin_name ' vs ' new_cname ') ' A_Index, 500, 5, 12)
-                        if this.coin_name != new_cname {
-                            this.coin_name := new_cname
-                            break
-                        }
-                    }
+                    this.ChangeCoin()
                 } else {
-                    MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(-2, 2), 1, 2)
+                    this.ChangeCoin(false)
                 }
-                sleep 100
-                MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
-                sleep 500
-                MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
-                sleep 100
-                MouseClick('L', this.coords.time_choice.x + Random(-2, 2), this.coords.time_choice.y + Random(-2, 2), 1, 2)
-                sleep 100
-                MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
-                sleep 100
-                Send '{Escape}'
-                sleep 1000
             }
         }
     }
