@@ -121,8 +121,8 @@ class Helper0811_4Loss {
         inst.amt := 1
         inst.streak := streak
 
-        amts := [[1.20, 1.52, 3.29, 6.96],
-                 [14.64, 30.66, 64.10, 133.88],
+        amts := [[1.40, 2.02, 4.39, 9.26],
+                 [20.05, 30.66, 64.10, 133.88],
                  [279.51, 583.44, 1217.72, 2541.44],
                  [60.0, 120.0, 240.0, 500],
                  [23.95, 51.06, 108.0, 748.0],
@@ -268,8 +268,8 @@ class TraderBot {
         this.ps := Map()
 
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance.starting  := 2250
-        this.balance.reset_max := 2750
+        this.balance.starting := 1800
+        this.balance.reset_max := 2300
         ; this.balance.reset_max := this.balance.starting*2
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
@@ -371,6 +371,11 @@ class TraderBot {
 
             inst := Helper0811_4Loss.Get()
             if inst.level >= 2 {
+                if (inst.streak < 0) {
+                    if Mod(inst.streak, 2) = 1 {
+                        
+                    }
+                }
                 if (inst.level = 2 and streak = -4) {
                     this.qualifiers.flip_trade.state := false
                     this.qualifiers.random_trade.state := false
@@ -410,6 +415,18 @@ class TraderBot {
             ;     if this.qualifiers.flip_trade.state = 'temp'
             ;         this.qualifiers.flip_trade.state := false
             ; }
+            if not this.qualifiers.custom_switch.state and inst.level >= 2 and inst.streak <= -2 {
+                this.qualifiers.custom_switch.state := true
+            }
+            if inst.level >= 2 and this.qualifiers.custom_switch.state {
+                if (inst.streak < 0) {
+                    if Mod(inst.streak, 2) = 1 {
+                        return this.stats.max_bal_diff*0.5
+                    } else {
+                        return (this.stats.max_bal_diff+2)*0.92
+                    }
+                }
+            }
             return Helper0811_4Loss.Get().amt
         }
 
@@ -1053,6 +1070,9 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
+            custom_switch: {
+                state: false
+            },
             random_trade: {
                 state: true
             },
