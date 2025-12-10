@@ -160,8 +160,8 @@ class Helper0811_4Loss {
                 inst.wins := 0
             } else if inst.streak = 1 {
                 ; inst.level := 1
-                ; inst.wins := 0
-                ; inst.idx_loss := 0
+                inst.wins := 0
+                inst.idx_loss := 0
             }
         }
 
