@@ -159,9 +159,9 @@ class Helper0811_4Loss {
                 inst.level := Min(amts.Length, inst.level + 1)
                 inst.wins := 0
             } else if inst.streak = 1 {
-                inst.level := 1
-                inst.wins := 0
-                inst.idx_loss := 0
+                ; inst.level := 1
+                ; inst.wins := 0
+                ; inst.idx_loss := 0
             }
         }
 
@@ -423,7 +423,7 @@ class TraderBot {
                     if Mod(inst.streak, 2) = 0 {
                         return this.stats.max_bal_diff*0.5
                     } else {
-                        return (this.stats.max_bal_diff+2)*0.92
+                        return (this.stats.max_bal_diff+2)/0.92
                     }
                 }
             }
