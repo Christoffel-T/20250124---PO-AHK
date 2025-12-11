@@ -307,7 +307,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
-        this.stats.bal_win := 8
+        this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
@@ -371,11 +371,6 @@ class TraderBot {
 
             inst := Helper0811_4Loss.Get()
             if inst.level >= 2 {
-                if (inst.streak < 0) {
-                    if Mod(inst.streak, 2) = 1 {
-                        
-                    }
-                }
                 if (inst.level = 2 and streak = -4) {
                     this.qualifiers.flip_trade.state := false
                     this.qualifiers.random_trade.state := false
@@ -417,6 +412,16 @@ class TraderBot {
             ; }
             if not this.qualifiers.custom_switch.state and inst.level >= 2 and inst.streak <= -2 {
                 this.qualifiers.custom_switch.state := true
+            }
+            switch {
+                case inst.level = 1 and inst.streak = -2:
+                    return (this.stats.max_bal_diff+0.40)/0.92
+                case inst.level = 1 and inst.streak = -3:
+                    return (this.stats.max_bal_diff+1)/0.92
+                case inst.level = 1 and inst.streak = -4:
+                    return (this.stats.max_bal_diff+2.5)/0.92
+                case inst.level = 2 and inst.streak = -1:
+                    return (this.stats.max_bal_diff+6.25)/0.92
             }
             if inst.level >= 2 and this.qualifiers.custom_switch.state {
                 if (inst.streak < 0) {
