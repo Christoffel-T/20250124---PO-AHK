@@ -426,9 +426,9 @@ class TraderBot {
             if inst.level >= 2 and this.qualifiers.custom_switch.state {
                 if (inst.streak < 0) {
                     if Mod(inst.streak, 2) = 0 {
-                        return this.stats.max_bal_diff*0.5
+                        return this.stats.max_bal_diff*0.05
                     } else {
-                        return (this.stats.max_bal_diff+2)/0.92
+                        return (this.stats.max_bal_diff+5)/0.92
                     }
                 }
             }
