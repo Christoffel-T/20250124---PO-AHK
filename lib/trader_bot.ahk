@@ -268,8 +268,8 @@ class TraderBot {
         this.ps := Map()
 
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance.starting := 1800
-        this.balance.reset_max := 2300
+        this.balance.starting := 1200
+        this.balance.reset_max := this.balance.starting + 500
         ; this.balance.reset_max := this.balance.starting*2
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
@@ -424,6 +424,9 @@ class TraderBot {
                     return (this.stats.max_bal_diff+6.25)/0.92
             }
             if inst.level >= 2 and this.qualifiers.custom_switch.state {
+                if (inst.level = 2 and inst.streak = -3) {
+                    return this.stats.max_bal_diff*0.25
+                }
                 if (inst.streak < 0) {
                     if Mod(inst.streak, 2) = 0 {
                         return this.stats.max_bal_diff*0.05
