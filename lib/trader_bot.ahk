@@ -410,8 +410,15 @@ class TraderBot {
             ;     if this.qualifiers.flip_trade.state = 'temp'
             ;         this.qualifiers.flip_trade.state := false
             ; }
-            if not this.qualifiers.custom_switch.state and inst.level >= 2 and inst.streak <= -2 {
+            if (not this.qualifiers.custom_switch.state and inst.level >= 2 and inst.streak <= -2) {
                 this.qualifiers.custom_switch.state := true
+            }
+            if (this.stats.max_bal_diff + this.amount >= 200) {
+                this.qualifiers.trigger_200F.state := 1
+            }
+            if (this.qualifiers.trigger_200F.state = 1) {
+                this.qualifiers.trigger_200F.value_percentage += 5
+                return (this.stats.max_bal_diff*this.qualifiers.trigger_200F.value_percentage/100)
             }
             switch {
                 case inst.level = 1 and inst.streak = -2:
@@ -1075,6 +1082,10 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
+            trigger_200F: {
+                state: false,
+                value_percentage: 0
+            },
             custom_switch: {
                 state: false
             },
