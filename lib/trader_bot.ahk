@@ -52,23 +52,6 @@ F3:: {
 */
 
 ;}
-_SubHelper1(current_amt) {
-    max_bal_diff := 165.92
-    amts := [100]
-    Loop 30 {
-        amts.InsertAt(1, amts[1]+75)
-    }
-    sum := max_bal_diff + current_amt
-    for v in amts {
-        MsgBox sum '>' v '?'
-        if sum > v {
-            return v - max_bal_diff
-        }
-    }
-    return 0
-}
-
-MsgBox _SubHelper1(72.56)
 
 Helper_Skip(streak, only_read:=false, just_check:=false) {
     static last_streak := 0
