@@ -369,7 +369,8 @@ class TraderBot {
         return 0
 
         _SubHelper1(current_amt) {
-            amts := [100]
+            ; amts := [100]
+            amts := [175]
             Loop 30 {
                 amts.InsertAt(1, amts[1]+75)
             }
