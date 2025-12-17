@@ -359,11 +359,28 @@ class TraderBot {
         
         for helper in [_helper0811_4Loss] {
             if return_val := helper() {
+                if val := _SubHelper1(return_val) {
+                    return val
+                }
                 return return_val
             }
         }
         
         return 0
+
+        _SubHelper1(current_amt) {
+            amts := [100]
+            Loop 30 {
+                amts.InsertAt(1, amts[1]+75)
+            }
+            sum := this.stats.max_bal_diff + current_amt
+            for v in amts {
+                if sum > v {
+                    return sum - v
+                }
+            }
+            return 0
+        }
 
         _helper0811_4Loss() {
             Helper0811_4Loss.Update(streak, this.streak_prev, this.stats.max_bal_diff)
@@ -440,6 +457,7 @@ class TraderBot {
                 }
             }
             return Helper0811_4Loss.Get().amt
+
         }
 
         _helper_2610() {
