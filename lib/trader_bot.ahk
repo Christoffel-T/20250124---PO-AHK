@@ -439,7 +439,7 @@ class TraderBot {
                     this.qualifiers.trigger_200F.value_percentage := 0
                 }
                 if this.stats.streak < 0 {
-                    this.qualifiers.trigger_200F.value_percentage += 5
+                    this.qualifiers.trigger_200F.value_percentage += 4
                     return (this.stats.max_bal_diff*this.qualifiers.trigger_200F.value_percentage/100)
                 }
             }
