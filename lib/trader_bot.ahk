@@ -434,8 +434,14 @@ class TraderBot {
                 this.qualifiers.trigger_200F.state := 1
             }
             if (this.qualifiers.trigger_200F.state = 1) {
-                this.qualifiers.trigger_200F.value_percentage += 5
-                return (this.stats.max_bal_diff*this.qualifiers.trigger_200F.value_percentage/100)
+                if this.stats.max_bal_diff <= 65 {
+                    this.qualifiers.trigger_200F.state := 0
+                    this.qualifiers.trigger_200F.value_percentage := 0
+                }
+                if this.stats.streak < 0 {
+                    this.qualifiers.trigger_200F.value_percentage += 5
+                    return (this.stats.max_bal_diff*this.qualifiers.trigger_200F.value_percentage/100)
+                }
             }
             switch {
                 case inst.level = 1 and inst.streak = -2:
