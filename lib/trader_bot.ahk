@@ -268,8 +268,8 @@ class TraderBot {
         this.ps := Map()
 
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance.starting := 1200
-        this.balance.reset_max := this.balance.starting + 500
+        this.balance.starting := 1800
+        this.balance.reset_max := 2300
         ; this.balance.reset_max := this.balance.starting*2
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
@@ -359,29 +359,11 @@ class TraderBot {
         
         for helper in [_helper0811_4Loss] {
             if return_val := helper() {
-                if val := _SubHelper1(return_val) {
-                    return val
-                }
                 return return_val
             }
         }
         
         return 0
-
-        _SubHelper1(current_amt) {
-            ; amts := [100]
-            amts := [175]
-            Loop 30 {
-                amts.InsertAt(1, amts[1]+75)
-            }
-            sum := this.stats.max_bal_diff + current_amt
-            for v in amts {
-                if sum > v {
-                    return v - this.stats.max_bal_diff
-                }
-            }
-            return 0
-        }
 
         _helper0811_4Loss() {
             Helper0811_4Loss.Update(streak, this.streak_prev, this.stats.max_bal_diff)
@@ -428,21 +410,8 @@ class TraderBot {
             ;     if this.qualifiers.flip_trade.state = 'temp'
             ;         this.qualifiers.flip_trade.state := false
             ; }
-            if (not this.qualifiers.custom_switch.state and inst.level >= 2 and inst.streak <= -2) {
+            if not this.qualifiers.custom_switch.state and inst.level >= 2 and inst.streak <= -2 {
                 this.qualifiers.custom_switch.state := true
-            }
-            if (this.stats.max_bal_diff + this.amount >= 200) {
-                this.qualifiers.trigger_200F.state := 1
-            }
-            if (this.qualifiers.trigger_200F.state = 1) {
-                if this.stats.max_bal_diff <= 65 {
-                    this.qualifiers.trigger_200F.state := 0
-                    this.qualifiers.trigger_200F.value_percentage := 0
-                }
-                if this.stats.streak < 0 {
-                    this.qualifiers.trigger_200F.value_percentage += 4
-                    return (this.stats.max_bal_diff*this.qualifiers.trigger_200F.value_percentage/100)
-                }
             }
             switch {
                 case inst.level = 1 and inst.streak = -2:
@@ -464,7 +433,6 @@ class TraderBot {
                 }
             }
             return Helper0811_4Loss.Get().amt
-
         }
 
         _helper_2610() {
@@ -979,6 +947,11 @@ class TraderBot {
     }
 
     ChangeCoin(_random:=true) {
+        ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
+        MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
+        sleep 100
+        MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
+        sleep 100
         _count_reload := 0
         Loop {
             _count_reload++
@@ -986,11 +959,6 @@ class TraderBot {
                 _count_reload := 0
                 this.ReloadWebsite()
             }
-            ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
-            MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
-            sleep 100
-            MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
-            sleep 100
             if _random {
                 MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
             } else {
@@ -1107,10 +1075,6 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
-            trigger_200F: {
-                state: false,
-                value_percentage: 0
-            },
             custom_switch: {
                 state: false
             },
