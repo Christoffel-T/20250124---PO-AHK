@@ -947,11 +947,6 @@ class TraderBot {
     }
 
     ChangeCoin(_random:=true) {
-        ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
-        MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
-        sleep 100
-        MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
-        sleep 100
         _count_reload := 0
         Loop {
             _count_reload++
@@ -959,6 +954,11 @@ class TraderBot {
                 _count_reload := 0
                 this.ReloadWebsite()
             }
+            ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
+            MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
+            sleep 100
+            MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
+            sleep 100
             if _random {
                 MouseClick('L', this.coords.coin_top.x + Random(-2, 2), this.coords.coin_top.y + Random(0, 2)*28, 1, 2)
             } else {
