@@ -410,9 +410,6 @@ class TraderBot {
             ;     if this.qualifiers.flip_trade.state = 'temp'
             ;         this.qualifiers.flip_trade.state := false
             ; }
-            if not this.qualifiers.custom_switch.state and inst.level >= 2 and inst.streak <= -2 {
-                this.qualifiers.custom_switch.state := true
-            }
             switch {
                 case inst.level = 1 and inst.streak = -2:
                     return (this.stats.max_bal_diff+0.40)/0.92
@@ -423,8 +420,26 @@ class TraderBot {
                 case inst.level = 2 and inst.streak = -1:
                     return (this.stats.max_bal_diff+6.25)/0.92
             }
-            if inst.level >= 2 and this.qualifiers.custom_switch.state {
-                if (inst.streak < 0) {
+            if not this.qualifiers.custom_switch.state and inst.level >= 2 and inst.streak <= -2 {
+                this.qualifiers.custom_switch.state := true
+            }
+            if (this.qualifiers.custom_switch.state) {
+                if (this.qualifiers.custom_switch.state = 2) {
+                    if (streak = 3) {
+                        this.qualifiers.custom_switch.count++
+                        if Mod(this.qualifiers.custom_switch.count, 2) = 0 {
+                            return this.stats.max_bal_diff*0.05
+                        } else {
+                            return (this.stats.max_bal_diff+5)/0.92
+                        }
+                    } else {
+                        return 1
+                    }
+                }
+                if (inst.level >= 2 and inst.streak < 0) {
+                    if (inst.streak = -4) {
+                        this.qualifiers.custom_switch.state := 2
+                    }
                     if Mod(inst.streak, 2) = 0 {
                         return this.stats.max_bal_diff*0.05
                     } else {
@@ -1076,7 +1091,8 @@ class TraderBot {
 
         this.qualifiers := {
             custom_switch: {
-                state: false
+                state: false,
+                count: 0
             },
             random_trade: {
                 state: true
