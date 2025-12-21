@@ -420,46 +420,62 @@ class TraderBot {
                 case inst.level = 2 and inst.streak = -1:
                     return (this.stats.max_bal_diff+6.25)/0.92
             }
-            if not this.qualifiers.custom_switch.state and inst.level >= 2 and inst.streak <= -2 {
-                this.qualifiers.custom_switch.state := true
+            if (this.qualifiers.custom_switch.state < 2 and inst.level >= 2 and inst.streak <= -2) {
+                this.qualifiers.custom_switch.state := 2
+                this.qualifiers.custom_switch.phase2_attempts := 0
             }
-            if (this.qualifiers.custom_switch.state) {
-                if (this.qualifiers.custom_switch.state = 2) {
-                    if (this.streak_prev[1] = 3) {
-                        if (streak = 4) {
-                            this.qualifiers.custom_switch.win3_lost := 0
-                        } else if (streak < 0) {
-                            this.qualifiers.custom_switch.win3_lost := 1
-                        }
-                    }
-                    if (streak = 3) {
-                        if (streak = this.streak_prev[1]) {
-                            return this.amount
-                        }
-                        this.qualifiers.custom_switch.count++
-                        if Mod(this.qualifiers.custom_switch.count, 2) = 0 {
-                            return this.stats.max_bal_diff*0.05
-                        } else {
-                            if (this.qualifiers.custom_switch.win3_lost = 1) {
-                                return ((this.stats.max_bal_diff+5)*0.1)/0.92
-                            } else {
-                                return (this.stats.max_bal_diff+5)/0.92
-                            }
-                        }
-                    } else {
-                        return 1
-                    }
-                }
-                if (inst.level >= 2 and inst.streak < 0) {
+            if (this.qualifiers.custom_switch.state = 2) {
+                if (inst.streak > 0 and this.stats.max_bal_diff <= 75 and this.qualifiers.custom_switch.phase2_attempts <= 1) {
+                    this.qualifiers.custom_switch.state := 3
+                } else if (inst.streak > 0 and this.stats.max_bal_diff <= 100) {
+                    this.qualifiers.custom_switch.state := 3
+                } else if (inst.level >= 2 and inst.streak < 0) {
                     if (inst.streak = -4) {
-                        this.qualifiers.custom_switch.state := 2
+                        this.qualifiers.custom_switch.state := 3
                     }
                     if Mod(inst.streak, 2) = 0 {
                         return this.stats.max_bal_diff*0.05
                     } else {
-                        return (this.stats.max_bal_diff+5)/0.92
+                        this.qualifiers.custom_switch.phase2_attempts++
+                        return ((this.stats.max_bal_diff+5)/0.92)*0.5
                     }
                 }
+            }
+            if (this.qualifiers.custom_switch.state = 3) {
+                if (this.streak_prev[1] = 3) {
+                    if (streak = 4) {
+                        this.qualifiers.custom_switch.win3_lost := 0
+                    } else if (streak < 0) {
+                        this.qualifiers.custom_switch.win3_lost := 1
+                    }
+                }
+                if this.stats.max_bal_diff <= 65 and streak > 0 {
+                    this.qualifiers.custom_switch.state := 4
+                }
+                if (streak = 3) {
+                    if (streak = this.streak_prev[1]) {
+                        return this.amount
+                    }
+                    this.qualifiers.custom_switch.count++
+                    if Mod(this.qualifiers.custom_switch.count, 2) = 0 {
+                        return this.stats.max_bal_diff*0.05
+                    } else {
+                        if (this.qualifiers.custom_switch.win3_lost = 1) {
+                            return ((this.stats.max_bal_diff+5)*0.1)/0.92
+                        } else {
+                            if (inst.level = 2 or inst.level = 3) {
+                                return ((this.stats.max_bal_diff+5)/0.92)*0.5
+                            } else {
+                                return (this.stats.max_bal_diff+5)/0.92
+                            }
+                        }
+                    }
+                } else if (this.qualifiers.custom_switch.state = 3) {
+                    return 1
+                }
+            }
+            if (this.qualifiers.custom_switch.state = 4) {
+                return ((this.stats.max_bal_diff+45)/0.92)
             }
             return Helper0811_4Loss.Get().amt
         }
@@ -1105,8 +1121,9 @@ class TraderBot {
 
         this.qualifiers := {
             custom_switch: {
-                state: false,
-                win3_lost: false,
+                state: 0,
+                win3_lost: 0,
+                phase2_attempts: 0,
                 count: 0
             },
             random_trade: {
