@@ -398,37 +398,31 @@ class TraderBot {
             }
             
             if this.qualifiers.flip_trade.state = 1 and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
-                ; this.qualifiers.flip_trade.state := false
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
-            ; if streak <= -9 and streak >= -11 {
-            ;     if this.qualifiers.flip_trade.state = 1
-            ;         this.qualifiers.flip_trade.state := 'temp'
-            ;     this.qualifiers.random_trade.state := false
-            ;     return Helper0811_4Loss.Get().amt/2
-            ; } else {
-            ;     if this.qualifiers.flip_trade.state = 'temp'
-            ;         this.qualifiers.flip_trade.state := false
-            ; }
-            switch {
-                case inst.level = 1 and inst.streak = -2:
-                    return (this.stats.max_bal_diff+0.40)/0.92
-                case inst.level = 1 and inst.streak = -3:
-                    return (this.stats.max_bal_diff+1)/0.92
-                case inst.level = 1 and inst.streak = -4:
-                    return (this.stats.max_bal_diff+2.5)/0.92
-                case inst.level = 2 and inst.streak = -1:
-                    return (this.stats.max_bal_diff+6.25)/0.92
-            }
-            if (this.qualifiers.custom_switch.state < 2 and inst.level >= 2 and inst.streak <= -2) {
-                this.qualifiers.custom_switch.state := 2
-                this.qualifiers.custom_switch.phase2_attempts := 0
+            if (this.qualifiers.custom_switch.state < 2) {
+                switch {
+                    case inst.level = 1 and inst.streak = -2:
+                        return (this.stats.max_bal_diff+0.40)/0.92
+                    case inst.level = 1 and inst.streak = -3:
+                        return (this.stats.max_bal_diff+1)/0.92
+                    case inst.level = 1 and inst.streak = -4:
+                        return (this.stats.max_bal_diff+2.5)/0.92
+                    case inst.level = 2 and inst.streak = -1:
+                        return (this.stats.max_bal_diff+6.25)/0.92
+                }
+                if (inst.level >= 2 and inst.streak <= -2) {
+                    this.qualifiers.custom_switch.state := 2
+                    this.qualifiers.custom_switch.phase2_attempts := 0
+                }
             }
             if (this.qualifiers.custom_switch.state = 2) {
                 if (inst.streak > 0 and this.stats.max_bal_diff <= 75 and this.qualifiers.custom_switch.phase2_attempts <= 1) {
                     this.qualifiers.custom_switch.state := 3
+                    return 1
                 } else if (inst.streak > 0 and this.stats.max_bal_diff <= 100) {
                     this.qualifiers.custom_switch.state := 3
+                    return 1
                 } else if (inst.level >= 2 and inst.streak < 0) {
                     if (inst.streak = -4) {
                         this.qualifiers.custom_switch.state := 3
