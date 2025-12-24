@@ -436,15 +436,15 @@ class TraderBot {
                 }
             }
             if (this.qualifiers.custom_switch.state = 3) {
+                if (this.stats.max_bal_diff <= 65 and streak > 0 and this.qualifiers.custom_switch.count > 0) {
+                    this.qualifiers.custom_switch.state := 4
+                }
                 if (this.streak_prev[1] = 3) {
                     if (streak = 4) {
                         this.qualifiers.custom_switch.win3_lost := 0
                     } else if (streak < 0) {
                         this.qualifiers.custom_switch.win3_lost := 1
                     }
-                }
-                if (this.stats.max_bal_diff <= 65 and streak > 0 and this.qualifiers.custom_switch.count > 0) {
-                    this.qualifiers.custom_switch.state := 4
                 }
                 if (streak = 3) {
                     if (streak = this.streak_prev[1]) {
@@ -462,7 +462,27 @@ class TraderBot {
                 }
             }
             if (this.qualifiers.custom_switch.state = 4) {
-                return ((this.stats.max_bal_diff+45)/0.92)
+                if (this.streak_prev[1] = 3) {
+                    if (streak = 4) {
+                        this.qualifiers.custom_switch.win3_lost := 0
+                    } else if (streak < 0) {
+                        this.qualifiers.custom_switch.win3_lost := 1
+                    }
+                }
+                if (streak = 3) {
+                    if (streak = this.streak_prev[1]) {
+                        return this.amount
+                    }
+                    this.qualifiers.custom_switch.count++
+                    if (this.qualifiers.custom_switch.win3_lost = 1) {
+                        return this.stats.max_bal_diff*0.05
+                        ; return ((this.stats.max_bal_diff+5)*0.1)/0.92
+                    } else {
+                        return ((this.stats.max_bal_diff/0.92)+10)
+                    }
+                } else if (this.qualifiers.custom_switch.state = 4) {
+                    return 1
+                }
             }
             return Helper0811_4Loss.Get().amt
         }
