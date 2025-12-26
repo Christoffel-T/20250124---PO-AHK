@@ -450,13 +450,13 @@ class TraderBot {
                     if (streak = this.streak_prev[1]) {
                         return this.amount
                     }
+                    vals := [40,30,20,10,9,8,7,6,5,4,3,2,1]
                     this.qualifiers.custom_switch.count++
-                    if (this.qualifiers.custom_switch.win3_lost = 1) {
-                        return this.stats.max_bal_diff*0.05
-                        ; return ((this.stats.max_bal_diff+5)*0.1)/0.92
-                    } else {
-                        return ((this.stats.max_bal_diff+5)/0.92)*0.5
+                    if (this.qualifiers.custom_switch.count >= vals.Length) {
+                        this.qualifiers.custom_switch.count := 1
                     }
+                    idx := this.qualifiers.custom_switch.count
+                    return (this.stats.max_bal_diff*vals[idx])
                 } else if (this.qualifiers.custom_switch.state = 3) {
                     return 1
                 }
