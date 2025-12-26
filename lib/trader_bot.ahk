@@ -436,7 +436,7 @@ class TraderBot {
                 }
             }
             if (this.qualifiers.custom_switch.state = 3) {
-                if (this.stats.max_bal_diff <= 65 and streak > 0 and this.qualifiers.custom_switch.count > 0) {
+                if (this.stats.max_bal_diff <= 75 and streak > 0 and this.qualifiers.custom_switch.count > 0) {
                     this.qualifiers.custom_switch.state := 4
                 }
                 if (this.streak_prev[1] = 3) {
