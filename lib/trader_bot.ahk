@@ -456,7 +456,7 @@ class TraderBot {
                         this.qualifiers.custom_switch.count := 1
                     }
                     idx := this.qualifiers.custom_switch.count
-                    return (this.stats.max_bal_diff*vals[idx])
+                    return (this.stats.max_bal_diff*vals[idx])/100
                 } else if (this.qualifiers.custom_switch.state = 3) {
                     return 1
                 }
