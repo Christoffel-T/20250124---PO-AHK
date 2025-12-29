@@ -309,6 +309,7 @@ class TraderBot {
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
         this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
+        this.stats.streak_real := 0
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
         this.lose_streak := {max: 0, repeat: Map()}
@@ -399,14 +400,6 @@ class TraderBot {
             
             if this.qualifiers.flip_trade.state = 1 and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
                 this.qualifiers.flip_trade.marked_winrate := 0
-            }
-            switch {
-                case inst.level = 1 and inst.streak = -2:
-                    return (this.stats.max_bal_diff+0.40)/0.92
-                case inst.level = 1 and inst.streak = -3:
-                    return (this.stats.max_bal_diff+1)/0.92
-                case inst.level = 1 and inst.streak = -4:
-                    return (this.stats.max_bal_diff+2.5)/0.92
             }
             amts := [2,6,18]
             if (inst.level = 2) {
@@ -797,9 +790,12 @@ class TraderBot {
             }
 
             if streak_change {
-                if this.stats.streak >= 0
+                if this.stats.streak >= 0 {
                     this.stats.streak := 0
+                    this.stats.streak_real := 0
+                }
                 this.stats.streak--
+                this.stats.streak_real--
             }
 
             if this.balance.current <= this.qualifiers.loss_amount_modifier.balance - 1000 {
@@ -924,8 +920,10 @@ class TraderBot {
                     }
                     this.lose_streak.repeat[this.stats.streak].win++
                     this.stats.streak := 0
+                    this.stats.streak_real := 0
                 }
                 this.stats.streak++
+                this.stats.streak_real++
             }
             this.stats.win++
 
@@ -1066,6 +1064,7 @@ class TraderBot {
             this.QualifiersReset()
             this.amount := 1
             this.stats.streak := 0
+            this.stats.streak_real := 0
             this.stats.max_bal_diff := 0
             this.SetTradeAmount()
         }
