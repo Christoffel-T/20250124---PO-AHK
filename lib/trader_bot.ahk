@@ -122,7 +122,7 @@ class Helper0811_4Loss {
         inst.streak := streak
 
         amts := [[1.40, 3.03, 6.98, 16.18],
-                 [37.85, 30.66, 64.10, 133.88],
+                 [2,6,18, 133.88],
                  [279.51, 583.44, 1217.72, 2541.44],
                  [60.0, 120.0, 240.0, 500],
                  [23.95, 51.06, 108.0, 748.0],
@@ -400,35 +400,13 @@ class TraderBot {
             if this.qualifiers.flip_trade.state = 1 and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
-            amts := [2,6,18]
-            if (inst.level = 2) {
-                if (inst.streak < 0 and inst.streak >= -3) {
-                    return amts[-inst.streak]
-                }
+            if (this.stats.streak_real <= -10) {
+                return (this.stats.max_bal_diff+5)/0.92
             }
-            if (this.qualifiers.custom_switch2.state = 0) {
-                if (inst.streak = 1 and inst.streak != this.streak_prev[1]) {
-                    if (inst.level = 2 and this.streak_prev[1] = -4 or inst.level > 2) {
-                        Helper0811_4Loss.SetLevel(1)
-                    }
-                    if (inst.level = 2 and this.streak_prev[1] >= -3) {
-                        this.qualifiers.custom_switch2.state := 1
-                    }
-                }
-            }
-            if (this.qualifiers.custom_switch2.state = 1) {
-                if (inst.streak = 1 and inst.streak != this.streak_prev[1]) {
-                    if (inst.level = 2 and this.streak_prev[1] = -4 or inst.level > 2) {
-                        Helper0811_4Loss.SetLevel(2)
-                    }
-                }
-                this.qualifiers.custom_switch2.count++
-                if (this.qualifiers.custom_switch2.count >= 5) {
-                    this.qualifiers.custom_switch2.state := 0
-                    this.qualifiers.custom_switch2.count := 0
-                }
+            if (inst.streak = -4 and inst.level = 2 or inst.level > 2) {
                 return 1
-            }            
+            }
+
             return Helper0811_4Loss.Get().amt
         }
 
