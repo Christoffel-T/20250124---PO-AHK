@@ -400,89 +400,13 @@ class TraderBot {
             if this.qualifiers.flip_trade.state = 1 and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
-            if (this.qualifiers.custom_switch.state < 2) {
-                switch {
-                    case inst.level = 1 and inst.streak = -2:
-                        return (this.stats.max_bal_diff+0.40)/0.92
-                    case inst.level = 1 and inst.streak = -3:
-                        return (this.stats.max_bal_diff+1)/0.92
-                    case inst.level = 1 and inst.streak = -4:
-                        return (this.stats.max_bal_diff+2.5)/0.92
-                    case inst.level = 2 and inst.streak = -1:
-                        return (this.stats.max_bal_diff+6.25)/0.92
-                }
-                if (inst.level >= 2 and inst.streak <= -2) {
-                    this.qualifiers.custom_switch.state := 2
-                    this.qualifiers.custom_switch.phase2_attempts := 0
-                }
-            }
-            if (this.qualifiers.custom_switch.state = 2) {
-                if (inst.streak > 0 and this.stats.max_bal_diff <= 75 and this.qualifiers.custom_switch.phase2_attempts <= 1) {
-                    this.qualifiers.custom_switch.state := 3
-                    return 1
-                } else if (inst.streak > 0 and this.stats.max_bal_diff <= 100) {
-                    this.qualifiers.custom_switch.state := 3
-                    return 1
-                } else if (inst.level >= 2 and inst.streak < 0) {
-                    if (inst.streak = -4) {
-                        this.qualifiers.custom_switch.state := 3
-                    }
-                    if Mod(inst.streak, 2) = 0 {
-                        return this.stats.max_bal_diff*0.05
-                    } else {
-                        this.qualifiers.custom_switch.phase2_attempts++
-                        return ((this.stats.max_bal_diff+5)/0.92)*0.5
-                    }
-                }
-            }
-            if (this.qualifiers.custom_switch.state = 3) {
-                if (this.stats.max_bal_diff <= 75 and streak > 0 and this.qualifiers.custom_switch.count > 0) {
-                    this.qualifiers.custom_switch.state := 4
-                }
-                if (this.streak_prev[1] = 3) {
-                    if (streak = 4) {
-                        this.qualifiers.custom_switch.win3_lost := 0
-                    } else if (streak < 0) {
-                        this.qualifiers.custom_switch.win3_lost := 1
-                    }
-                }
-                if (streak = 3) {
-                    if (streak = this.streak_prev[1]) {
-                        return this.amount
-                    }
-                    vals := [40,30,20,10,9,8,7,6,5,4,3,2,1]
-                    this.qualifiers.custom_switch.count++
-                    if (this.qualifiers.custom_switch.count >= vals.Length) {
-                        this.qualifiers.custom_switch.count := 1
-                    }
-                    idx := this.qualifiers.custom_switch.count
-                    return (this.stats.max_bal_diff*vals[idx])/100
-                } else if (this.qualifiers.custom_switch.state = 3) {
-                    return 1
-                }
-            }
-            if (this.qualifiers.custom_switch.state = 4) {
-                if (this.streak_prev[1] = 3) {
-                    if (streak = 4) {
-                        this.qualifiers.custom_switch.win3_lost := 0
-                    } else if (streak < 0) {
-                        this.qualifiers.custom_switch.win3_lost := 1
-                    }
-                }
-                if (streak = 3) {
-                    if (streak = this.streak_prev[1]) {
-                        return this.amount
-                    }
-                    this.qualifiers.custom_switch.count++
-                    if (this.qualifiers.custom_switch.win3_lost = 1) {
-                        return this.stats.max_bal_diff*0.05
-                        ; return ((this.stats.max_bal_diff+5)*0.1)/0.92
-                    } else {
-                        return ((this.stats.max_bal_diff/0.92)+10)
-                    }
-                } else if (this.qualifiers.custom_switch.state = 4) {
-                    return 1
-                }
+            switch {
+                case inst.level = 1 and inst.streak = -2:
+                    return (this.stats.max_bal_diff+0.40)/0.92
+                case inst.level = 1 and inst.streak = -3:
+                    return (this.stats.max_bal_diff+1)/0.92
+                case inst.level = 1 and inst.streak = -4:
+                    return (this.stats.max_bal_diff+2.5)/0.92
             }
             return Helper0811_4Loss.Get().amt
         }
@@ -1127,6 +1051,10 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
+            custom_switch2: {
+                state: 0,
+                count: 0
+            },
             custom_switch: {
                 state: 0,
                 win3_lost: 0,
