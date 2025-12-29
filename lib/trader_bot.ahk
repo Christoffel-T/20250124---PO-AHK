@@ -408,6 +408,35 @@ class TraderBot {
                 case inst.level = 1 and inst.streak = -4:
                     return (this.stats.max_bal_diff+2.5)/0.92
             }
+            amts := [2,6,18]
+            if (inst.level = 2) {
+                if (inst.streak < 0 and inst.streak >= -3) {
+                    return amts[-inst.streak]
+                }
+            }
+            if (this.qualifiers.custom_switch2.state = 0) {
+                if (inst.streak = 1 and inst.streak != this.streak_prev[1]) {
+                    if (inst.level = 2 and this.streak_prev[1] = -4 or inst.level > 2) {
+                        Helper0811_4Loss.SetLevel(1)
+                    }
+                    if (inst.level = 2 and this.streak_prev[1] >= -3) {
+                        this.qualifiers.custom_switch2.state := 1
+                    }
+                }
+            }
+            if (this.qualifiers.custom_switch2.state = 1) {
+                if (inst.streak = 1 and inst.streak != this.streak_prev[1]) {
+                    if (inst.level = 2 and this.streak_prev[1] = -4 or inst.level > 2) {
+                        Helper0811_4Loss.SetLevel(2)
+                    }
+                }
+                this.qualifiers.custom_switch2.count++
+                if (this.qualifiers.custom_switch2.count >= 5) {
+                    this.qualifiers.custom_switch2.state := 0
+                    this.qualifiers.custom_switch2.count := 0
+                }
+                return 1
+            }            
             return Helper0811_4Loss.Get().amt
         }
 
