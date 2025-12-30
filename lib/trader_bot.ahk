@@ -122,7 +122,7 @@ class Helper0811_4Loss {
         inst.streak := streak
 
         amts := [[1.40, 3.03, 6.98, 16.18],
-                 [2,6,18, 133.88],
+                 [1,1,1,1],
                  [279.51, 583.44, 1217.72, 2541.44],
                  [60.0, 120.0, 240.0, 500],
                  [23.95, 51.06, 108.0, 748.0],
@@ -404,12 +404,19 @@ class TraderBot {
             if this.qualifiers.flip_trade.state = 1 and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
-            if (this.stats.streak_real <= -10) {
-                return (this.stats.max_bal_diff+5)/0.92
+            if (this.stats.streak_real = -7) {
+                return 1.5
             }
-            if (inst.streak = -4 and inst.level = 2 or inst.level > 2) {
-                return 1
+            if (this.stats.streak_real < -7) {
+                val := -this.stats.streak_real - 6 * 10
+                return (this.stats.max_bal_diff+val)/0.92
             }
+            ; if (this.stats.streak_real <= -10) {
+            ;     return (this.stats.max_bal_diff+5)/0.92
+            ; }
+            ; if (inst.streak = -4 and inst.level = 2 or inst.level > 2) {
+            ;     return 1
+            ; }
 
             return Helper0811_4Loss.Get().amt
         }
