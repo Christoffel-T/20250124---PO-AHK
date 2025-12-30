@@ -367,10 +367,17 @@ class TraderBot {
 
         _helper0811_4Loss() {
             Helper0811_4Loss.Update(streak, this.streak_prev, this.stats.max_bal_diff)
-            this.stats.streak := Helper0811_4Loss.Get().streak
-
             inst := Helper0811_4Loss.Get()
+            this.stats.streak := inst.streak
+
+            if this.stats.max_bal_diff <= 0 {
+                Helper0811_4Loss.Reset()
+            }
+
             if inst.level >= 2 {
+                if (inst.streak = 1) {
+                    Helper0811_4Loss.SetLevel(2)
+                }
                 if (inst.level = 2 and streak = -4) {
                     this.qualifiers.flip_trade.state := false
                     this.qualifiers.random_trade.state := false
@@ -384,16 +391,13 @@ class TraderBot {
                 }
             }
 
-            if Helper0811_4Loss.Get().level = 2 {
+            if inst.level = 2 {
                 if streak = 1 and streak != this.streak_prev[1] {
                     this.ChangeCoin()
                 }
                 if streak = -2 {
                     this.qualifiers.flip_trade.state := true
                     this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
-                }
-                if this.stats.max_bal_diff <= 0 {
-                    Helper0811_4Loss.Reset()
                 }
             }
             
@@ -701,17 +705,9 @@ class TraderBot {
         }
         amt_prev := this.amount
         if not win.ps and not draw.ps {
-            if Helper_Skip(this.stats.streak,, true) {
-                TradeLose(false)
-            } else {
-                TradeLose()
-            }
+            TradeLose()
         } else if win.ps {
-            if Helper_Skip(this.stats.streak,, true) {
-                TradeWin(false)
-            } else {
-                TradeWin()
-            }
+            TradeWin()
         } else if draw.ps {
             TradeDraw()
         }
