@@ -411,7 +411,7 @@ class TraderBot {
                 val := (-this.stats.streak_real - 6) * 10
                 return (this.stats.max_bal_diff+val)/0.92
             }
-            if (this.stats.streak_real < 0) {
+            if (this.stats.streak_real < 0 and inst.level > 1) {
                 return 1
             }
             ; if (inst.streak = -4 and inst.level = 2 or inst.level > 2) {
