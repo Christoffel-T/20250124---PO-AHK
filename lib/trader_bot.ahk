@@ -408,12 +408,12 @@ class TraderBot {
                 return 1.5
             }
             if (this.stats.streak_real < -7) {
-                val := -this.stats.streak_real - 6 * 10
+                val := (-this.stats.streak_real - 6) * 10
                 return (this.stats.max_bal_diff+val)/0.92
             }
-            ; if (this.stats.streak_real <= -10) {
-            ;     return (this.stats.max_bal_diff+5)/0.92
-            ; }
+            if (this.stats.streak_real < 0) {
+                return 1
+            }
             ; if (inst.streak = -4 and inst.level = 2 or inst.level > 2) {
             ;     return 1
             ; }
