@@ -404,12 +404,12 @@ class TraderBot {
             if this.qualifiers.flip_trade.state = 1 and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
-            if (this.stats.streak_real = -7) {
-                return 1.5
-            }
-            if (this.stats.streak_real < -7) {
+            if (this.stats.streak_real < -10) {
                 val := (-this.stats.streak_real - 6) * 10
                 return (this.stats.max_bal_diff+val)/0.92
+            }
+            if (this.stats.streak_real <= -7) {
+                return 1.5
             }
             if (this.stats.streak_real < 0 and inst.level > 1) {
                 return 1
