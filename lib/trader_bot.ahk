@@ -373,7 +373,31 @@ class TraderBot {
             if this.stats.max_bal_diff <= 0 {
                 Helper0811_4Loss.Reset()
             }
-
+            if (inst.level >= 2) {
+                if (streak = 2) {
+                    if (streak = this.streak_prev[1]) {
+                        this.qualifiers.custom_switch_win2.stats.draws++
+                    }
+                    base_amt := this.qualifiers.custom_switch_win2.amts[this.qualifiers.custom_switch_win2.idx]
+                    multiplier := this.qualifiers.custom_switch_win2.count1
+                    return base_amt*multiplier
+                }
+                if (streak = 3 and streak != this.streak_prev[1]) {
+                    this.qualifiers.custom_switch_win2.stats.wins++
+                    this.qualifiers.custom_switch_win2.stats.wins_streak++
+                    this.qualifiers.custom_switch_win2.idx := 1
+                }
+                if (streak < 0 and this.streak_prev[1] = 2) {
+                    this.qualifiers.custom_switch_win2.stats.lose_streak++
+                    this.qualifiers.custom_switch_win2.stats.longest_lose_streak := max(this.qualifiers.custom_switch_win2.stats.lose_streak, this.qualifiers.custom_switch_win2.stats.longest_lose_streak)
+                    this.qualifiers.custom_switch_win2.idx++
+                    if (this.qualifiers.custom_switch_win2.idx > 6) {
+                        this.qualifiers.custom_switch_win2.idx := 1
+                        this.qualifiers.custom_switch_win2.count1++
+                    }
+                }
+            }
+            
             if inst.level >= 2 {
                 if (inst.streak = 1) {
                     Helper0811_4Loss.SetLevel(2)
@@ -1059,6 +1083,14 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
         this.qualifiers := {
+            custom_switch_win2: {
+                state: 0,
+                count1: 1,
+                count2: 0,
+                stats: {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0, longest_lose_streak: 0},
+                amts: [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61],
+                idx: 1
+            },
             custom_switch2: {
                 state: 0,
                 count: 0
@@ -1711,7 +1743,8 @@ class TraderBot {
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
-        str_d := '(' Helper0811_4Loss.Get().level ') ' format('{:.2f}', this.amount)
+        str_d := '(' this.qualifiers.custom_switch_win2.stats.wins_streak '/' this.qualifiers.custom_switch_win2.stats.draws '/' this.qualifiers.custom_switch_win2.stats.wins ', ' this.qualifiers.custom_switch_win2.stats.longest_lose_streak ')'
+        str_d := str_d ' (' Helper0811_4Loss.Get().level ') ' format('{:.2f}', this.amount)
         if this.qualifiers.flip_trade.state = 1 {
             str_d := 'FLIP ' str_d
         }
