@@ -391,7 +391,7 @@ class TraderBot {
                     this.qualifiers.custom_switch_win2.stats.lose_streak++
                     this.qualifiers.custom_switch_win2.stats.longest_lose_streak := max(this.qualifiers.custom_switch_win2.stats.lose_streak, this.qualifiers.custom_switch_win2.stats.longest_lose_streak)
                     this.qualifiers.custom_switch_win2.idx++
-                    if (this.qualifiers.custom_switch_win2.idx > 6) {
+                    if (this.qualifiers.custom_switch_win2.idx > 6 or this.amount = 1.5) {
                         this.qualifiers.custom_switch_win2.idx := 1
                         this.qualifiers.custom_switch_win2.count1++
                     }
