@@ -374,8 +374,11 @@ class TraderBot {
                 Helper0811_4Loss.Reset()
             }
             if (inst.level >= 2) {
-                HelperWinN(1)
-                HelperWinN(2)
+                Loop 2 {
+                    if (val := HelperWinN(A_Index)) {
+                        return val
+                    }
+                }
             }
 
             HelperWinN(n) {
@@ -403,6 +406,7 @@ class TraderBot {
                         this.qualifiers.custom_switch_win%n%.count1++
                     }
                 }
+                return 0
             }
             
             if inst.level >= 2 {
