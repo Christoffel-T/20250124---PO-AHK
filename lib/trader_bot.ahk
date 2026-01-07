@@ -1128,9 +1128,15 @@ class TraderBot {
         for k, v in this.switch_win_loss {
             v.state := 0
             v.loss_multiplier := 1
-            v.stats := {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0}
             v.amts := [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61]
             v.idx := 1
+            if (not v.HasOwnProp('stats')) {
+                v.stats := {}
+            }
+            v.stats.wins_streak := 0
+            v.stats.lose_streak := 0
+            v.stats.draws := 0
+            v.stats.wins := 0
         }
 
         this.qualifiers := {
