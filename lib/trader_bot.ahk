@@ -7,6 +7,7 @@ modTime := FileGetTime(scriptPath, "M")
 formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
+
 /*
 tester(tst) {
     static inst := {streak: 1, amt: 1, level: 3}
@@ -327,7 +328,9 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
         this.qualifiers := {}
         this.streak_prev := []
+
         this.QualifiersReset()
+        this.MidNightReset()
         this.amount := this.GetAmount(this.balance.current)
 
         if !FileExist(this.log_file) {
@@ -374,36 +377,53 @@ class TraderBot {
                 Helper0811_4Loss.Reset()
             }
             if (inst.level >= 2) {
-                Loop 2 {
-                    if (val := HelperWinN(A_Index)) {
-                        return val
-                    }
+                if (val := HelperWinLossN(1, max_loss:=4)) {
+                    return val
+                }
+                if (val := HelperWinLossN(2)) {
+                    return val
+                }
+                if (val := HelperWinLossN(-1) and this.switch_win_loss[-1].state = 1) {
+                    return val
                 }
             }
 
-            HelperWinN(n) {
+            HelperWinLossN(n, max_loss:=1000) {
+                if (n = 1) {
+                    if (streak = 1 and this.streak_prev = -1 and this.switch_win_loss[n].idx >= 4) {
+                        this.switch_win_loss[n].idx := 1
+                        this.switch_win_loss[n].loss_multiplier++
+                    }
+                }
                 if (streak = n) {
                     if (streak = this.streak_prev[1]) {
-                        this.qualifiers.custom_switch_win%n%.stats.draws++
+                        this.switch_win_loss[n].stats.draws++
                     }
-                    base_amt := this.qualifiers.custom_switch_win%n%.amts[this.qualifiers.custom_switch_win%n%.idx]
-                    multiplier := this.qualifiers.custom_switch_win%n%.count1
+                    idx := Max(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
+                    base_amt := this.switch_win_loss[n].amts[idx]
+                    multiplier := this.switch_win_loss[n].loss_multiplier
                     return base_amt*multiplier
                 }
-                if (streak = n+1 and streak != this.streak_prev[1]) {
-                    this.qualifiers.custom_switch_win%n%.stats.lose_streak := 0
-                    this.qualifiers.custom_switch_win%n%.stats.wins_streak++
-                    this.qualifiers.custom_switch_win%n%.stats.wins++
-                    this.qualifiers.custom_switch_win%n%.idx := 1
+                if (streak > 0 and this.streak_prev[1] = n and streak != this.streak_prev[1]) {
+                    if (this.switch_win_loss[n].idx >= max_loss) {
+                        this.switch_win_loss[n].loss_multiplier := 1
+                    }
+                    this.switch_win_loss[n].stats.lose_streak := 0
+                    this.switch_win_loss[n].stats.wins_streak++
+                    this.switch_win_loss[n].stats.wins++
+                    this.switch_win_loss[n].idx := 1
                 }
-                if (streak < 0 and this.streak_prev[1] = n) {
-                    this.qualifiers.custom_switch_win%n%.stats.wins_streak := 0
-                    this.qualifiers.custom_switch_win%n%.stats.lose_streak++
-                    this.qualifiers.custom_switch_win%n%.stats.longest_lose_streak := max(this.qualifiers.custom_switch_win%n%.stats.lose_streak, this.qualifiers.custom_switch_win%n%.stats.longest_lose_streak)
-                    this.qualifiers.custom_switch_win%n%.idx++
-                    if (this.qualifiers.custom_switch_win%n%.idx > 6 or this.amount = 1.5) {
-                        this.qualifiers.custom_switch_win%n%.idx := 1
-                        this.qualifiers.custom_switch_win%n%.count1++
+                if (streak < 0 and this.streak_prev[1] = n and streak != this.streak_prev[1]) {
+                    this.switch_win_loss[n].stats.wins_streak := 0
+                    this.switch_win_loss[n].stats.lose_streak++
+                    this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].stats.lose_streak, this.switch_win_loss[n].stats.longest_lose_streak)
+                    this.switch_win_loss[n].idx++
+                    if (this.switch_win_loss[n].idx > max_loss or this.amount = 1.5) {
+                        this.switch_win_loss[n].idx := 1
+                        this.switch_win_loss[n].loss_multiplier++
+                    }
+                    if (n = -1 and streak = -2) {
+                        return 1
                     }
                 }
                 return 0
@@ -444,6 +464,7 @@ class TraderBot {
                 return (this.stats.max_bal_diff+val)/0.92
             }
             if (this.stats.streak_real <= -7) {
+                this.switch_win_loss[-1].state := 1
                 return 1.5
             }
             if (this.stats.streak_real < 0 and inst.level > 1) {
@@ -1086,6 +1107,12 @@ class TraderBot {
 
     }
 
+    MidNightReset() {
+        for k, v in this.switch_win_loss {
+            v.stats.longest_lose_streak := 0
+        }
+    }
+
     QualifiersReset() {
         Helper0811_4Loss.Reset()
         this.amount_override := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
@@ -1093,33 +1120,31 @@ class TraderBot {
         this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
+        this.switch_win_loss:= Map(
+            1, {
+                state: 0,
+                loss_multiplier: 1,
+                stats: {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0},
+                amts: [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61],
+                idx: 1
+            },
+            2, {
+                state: 0,
+                loss_multiplier: 1,
+                stats: {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0},
+                amts: [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61],
+                idx: 1
+            },
+            -1, {
+                state: 0,
+                loss_multiplier: 1,
+                stats: {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0},
+                amts: [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61],
+                idx: 1
+            },
+        ),
+
         this.qualifiers := {
-            custom_switch_win1: {
-                state: 0,
-                count1: 1,
-                count2: 0,
-                stats: {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0, longest_lose_streak: 0},
-                amts: [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61],
-                idx: 1
-            },
-            custom_switch_win2: {
-                state: 0,
-                count1: 1,
-                count2: 0,
-                stats: {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0, longest_lose_streak: 0},
-                amts: [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61],
-                idx: 1
-            },
-            custom_switch2: {
-                state: 0,
-                count: 0
-            },
-            custom_switch: {
-                state: 0,
-                win3_lost: 0,
-                phase2_attempts: 0,
-                count: 0
-            },
             random_trade: {
                 state: true
             },
@@ -1258,6 +1283,7 @@ class TraderBot {
             this.stats.loss := 0
             this.stats.draw := 0
             this.lose_streak := {max: 0, repeat: Map()}
+            this.MidNightReset()
         }
         this.stats.reset_date := SubStr(this.datetime, 1, -6)
         
@@ -1769,7 +1795,7 @@ class TraderBot {
         if Helper_Skip(this.stats.streak, true) {
             str_d := 'S ' str_d
         }
-        str_d := '(win1:-' this.qualifiers.custom_switch_win1.stats.longest_lose_streak '|win2:-' this.qualifiers.custom_switch_win2.stats.longest_lose_streak ') ' str_d
+        str_d := '(win1:-' this.switch_win_loss[1].stats.longest_lose_streak '|win2:-' this.switch_win_loss[2].stats.longest_lose_streak '|lose1:-' this.switch_win_loss[-1].stats.longest_lose_streak ') ' str_d
 
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
