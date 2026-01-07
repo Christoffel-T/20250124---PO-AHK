@@ -328,6 +328,11 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
         this.qualifiers := {}
         this.streak_prev := []
+        this.switch_win_loss:= Map(
+            1, {},
+            2, {},
+            -1, {},
+        ),
 
         this.QualifiersReset()
         this.MidNightReset()
@@ -1120,29 +1125,13 @@ class TraderBot {
         this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
 
-        this.switch_win_loss:= Map(
-            1, {
-                state: 0,
-                loss_multiplier: 1,
-                stats: {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0},
-                amts: [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61],
-                idx: 1
-            },
-            2, {
-                state: 0,
-                loss_multiplier: 1,
-                stats: {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0},
-                amts: [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61],
-                idx: 1
-            },
-            -1, {
-                state: 0,
-                loss_multiplier: 1,
-                stats: {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0},
-                amts: [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61],
-                idx: 1
-            },
-        ),
+        for k, v in this.switch_win_loss {
+            v.state := 0
+            v.loss_multiplier := 1
+            v.stats := {wins_streak: 0, lose_streak: 0, draws: 0, wins: 0}
+            v.amts := [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61]
+            v.idx := 1
+        }
 
         this.qualifiers := {
             random_trade: {
