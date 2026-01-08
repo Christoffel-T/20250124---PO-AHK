@@ -388,7 +388,7 @@ class TraderBot {
                 if (val := HelperWinLossN(2)) {
                     return val
                 }
-                if (val := HelperWinLossN(-1) and this.switch_win_loss[-1].state = 1) {
+                if (val := HelperWinLossN(-1) and this.stats.streak_real > -7) {
                     return val
                 }
             }
@@ -469,7 +469,6 @@ class TraderBot {
                 return (this.stats.max_bal_diff+val)/0.92
             }
             if (this.stats.streak_real <= -7) {
-                this.switch_win_loss[-1].state := 1
                 return 1.5
             }
             if (this.stats.streak_real < 0 and inst.level > 1) {
