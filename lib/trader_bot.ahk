@@ -404,7 +404,7 @@ class TraderBot {
                     if (streak = this.streak_prev[1]) {
                         this.switch_win_loss[n].stats.draws++
                     }
-                    idx := Max(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
+                    idx := Min(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
                     base_amt := this.switch_win_loss[n].amts[idx]
                     multiplier := this.switch_win_loss[n].loss_multiplier
                     return base_amt*multiplier
