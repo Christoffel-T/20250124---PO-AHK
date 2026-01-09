@@ -375,7 +375,7 @@ class TraderBot {
             }
             if (inst.level >= 1) {
                 if (val := HelperWinLossN(-1) and this.stats.streak_real > -7) {
-                    MsgBox val
+                    MsgBox 'returned = ' val
                     return val
                 }
                 ; if (val := HelperWinLossN(1, max_loss:=4)) {
@@ -400,6 +400,7 @@ class TraderBot {
                     idx := Min(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
                     base_amt := this.switch_win_loss[n].amts[idx]
                     multiplier := this.switch_win_loss[n].loss_multiplier
+                    MsgBox 'calc = ' base_amt ' * ' multiplier ' = ' (base_amt*multiplier)
                     return base_amt*multiplier
                 }
                 if (streak > 0 and this.streak_prev[1] = n and streak != this.streak_prev[1]) {
