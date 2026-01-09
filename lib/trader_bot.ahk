@@ -382,13 +382,13 @@ class TraderBot {
                 Helper0811_4Loss.Reset()
             }
             if (inst.level >= 2) {
+                if (val := HelperWinLossN(-1) and this.stats.streak_real > -7) {
+                    return val
+                }
                 if (val := HelperWinLossN(1, max_loss:=4)) {
                     return val
                 }
                 if (val := HelperWinLossN(2)) {
-                    return val
-                }
-                if (val := HelperWinLossN(-1) and this.stats.streak_real > -7) {
                     return val
                 }
             }
