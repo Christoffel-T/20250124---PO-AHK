@@ -374,9 +374,10 @@ class TraderBot {
                 Helper0811_4Loss.Reset()
             }
             if (inst.level >= 1) {
-                if (val := HelperWinLossN(-1) and this.stats.streak_real > -7) {
-                    MsgBox 'returned = ' val
-                    return val
+                if (val := HelperWinLossN(-1)) {
+                    if (this.stats.streak_real > -7) {
+                        return val
+                    }
                 }
                 ; if (val := HelperWinLossN(1, max_loss:=4)) {
                 ;     return val
@@ -400,7 +401,6 @@ class TraderBot {
                     idx := Min(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
                     base_amt := this.switch_win_loss[n].amts[idx]
                     multiplier := this.switch_win_loss[n].loss_multiplier
-                    MsgBox 'calc = ' base_amt ' * ' multiplier ' = ' (base_amt*multiplier)
                     return base_amt*multiplier
                 }
                 if (streak > 0 and this.streak_prev[1] = n and streak != this.streak_prev[1]) {
@@ -417,7 +417,7 @@ class TraderBot {
                     this.switch_win_loss[n].stats.lose_streak++
                     this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].stats.lose_streak, this.switch_win_loss[n].stats.longest_lose_streak)
                     this.switch_win_loss[n].idx++
-                    if (this.switch_win_loss[n].idx > max_loss or this.amount = 1.5) {
+                    if (this.switch_win_loss[n].idx > max_loss) {
                         this.switch_win_loss[n].idx := 1
                         this.switch_win_loss[n].loss_multiplier++
                     }
