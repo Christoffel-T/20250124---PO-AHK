@@ -377,7 +377,9 @@ class TraderBot {
             if (inst.level >= 2) {
                 returnValue := 0
                 if (val := HelperWinLossN(-1)) {
-                    returnValue := val
+                    if (this.stats.streak_real > -7) {
+                        returnValue := val
+                    }
                 }
                 if (val := HelperWinLossN(-2)) {
                 }
