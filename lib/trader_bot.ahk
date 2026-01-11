@@ -417,7 +417,8 @@ class TraderBot {
                         minor_add := minor_add * this.switch_win_loss[n].counter_win_not_4loss
                         return_val += minor_add
                         if (lose_streak >= 11) {
-                            return_val := (this.stats.max_bal_diff + 50) / 0.92
+                            _mult := lose_streak - 10
+                            return_val := (this.stats.max_bal_diff + (5*_mult)) / 0.92
                         }
                         if (lose_streak >= 5) {
                             return_val := 1.5
@@ -484,8 +485,8 @@ class TraderBot {
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
             if (this.stats.streak_real <= -11) {
-                val := (-this.stats.streak_real - 6) * 10
-                return (this.stats.max_bal_diff+val)/0.92
+                _mult := this.stats.streak_real - 10
+                return (this.stats.max_bal_diff + (5*_mult)) / 0.92
             }
             if (this.stats.streak_real <= -7) {
                 return 1.5
