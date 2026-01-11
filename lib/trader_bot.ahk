@@ -269,8 +269,8 @@ class TraderBot {
         this.ps := Map()
 
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance.starting := 900
-        this.balance.reset_max := 1150
+        this.balance.starting := 2500
+        this.balance.reset_max := 2800
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
         
@@ -424,6 +424,9 @@ class TraderBot {
                             return_val := 1.5
                         }
                     }
+                    ; INTERMITTENT OVERRIDE
+                    _am := [1.5, (this.stats.max_bal_diff+10)/0.92]
+                    return_val := _am[Mod(idx, _am.Length)+1]
                     return return_val
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
@@ -436,6 +439,9 @@ class TraderBot {
                     this.switch_win_loss[n].stats.lose_streak := 0
                     this.switch_win_loss[n].stats.wins_streak++
                     this.switch_win_loss[n].stats.wins++
+                    if (Mod(idx, _am.Length)+1 = 2) {
+                        Helper0811_4Loss.SetLevel(1)
+                    }
                     this.switch_win_loss[n].idx := 1
                 }
                 if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
@@ -489,7 +495,8 @@ class TraderBot {
                 return (this.stats.max_bal_diff + (5*_mult)) / 0.92
             }
             if (this.stats.streak_real <= -7) {
-                return 1.5
+                _am := [1.5, (this.stats.max_bal_diff+10)/0.92]
+                return _am[Mod(-this.stats.streak_real-7, _am.Length)+1]
             }
             if (this.stats.streak_real < 0 and inst.level > 1) {
                 return 1
