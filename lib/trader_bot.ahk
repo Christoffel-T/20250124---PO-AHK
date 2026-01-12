@@ -401,6 +401,7 @@ class TraderBot {
                 }
                 idx := Min(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
                 lose_streak := this.switch_win_loss[n].stats.lose_streak
+                _am := [1.5, (this.stats.max_bal_diff+10)/0.92]
                 if (inst.streak = n) {
                     if (inst.streak = this.streak_prev[1]) {
                         this.switch_win_loss[n].stats.draws++
@@ -425,7 +426,6 @@ class TraderBot {
                         }
                     }
                     ; INTERMITTENT OVERRIDE
-                    _am := [1.5, (this.stats.max_bal_diff+10)/0.92]
                     return_val := _am[Mod(idx, _am.Length)+1]
                     return return_val
                 }
