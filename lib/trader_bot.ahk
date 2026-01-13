@@ -431,6 +431,7 @@ class TraderBot {
                     ; INTERMITTENT OVERRIDE
                     return_val := _am[Mod(idx, _am.Length)+1]
                     next_F := return_val + this.stats.max_bal_diff
+                    return_val := 1
                     if (next_F > 200 and not this.switch_win_loss[n].state) {
                         return_val := (this.stats.max_bal_diff * percentages[Min(this.switch_win_loss[n].idx2, percentages.Length)])
                         this.switch_win_loss[n].state := 1
@@ -510,7 +511,7 @@ class TraderBot {
                     this.switch_win_loss[n].stats.lose_streak := 0
                     this.switch_win_loss[n].stats.wins_streak++
                     this.switch_win_loss[n].stats.wins++
-                    if (Mod(idx, _am.Length)+1 = 2) {
+                    if (Mod(idx, _am.Length)+1 = 2 and n = -1) {
                         Helper0811_4Loss.SetLevel(1)
                     }
                     this.switch_win_loss[n].idx := 1
@@ -1640,7 +1641,7 @@ class TraderBot {
         str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
             str_e := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_e
-        str_f := format('{:.2f}', this.stats.max_bal_diff) ' (' this.stats.next_max_bal_diff ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
+        str_f := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_g := format('{:.2f}', this.stats.G_balance.val) ' (' this.stats.G_balance.count ')'
         str_m := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
         _count_reload := 0
