@@ -18,18 +18,24 @@ class Utils {
     }
 
     static PasteText(text) {
-        if not text 
+        if (text == "") 
             return
-        A_Clipboard := ''
-        sleep 50
+
+        ; Store previous clipboard to restore it later (optional but polite)
+        oldData := ClipboardAll() 
+        
+        A_Clipboard := "" ; Clear clipboard
         A_Clipboard := text
-        sleep 50
-        if !ClipWait(1) {
-            MsgBox 'An error occured.'
+        
+        if !ClipWait(2) { ; Increased timeout to 2 seconds for safety
+            MsgBox "Clipboard failed to update."
             return false
         }
-        Send '^v'
-        sleep 50
-    }
+
+        Send "^v"
         
+        ; CRITICAL: Give the destination app time to "read" the clipboard 
+        ; before the script continues and potentially changes the clipboard again.
+        Sleep 200 
+    }        
 }
