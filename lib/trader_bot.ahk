@@ -405,6 +405,24 @@ class TraderBot {
                 idx := Min(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
                 lose_streak := this.switch_win_loss[n].stats.lose_streak
                 _am := [1.5, (this.stats.max_bal_diff+10)/0.92]
+
+                if (this.switch_win_loss[n].state = 1) {
+                    return_val := 1.5
+                    this.switch_win_loss[n].state := 2
+                    if (inst.streak < 0 and inst.streak != this.streak_prev[1]) {
+                        this.switch_win_loss[n].idx2++
+                    }
+                    if (inst.streak > 0 and inst.streak != this.streak_prev[1]) {
+                        this.switch_win_loss[n].idx2 := 1
+                    }
+                    return return_val
+                }
+                if (this.switch_win_loss[n].state = 2) {
+                    return_val := (this.stats.max_bal_diff * percentages[Min(this.switch_win_loss[n].idx2, percentages.Length)])
+                    this.switch_win_loss[n].state := 1
+                    return return_val
+                }
+
                 if (inst.streak = n) {
                     if (inst.streak = this.streak_prev[1]) {
                         this.switch_win_loss[n].stats.draws++
