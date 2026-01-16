@@ -377,6 +377,10 @@ class TraderBot {
             }
             if (inst.level >= 2) {
                 returnValue := 0
+                if (val := HelperWinLoss2()) {
+                    returnValue := val
+                    return returnValue
+                }
                 if (val := HelperWinLossN(-1)) {
                     if (this.stats.streak_real > -7) {
                         returnValue := val
@@ -385,11 +389,6 @@ class TraderBot {
                 if (val := HelperWinLossN(-2)) {
                 }
                 if (val := HelperWinLossN(1)) {
-                }
-                if (val := HelperWinLoss2()) {
-                    if (this.stats.streak_real > -7) {
-                        returnValue := val
-                    }
                 }
                 if (returnValue) {
                     return returnValue
@@ -406,62 +405,28 @@ class TraderBot {
                 lose_streak := this.switch_win_loss[n].stats.lose_streak
                 _am := [1.5, (this.stats.max_bal_diff+10)/0.92]
 
-                if (this.switch_win_loss[n].state = 1) {
-                    return_val := 1.5
-                    this.switch_win_loss[n].state := 2
-                    if (inst.streak < 0 and inst.streak != this.streak_prev[1]) {
-                        this.switch_win_loss[n].idx2++
-                    }
-                    if (inst.streak > 0 and inst.streak != this.streak_prev[1]) {
-                        this.switch_win_loss[n].idx2 := 1
-                    }
-                    return return_val
-                }
-                if (this.switch_win_loss[n].state = 2) {
-                    return_val := (this.stats.max_bal_diff * percentages[Min(this.switch_win_loss[n].idx2, percentages.Length)])
-                    this.switch_win_loss[n].state := 1
-                    return return_val
-                }
-
                 if (inst.streak = n) {
                     if (inst.streak = this.streak_prev[1]) {
                         this.switch_win_loss[n].stats.draws++
                     }
-                    base_amt := this.switch_win_loss[n].amts[idx]
-                    multiplier := this.switch_win_loss[n].loss_multiplier
-                    return_val := base_amt*multiplier
-                    if (n = -1) {
-                        minor_amts := [0.01]
-                        loop 50 {
-                            minor_amts.Push(minor_amts[-1]*2 + 0.01)
-                        }
-                        minor_add := minor_amts[Min(this.switch_win_loss[n].idx, minor_amts.Length)]
-                        minor_add := minor_add * this.switch_win_loss[n].counter_win_not_4loss
-                        return_val += minor_add
-                        if (lose_streak >= 11) {
-                            _mult := lose_streak - 10
-                            return_val := (this.stats.max_bal_diff + (5*_mult)) / 0.92
-                        }
-                        if (lose_streak >= 5) {
-                            return_val := 1.5
-                        }
-                    }
                     ; INTERMITTENT OVERRIDE
-                    return_val := _am[Mod(idx, _am.Length)+1]
-                    next_F := return_val + this.stats.max_bal_diff
+                    next_F := _am[2] + this.stats.max_bal_diff
                     return_val := 1
-                    if (next_F > 200 and not this.switch_win_loss[n].state) {
-                        return_val := (this.stats.max_bal_diff * percentages[Min(this.switch_win_loss[n].idx2, percentages.Length)])
+                    if (next_F > 200 and this.switch_win_loss[n].state = 0) {
                         this.switch_win_loss[n].state := 1
                     }
                     if (this.switch_win_loss[n].state = 1) {
+                        return_val := (this.stats.max_bal_diff * percentages[Min(this.switch_win_loss[n].idx2, percentages.Length)])
+                        this.switch_win_loss[n].state := 2
+                    }
+                    if (this.switch_win_loss[n].state = 2) {
                         return_val := 1.5
-                        this.switch_win_loss[n].state := 0
+                        this.switch_win_loss[n].state := 1
                     }
                     return return_val
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state = 1) {
+                    if (this.switch_win_loss[n].state != 0) {
                         this.switch_win_loss[n].idx2 := 1
                         Helper0811_4Loss.SetLevel(2)
                     }
@@ -471,7 +436,7 @@ class TraderBot {
                     this.switch_win_loss[n].idx := 1
                 }
                 if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state = 1) {
+                    if (this.switch_win_loss[n].state != 0) {
                         this.switch_win_loss[n].idx2++
                     }
                     this.switch_win_loss[n].stats.wins_streak := 0
@@ -479,6 +444,10 @@ class TraderBot {
                     this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].stats.lose_streak, this.switch_win_loss[n].stats.longest_lose_streak)
                     this.switch_win_loss[n].idx++
                 }
+                if (this.switch_win_loss[n].state != 0) {
+                    return 1
+                }
+
                 return 0
             }
             
