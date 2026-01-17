@@ -425,7 +425,7 @@ class TraderBot {
                     return return_val
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state != 0) {
+                    if (this.switch_win_loss[n].state = 2) {
                         this.switch_win_loss[n].idx2 := 1
                         Helper0811_4Loss.SetLevel(2)
                     }
@@ -435,7 +435,7 @@ class TraderBot {
                     this.switch_win_loss[n].idx := 1
                 }
                 if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state != 0) {
+                    if (this.switch_win_loss[n].state = 2) {
                         this.switch_win_loss[n].idx2++
                     }
                     this.switch_win_loss[n].stats.wins_streak := 0
