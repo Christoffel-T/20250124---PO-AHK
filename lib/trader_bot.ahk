@@ -867,18 +867,20 @@ class TraderBot {
             _count_reload++
             if _count_reload > 1000 {
                 _count_reload := 0
-                this.ReloadWebsite()
+                MsgBox('SetTradeAmount infinite loop detected...')
             }
             this.CheckBalance()
             if this.balance.current < 1 and bal_mark {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
                 BalanceReset()
+                continue
             } else if this.balance.current >= this.balance.reset_max and bal_mark {
                 this.stats.bal_win++
                 this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
                 this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
                 BalanceReset()
+                continue
             }
 
             sleep 300
@@ -937,7 +939,6 @@ class TraderBot {
             this.stats.streak := 0
             this.stats.streak_real := 0
             this.stats.max_bal_diff := 0
-            this.SetTradeAmount()
         }
 
     }
@@ -1908,72 +1909,78 @@ class TraderBot {
     }
     
     CheckBalance() {
-        Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
-        _count_reload := 0
-        Loop {
-            _count_reload++
-            if _count_reload > 1000 {
-                _count_reload := 0
-                this.ReloadWebsite()
-            }
-            A_Clipboard := ''
-            if !WinActive(this.wtitle) {
-                WinActivate(this.wtitle)  
-                sleep 100
-            }
-            sleep 50
-            Send('^a^c')
-            sleep 50
-            if !ClipWait(0.5) {
-                ToolTip('Copy failed')
-                sleep 30
-                if A_Index > 20 {
-                    this.ReloadWebsite()
-                }
-                continue
-            }
-            sleep 100
-            if RegExMatch(A_Clipboard, 'QT Real') {
-                MsgBox('Not on demo website, reloading Demo version.',, 'T2')
-                this.ReloadWebsite()
-            }
-            if !RegExMatch(A_Clipboard, 'USD') {
-                if RegExMatch(A_Clipboard, 'i)SIGN IN') {
-                    ClickOnPage('SIGN IN')
-                }
-                tooltip('Error: No balance found`n' A_Clipboard)
-                sleep 80
-                Send('^f')
-                sleep 80
-                Send('USD{enter}{Escape}')
-                sleep 50
-                continue
-            }
-            if !RegExMatch(A_Clipboard, 'm)^\d{1,3}(,\d{3})*(\.\d{2})*$', &match) {
-                if RegExMatch(A_Clipboard, 'i)SIGN IN') {
-                    ClickOnPage('SIGN IN')
-                }
-                tooltip('Error: No balance found`n' A_Clipboard)
-                sleep 80
-                Send('^f')
-                sleep 80
-                Send('USD{enter}{Escape}')
-                sleep 50
-                continue
-            }
-            ToolTip
-            cur_bal := StrReplace(match[], ',', '')
-            if cur_bal >= 500000 {
-                MsgBox 'Balance too high.'
-            }
-            cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
-            this.balance.current := cur_bal
-            this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
-            this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
+        while !Helper() {
+            this.ReloadWebsite()
+        }
 
-            this.stats.max_bal_diff := this.balance.max - this.balance.current
-            this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
-            return
+        Helper() {
+            Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
+            _count_reload := 0
+            Loop {
+                _count_reload++
+                if _count_reload > 1000 {
+                    _count_reload := 0
+                    return 0
+                }
+                A_Clipboard := ''
+                if !WinActive(this.wtitle) {
+                    WinActivate(this.wtitle)  
+                    sleep 100
+                }
+                sleep 50
+                Send('^a^c')
+                sleep 50
+                if !ClipWait(0.5) {
+                    ToolTip('Copy failed')
+                    sleep 30
+                    if A_Index > 20 {
+                        return 0
+                    }
+                    continue
+                }
+                sleep 100
+                if RegExMatch(A_Clipboard, 'QT Real') {
+                    MsgBox('Not on demo website, reloading Demo version.',, 'T2')
+                    return 0
+                }
+                if !RegExMatch(A_Clipboard, 'USD') {
+                    if RegExMatch(A_Clipboard, 'i)SIGN IN') {
+                        ClickOnPage('SIGN IN')
+                    }
+                    tooltip('Error: No balance found`n' A_Clipboard)
+                    sleep 80
+                    Send('^f')
+                    sleep 80
+                    Send('USD{enter}{Escape}')
+                    sleep 50
+                    continue
+                }
+                if !RegExMatch(A_Clipboard, 'm)^\d{1,3}(,\d{3})*(\.\d{2})*$', &match) {
+                    if RegExMatch(A_Clipboard, 'i)SIGN IN') {
+                        ClickOnPage('SIGN IN')
+                    }
+                    tooltip('Error: No balance found`n' A_Clipboard)
+                    sleep 80
+                    Send('^f')
+                    sleep 80
+                    Send('USD{enter}{Escape}')
+                    sleep 50
+                    continue
+                }
+                ToolTip
+                cur_bal := StrReplace(match[], ',', '')
+                if cur_bal >= 500000 {
+                    MsgBox 'Balance too high.'
+                }
+                cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
+                this.balance.current := cur_bal
+                this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
+                this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
+
+                this.stats.max_bal_diff := this.balance.max - this.balance.current
+                this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
+                return 1
+            }
         }
     }
 
