@@ -524,7 +524,7 @@ class TraderBot {
                 }
                 if (inst.level = 2 and streak = -4) {
                     this.qualifiers.flip_trade.state := false
-                    this.qualifiers.random_trade.state := false
+                    ; this.qualifiers.random_trade.state := false
                 } else if (inst.level = 2 and streak <= -2) {
                     this.qualifiers.flip_trade.state := true
                 } else {
