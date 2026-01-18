@@ -1566,18 +1566,15 @@ class TraderBot {
         if Helper_Skip(this.stats.streak, true) {
             str_d := 'S ' str_d
         }
-        if (this.stats.streak = 2) {
-            str_d := '(' format('{:.0f}', this.PERCENTAGES[Min(this.switch_win_loss[2].idx2, this.PERCENTAGES.Length)]*100) '%) ' str_d
-        }
 
         str_e := ''
         str_f := ''
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
                 if (k > 0) {
-                    str_d := '(win' k ' ACTIVE) ' str_d
+                    str_d := '(win' k ' ACTIVE ' format('{:.0f}', this.PERCENTAGES[Min(this.switch_win_loss[2].idx2, this.PERCENTAGES.Length)]*100) '%) ' str_d
                 } else {
-                    str_d := '(loss' LTrim(k,'-') ' ACTIVE) ' str_d
+                    str_d := '(loss' LTrim(k,'-') ' ACTIVE) ' format('{:.0f}', this.PERCENTAGES[Min(this.switch_win_loss[2].idx2, this.PERCENTAGES.Length)]*100) '%) ' str_d
                 }
             }
             if (k > 0) {
