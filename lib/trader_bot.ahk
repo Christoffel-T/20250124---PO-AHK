@@ -353,7 +353,7 @@ class TraderBot {
         this.amount := this.GetAmount(this.balance.current)
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,max_diff,side_bal,balance,next_target,last_trade,amount,payout,Streak (W|D|L|win_rate),Streaks,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,amount,E,F,Streak,max_diff,side_bal,balance,next_target,last_trade,payout,Streaks,double_stats,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -391,7 +391,7 @@ class TraderBot {
                 returnValue := 1
                 for k, v in this.switch_win_loss {
                     _ := HelperWinLossN(k)
-                    if (k = 2) {
+                    if (v.state = 'active') {
                         returnValue := _
                     }
                 }
@@ -405,23 +405,34 @@ class TraderBot {
                 lose_streak := this.switch_win_loss[n].stats.lose_streak
 
                 if (this.switch_win_loss[n].state = 0 and inst.level >= 2) {
-                    this.switch_win_loss[n].state := 1
+                    if not (inst.level = 2 and this.streak_prev[1] = -3)
+                        this.switch_win_loss[n].state := 1
                 }
                 if (inst.streak = n) {
                     if (inst.streak = this.streak_prev[1]) {
                         this.switch_win_loss[n].stats.draws++
                     }
-                    if (this.switch_win_loss[n].state = 1) {
+                    if (this.switch_win_loss[n].state != 0) {
                         if (this.switch_win_loss[n].idx2 <= 4) {
                             return_val := 1
                         } else {
+                            check_active := false
+                            for k, v in this.switch_win_loss {
+                                if (v.state = 'active') {
+                                    check_active := true
+                                    break
+                                }
+                            }
+                            if (not check_active) {
+                                this.switch_win_loss[n].state := 'active'
+                            }
                             return_val := (this.stats.max_bal_diff * this.PERCENTAGES[Min(this.switch_win_loss[n].idx2, this.PERCENTAGES.Length)])
                         }
                     }
                     return return_val
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state = 1) {
+                    if (this.switch_win_loss[n].state != 0) {
                         Helper0811_4Loss.SetLevel(2)
                         this.switch_win_loss[n].idx2 := 1
                     }
@@ -431,7 +442,7 @@ class TraderBot {
                     this.switch_win_loss[n].idx := 1
                 }
                 if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state = 1) {
+                    if (this.switch_win_loss[n].state != 0) {
                         this.switch_win_loss[n].idx2++
                     }
                     this.switch_win_loss[n].stats.wins_streak := 0
@@ -1555,27 +1566,36 @@ class TraderBot {
         if Helper_Skip(this.stats.streak, true) {
             str_d := 'S ' str_d
         }
-        _ := '('
-        for k, v in this.switch_win_loss {
-            if (k > 0) {
-                _ .= 'win' k ':-' this.switch_win_loss[k].stats.lose_streak '[-' this.switch_win_loss[k].stats.longest_lose_streak ']' '|'
-            }
-            if (k < 0) {
-                _ .= 'lose' LTrim(k,'-') ':-' this.switch_win_loss[k].stats.lose_streak '[-' this.switch_win_loss[k].stats.longest_lose_streak ']' '|'
-            }
-        }
-        _ := RTrim(_, '|') ') '
-        str_d := _ . str_d
-
         if (this.stats.streak = 2) {
             str_d := '(' format('{:.0f}', this.PERCENTAGES[Min(this.switch_win_loss[2].idx2, this.PERCENTAGES.Length)]*100) '%) ' str_d
         }
-        str_e := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
+
+        str_e := ''
+        str_f := ''
+        for k, v in this.switch_win_loss {
+            if (v.state = 'active') {
+                if (k > 0) {
+                    str_d := '(win' k ' ACTIVE) ' str_d
+                } else {
+                    str_d := '(loss' LTrim(k,'-') ' ACTIVE) ' str_d
+                }
+            }
+            if (k > 0) {
+                str_e .= 'win' k ':-' this.switch_win_loss[k].stats.lose_streak '[-' this.switch_win_loss[k].stats.longest_lose_streak ']' '|'
+            }
+            if (k < 0) {
+                str_f .= 'lose' LTrim(k,'-') ':-' this.switch_win_loss[k].stats.lose_streak '[-' this.switch_win_loss[k].stats.longest_lose_streak ']' '|'
+            }
+        }
+        str_e := RTrim(str_e, '|')
+        str_f := RTrim(str_f, '|')
+
+        str_g := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
-            str_e := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_e
-        str_f := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
-        str_g := format('{:.2f}', this.stats.G_balance.val) ' (' this.stats.G_balance.count ')'
-        str_m := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
+            str_g := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_g
+        str_h := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
+        str_i := format('{:.2f}', this.stats.G_balance.val) ' (' this.stats.G_balance.count ')'
+        str_o := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
         _count_reload := 0
         loop {
             _count_reload++
@@ -1600,6 +1620,8 @@ class TraderBot {
                     str_e ',' 
                     str_f ',' 
                     str_g ',' 
+                    str_h ',' 
+                    str_i ',' 
                     '(' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
                     this.last_trade ',' 
