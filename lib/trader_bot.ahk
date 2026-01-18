@@ -754,6 +754,7 @@ class TraderBot {
             if _count_reload > 20 {
                 _count_reload := 0
                 this.ReloadWebsite()
+                this.SetTradeAmount(false)
             }
             ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
             MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
@@ -966,6 +967,7 @@ class TraderBot {
     StartLoop(*) {
         ToolTip('Running...', 5, 5, 1)
         this.ReloadWebsite()
+        this.SetTradeAmount(false)
         this.CheckBalance()
         
         MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
@@ -1063,6 +1065,7 @@ class TraderBot {
             }
             if _reload {
                 this.ReloadWebsite()
+                this.SetTradeAmount(false)
             }
         }
     }
@@ -1099,10 +1102,12 @@ class TraderBot {
             if _count_reload > 100 {
                 _count_reload := 0
                 this.ReloadWebsite()
+                this.SetTradeAmount(false)
             }
             if A_TickCount > this.marked_time_refresh + 2*60*1000 {
                 this.marked_time_refresh := A_TickCount
                 this.ReloadWebsite()
+                this.SetTradeAmount(false)
                 ; reload
             }    
             if not change_anyway and (this.stats.streak != coin_change_streak or not this.state.coin_change_streak) and ImageSearch(&outx, &outy, this.coords.Payout.x, this.coords.Payout.y, this.coords.Payout.x+this.coords.Payout.w, this.coords.Payout.y+this.coords.Payout.h, '*10 payout.png') {
@@ -1735,6 +1740,7 @@ class TraderBot {
                 if _count_reload > 20000 {
                     _count_reload := 0
                     this.ReloadWebsite()
+                    this.SetTradeAmount(false)
                 }
                 this.ps.close_green := {state: PixelSearch(&x, &y, this.ps.blue.x+4, this.coords.area.y, this.ps.blue.x+1, this.coords.area.y2, this.colors.green, 10), x:x, y:y}
                 if not this.ps.close_green.state 
@@ -1773,6 +1779,7 @@ class TraderBot {
             if this.coords.area.x < this.min_x {
                 this.coords.area.x := this.min_x
                 this.ReloadWebsite()
+                this.SetTradeAmount(false)
             }
             this.coords.area.x2 := this.coords.area.x - 2
             ; this.debug_str := 'ps: ' this.ps.blue.state ' ' this.ps.orange.state ' | diff: ' (this.ps.blue.state and this.ps.orange.state ? this.ps.orange.y - this.ps.blue.y : 0) ' | '
@@ -1821,7 +1828,6 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
         sleep 100
         Send('{Escape 2}')
-        this.SetTradeAmount(false)
 
         return
     }
