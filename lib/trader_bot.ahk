@@ -339,7 +339,7 @@ class TraderBot {
             -3, {},
             -4, {},
         ),
-        this.PERCENTAGES := [1,1,1,1, 0,13, 0.20]
+        this.PERCENTAGES := [1,1,1,1, 0.13, 0.20]
         loop 30 {
             this.PERCENTAGES.Push(this.PERCENTAGES[-1] + 0.15)
         }
