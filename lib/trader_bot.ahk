@@ -1558,10 +1558,10 @@ class TraderBot {
         _ := '('
         for k, v in this.switch_win_loss {
             if (k > 0) {
-                _ .= 'win' k ':-' this.switch_win_loss[k].stats.longest_lose_streak '|'
+                _ .= 'win' k ':-' this.switch_win_loss[k].stats.lose_streak '[-' this.switch_win_loss[k].stats.longest_lose_streak ']' '|'
             }
             if (k < 0) {
-                _ .= 'lose' LTrim(k,'-') ':-' this.switch_win_loss[k].stats.longest_lose_streak '|'
+                _ .= 'lose' LTrim(k,'-') ':-' this.switch_win_loss[k].stats.lose_streak '[-' this.switch_win_loss[k].stats.longest_lose_streak ']' '|'
             }
         }
         _ := RTrim(_, '|') ') '
