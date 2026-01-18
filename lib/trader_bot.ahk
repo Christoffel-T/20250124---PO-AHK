@@ -144,6 +144,14 @@ class Helper0811_4Loss {
             inst.idx_loss := 0
         }
 
+        if (inst.level = 1 and streak_prev_list[1] = -3 and streak != streak_prev_list[1]) {
+            if (inst.streak = -4) {
+                inst.streak := -1
+                inst.level := 2
+                inst.wins := 0
+            }
+        }
+
         if (streak_prev_list[1] = -4 and streak != streak_prev_list[1]) {
             if inst.streak < -4 {
                 inst.streak := -1
@@ -159,10 +167,6 @@ class Helper0811_4Loss {
             } else if inst.level = 3 {
                 inst.level := Min(amts.Length, inst.level + 1)
                 inst.wins := 0
-            } else if inst.streak = 1 {
-                ; inst.level := 1
-                inst.wins := 0
-                inst.idx_loss := 0
             }
         }
 
@@ -418,11 +422,7 @@ class TraderBot {
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
                     if (this.switch_win_loss[n].state = 1) {
-                        if (this.switch_win_loss[n].idx2 >= 12) {
-                            Helper0811_4Loss.SetLevel(1)
-                        } else {
-                            Helper0811_4Loss.SetLevel(2)
-                        }
+                        Helper0811_4Loss.SetLevel(2)
                         this.switch_win_loss[n].idx2 := 1
                     }
                     this.switch_win_loss[n].stats.lose_streak := 0
@@ -924,7 +924,7 @@ class TraderBot {
                 state: false,
                 count: 0,
                 amount: 1,         ; Consolidated from later update
-                reset_F: 10        ; Consolidated from later update
+                reset_F: 0        ; Consolidated from later update
             },
             double_trade: {
                 state: false,
