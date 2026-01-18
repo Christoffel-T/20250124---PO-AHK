@@ -408,6 +408,7 @@ class TraderBot {
                     if not (inst.level = 2 and this.streak_prev[1] = -3)
                         this.switch_win_loss[n].state := 1
                 }
+                return_val := 1
                 if (inst.streak = n) {
                     if (inst.streak = this.streak_prev[1]) {
                         this.switch_win_loss[n].stats.draws++
