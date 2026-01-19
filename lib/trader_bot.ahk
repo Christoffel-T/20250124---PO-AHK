@@ -347,6 +347,10 @@ class TraderBot {
         loop 30 {
             this.PERCENTAGES.Push(this.PERCENTAGES[-1] + 0.15)
         }
+        this.CUSTOM_AMOUNTS := [1,1,1,1,2]
+        loop 30 {
+            this.CUSTOM_AMOUNTS.Push(this.CUSTOM_AMOUNTS[-1] * 2.3)
+        }
 
         this.QualifiersReset()
         this.MidNightReset()
@@ -413,28 +417,17 @@ class TraderBot {
                     if (inst.streak = this.streak_prev[1]) {
                         this.switch_win_loss[n].stats.draws++
                     }
-                    if (this.switch_win_loss[n].state != 0) {
-                        if (this.switch_win_loss[n].idx2 <= 4) {
-                            return_val := 1
-                        } else {
-                            check_active := false
-                            for k, v in this.switch_win_loss {
-                                if (v.state = 'active') {
-                                    check_active := true
-                                    break
-                                }
-                            }
-                            if (not check_active) {
-                                this.switch_win_loss[n].state := 'active'
-                            }
-                            return_val := (this.stats.max_bal_diff * this.PERCENTAGES[Min(this.switch_win_loss[n].idx2, this.PERCENTAGES.Length)])
-                        }
+                    if (this.switch_win_loss[n].state = 'active') {
+                        return_val := (this.CUSTOM_AMOUNTS[Min(this.switch_win_loss[n].idx2, this.CUSTOM_AMOUNTS.Length)])
                     }
-                    return return_val
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
                     if (this.switch_win_loss[n].state != 0) {
+                        if (this.switch_win_loss[n].state = 'active') {
+                            this.switch_win_loss[n].state := 1
+                        }
                         Helper0811_4Loss.SetLevel(2)
+                        this.switch_win_loss[n].state := 1
                         this.switch_win_loss[n].idx2 := 1
                     }
                     this.switch_win_loss[n].stats.lose_streak := 0
@@ -451,10 +444,17 @@ class TraderBot {
                     this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].stats.lose_streak, this.switch_win_loss[n].stats.longest_lose_streak)
                     this.switch_win_loss[n].idx++
                 }
-                if (this.switch_win_loss[n].state != 0) {
-                    return 1
+                check_active := false
+                for k, v in this.switch_win_loss {
+                    if (v.state = 'active') {
+                        check_active := true
+                        break
+                    }
                 }
-                return 0
+                if (not check_active and this.switch_win_loss[n].idx2 > 4) {
+                    this.switch_win_loss[n].state := 'active'
+                }
+                return return_val
             }
             
             if inst.level >= 2 {
@@ -1574,9 +1574,9 @@ class TraderBot {
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
                 if (k > 0) {
-                    str_d := '(win' k ' ACTIVE ' format('{:.0f}', this.PERCENTAGES[Min(v.idx2, this.PERCENTAGES.Length)]*100) '%) ' str_d
+                    str_d := '(win' k ' ACTIVE ' this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)] ') ' str_d
                 } else {
-                    str_d := '(loss' LTrim(k,'-') ' ACTIVE) ' format('{:.0f}', this.PERCENTAGES[Min(v.idx2, this.PERCENTAGES.Length)]*100) '%) ' str_d
+                    str_d := '(loss' LTrim(k,'-') ' ACTIVE) ' this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)] ') ' str_d
                 }
             }
             if (k > 0) {
