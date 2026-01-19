@@ -441,7 +441,7 @@ class TraderBot {
                     }
                     this.switch_win_loss[n].stats.wins_streak := 0
                     this.switch_win_loss[n].stats.lose_streak++
-                    this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].stats.idx2-1, this.switch_win_loss[n].stats.longest_lose_streak)
+                    this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].idx2-1, this.switch_win_loss[n].stats.longest_lose_streak)
                     this.switch_win_loss[n].idx++
                 }
                 check_active := false
@@ -1573,17 +1573,19 @@ class TraderBot {
         str_f := ''
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
+                _suffix := ' ACTIVE ' Format(':.2f', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)]) ') ' str_d
                 if (k > 0) {
-                    str_d := '(win'  k            ' ACTIVE ' Format(':.2f', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)]) ') ' str_d
+                    str_d := '(win'  k _suffix
                 } else {
-                    str_d := '(loss' LTrim(k,'-') ' ACTIVE ' Format(':.2f', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)]) ') ' str_d
+                    str_d := '(loss' LTrim(k,'-') _suffix
                 }
             }
+            _suffix := ':-' v.idx2-1 '[-' v.stats.longest_lose_streak ']' '|'
             if (k > 0) {
-                str_e .= 'win' k ':-' this.switch_win_loss[k].stats.idx2-1 '[-' this.switch_win_loss[k].stats.longest_lose_streak ']' '|'
+                str_e .= 'win' k _suffix           
             }
             if (k < 0) {
-                str_f .= 'lose' LTrim(k,'-') ':-' this.switch_win_loss[k].stats.idx2-1 '[-' this.switch_win_loss[k].stats.longest_lose_streak ']' '|'
+                str_f .= 'lose' LTrim(k,'-') _suffix
             }
         }
         str_e := RTrim(str_e, '|')
