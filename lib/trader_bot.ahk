@@ -1563,7 +1563,7 @@ class TraderBot {
             str_c .= 'LD: ' this.ps.orange.y - this.ps.blue.y ' | '
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
-        str_d := ' (' Helper0811_4Loss.Get().level ') ' format('{:.2f}', this.amount)
+        str_d := ' (' Helper0811_4Loss.Get().level ') ' format('{:.2f}', this.amount) '[' this.stats.streak_real ']'
         if this.qualifiers.flip_trade.state = 1 {
             str_d := 'FLIP ' str_d
         }
