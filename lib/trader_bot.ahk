@@ -347,7 +347,7 @@ class TraderBot {
         loop 30 {
             this.PERCENTAGES.Push(this.PERCENTAGES[-1] + 0.15)
         }
-        this.CUSTOM_AMOUNTS := [1,1,1,1, 2, 4.6, 10.58, 24.33, 55.86, 128.73, 296.07, 680.97, 1566.81]
+        this.CUSTOM_AMOUNTS := [1,1,1,1,1, 2, 4.6, 10.58, 24.33, 55.86, 128.73, 296.07, 680.97, 1566.81]
 
         this.QualifiersReset()
         this.MidNightReset()
@@ -398,7 +398,7 @@ class TraderBot {
                 }
                 if (returnValue = 0) {
                     if (this.stats.streak_real < -5) {
-                        returnValue := this.CUSTOM_AMOUNTS[Min(-this.stats.streak_real-1, this.CUSTOM_AMOUNTS.Length)]
+                        returnValue := this.CUSTOM_AMOUNTS[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS.Length)]
                     } else {
                         returnValue := 1
                     }
@@ -453,7 +453,7 @@ class TraderBot {
                         break
                     }
                 }
-                if (not check_active and this.switch_win_loss[n].idx2 > 1 + 4) {
+                if (not check_active and this.switch_win_loss[n].idx2 > 1 + 5) {
                     this.switch_win_loss[n].state := 'active'
                 }
                 return return_val
