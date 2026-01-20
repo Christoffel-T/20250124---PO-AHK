@@ -1840,6 +1840,13 @@ class TraderBot {
             sleep 100
         }
         sleep 80
+        Send('^t')
+        sleep 80
+        Send('^+{Tab}')
+        sleep 80
+        Send('^w')
+
+        sleep 80
         Send('!d')
         sleep 80
         Utils.PasteText('https://pocketoption.com/en/cabinet/demo-quick-high-low/')
