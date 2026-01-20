@@ -402,8 +402,8 @@ class TraderBot {
                     } else {
                         returnValue := 1
                     }
-                    return returnValue
                 }
+                return returnValue
             }
 
             HelperWinLossN(n) {
@@ -1575,9 +1575,9 @@ class TraderBot {
         str_f := ''
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
-                _suffix := ' ACTIVE ' Format(':.2f', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)]) ') ' str_d
+                _suffix := ' ACTIVE ' Format('{:.2f}', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)]) ') ' str_d
                 if (k > 0) {
-                    str_d := '(win'  k _suffix
+                    str_d := '(win'  k            _suffix
                 } else {
                     str_d := '(loss' LTrim(k,'-') _suffix
                 }
