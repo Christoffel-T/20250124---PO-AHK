@@ -1588,7 +1588,7 @@ class TraderBot {
                 str_e .= 'win' . k . _suffix2           
             }
             if (k < 0) {
-                str_f .= 'lose' . LTrim(k,'-') . _suffix2
+                str_f .= 'loss' . LTrim(k,'-') . _suffix2
             }
         }
         str_e := RTrim(str_e, '|')
