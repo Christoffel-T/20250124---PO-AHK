@@ -453,7 +453,7 @@ class TraderBot {
                         break
                     }
                 }
-                if (not check_active and this.switch_win_loss[n].idx2 > 1 + 5) {
+                if (not check_active and this.switch_win_loss[n].idx2 > 5) {
                     this.switch_win_loss[n].state := 'active'
                 }
                 return return_val
@@ -1575,19 +1575,20 @@ class TraderBot {
         str_f := ''
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
-                _suffix := ' ACTIVE ' Format('{:.2f}', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)]) ') ' str_d
+                _suffix2 := ' ' Format('{:.2f}', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)]) ') ' str_d
                 if (k > 0) {
-                    str_d := '(win'  k            _suffix
+                    _suffix1 := ' win' k
                 } else {
-                    str_d := '(loss' LTrim(k,'-') _suffix
+                    _suffix1 := ' loss' LTrim(k,'-')
                 }
+                str_d := '(-' v.idx2 . _suffix1 . _suffix2
             }
-            _suffix := ':-' v.idx2-1 '[-' v.stats.longest_lose_streak ']' '|'
+            _suffix2 := ':-' v.idx2 '[-' v.stats.longest_lose_streak ']' '|'
             if (k > 0) {
-                str_e .= 'win' k _suffix           
+                str_e .= 'win' . k . _suffix2           
             }
             if (k < 0) {
-                str_f .= 'lose' LTrim(k,'-') _suffix
+                str_f .= 'lose' . LTrim(k,'-') . _suffix2
             }
         }
         str_e := RTrim(str_e, '|')
