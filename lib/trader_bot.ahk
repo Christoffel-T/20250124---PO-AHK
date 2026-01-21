@@ -420,7 +420,7 @@ class TraderBot {
                         this.switch_win_loss[n].stats.draws++
                     }
                     if (this.switch_win_loss[n].state = 'active') {
-                        return_val := (this.CUSTOM_AMOUNTS[Min(this.switch_win_loss[n].idx2, this.CUSTOM_AMOUNTS.Length)])
+                        return_val := (this.CUSTOM_AMOUNTS[Min(this.switch_win_loss[n].idx2, this.CUSTOM_AMOUNTS.Length) or 1])
                     }
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
@@ -430,7 +430,7 @@ class TraderBot {
                         }
                         Helper0811_4Loss.SetLevel(2)
                         this.switch_win_loss[n].state := 1
-                        this.switch_win_loss[n].idx2 := 1
+                        this.switch_win_loss[n].idx2 := 0
                     }
                     this.switch_win_loss[n].stats.lose_streak := 0
                     this.switch_win_loss[n].stats.wins_streak++
@@ -443,7 +443,7 @@ class TraderBot {
                     }
                     this.switch_win_loss[n].stats.wins_streak := 0
                     this.switch_win_loss[n].stats.lose_streak++
-                    this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].idx2-1, this.switch_win_loss[n].stats.longest_lose_streak)
+                    this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].idx2, this.switch_win_loss[n].stats.longest_lose_streak)
                     this.switch_win_loss[n].idx++
                 }
                 check_active := false
@@ -904,7 +904,7 @@ class TraderBot {
             v.loss_multiplier := 1
             v.amts := [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61]
             v.idx := 1
-            v.idx2 := 1
+            v.idx2 := 0
             v.counter_win_not_4loss := 1
             if (not v.HasOwnProp('stats')) {
                 v.stats := {}
@@ -1575,7 +1575,7 @@ class TraderBot {
         str_f := ''
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
-                _suffix2 := ' ' Format('{:.2f}', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length)]) ') ' str_d
+                _suffix2 := ' ' Format('{:.2f}', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length) or 1]) ') ' str_d
                 if (k > 0) {
                     _suffix1 := ' win' k
                 } else {
