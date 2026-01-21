@@ -414,27 +414,27 @@ class TraderBot {
                 if (inst.level < 2) {
                     return 0
                 }
-                this.switch_win_loss[n].state2_pause := false
+                this.switch_win_loss[n].state2_pause := 0
                 for k, v in this.switch_win_loss {
                     if (v.idx2 >= 3) {
-                        this.switch_win_loss[n].state2_pause := true
+                        this.switch_win_loss[n].state2_pause := 1
                         break
                     }
                 }
                 return_val := 0
 
                 if (inst.streak = n) {
-                    if (this.switch_win_loss[n].state2_pause != 0) {
+                    if (this.switch_win_loss[n].state2_pause = 0) {
                         return_val := (this.CUSTOM_AMOUNTS2[Min(this.switch_win_loss[n].idx3+1, this.CUSTOM_AMOUNTS1.Length) or 1])
                     }
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state2_pause != 0) {
+                    if (this.switch_win_loss[n].state2_pause = 0) {
                         this.switch_win_loss[n].idx3 := 0
                     }
                 }
                 if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state2_pause != 0) {
+                    if (this.switch_win_loss[n].state2_pause = 0) {
                         this.switch_win_loss[n].idx3++
                     }
                 }
