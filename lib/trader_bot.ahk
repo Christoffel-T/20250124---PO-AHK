@@ -347,7 +347,8 @@ class TraderBot {
         loop 30 {
             this.PERCENTAGES.Push(this.PERCENTAGES[-1] + 0.15)
         }
-        this.CUSTOM_AMOUNTS := [1,1,1,1,1, 2, 4.6, 10.58, 24.33, 55.86, 128.73, 296.07, 680.97, 1566.81]
+        this.CUSTOM_AMOUNTS1 := [1,1,1,1,1, 2, 4.6, 10.58, 24.33, 55.86, 128.73, 296.07, 680.97, 1566.81]
+        this.CUSTOM_AMOUNTS2 := [1, 4.6, 10.58, 24.33, 55.86, 128.73, 296.07, 680.97, 1566.81]
 
         this.QualifiersReset()
         this.MidNightReset()
@@ -390,20 +391,54 @@ class TraderBot {
             }
             if (inst.level >= 2) {
                 returnValue := 0
+                if _val := HelperWin1(1) {
+                    returnValue := _val
+                }
                 for k, v in this.switch_win_loss {
                     _ := HelperWinLossN(k)
-                    if (v.state = 'active') {
+                    if (v.state = 'active' and returnValue = 0) {
                         returnValue := _
                     }
                 }
                 if (returnValue = 0) {
                     if (this.stats.streak_real < -5) {
-                        returnValue := this.CUSTOM_AMOUNTS[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS.Length)]
+                        returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
                     } else {
                         returnValue := 1
                     }
                 }
                 return returnValue
+            }
+
+            HelperWin1(n) {
+                if (inst.level < 2) {
+                    return 0
+                }
+                this.switch_win_loss[n].state2_pause := false
+                for k, v in this.switch_win_loss {
+                    if (v.idx2 >= 3) {
+                        this.switch_win_loss[n].state2_pause := true
+                        break
+                    }
+                }
+                return_val := 0
+
+                if (inst.streak = n) {
+                    if (this.switch_win_loss[n].state2_pause != 0) {
+                        return_val := (this.CUSTOM_AMOUNTS2[Min(this.switch_win_loss[n].idx3+1, this.CUSTOM_AMOUNTS1.Length) or 1])
+                    }
+                }
+                if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
+                    if (this.switch_win_loss[n].state2_pause != 0) {
+                        this.switch_win_loss[n].idx3 := 0
+                    }
+                }
+                if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
+                    if (this.switch_win_loss[n].state2_pause != 0) {
+                        this.switch_win_loss[n].idx3++
+                    }
+                }
+                return return_val
             }
 
             HelperWinLossN(n) {
@@ -420,7 +455,7 @@ class TraderBot {
                         this.switch_win_loss[n].stats.draws++
                     }
                     if (this.switch_win_loss[n].state = 'active') {
-                        return_val := (this.CUSTOM_AMOUNTS[Min(this.switch_win_loss[n].idx2, this.CUSTOM_AMOUNTS.Length) or 1])
+                        return_val := (this.CUSTOM_AMOUNTS1[Min(this.switch_win_loss[n].idx2, this.CUSTOM_AMOUNTS1.Length) or 1])
                     }
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
@@ -905,6 +940,8 @@ class TraderBot {
             v.amts := [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61]
             v.idx := 1
             v.idx2 := 0
+            v.idx3 := 0
+            v.state2_pause := 0
             v.counter_win_not_4loss := 1
             if (not v.HasOwnProp('stats')) {
                 v.stats := {}
@@ -1575,7 +1612,7 @@ class TraderBot {
         str_f := ''
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
-                _suffix2 := ' ' Format('{:.2f}', this.CUSTOM_AMOUNTS[Min(v.idx2, this.CUSTOM_AMOUNTS.Length) or 1]) ') ' str_d
+                _suffix2 := ' ' Format('{:.2f}', this.CUSTOM_AMOUNTS1[Min(v.idx2, this.CUSTOM_AMOUNTS1.Length) or 1]) ') ' str_d
                 if (k > 0) {
                     _suffix1 := ' win' k
                 } else {
