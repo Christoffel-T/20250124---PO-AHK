@@ -347,8 +347,8 @@ class TraderBot {
         loop 30 {
             this.PERCENTAGES.Push(this.PERCENTAGES[-1] + 0.15)
         }
-        this.CUSTOM_AMOUNTS1 := [1,1,1,1,1, 2, 4.6, 10.58, 24.33, 55.86, 128.73, 296.07, 680.97, 1566.81]
-        this.CUSTOM_AMOUNTS2 := [1, 4.6, 10.58, 24.33, 55.86, 128.73, 296.07, 680.97, 1566.81]
+        this.CUSTOM_AMOUNTS1 := [1,1,1,1,1, 2, 4.85, 11.38, 25.73, 58.67, 134.37, 311.03, 715.97, 1641.81]
+        this.CUSTOM_AMOUNTS2 := [1, 4.85, 11.38, 25.73, 58.67, 134.37, 311.03, 715.97, 1641.81]
 
         this.QualifiersReset()
         this.MidNightReset()
