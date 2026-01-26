@@ -26,6 +26,7 @@ class Utils {
         
         A_Clipboard := "" ; Clear clipboard
         A_Clipboard := text
+        sleep 100
         
         if !ClipWait(2) { ; Increased timeout to 2 seconds for safety
             MsgBox "Clipboard failed to update."
