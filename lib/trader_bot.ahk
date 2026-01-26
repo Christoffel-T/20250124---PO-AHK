@@ -868,7 +868,6 @@ class TraderBot {
 
             sleep 300
             this.amount := this.amount < 1 ? 1.25 : this.amount
-            this.amount := Round(this.amount, 2)
             this.amount := Min(this.amount, this.balance.current)
 
             if !WinActive(this.wtitle) {
@@ -886,10 +885,7 @@ class TraderBot {
             sleep 80
             Send('{tab}')
             sleep 80
-            if this.amount > 1 {
-                MsgBox this.amount
-            }
-            Utils.PasteText(this.amount)
+            Utils.PasteText(format('{:.2f}', this.amount))
             sleep 80
             A_Clipboard := ''
             sleep 50
