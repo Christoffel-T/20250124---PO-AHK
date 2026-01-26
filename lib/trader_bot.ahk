@@ -1613,9 +1613,9 @@ class TraderBot {
             str_d := 'S ' str_d
         }
         if (this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
-            str_d := 'idx3-ON: -[' this.switch_win_loss[1].idx3 '] ' str_d
+            str_d := 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] ' str_d
         } else {
-            str_d := 'idx3-OFF: -[' this.switch_win_loss[1].idx3 '] ' str_d
+            str_d := 'idx3-OFF: [-' this.switch_win_loss[1].idx3 '] ' str_d
         }
 
         str_e := ''
