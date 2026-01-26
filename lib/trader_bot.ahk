@@ -348,7 +348,7 @@ class TraderBot {
             this.PERCENTAGES.Push(this.PERCENTAGES[-1] + 0.15)
         }
         this.CUSTOM_AMOUNTS1 := [1,1,1,1,1, 2, 4.85, 11.38, 25.73, 58.67, 134.37, 311.03, 715.97, 1641.81]
-        this.CUSTOM_AMOUNTS2 := [1, 4.85, 11.38, 25.73, 58.67, 134.37, 311.03, 715.97, 1641.81]
+        this.CUSTOM_AMOUNTS2 := [1.29, 1.30, 1.31, 4.85, 11.38, 25.75, 5, 58.67, 6, 170, 7, 350, 7, 750]
 
         this.QualifiersReset()
         this.MidNightReset()
@@ -423,20 +423,25 @@ class TraderBot {
                 }
                 return_val := 0
 
-                if (inst.streak = n) {
-                    if (this.switch_win_loss[n].state2_pause = 0) {
-                        return_val := (this.CUSTOM_AMOUNTS2[Min(this.switch_win_loss[n].idx3+1, this.CUSTOM_AMOUNTS1.Length) or 1])
-                    }
+                if (inst.streak = n and this.switch_win_loss[n].state2_pause = 0) {
+                    return_val := (this.CUSTOM_AMOUNTS2[Min(this.switch_win_loss[n].idx3+1, this.CUSTOM_AMOUNTS1.Length) or 1])
                 }
-                if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state2_pause = 0) {
+                if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1] and this.switch_win_loss[n].state2_pause = 0) {
+                    exception := false
+                    for v in [1,2,3,7,9,11,13] {
+                        if (this.switch_win_loss[n].idx3 = v) {
+                            exception := true
+                            break
+                        }
+                    }
+                    if (exception) {
+                        this.switch_win_loss[n].idx3++
+                    } else {
                         this.switch_win_loss[n].idx3 := 0
                     }
                 }
-                if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
-                    if (this.switch_win_loss[n].state2_pause = 0) {
-                        this.switch_win_loss[n].idx3++
-                    }
+                if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1] and this.switch_win_loss[n].state2_pause = 0) {
+                    this.switch_win_loss[n].idx3++
                 }
                 return return_val
             }
@@ -1608,9 +1613,9 @@ class TraderBot {
             str_d := 'S ' str_d
         }
         if (this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
-            str_d := 'idx3-ON: ' this.switch_win_loss[1].idx3 ' ' str_d
+            str_d := 'idx3-ON: -[' this.switch_win_loss[1].idx3 '] ' str_d
         } else {
-            str_d := 'idx3-OFF: ' this.switch_win_loss[1].idx3 ' ' str_d
+            str_d := 'idx3-OFF: -[' this.switch_win_loss[1].idx3 '] ' str_d
         }
 
         str_e := ''
