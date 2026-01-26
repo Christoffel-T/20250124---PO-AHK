@@ -886,6 +886,9 @@ class TraderBot {
             sleep 80
             Send('{tab}')
             sleep 80
+            if this.amount > 1 {
+                MsgBox this.amount
+            }
             Utils.PasteText(this.amount)
             sleep 80
             A_Clipboard := ''
