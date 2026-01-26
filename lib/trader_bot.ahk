@@ -868,6 +868,7 @@ class TraderBot {
 
             sleep 300
             this.amount := this.amount < 1 ? 1.25 : this.amount
+            this.amount := Round(this.amount, 2)
             this.amount := Min(this.amount, this.balance.current)
 
             if !WinActive(this.wtitle) {
