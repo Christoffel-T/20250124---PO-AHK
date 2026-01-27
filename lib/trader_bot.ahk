@@ -493,7 +493,7 @@ class TraderBot {
                         break
                     }
                 }
-                if (not check_active and this.switch_win_loss[n].idx2 > 5) {
+                if (not check_active and this.switch_win_loss[n].idx2 >= 7) {
                     this.switch_win_loss[n].state := 'active'
                 }
                 return return_val
