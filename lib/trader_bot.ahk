@@ -315,6 +315,7 @@ class TraderBot {
         this.stats.max_bal_diff := 0
         this.stats.next_max_bal_diff := 0
         this.stats.streak_real := 0
+        this.stats.max_streak_real := 0
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
         this.lose_streak := {max: 0, repeat: Map()}
