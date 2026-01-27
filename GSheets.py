@@ -54,7 +54,7 @@ def append_to_google_sheets(data, row):
             sheet.delete_rows(20001, len(all_values))
 
 def monitor_log(file_path):
-    header_text = 'date,time,active_trade,amount,E,F,Streak,max_diff,side_bal,balance,next_target,last_trade,payout,Streaks,double_stats,OHLC,debug'
+    header_text = 'date,time,active_trade,amount,E,F,G,H,Streak,max_diff,side_bal,balance,next_target,last_trade,payout,Streaks,double_stats,OHLC,debug'
     header = header_text.split(',')
     last_size = 0
 

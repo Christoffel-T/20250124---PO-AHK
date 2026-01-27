@@ -356,7 +356,7 @@ class TraderBot {
         this.amount := this.GetAmount(this.balance.current)
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,amount,E,F,Streak,max_diff,side_bal,balance,next_target,last_trade,payout,Streaks,double_stats,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,amount,E,F,G,H,Streak,max_diff,side_bal,balance,next_target,last_trade,payout,Streaks,double_stats,OHLC,debug`n', this.log_file)
         }
     }
 
