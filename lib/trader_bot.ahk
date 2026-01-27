@@ -1644,9 +1644,9 @@ class TraderBot {
             str_g := 'regular-OFF: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
         }
         if (this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
-            str_h := 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].stats.max_idx3 ']'
+            str_h := 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
         } else {
-            str_h := 'idx3-OFF: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].stats.max_idx3 ']'
+            str_h := 'idx3-OFF: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
         }
 
         str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
