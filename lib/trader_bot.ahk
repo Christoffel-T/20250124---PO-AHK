@@ -408,7 +408,19 @@ class TraderBot {
                         }
                     }
                 }
+                MaxBetLimiter(returnValue)
                 return returnValue
+            }
+
+            MaxBetLimiter(amt) {
+                if (this.custom_max_bet = 1 and inst.streak < 0) {
+                    amt := 10
+                    this.custom_max_bet := 0
+                } else if (amt > 50) {
+                    amt := 40
+                    this.custom_max_bet := 1
+                }
+                return amt
             }
 
             HelperWin1(n) {
@@ -940,6 +952,7 @@ class TraderBot {
         this.amount_override.helper3 := {state:0, amtWin1:7, amtLose1:8, countWin1:1, countLose1:1}
         this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
+        this.custom_max_bet := 0
 
         for k, v in this.switch_win_loss {
             v.state := 0
