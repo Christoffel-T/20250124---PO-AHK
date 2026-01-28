@@ -408,7 +408,7 @@ class TraderBot {
                         }
                     }
                 }
-                MaxBetLimiter(returnValue)
+                returnValue := MaxBetLimiter(returnValue)
                 return returnValue
             }
 
