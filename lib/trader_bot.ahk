@@ -411,7 +411,6 @@ class TraderBot {
                 returnValubute := MaxBetLimiter(returnValue)
                 return returnValue
             }
-            return 1
 
             MaxBetLimiter(amt) {
                 amt := Float(amt)
@@ -515,34 +514,7 @@ class TraderBot {
                 }
                 return return_val
             }
-            
-            if inst.level >= 2 {
-                if (inst.streak = 1) {
-                    Helper0811_4Loss.SetLevel(2)
-                }
-                if (inst.level = 2 and streak = -4) {
-                    this.qualifiers.flip_trade.state := false
-                    ; this.qualifiers.random_trade.state := false
-                } else if (inst.level = 2 and streak <= -2) {
-                    this.qualifiers.flip_trade.state := true
-                } else {
-                    if not this.qualifiers.random_trade.state and streak >= 1 {
-                        this.qualifiers.random_trade.state := true
-                        this.qualifiers.flip_trade.state := true
-                    }
-                }
-            }
-
-            if inst.level = 2 {
-                if streak = 1 and streak != this.streak_prev[1] {
-                    this.ChangeCoin()
-                }
-                if streak = -2 {
-                    this.qualifiers.flip_trade.state := true
-                    this.qualifiers.flip_trade.marked_winrate := this.stats.win_rate
-                }
-            }
-            
+                        
             if this.qualifiers.flip_trade.state = 1 and this.stats.win_rate >= this.qualifiers.flip_trade.marked_winrate + 0.8 {
                 this.qualifiers.flip_trade.marked_winrate := 0
             }
