@@ -761,10 +761,10 @@ class TraderBot {
                     }
                     this.lose_streak.repeat[this.stats.streak].win++
                     ; this.stats.streak := 0
-                    this.stats.streak_real := 0
+                    ; this.stats.streak_real := 0
                 }
                 ; this.stats.streak++
-                this.stats.streak_real++
+                ; this.stats.streak_real++
             }
             this.stats.win++
 
