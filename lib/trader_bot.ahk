@@ -408,15 +408,18 @@ class TraderBot {
                         }
                     }
                 }
-                returnValue := MaxBetLimiter(returnValue)
+                returnValubute := MaxBetLimiter(returnValue)
                 return returnValue
             }
+            return 1
 
             MaxBetLimiter(amt) {
+                amt := Float(amt)
                 if (this.custom_max_bet = 1 and inst.streak < 0) {
                     amt := 10
                     this.custom_max_bet := 0
-                } else if (amt > 50) {
+                } 
+                if (amt > 50) {
                     amt := 40
                     this.custom_max_bet := 1
                 }
