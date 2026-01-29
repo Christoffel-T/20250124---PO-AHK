@@ -422,6 +422,7 @@ class TraderBot {
                     amt := 40
                     this.custom_max_bet := 1
                 }
+                MsgBox amt
                 return amt
             }
 
