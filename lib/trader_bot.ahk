@@ -407,6 +407,7 @@ class TraderBot {
                         }
                     }
                 }
+                returnValue := Random(30, 200)
                 returnValue := MaxBetLimiter(returnValue)
                 return returnValue
             }
@@ -422,9 +423,7 @@ class TraderBot {
                     amt := 40
                     this.custom_max_bet := 1
                 }
-                if (Integer(substr(amt_before, 1, 1)) > 4) {
-                    MsgBox amt_before '`nto`n' amt
-                }
+                MsgBox amt_before '`nto`n' amt
                 return amt
             }
 
