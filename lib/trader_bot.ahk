@@ -390,7 +390,7 @@ class TraderBot {
             if this.stats.max_bal_diff <= 0 {
                 Helper0811_4Loss.Reset()
             }
-            if (inst.level >= 1) {
+            if (inst.level >= 2) {
                 returnValue := 0
                 if (this.stats.streak_real <= -7) {
                     returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
@@ -407,7 +407,8 @@ class TraderBot {
                         }
                     }
                 }
-                returnValue := Random(30, 200)
+            }
+            if (inst.level >= 2) {
                 returnValue := MaxBetLimiter(returnValue)
                 return returnValue
             }
