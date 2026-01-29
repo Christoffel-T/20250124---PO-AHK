@@ -390,11 +390,11 @@ class TraderBot {
             if this.stats.max_bal_diff <= 0 {
                 Helper0811_4Loss.Reset()
             }
+            this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
             if (inst.level >= 2) {
                 returnValue := 0
                 if (this.stats.streak_real <= -7) {
                     returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
-                    this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
                 }
                 if (returnValue = 0) {
                     if _val := HelperWin1(1) {
@@ -920,6 +920,7 @@ class TraderBot {
     MidNightReset() {
         for k, v in this.switch_win_loss {
             v.stats.longest_lose_streak := 0
+            v.max_idx3 := 0
         }
     }
 
@@ -938,7 +939,6 @@ class TraderBot {
             v.idx := 1
             v.idx2 := 0
             v.idx3 := 0
-            v.max_idx3 := 0
             v.state2_pause := 0
             v.counter_win_not_4loss := 1
             if (not v.HasOwnProp('stats')) {
