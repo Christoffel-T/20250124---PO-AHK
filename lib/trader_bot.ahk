@@ -7,7 +7,6 @@ modTime := FileGetTime(scriptPath, "M")
 formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
-
 /*
 tester(tst) {
     static inst := {streak: 1, amt: 1, level: 3}
@@ -413,6 +412,7 @@ class TraderBot {
             }
 
             MaxBetLimiter(amt) {
+                amt_before := amt
                 amt := Float(amt)
                 if (this.custom_max_bet = 1 and inst.streak < 0) {
                     amt := 10
@@ -422,7 +422,9 @@ class TraderBot {
                     amt := 40
                     this.custom_max_bet := 1
                 }
-                MsgBox amt
+                if (Integer(substr(amt_before, 1, 1)) > 4) {
+                    MsgBox amt_before '`nto`n' amt
+                }
                 return amt
             }
 
