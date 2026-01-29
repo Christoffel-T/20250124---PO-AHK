@@ -7,6 +7,7 @@ modTime := FileGetTime(scriptPath, "M")
 formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
+
 /*
 tester(tst) {
     static inst := {streak: 1, amt: 1, level: 3}
@@ -390,11 +391,11 @@ class TraderBot {
             if this.stats.max_bal_diff <= 0 {
                 Helper0811_4Loss.Reset()
             }
-            this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
             if (inst.level >= 2) {
                 returnValue := 0
                 if (this.stats.streak_real <= -7) {
                     returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
+                    this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
                 }
                 if (returnValue = 0) {
                     if _val := HelperWin1(1) {
@@ -407,7 +408,21 @@ class TraderBot {
                         }
                     }
                 }
+                returnValue := MaxBetLimiter(returnValue)
                 return returnValue
+            }
+
+            MaxBetLimiter(amt) {
+                amt := Float(amt)
+                if (this.custom_max_bet = 1 and inst.streak < 0) {
+                    amt := 10
+                    this.custom_max_bet := 0
+                } 
+                if (amt > 50) {
+                    amt := 40
+                    this.custom_max_bet := 1
+                }
+                return amt
             }
 
             HelperWin1(n) {
@@ -569,29 +584,12 @@ class TraderBot {
         if amt := this.AmountOverride(amt_prev)
             this.amount := amt
         
-        this.amount := MaxBetLimiter(this.amount)
-        
         ; if draw.ps and not win.ps {
         ;     this.amount := amt_prev
         ; }
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
-
-        MaxBetLimiter(amt) {
-            amt_before := amt
-            amt := Float(amt)
-            if (this.custom_max_bet = 1 and this.stats.streak < 0) {
-                amt := 10
-                this.custom_max_bet := 0
-            } 
-            if (amt > 50) {
-                amt := 40
-                this.custom_max_bet := 1
-            }
-            return amt
-        }
-
 
         RankScenarios() {
             sortableArray := ''
@@ -920,7 +918,6 @@ class TraderBot {
     MidNightReset() {
         for k, v in this.switch_win_loss {
             v.stats.longest_lose_streak := 0
-            v.max_idx3 := 0
         }
     }
 
@@ -939,6 +936,7 @@ class TraderBot {
             v.idx := 1
             v.idx2 := 0
             v.idx3 := 0
+            v.max_idx3 := 0
             v.state2_pause := 0
             v.counter_win_not_4loss := 1
             if (not v.HasOwnProp('stats')) {
