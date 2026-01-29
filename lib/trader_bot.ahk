@@ -408,24 +408,6 @@ class TraderBot {
                     }
                 }
             }
-            if (inst.level >= 2) {
-                returnValue := MaxBetLimiter(returnValue)
-                return returnValue
-            }
-
-            MaxBetLimiter(amt) {
-                amt_before := amt
-                amt := Float(amt)
-                if (this.custom_max_bet = 1 and inst.streak < 0) {
-                    amt := 10
-                    this.custom_max_bet := 0
-                } 
-                if (amt > 50) {
-                    amt := 40
-                    this.custom_max_bet := 1
-                }
-                return amt
-            }
 
             HelperWin1(n) {
                 if (inst.level < 2) {
@@ -586,12 +568,29 @@ class TraderBot {
         if amt := this.AmountOverride(amt_prev)
             this.amount := amt
         
+        this.amount := MaxBetLimiter(this.amount)
+        
         ; if draw.ps and not win.ps {
         ;     this.amount := amt_prev
         ; }
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
+
+        MaxBetLimiter(amt) {
+            amt_before := amt
+            amt := Float(amt)
+            if (this.custom_max_bet = 1 and this.stats.streak < 0) {
+                amt := 10
+                this.custom_max_bet := 0
+            } 
+            if (amt > 50) {
+                amt := 40
+                this.custom_max_bet := 1
+            }
+            return amt
+        }
+
 
         RankScenarios() {
             sortableArray := ''
