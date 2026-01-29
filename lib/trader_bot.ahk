@@ -407,6 +407,7 @@ class TraderBot {
                         }
                     }
                 }
+                return returnValue
             }
 
             HelperWin1(n) {
