@@ -334,6 +334,7 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
         this.qualifiers := {}
         this.streak_prev := []
+        this.amt_prev := []
         this.switch_win_loss:= Map(
             1, {},
             2, {},
@@ -571,6 +572,10 @@ class TraderBot {
         while this.streak_prev.Length >= 10 {
             this.streak_prev.Pop()
         }
+        this.amt_prev.InsertAt(1, this.amount)
+        while this.amt_prev.Length >= 10 {
+            this.amt_prev.Pop()
+        }
         amt_prev := this.amount
         if not win.ps and not draw.ps {
             TradeLose()
@@ -581,8 +586,12 @@ class TraderBot {
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
-        if amt := this.AmountOverride(amt_prev)
+        if amt := this.AmountOverride(this.amt_prev[1])
             this.amount := amt
+
+        if (this.stats.streak < 0 and Round(this.amt_prev[1]) = 42) {
+            this.amount := 5
+        }
         
         ; if draw.ps and not win.ps {
         ;     this.amount := amt_prev
