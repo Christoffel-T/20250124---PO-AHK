@@ -393,7 +393,7 @@ class TraderBot {
                 Helper0811_4Loss.Reset()
             }
 
-            if (inst.level = 1 and inst.streak = -4) {
+            if (inst.level = 2 and inst.streak = -1 and this.stats.streak_real = -4) {
                 return 1
             }
             if (inst.level >= 2) {
