@@ -600,27 +600,11 @@ class TraderBot {
         if (this.stats.streak < 0 and Round(this.amt_prev[1]) = 42) {
             this.amount := 5
         }
+
+        if amt := AmountOverride2() {
+            this.amount := amt
+        }
         
-        for v in [12, 22.93, 26, 54, 110] {
-            if Round(this.amount, 2) = Round(v, 2) {
-                this.amount := 5
-            }
-        }
-        for v in [24, 47.86, 50, 75, 150] {
-            if Round(this.amount, 2) = Round(v, 2) {
-                this.amount := 11
-            }
-        }
-        for v in [50, 96.85, 100, 145, 200] {
-            if Round(this.amount, 2) = Round(v, 2) {
-                this.amount := 42
-            }
-        }
-        for v in [120, 155,97, 215, 255, 350] {
-            if Round(this.amount, 2) = Round(v, 2) {
-                this.amount := 80
-            }
-        }
         ; if draw.ps and not win.ps {
         ;     this.amount := amt_prev
         ; }
@@ -628,6 +612,26 @@ class TraderBot {
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
 
+        AmountOverride2() {
+            if (this.stats.streak >= 0) {
+                this.custom_amts_override2.state := 0
+                this.custom_amts_override2.idx := 0
+                return 0
+            }
+            if (this.custom_amts_override2.state = 0) {
+                for v in [5, 12, 22.93, 26, 54, 110] {
+                    if (Round(this.amt_prev[1], 2) = Round(v, 2)) {
+                        this.custom_amts_override2.state := A_Index
+                        break
+                    }
+                }
+            }
+            this.custom_amts_override2.idx++
+            state := this.custom_amts_override2.state
+            amts := [[11, 42, 80], [24,50,120], [47.86, 96.85, 155.97], [50,100,215], [75,145,255], [150,200,350]]
+            return amts[state][Min(this.custom_amts_override2.idx, amts[state].Length)]
+        }
+        
         RankScenarios() {
             sortableArray := ''
             For key, value in this.stats.OwnProps() {
@@ -966,6 +970,10 @@ class TraderBot {
         this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
         this.custom_max_bet := 0
+        this.custom_amts_override2 := {
+            state: 0,
+            idx: 1,
+        }
 
         for k, v in this.switch_win_loss {
             v.state := 0
