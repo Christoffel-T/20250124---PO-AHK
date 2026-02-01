@@ -477,7 +477,11 @@ class TraderBot {
                         this.switch_win_loss[n].stats.draws++
                     }
                     if (this.switch_win_loss[n].state = 'active') {
-                        return_val := (this.CUSTOM_AMOUNTS1[Min(this.switch_win_loss[n].idx2, this.CUSTOM_AMOUNTS1.Length) or 1])
+                        amts := this.CUSTOM_AMOUNTS1
+                        if Abs(n) = 4 {
+                            amts := this.CUSTOM_AMOUNTS_loss4_win4
+                        }
+                        return_val := (amts[Min(this.switch_win_loss[n].idx2, amts.Length) or 1])
                     }
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
@@ -1617,7 +1621,11 @@ class TraderBot {
         str_f := ''
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
-                _suffix2 := ' ' Format('{:.2f}', this.CUSTOM_AMOUNTS1[Min(v.idx2, this.CUSTOM_AMOUNTS1.Length) or 1]) ') ' str_d
+                amts := this.CUSTOM_AMOUNTS1
+                if Abs(k) = 4 {
+                    amts := this.CUSTOM_AMOUNTS_loss4_win4
+                }
+                _suffix2 := ' ' Format('{:.2f}', amts[Min(v.idx2, amts.Length) or 1]) ') ' str_d
                 if (k > 0) {
                     _prefix := 'SET win' k ' ON'
                 } else {
