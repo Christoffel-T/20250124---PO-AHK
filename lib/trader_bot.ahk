@@ -625,6 +625,9 @@ class TraderBot {
                         break
                     }
                 }
+                if (this.custom_amts_override2.state = 0) {
+                    return 0
+                }
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
