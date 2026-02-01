@@ -597,6 +597,26 @@ class TraderBot {
             this.amount := 5
         }
         
+        for v in [12, 22.93, 26, 54, 110] {
+            if Round(this.amount, 2) = Round(v, 2) {
+                this.amount := 5
+            }
+        }
+        for v in [24, 47.86, 50, 75, 150] {
+            if Round(this.amount, 2) = Round(v, 2) {
+                this.amount := 11
+            }
+        }
+        for v in [50, 96.85, 100, 145, 200] {
+            if Round(this.amount, 2) = Round(v, 2) {
+                this.amount := 42
+            }
+        }
+        for v in [120, 155,97, 215, 255, 350] {
+            if Round(this.amount, 2) = Round(v, 2) {
+                this.amount := 80
+            }
+        }
         ; if draw.ps and not win.ps {
         ;     this.amount := amt_prev
         ; }
