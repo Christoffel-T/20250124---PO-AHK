@@ -311,7 +311,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
-        this.stats.bal_win := 10
+        this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
         this.stats.next_max_bal_diff := 0
         this.stats.streak_real := 0
@@ -391,6 +391,10 @@ class TraderBot {
 
             if this.stats.max_bal_diff <= 0 {
                 Helper0811_4Loss.Reset()
+            }
+
+            if (inst.level = 1 and inst.streak = -4) {
+                return 1
             }
             if (inst.level >= 2) {
                 returnValue := 0
