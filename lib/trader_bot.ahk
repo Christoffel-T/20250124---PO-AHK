@@ -597,10 +597,6 @@ class TraderBot {
         if amt := this.AmountOverride(this.amt_prev[1])
             this.amount := amt
 
-        if (this.stats.streak < 0 and Round(this.amt_prev[1]) = 42) {
-            this.amount := 5
-        }
-
         if amt := AmountOverride2() {
             this.amount := amt
         }
@@ -613,6 +609,7 @@ class TraderBot {
         RankScenarios()
 
         AmountOverride2() {
+            inst := Helper0811_4Loss.Get()
             if (this.stats.streak >= 0) {
                 this.custom_amts_override2.state := 0
                 this.custom_amts_override2.idx := 0
@@ -625,13 +622,16 @@ class TraderBot {
                         break
                     }
                 }
+                if (inst.level = 2 and inst.streak = -1 and this.stats.streak_real = -4) {
+                    this.custom_amts_override2.state := 6
+                }
                 if (this.custom_amts_override2.state = 0) {
                     return 0
                 }
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
-            amts := [[11, 42, 80, 1], [24,50,120, 1], [47.86, 96.85, 155.97, 1], [50,100,215, 1], [75,145,255, 1], [150,200,350, 1]]
+            amts := [[11, 42, 80, 1], [24,50,120, 1], [47.86, 96.85, 155.97, 1], [50,100,215, 1], [75,145,255, 1], [150,200,350, 1], [1, 5, 96.42]]
             return amts[state][Min(this.custom_amts_override2.idx, amts[state].Length)]
         }
         
