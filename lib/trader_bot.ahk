@@ -594,12 +594,20 @@ class TraderBot {
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
-        if amt := this.AmountOverride(this.amt_prev[1])
-            this.amount := amt
-
-        if amt := AmountOverride2() {
-            this.amount := amt
+        if draw.ps {
+            this.amount := amt_prev
+        } else {
+            if amt := this.AmountOverride(this.amt_prev[1]) {
+                this.amount := amt
+            }
+            if amt := AmountOverride2() {
+                this.amount := amt
+            }
+            if Round(this.amount, 2) = 283.93 {
+                this.amount /= 2
+            }
         }
+
         
         ; if draw.ps and not win.ps {
         ;     this.amount := amt_prev
@@ -616,7 +624,7 @@ class TraderBot {
                 return 0
             }
             if (this.custom_amts_override2.state = 0) {
-                for v in [5, 12, 22.93, 26, 54, 110] {
+                for v in [5, 12, 22.93, 26/2, 54/2, 110/2] {
                     if (Round(this.amt_prev[1], 2) = Round(v, 2)) {
                         this.custom_amts_override2.state := A_Index
                         break
@@ -631,7 +639,7 @@ class TraderBot {
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
-            amts := [[11, 42, 80, 1], [24,50,120, 1], [47.86, 96.85, 155.97, 1], [50,100,215, 1], [75,145,255, 1], [150,200,350, 1], [1, 5, 96.42]]
+            amts := [[11, 42, 80, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1], [1, 75,1, 145,255, 1], [1, 150, 1, 200,350, 1], [1, 5, 96.42]]
             return amts[state][Min(this.custom_amts_override2.idx, amts[state].Length)]
         }
         
@@ -688,8 +696,8 @@ class TraderBot {
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
             }
 
-            if this.stats.streak < 0
-                this.amount := LossModifier()
+            ; if this.stats.streak < 0
+            ;     this.amount := LossModifier()
 
             this.stats.loss++
 
@@ -2097,8 +2105,8 @@ class TraderBot {
 class Constants {
     static GetAmounts1() => [22.93, 47.86, 20]
     static GetAmounts2() => Map(
-                                1, [5, 12, 26, 54, 110, 222, 446, 894],
-                                2, [11, 24, 50, 104, 210, 422, 846, 1694]
+                                1, [5, 12, 26/2, 54/2, 110/2, 222/2, 446/2, 894],
+                                2, [11, 24, 50/2, 104/2, 210/2, 422/2, 846, 1694]
                             )
     static GetAmounts3() => {1:4, 2:9, losses_ina_row:0}
     static GetAmounts4() => {state:0, 1:50, 2:100, losses_ina_row:{1:0, 2:0}}
