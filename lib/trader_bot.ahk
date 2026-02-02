@@ -623,7 +623,7 @@ class TraderBot {
                     }
                 }
                 if (inst.level = 2 and inst.streak = -1 and this.stats.streak_real = -4) {
-                    this.custom_amts_override2.state := 6
+                    this.custom_amts_override2.state := 7
                 }
                 if (this.custom_amts_override2.state = 0) {
                     return 0
