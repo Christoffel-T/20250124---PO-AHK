@@ -631,7 +631,7 @@ class TraderBot {
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
-            amts := [[11, 42, 80], [24,50,120], [47.86, 96.85, 155.97], [50,100,215], [75,145,255], [150,200,350]]
+            amts := [[11, 42, 80, 1], [24,50,120, 1], [47.86, 96.85, 155.97, 1], [50,100,215, 1], [75,145,255, 1], [150,200,350, 1]]
             return amts[state][Min(this.custom_amts_override2.idx, amts[state].Length)]
         }
         
