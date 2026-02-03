@@ -594,7 +594,7 @@ class TraderBot {
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
-        if draw.ps and not win.ps {
+        if (draw.ps and not win.ps) {
             this.amount := amt_prev
         } else {
             if amt := this.AmountOverride(this.amt_prev[1]) {
@@ -639,7 +639,7 @@ class TraderBot {
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
-            amts := [[11, 42, 80, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1], [1, 75,1, 145,255, 1], [1, 150, 1, 200,350, 1], [1, 5, 96.42]]
+            amts := [[11, 42, 80, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1], [1, 75,1, 145,255, 1], [1, 150, 1, 200,350, 1], [1, 5, 96.42, 1]]
             return amts[state][Min(this.custom_amts_override2.idx, amts[state].Length)]
         }
         
@@ -696,8 +696,8 @@ class TraderBot {
                 this.qualifiers.loss_amount_modifier.streak := Min(this.qualifiers.loss_amount_modifier.streak + 1, -3)
             }
 
-            ; if this.stats.streak < 0
-            ;     this.amount := LossModifier()
+            if this.stats.streak < 0
+                this.amount := LossModifier()
 
             this.stats.loss++
 
