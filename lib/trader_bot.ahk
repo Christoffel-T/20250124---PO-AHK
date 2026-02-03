@@ -584,7 +584,6 @@ class TraderBot {
         while this.amt_prev.Length >= 10 {
             this.amt_prev.Pop()
         }
-        amt_prev := this.amount
         if not win.ps and not draw.ps {
             TradeLose()
         } else if win.ps {
@@ -595,7 +594,7 @@ class TraderBot {
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
         if (draw.ps and not win.ps) {
-            this.amount := amt_prev
+            this.amount := this.amt_prev[1]
         } else {
             if amt := this.AmountOverride(this.amt_prev[1]) {
                 this.amount := amt
