@@ -594,7 +594,7 @@ class TraderBot {
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
-        if draw.ps {
+        if draw.ps and not win.ps {
             this.amount := amt_prev
         } else {
             if amt := this.AmountOverride(this.amt_prev[1]) {
