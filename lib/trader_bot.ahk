@@ -398,10 +398,6 @@ class TraderBot {
             }
             if (inst.level >= 2) {
                 returnValue := 0
-                if (this.stats.streak_real <= -7) {
-                    returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
-                    this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
-                }
                 if (returnValue = 0) {
                     if _val := HelperWin1(1) {
                         returnValue := _val
@@ -601,6 +597,11 @@ class TraderBot {
             }
             if amt := AmountOverride2() {
                 this.amount := amt
+            }
+            if (this.stats.streak_real <= -7) {
+                returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
+                this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
+                this.amount := returnValue
             }
             if Round(this.amount, 2) = 283.93 {
                 this.amount /= 2
