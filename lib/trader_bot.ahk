@@ -561,14 +561,11 @@ class TraderBot {
         this.trade_opened[1] := false
         this.CheckBalance()
         if this.balance.current > this.balance.last_trade + 0.5 {
-            win := {ps:true}
-            draw := {ps:true}
+            trade_result := 1
         } else if this.balance.current < this.balance.last_trade - 0.5 {
-            win := {ps:false}
-            draw := {ps:false}
+            trade_result := -1
         } else {
-            win := {ps:false}
-            draw := {ps:true}
+            trade_result := 0
         }
         this.balance.last_trade := this.balance.current 
 
@@ -580,34 +577,50 @@ class TraderBot {
         while this.amt_prev.Length >= 10 {
             this.amt_prev.Pop()
         }
-        if not win.ps and not draw.ps {
+        if (trade_result = -1) {
             TradeLose()
-        } else if win.ps {
+        } else if trade_result = 1 {
             TradeWin()
-        } else if draw.ps {
+        } else if trade_result = 0 {
             TradeDraw()
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
-        this.amount := [12,24,50,120][Random(1,4)]
-        if (draw.ps and not win.ps) {
+
+        if (trade_result = 0) {
             this.amount := this.amt_prev[1]
         } else {
+            overriden := 0
             if amt := AmountOverride2() {
                 this.amount := amt
+                overriden := 1
             }
             if amt := this.AmountOverride(this.amt_prev[1]) {
                 this.amount := amt
+                overriden := 1
             }
             if (this.stats.streak_real <= -7) {
                 returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
                 this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
                 this.amount := returnValue
+                overriden := 1
             }
             if Round(this.amount, 2) = 283.93 {
                 this.amount /= 2
+                overriden := 1
             }
         }
 
+        if (this.amount > 100 and overriden = 0) {
+            this.amount := [12, 24, 50, 120][this.hardcode_amt_override.idx]
+            this.hardcode_amt_override.state := 1
+        }
+        if (this.hardcode_amt_override.state = 1) {
+            if (trade_result = 1) {
+                this.hardcode_amt_override.idx := 1
+            } else if (trade_result = -1) {
+                this.hardcode_amt_override.idx++
+            }
+        }
         
         ; if draw.ps and not win.ps {
         ;     this.amount := amt_prev
@@ -981,6 +994,10 @@ class TraderBot {
         this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
         this.custom_max_bet := 0
+        this.hardcode_amt_override := {
+            state: 0, 
+            idx: 1
+        }
         this.custom_amts_override2 := {
             state: 0,
             idx: 1,
