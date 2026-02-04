@@ -588,14 +588,14 @@ class TraderBot {
             TradeDraw()
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
-
+        this.amount := [12,24,50,120][Random(1,4)]
         if (draw.ps and not win.ps) {
             this.amount := this.amt_prev[1]
         } else {
-            if amt := this.AmountOverride(this.amt_prev[1]) {
+            if amt := AmountOverride2() {
                 this.amount := amt
             }
-            if amt := AmountOverride2() {
+            if amt := this.AmountOverride(this.amt_prev[1]) {
                 this.amount := amt
             }
             if (this.stats.streak_real <= -7) {
