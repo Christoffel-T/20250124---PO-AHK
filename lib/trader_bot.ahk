@@ -363,7 +363,7 @@ class TraderBot {
         }
     }
 
-    AmountOverride(amt_prev) {
+    AmountOverride1(amt_prev) {
         CUSTOM_LOSS_STREAK_START := -5
         streak := this.stats.streak
         ; if streak <= -5 {
@@ -595,7 +595,7 @@ class TraderBot {
                 this.amount := amt2
                 overriden := 1
             }
-            if amt1 := this.AmountOverride(this.amt_prev[1]) {
+            if amt1 := this.AmountOverride1(this.amt_prev[1]) {
                 this.amount := amt1
                 overriden := 1
             }
@@ -622,6 +622,14 @@ class TraderBot {
                 this.hardcode_amt_override.idx++
             }
         }
+        inst := Helper0811_4Loss.Get()
+        if (inst.level = 2 and inst.streak = -1 and this.stats.streak_real <= -4) {
+            amts := [1, 5, 96.42, 1]
+            idx := Abs(this.stats.streak_real) - 3
+            if (idx <= amts.Length) {
+                this.amount := amts[idx]
+            }
+        }
 
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
@@ -633,9 +641,6 @@ class TraderBot {
                 this.custom_amts_override2.state := 0
                 this.custom_amts_override2.idx := 0
                 return 0
-            }
-            if (inst.level = 2 and inst.streak = -1 and this.stats.streak_real = -4) {
-                this.custom_amts_override2.state := 7
             }
             if (this.custom_amts_override2.state = 0) {
                 for v in [5, 12, 22.93, 26/2, 54/2, 110/2] {
@@ -650,9 +655,9 @@ class TraderBot {
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
-            amts := [[11, 42, 40, 40, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1], [1, 75,1, 145,255, 1], [1, 150, 1, 200,350, 1], [1, 5, 96.42, 1]]
+            amts := [[11, 42, 40, 40, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1], [1, 75,1, 145,255, 1], [1, 150, 1, 200,350, 1]]
             for v in amts {
-                if (A_Index = 1 or A_Index = 7) {
+                if (A_Index = 1) {
                     continue
                 }
                 removed := v.RemoveAt(4)
