@@ -644,7 +644,7 @@ class TraderBot {
                 return 0
             }
             if (this.custom_amts_override2.state = 0) {
-                for v in [5, 12, 22.93, 26/2, 54/2, 110/2] {
+                for v in [5, 12, 22.93, 26/2] {
                     if (Round(this.amt_prev[1], 2) = Round(v, 2)) {
                         this.custom_amts_override2.state := A_Index
                         break
@@ -656,7 +656,7 @@ class TraderBot {
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
-            amts := [[11, 42, 40, 40, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1], [1, 75,1, 145,255, 1], [1, 150, 1, 200,350, 1]]
+            amts := [[11, 42, 40, 40, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1]]
             for v in amts {
                 if (A_Index = 1) {
                     continue
