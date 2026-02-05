@@ -8,6 +8,7 @@ formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
 
+
 /*
 tester(tst) {
     static inst := {streak: 1, amt: 1, level: 3}
@@ -655,7 +656,14 @@ class TraderBot {
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
-            amts := [[11, 42, 80, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1], [1, 75,1, 145,255, 1], [1, 150, 1, 200,350, 1], [1, 5, 96.42, 1]]
+            amts := [[11, 42, 40, 40, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1], [1, 75,1, 145,255, 1], [1, 150, 1, 200,350, 1], [1, 5, 96.42, 1]]
+            for v in amts {
+                if A_Index = 1 {
+                    continue
+                }
+                removed := v.RemoveAt(4)
+                v.InsertAt(4, removed/2, removed/2, 1)
+            }
             return amts[state][Min(this.custom_amts_override2.idx, amts[state].Length)]
         }
         
