@@ -587,6 +587,10 @@ class TraderBot {
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
+        if (this.halving.state = 1 and this.stats.max_bal_diff <= 75) {
+            this.halving.state := 0
+        }
+
         if (trade_result = 0) {
             this.amount := this.amt_prev[1]
         } else {
@@ -595,11 +599,17 @@ class TraderBot {
                 returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
                 this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
                 this.amount := returnValue
+                if (this.halving.state = 1) {
+                    this.amount /= 2
+                }
                 overriden := 1
             } else {
                 if amt2 := AmountOverride2() {
                     this.amount := amt2
                     overriden := 1
+                    if (this.halving.state = 1) {
+                        this.amount /= 2
+                    }
                 }
                 if amt1 := this.AmountOverride1(this.amt_prev[1]) {
                     this.amount := amt1
@@ -608,6 +618,9 @@ class TraderBot {
                 if Round(this.amount, 2) = 283.93 {
                     this.amount /= 2
                     overriden := 1
+                    if (this.halving.state = 1) {
+                        this.amount /= 2
+                    }
                 }
             }
         }
@@ -656,7 +669,10 @@ class TraderBot {
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
-            amts := [[11, 42, 40, 40, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100,215, 1]]
+            if (state = 1 and this.custom_amts_override2.idx >= 5) {
+                this.halving.state := 1
+            }
+            amts := [[11, 42, 40, 40, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100, 215, 1]]
             for v in amts {
                 if (A_Index = 1) {
                     continue
@@ -1005,6 +1021,10 @@ class TraderBot {
         this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
         this.custom_max_bet := 0
+        this.halving := {
+            state: 0, 
+            idx: 1
+        }
         this.hardcode_amt_override := {
             state: 0, 
             idx: 1
