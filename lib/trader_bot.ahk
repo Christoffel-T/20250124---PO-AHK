@@ -596,8 +596,7 @@ class TraderBot {
                 overriden := 1
             }
             if amt1 := this.AmountOverride(this.amt_prev[1]) {
-                if overriden = 0
-                    this.amount := amt1
+                this.amount := amt1
                 overriden := 1
             }
             if (this.stats.streak_real <= -7) {
