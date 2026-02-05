@@ -547,11 +547,6 @@ class TraderBot {
         
         MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
         sleep 50
-        MouseMove(this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y)
-        sleep 150
-        MouseMove(this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y)
-        sleep 150
-        MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y)
         loop 3 {
             if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
                 return false
@@ -627,10 +622,7 @@ class TraderBot {
                 this.hardcode_amt_override.idx++
             }
         }
-        
-        ; if draw.ps and not win.ps {
-        ;     this.amount := amt_prev
-        ; }
+
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
