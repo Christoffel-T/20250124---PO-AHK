@@ -625,7 +625,7 @@ class TraderBot {
         }
         inst := Helper0811_4Loss.Get()
         if (inst.level = 2 and inst.streak = -1 and this.stats.streak_real <= -4) {
-            amts := [1, 5, 96.42, 1]
+            amts := [1, 48.36, 48.36, 1]
             idx := Abs(this.stats.streak_real) - 3
             if (idx <= amts.Length) {
                 this.amount := amts[idx]
