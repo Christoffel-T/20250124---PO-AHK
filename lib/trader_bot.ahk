@@ -547,6 +547,11 @@ class TraderBot {
         
         MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
         sleep 50
+        MouseMove(this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y)
+        sleep 150
+        MouseMove(this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y)
+        sleep 150
+        MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y)
         loop 3 {
             if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
                 return false
@@ -1122,7 +1127,7 @@ class TraderBot {
             sleep 600
             this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
             start_time := A_TickCount
-            while !this.CheckTradeClosed(true) or A_TickCount - start_time <= 6500
+            while (!this.CheckTradeClosed(true) or A_TickCount - start_time <= 6500)
                 sleep 100
             this.CheckBalance()
         }
