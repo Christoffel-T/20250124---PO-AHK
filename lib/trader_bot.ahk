@@ -591,23 +591,24 @@ class TraderBot {
             this.amount := this.amt_prev[1]
         } else {
             overriden := 0
-            if amt2 := AmountOverride2() {
-                this.amount := amt2
-                overriden := 1
-            }
-            if amt1 := this.AmountOverride1(this.amt_prev[1]) {
-                this.amount := amt1
-                overriden := 1
-            }
             if (this.stats.streak_real <= -7) {
                 returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
                 this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
                 this.amount := returnValue
                 overriden := 1
-            }
-            if Round(this.amount, 2) = 283.93 {
-                this.amount /= 2
-                overriden := 1
+            } else {
+                if amt2 := AmountOverride2() {
+                    this.amount := amt2
+                    overriden := 1
+                }
+                if amt1 := this.AmountOverride1(this.amt_prev[1]) {
+                    this.amount := amt1
+                    overriden := 1
+                }
+                if Round(this.amount, 2) = 283.93 {
+                    this.amount /= 2
+                    overriden := 1
+                }
             }
         }
 
