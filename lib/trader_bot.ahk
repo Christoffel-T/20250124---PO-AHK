@@ -626,7 +626,8 @@ class TraderBot {
         }
 
         if (this.amount > 100 and overriden = 0) {
-            this.amount := [12, 24, 50, 120][this.hardcode_amt_override.idx]
+            amts := [1, 24, 50, 120]
+            this.amount := amts[Min(this.hardcode_amt_override.idx, amts.Length)]
             this.hardcode_amt_override.state := 1
         }
         if (this.hardcode_amt_override.state = 1) {
