@@ -590,7 +590,7 @@ class TraderBot {
         if (this.halving.state = 1 and this.stats.max_bal_diff <= 75) {
             this.halving.state := 0
         }
-        if (state = 1 and this.stats.streak_real <= -5) {
+        if (this.stats.streak_real <= -5) {
             this.halving.state := 1
         }
 
