@@ -590,6 +590,9 @@ class TraderBot {
         if (this.halving.state = 1 and this.stats.max_bal_diff <= 75) {
             this.halving.state := 0
         }
+        if (state = 1 and this.stats.streak_real <= -5) {
+            this.halving.state := 1
+        }
 
         if (trade_result = 0) {
             this.amount := this.amt_prev[1]
@@ -670,9 +673,6 @@ class TraderBot {
             }
             this.custom_amts_override2.idx++
             state := this.custom_amts_override2.state
-            if (state = 1 and this.custom_amts_override2.idx >= 5) {
-                this.halving.state := 1
-            }
             amts := [[11, 42, 40, 40, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100, 215, 1]]
             for v in amts {
                 if (A_Index = 1) {
