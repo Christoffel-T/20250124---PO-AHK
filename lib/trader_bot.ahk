@@ -756,14 +756,6 @@ class TraderBot {
                             qual.state1 := 1
                         }
                         return qual.amounts[-this.stats.streak]
-                    } else if qual.state1 = 1 {
-                        amts := Constants.GetAmounts2()
-                        if this.stats.streak = -3 {
-                            qual.idx[2]++
-                            return qual.amounts[-this.stats.streak]
-                        } else {
-                            return amts[-this.stats.streak][Min(qual.idx[2], amts[-this.stats.streak].Length)]
-                        }
                     }
                 } else {
                     amts := [qual.amounts[3]*2+2, qual.amounts[3]*2+2]
