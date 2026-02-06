@@ -756,6 +756,8 @@ class TraderBot {
                             qual.state1 := 1
                         }
                         return qual.amounts[-this.stats.streak]
+                    } else {
+                        return 1
                     }
                 } else {
                     amts := [qual.amounts[3]*2+2, qual.amounts[3]*2+2]
