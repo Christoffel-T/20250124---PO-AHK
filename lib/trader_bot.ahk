@@ -399,9 +399,9 @@ class TraderBot {
                     this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
                 }
                 if (returnValue = 0) {
-                    if _val := HelperWin1(1) {
-                        returnValue := _val
-                    }
+                    ; if _val := HelperWin1(1) {
+                    ;     returnValue := _val
+                    ; }
                     for k, v in this.switch_win_loss {
                         _ := HelperWinLossN(k)
                         if (v.state = 'active' and returnValue = 0) {
@@ -589,21 +589,21 @@ class TraderBot {
         if amt := this.AmountOverride(this.amt_prev[1])
             this.amount := amt
 
-        if (this.stats.streak < 0 and Round(this.amt_prev[1]) = 42) {
-            this.amount := 5
-        }
         inst := Helper0811_4Loss.Get()
-
-        if (inst.level >= 2 and this.stats.streak_real <= -3 and this.stats.streak_real >= -6) {
-            this.amount := 1
+        if (inst.level >= 2 and (this.amount = 1 or amt = 0)) {
+            if inst.streak < 0 {
+                amts_loss := [1.5, 1.85, 3.97, 8.39, 17.62, 36.88]
+                idx := -this.stats.streak_real
+                if (inst.streak - this.stats.streak_real = 3) {
+                    idx := -inst.streak
+                }
+                this.amount := amts_loss[Min(idx, amts_loss.Length)]
+            } else if inst.streak > 0 {
+                amts_wins := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87]
+                this.amount := amts_wins[Min(this.stats.streak_real, amts_wins.Length)]
+            }
         }
         
-        if (this.stats.max_bal_diff >= 70) {
-            this.reduce_bet_after_70.state := true
-        }
-        if (this.reduce_bet_after_70.state and inst.level < 2 and inst.streak != 1) {
-            this.amount := this.amount * 0.25
-        }
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
