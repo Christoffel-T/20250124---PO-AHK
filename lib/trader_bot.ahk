@@ -592,6 +592,10 @@ class TraderBot {
         if (this.stats.streak < 0 and Round(this.amt_prev[1]) = 42) {
             this.amount := 5
         }
+
+        if (this.stats.streak <= -3 and this.stats.streak >= -6) {
+            this.amount := 1
+        }
         
         ; if draw.ps and not win.ps {
         ;     this.amount := amt_prev
