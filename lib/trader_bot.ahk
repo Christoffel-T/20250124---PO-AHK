@@ -8,7 +8,6 @@ formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
 
-
 /*
 tester(tst) {
     static inst := {streak: 1, amt: 1, level: 3}
@@ -312,7 +311,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
-        this.stats.bal_win := 0
+        this.stats.bal_win := 10
         this.stats.max_bal_diff := 0
         this.stats.next_max_bal_diff := 0
         this.stats.streak_real := 0
@@ -351,7 +350,7 @@ class TraderBot {
             this.PERCENTAGES.Push(this.PERCENTAGES[-1] + 0.15)
         }
         this.CUSTOM_AMOUNTS1 := [1,1,1,1,1,1,2, 4.85, 11.38, 25.73, 58.67, 134.37, 311.03, 715.97, 1641.81]
-        this.CUSTOM_AMOUNTS_loss4_win4 := [1,1, 4, 20, 42, 88.2, 185.22, 388.97, 816.75]
+        this.CUSTOM_AMOUNTS_loss4_win4 := [1,1,1,1,1,1, 2, 4, 20, 42, 88.2, 185.22, 388.97, 816.75]
         this.CUSTOM_AMOUNTS2 := [1,1,1,1,1,1, 4.85, 11.38, 25.75, 5, 58.67, 6, 170, 7, 350, 7, 750]
 
         this.QualifiersReset()
@@ -363,7 +362,7 @@ class TraderBot {
         }
     }
 
-    AmountOverride1(amt_prev) {
+    AmountOverride(amt_prev) {
         CUSTOM_LOSS_STREAK_START := -5
         streak := this.stats.streak
         ; if streak <= -5 {
@@ -393,9 +392,12 @@ class TraderBot {
             if this.stats.max_bal_diff <= 0 {
                 Helper0811_4Loss.Reset()
             }
-
             if (inst.level >= 2) {
                 returnValue := 0
+                if (this.stats.streak_real <= -7) {
+                    returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
+                    this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
+                }
                 if (returnValue = 0) {
                     if _val := HelperWin1(1) {
                         returnValue := _val
@@ -475,11 +477,7 @@ class TraderBot {
                         this.switch_win_loss[n].stats.draws++
                     }
                     if (this.switch_win_loss[n].state = 'active') {
-                        amts := this.CUSTOM_AMOUNTS1
-                        if Abs(n) = 4 {
-                            amts := this.CUSTOM_AMOUNTS_loss4_win4
-                        }
-                        return_val := (amts[Min(this.switch_win_loss[n].idx2, amts.Length) or 1])
+                        return_val := (this.CUSTOM_AMOUNTS1[Min(this.switch_win_loss[n].idx2, this.CUSTOM_AMOUNTS1.Length) or 1])
                     }
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
@@ -513,9 +511,6 @@ class TraderBot {
                     }
                 }
                 if (not check_active and this.switch_win_loss[n].idx2 >= 7) {
-                    this.switch_win_loss[n].state := 'active'
-                }
-                if (not check_active and this.switch_win_loss[n].idx2 >= 3 and Abs(n) = 4) {
                     this.switch_win_loss[n].state := 'active'
                 }
                 return return_val
@@ -562,11 +557,14 @@ class TraderBot {
         this.trade_opened[1] := false
         this.CheckBalance()
         if this.balance.current > this.balance.last_trade + 0.5 {
-            trade_result := 1
+            win := {ps:true}
+            draw := {ps:true}
         } else if this.balance.current < this.balance.last_trade - 0.5 {
-            trade_result := -1
+            win := {ps:false}
+            draw := {ps:false}
         } else {
-            trade_result := 0
+            win := {ps:false}
+            draw := {ps:true}
         }
         this.balance.last_trade := this.balance.current 
 
@@ -578,112 +576,30 @@ class TraderBot {
         while this.amt_prev.Length >= 10 {
             this.amt_prev.Pop()
         }
-        if (trade_result = -1) {
+        amt_prev := this.amount
+        if not win.ps and not draw.ps {
             TradeLose()
-        } else if trade_result = 1 {
+        } else if win.ps {
             TradeWin()
-        } else if trade_result = 0 {
+        } else if draw.ps {
             TradeDraw()
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
-        if (this.halving.state = 1 and this.stats.max_bal_diff <= 75) {
-            this.halving.state := 0
-        }
-        if (this.stats.streak_real <= -5) {
-            this.halving.state := 1
-        }
+        if amt := this.AmountOverride(this.amt_prev[1])
+            this.amount := amt
 
-        if (trade_result = 0) {
-            this.amount := this.amt_prev[1]
-        } else {
-            overriden := 0
-            if (this.stats.streak_real <= -7) {
-                returnValue := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
-                this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
-                this.amount := returnValue
-                if (this.halving.state = 1) {
-                    this.amount /= 2
-                }
-                overriden := 1
-            } else {
-                if amt2 := AmountOverride2() {
-                    this.amount := amt2
-                    overriden := 1
-                    if (this.halving.state = 1) {
-                        this.amount /= 2
-                    }
-                }
-                if amt1 := this.AmountOverride1(this.amt_prev[1]) {
-                    this.amount := amt1
-                    overriden := 1
-                }
-                if Round(this.amount, 2) = 283.93 {
-                    this.amount /= 2
-                    overriden := 1
-                    if (this.halving.state = 1) {
-                        this.amount /= 2
-                    }
-                }
-            }
+        if (this.stats.streak < 0 and Round(this.amt_prev[1]) = 42) {
+            this.amount := 5
         }
-
-        if (this.amount > 100 and overriden = 0) {
-            amts := [1, 24, 50, 120]
-            this.amount := amts[Min(this.hardcode_amt_override.idx, amts.Length)]
-            this.hardcode_amt_override.state := 1
-        }
-        if (this.hardcode_amt_override.state = 1) {
-            if (trade_result = 1) {
-                this.hardcode_amt_override.idx := 1
-            } else if (trade_result = -1) {
-                this.hardcode_amt_override.idx++
-            }
-        }
-        inst := Helper0811_4Loss.Get()
-        if (inst.level = 2 and inst.streak >= -3 and this.stats.streak_real <= -4) {
-            amts := [1, 48.36, 48.36, 1]
-            idx := Abs(this.stats.streak_real) - 3
-            if (idx <= amts.Length) {
-                this.amount := amts[idx]
-            }
-        }
-
+        
+        ; if draw.ps and not win.ps {
+        ;     this.amount := amt_prev
+        ; }
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
 
-        AmountOverride2() {
-            inst := Helper0811_4Loss.Get()
-            if (this.stats.streak >= 0) {
-                this.custom_amts_override2.state := 0
-                this.custom_amts_override2.idx := 0
-                return 0
-            }
-            if (this.custom_amts_override2.state = 0) {
-                for v in [5, 12, 22.93, 26/2] {
-                    if (Round(this.amt_prev[1], 2) = Round(v, 2)) {
-                        this.custom_amts_override2.state := A_Index
-                        break
-                    }
-                }
-                if (this.custom_amts_override2.state = 0) {
-                    return 0
-                }
-            }
-            this.custom_amts_override2.idx++
-            state := this.custom_amts_override2.state
-            amts := [[11, 42, 40, 40, 1], [1, 24, 1, 50, 120, 1], [1, 47.86, 1, 96.85, 155.97, 1], [1, 50, 1, 100, 215, 1]]
-            for v in amts {
-                if (A_Index = 1) {
-                    continue
-                }
-                removed := v.RemoveAt(4)
-                v.InsertAt(4, removed/2, removed/2, 1)
-            }
-            return amts[state][Min(this.custom_amts_override2.idx, amts[state].Length)]
-        }
-        
         RankScenarios() {
             sortableArray := ''
             For key, value in this.stats.OwnProps() {
@@ -756,8 +672,14 @@ class TraderBot {
                             qual.state1 := 1
                         }
                         return qual.amounts[-this.stats.streak]
-                    } else {
-                        return 1
+                    } else if qual.state1 = 1 {
+                        amts := Constants.GetAmounts2()
+                        if this.stats.streak = -3 {
+                            qual.idx[2]++
+                            return qual.amounts[-this.stats.streak]
+                        } else {
+                            return amts[-this.stats.streak][Min(qual.idx[2], amts[-this.stats.streak].Length)]
+                        }
                     }
                 } else {
                     amts := [qual.amounts[3]*2+2, qual.amounts[3]*2+2]
@@ -1005,7 +927,6 @@ class TraderBot {
     MidNightReset() {
         for k, v in this.switch_win_loss {
             v.stats.longest_lose_streak := 0
-            v.max_idx3 := 0
         }
     }
 
@@ -1016,18 +937,6 @@ class TraderBot {
         this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
         this.custom_max_bet := 0
-        this.halving := {
-            state: 0, 
-            idx: 1
-        }
-        this.hardcode_amt_override := {
-            state: 0, 
-            idx: 1
-        }
-        this.custom_amts_override2 := {
-            state: 0,
-            idx: 1,
-        }
 
         for k, v in this.switch_win_loss {
             v.state := 0
@@ -1036,6 +945,7 @@ class TraderBot {
             v.idx := 1
             v.idx2 := 0
             v.idx3 := 0
+            v.max_idx3 := 0
             v.state2_pause := 0
             v.counter_win_not_4loss := 1
             if (not v.HasOwnProp('stats')) {
@@ -1140,7 +1050,7 @@ class TraderBot {
             sleep 600
             this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
             start_time := A_TickCount
-            while (!this.CheckTradeClosed(true) or A_TickCount - start_time <= 6500)
+            while !this.CheckTradeClosed(true) or A_TickCount - start_time <= 6500
                 sleep 100
             this.CheckBalance()
         }
@@ -1707,11 +1617,7 @@ class TraderBot {
         str_f := ''
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
-                amts := this.CUSTOM_AMOUNTS1
-                if Abs(k) = 4 {
-                    amts := this.CUSTOM_AMOUNTS_loss4_win4
-                }
-                _suffix2 := ' ' Format('{:.2f}', amts[Min(v.idx2, amts.Length) or 1]) ') ' str_d
+                _suffix2 := ' ' Format('{:.2f}', this.CUSTOM_AMOUNTS1[Min(v.idx2, this.CUSTOM_AMOUNTS1.Length) or 1]) ') ' str_d
                 if (k > 0) {
                     _prefix := 'SET win' k ' ON'
                 } else {
@@ -2148,8 +2054,8 @@ class TraderBot {
 class Constants {
     static GetAmounts1() => [22.93, 47.86, 20]
     static GetAmounts2() => Map(
-                                1, [5, 12, 26/2, 54/2, 110/2, 222/2, 446/2, 894],
-                                2, [11, 24, 50/2, 104/2, 210/2, 422/2, 846, 1694]
+                                1, [5, 12, 26, 54, 110, 222, 446, 894],
+                                2, [11, 24, 50, 104, 210, 422, 846, 1694]
                             )
     static GetAmounts3() => {1:4, 2:9, losses_ina_row:0}
     static GetAmounts4() => {state:0, 1:50, 2:100, losses_ina_row:{1:0, 2:0}}
