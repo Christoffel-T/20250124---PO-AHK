@@ -593,7 +593,7 @@ class TraderBot {
             this.amount := 5
         }
 
-        if (this.stats.streak <= -3 and this.stats.streak >= -6) {
+        if (this.stats.streak_real <= -3 and this.stats.streak_real >= -6) {
             this.amount := 1
         }
         
