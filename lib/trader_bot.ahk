@@ -311,7 +311,7 @@ class TraderBot {
         this.win_rate := ''
         this.debug_str := ''
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
-        this.stats.bal_win := 10
+        this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
         this.stats.next_max_bal_diff := 0
         this.stats.streak_real := 0
@@ -351,7 +351,7 @@ class TraderBot {
         }
         this.CUSTOM_AMOUNTS1 := [1,1,1,1,1,1,2, 4.85, 11.38, 25.73, 58.67, 134.37, 311.03, 715.97, 1641.81]
         this.CUSTOM_AMOUNTS_loss4_win4 := [1,1,1,1,1,1, 2, 4, 20, 42, 88.2, 185.22, 388.97, 816.75]
-        this.CUSTOM_AMOUNTS2 := [1,1,1,1,1,1, 4.85, 11.38, 25.75, 5, 58.67, 6, 170, 7, 350, 7, 750]
+        this.CUSTOM_AMOUNTS2 := [15, 35, 1]
 
         this.QualifiersReset()
         this.MidNightReset()
@@ -444,12 +444,12 @@ class TraderBot {
                 }
                 if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1] and this.switch_win_loss[n].state2_pause = 0) {
                     exception := false
-                    for v in [1,2,3,7,9,11,13] {
-                        if (this.switch_win_loss[n].idx3 = v+7) {
-                            exception := true
-                            break
-                        }
-                    }
+                    ; for v in [1,2,3,7,9,11,13] {
+                    ;     if (this.switch_win_loss[n].idx3 = v+7) {
+                    ;         exception := true
+                    ;         break
+                    ;     }
+                    ; }
                     if (exception) {
                         this.switch_win_loss[n].idx3++
                     } else {
