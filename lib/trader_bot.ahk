@@ -351,7 +351,7 @@ class TraderBot {
         }
         this.CUSTOM_AMOUNTS1 := [1,1,1,1,1,1,2, 4.85, 11.38, 25.73, 58.67, 134.37, 311.03, 715.97, 1641.81]
         this.CUSTOM_AMOUNTS_loss4_win4 := [1,1,1,1,1,1, 2, 4, 20, 42, 88.2, 185.22, 388.97, 816.75]
-        this.CUSTOM_AMOUNTS2 := [15, 35, 1]
+        this.CUSTOM_AMOUNTS2 := [15, 35, 15]
 
         this.QualifiersReset()
         this.MidNightReset()
@@ -2054,8 +2054,8 @@ class TraderBot {
 class Constants {
     static GetAmounts1() => [22.93, 47.86, 20]
     static GetAmounts2() => Map(
-                                1, [5, 12, 26, 54, 110, 222, 446, 894],
-                                2, [11, 24, 50, 104, 210, 422, 846, 1694]
+                                1, [5, 12, 26, 27, 55, 111, 446, 894],
+                                2, [11, 24, 50, 52, 210, 211, 846, 1694]
                             )
     static GetAmounts3() => {1:4, 2:9, losses_ina_row:0}
     static GetAmounts4() => {state:0, 1:50, 2:100, losses_ina_row:{1:0, 2:0}}
