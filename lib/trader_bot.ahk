@@ -601,7 +601,7 @@ class TraderBot {
         if (this.stats.max_bal_diff >= 70) {
             this.reduce_bet_after_70.state := true
         }
-        if (this.reduce_bet_after_70.state) {
+        if (this.reduce_bet_after_70.state and inst.level < 2 and inst.streak != 1) {
             this.amount := this.amount * 0.25
         }
         this.SetTradeAmount()
