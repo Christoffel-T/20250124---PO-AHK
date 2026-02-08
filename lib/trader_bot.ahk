@@ -431,12 +431,12 @@ class TraderBot {
                     return 0
                 }
                 this.switch_win_loss[n].state2_pause := 0
-                for k, v in this.switch_win_loss {
-                    if (v.idx2 >= 3) {
-                        this.switch_win_loss[n].state2_pause := 1
-                        break
-                    }
-                }
+                ; for k, v in this.switch_win_loss {
+                ;     if (v.idx2 >= 3) {
+                ;         this.switch_win_loss[n].state2_pause := 1
+                ;         break
+                ;     }
+                ; }
                 return_val := 0
 
                 if (inst.streak = n and this.switch_win_loss[n].state2_pause = 0) {
@@ -592,14 +592,18 @@ class TraderBot {
         if (this.stats.streak < 0 and Round(this.amt_prev[1]) = 42) {
             this.amount := 5
         }
+        inst := Helper0811_4Loss.Get()
 
-        if (this.stats.streak_real <= -3 and this.stats.streak_real >= -6) {
+        if (inst.level >= 2 and this.stats.streak_real <= -3 and this.stats.streak_real >= -6) {
             this.amount := 1
         }
         
-        ; if draw.ps and not win.ps {
-        ;     this.amount := amt_prev
-        ; }
+        if (this.stats.max_bal_diff >= 70) {
+            this.reduce_bet_after_70.state := true
+        }
+        if (this.reduce_bet_after_70.state) {
+            this.amount := this.amount * 0.25
+        }
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
@@ -869,7 +873,7 @@ class TraderBot {
             }
 
             sleep 300
-            this.amount := this.amount < 1 ? 1.25 : this.amount
+            this.amount := Max(this.amount, 1)
             this.amount := Min(this.amount, this.balance.current)
 
             if !WinActive(this.wtitle) {
@@ -941,6 +945,10 @@ class TraderBot {
         this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
         this.custom_max_bet := 0
+        this.reduce_bet_after_70 := {
+            state: false,
+            count: 0
+        }
 
         for k, v in this.switch_win_loss {
             v.state := 0
