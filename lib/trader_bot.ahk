@@ -362,20 +362,8 @@ class TraderBot {
         }
     }
 
-    AmountOverride(amt_prev) {
-        CUSTOM_LOSS_STREAK_START := -5
-        streak := this.stats.streak
-        ; if streak <= -5 {
-        ;     this.qualifiers.random_trade.state := false
-        ; }
-
-        if this.stats.max_bal_diff >= 100 {
-            this.amount_override.win2.state := 1
-        }
-        if this.stats.max_bal_diff <= 0 {
-            this.amount_override.win2.state := 0
-        }
-        
+    AmountOverride() {
+        streak := this.stats.streak        
         for helper in [_helper0811_4Loss] {
             if return_val := helper() {
                 return return_val
@@ -471,7 +459,7 @@ class TraderBot {
                     if not (inst.level = 2 and this.streak_prev[1] = -3)
                         this.switch_win_loss[n].state := 1
                 }
-                return_val := 1
+                return_val := 0
                 if (inst.streak = n) {
                     if (inst.streak = this.streak_prev[1]) {
                         this.switch_win_loss[n].stats.draws++
@@ -576,7 +564,6 @@ class TraderBot {
         while this.amt_prev.Length >= 10 {
             this.amt_prev.Pop()
         }
-        amt_prev := this.amount
         if not win.ps and not draw.ps {
             TradeLose()
         } else if win.ps {
@@ -586,21 +573,30 @@ class TraderBot {
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
-        if amt := this.AmountOverride(this.amt_prev[1])
+        if amt := this.AmountOverride()
             this.amount := amt
 
         inst := Helper0811_4Loss.Get()
         if (inst.level >= 2 and (this.amount = 1 or amt = 0)) {
             if inst.streak < 0 {
-                amts_loss := [1.5, 1.85, 3.97, 8.39, 17.62, 36.88]
+                amts_loss := [1]
                 idx := -this.stats.streak_real
                 if (inst.streak - this.stats.streak_real = 3) {
                     idx := -inst.streak
                 }
                 this.amount := amts_loss[Min(idx, amts_loss.Length)]
+                if (this.streak_prev[1] = 1) {
+                    this.win1_override.last_amt := this.amt_prev[1]
+                }
             } else if inst.streak > 0 {
-                amts_wins := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87]
+                amts_wins := [1.35, 1]
                 this.amount := amts_wins[Min(this.stats.streak_real, amts_wins.Length)]
+                if (this.stats.streak_real = 1) {
+                    this.amount := this.win1_override.last_amt = 0 ? 1.35 : (this.win1_override.last_amt + 4.35)/0.92
+                }
+                if (this.stats.streak_real = 2) {
+                    this.win1_override.last_amt := 0
+                }
             }
         }
         
@@ -945,9 +941,10 @@ class TraderBot {
         this.amount_override.helper4 := {state:0}
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
         this.custom_max_bet := 0
-        this.reduce_bet_after_70 := {
+        this.win1_override := {
             state: false,
-            count: 0
+            count: 0,
+            last_amt: 0
         }
 
         for k, v in this.switch_win_loss {
