@@ -560,13 +560,18 @@ class TraderBot {
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
         inst := Helper0811_4Loss.Get()
+        streak := this.stats.streak
         if (inst.level >= 2) {
             if (this.win1_override.state != 'pause' and this.streak_prev[1] = -1 and this.streak_prev[2] = 1 and this.streak_prev[3] = -1 and this.streak_prev[4] = 1) {
                 this.win1_override.state := 'pause'
                 this.win1_override.count := 0
             }
-            if (this.win1_override.state = 'pause' and inst.streak = 2 and this.streak_prev[1] != inst.streak) {
-                this.win1_override.count++
+            if (this.win1_override.state = 'pause') {
+                if (streak = 2 and streak != this.streak_prev[1]) {
+                    this.win1_override.count++
+                } else if (streak < 0 and this.streak_prev[1] = 1) {
+                    this.win1_override.count := 0
+                }
             }
             if this.win1_override.count >= 2 {
                 this.win1_override.state := 1
@@ -951,7 +956,7 @@ class TraderBot {
         this.stats.G_balance := {val: 0, state: false, count: 0, mark: 0}
         this.custom_max_bet := 0
         this.win1_override := {
-            state: false,
+            state: 0,
             count: 0,
             last_amt: 0
         }
