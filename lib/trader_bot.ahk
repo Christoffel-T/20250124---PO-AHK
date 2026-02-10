@@ -1631,7 +1631,7 @@ class TraderBot {
             str_d := 'S ' str_d
         }
         if (this.win1_override.state = 'pause') {
-            str_d := str_d ' intpause'
+            str_d := str_d ' intpause(' this.win1_override.count ')'
         }
 
         str_e := ''
