@@ -886,8 +886,8 @@ class TraderBot {
             sleep 50
             ClipWait(0.5)
             try {
-                _compare1 := Floor(RegExReplace(A_Clipboard, '[^\d.]'))
-                _compare2 := Floor(RegExReplace(this.amount, '[^\d.]'))
+                _compare1 := format('{:.2f}', RegExReplace(A_Clipboard, '[^\d.]'))
+                _compare2 := format('{:.2f}', RegExReplace(this.amount, '[^\d.]'))
                 if _compare1 != _compare2 {
                     tooltip(_compare1 ' != ' _compare2)
                     sleep 300
