@@ -559,13 +559,27 @@ class TraderBot {
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
-        this.win1_override.state := 1
+        inst := Helper0811_4Loss.Get()
+        if (inst.level >= 2) {
+            if (this.streak_prev[1] = -1 and this.streak_prev[2] = 1 and this.streak_prev[3] = -1 and this.streak_prev[4] = 1) {
+                this.win1_override.state := 'pause'
+                this.win1_override.count := 0
+            }
+            if (this.win1_override.state = 'pause' and this.streak_prev[1] != inst.streak) {
+                this.win1_override.count++
+            }
+            if this.win1_override.count >= 2 {
+                this.win1_override.state := 1
+            }
+        }
+
         if amt := this.AmountOverride() {
             this.amount := amt
             this.win1_override.state := 0
+        } else if (this.win1_override.state != 'pause') {
+            this.win1_override.state := 1
         }
 
-        inst := Helper0811_4Loss.Get()
         if (inst.level >= 2 and (this.amount = 1 or amt = 0)) {
             if inst.streak < 0 {
                 amts_loss := [1]
@@ -589,6 +603,10 @@ class TraderBot {
                     }
                 }
             }
+        }
+
+        if (this.win1_override.state = 'pause') {
+            this.amount := 1
         }
         
         this.SetTradeAmount()
@@ -1611,6 +1629,9 @@ class TraderBot {
         }
         if Helper_Skip(this.stats.streak, true) {
             str_d := 'S ' str_d
+        }
+        if (this.win1_override.state = 'pause') {
+            str_d := str_d ' intpause'
         }
 
         str_e := ''
