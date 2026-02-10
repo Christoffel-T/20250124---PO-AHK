@@ -561,11 +561,11 @@ class TraderBot {
 
         inst := Helper0811_4Loss.Get()
         if (inst.level >= 2) {
-            if (this.streak_prev[1] = -1 and this.streak_prev[2] = 1 and this.streak_prev[3] = -1 and this.streak_prev[4] = 1) {
+            if (this.win1_override.state != 'pause' and this.streak_prev[1] = -1 and this.streak_prev[2] = 1 and this.streak_prev[3] = -1 and this.streak_prev[4] = 1) {
                 this.win1_override.state := 'pause'
                 this.win1_override.count := 0
             }
-            if (this.win1_override.state = 'pause' and this.streak_prev[1] != inst.streak) {
+            if (this.win1_override.state = 'pause' and inst.streak = 2 and this.streak_prev[1] != inst.streak) {
                 this.win1_override.count++
             }
             if this.win1_override.count >= 2 {
