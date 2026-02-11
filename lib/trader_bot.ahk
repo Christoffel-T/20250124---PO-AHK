@@ -577,7 +577,7 @@ class TraderBot {
                 this.win1_override.state := 1
             }
         }
-
+        amt := 0
         if (this.win1_override.state != 'pause') {
             if amt := this.AmountOverride() {
                 this.amount := amt
