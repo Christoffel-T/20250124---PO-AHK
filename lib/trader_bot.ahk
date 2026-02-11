@@ -587,8 +587,9 @@ class TraderBot {
             }
         }
 
+        inst := Helper0811_4Loss.Get()
         if (inst.level >= 2 and (this.amount = 1 or amt = 0)) {
-            if inst.streak < 0 {
+            if this.stats.streak_real < 0 {
                 amts_loss := [1]
                 idx := -this.stats.streak_real
                 if (inst.streak - this.stats.streak_real = 3) {
@@ -598,7 +599,7 @@ class TraderBot {
                 if (this.win1_override.state = 1) {
                     this.win1_override.last_amt += this.amt_prev[1]
                 }
-            } else if inst.streak > 0 {
+            } else if this.stats.streak_real > 0 {
                 amts_wins := [1.35, 1]
                 this.amount := amts_wins[Min(this.stats.streak_real, amts_wins.Length)]
                 if (this.win1_override.state = 1) {
