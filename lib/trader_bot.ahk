@@ -436,7 +436,7 @@ class TraderBot {
                     this.amount := this.stats.max_bal_diff * this.tier1_override.multiplier
                     this.tier1_override.multiplier += 0.2
                 }
-                this.amount := this.amount + [0.05, 0.15, 0.40][-streak] * this.tier1_override.idx
+                this.amount := this.amount + [0.05, 0.15, 0.40][-this.stats.streak] * this.tier1_override.idx
             }
         }
 
