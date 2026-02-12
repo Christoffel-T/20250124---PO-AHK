@@ -423,7 +423,8 @@ class TraderBot {
             }
         }
 
-        if (inst.level = 1) {
+        if (inst.level >= 1) {
+            Helper0811_4Loss.SetLevel(1)
             if (streak = 1 and this.streak_prev[1] = -3) {
                 this.tier1_override.idx := 1
             } else if streak < 0 {
