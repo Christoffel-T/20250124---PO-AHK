@@ -429,6 +429,7 @@ class TraderBot {
             } else if streak < 0 {
                 if (this.streak_prev[1] = -3) {
                     this.tier1_override.idx++
+                    this.stats.streak := -1
                 }
                 if (streak = -3) {
                     this.amount := this.stats.max_bal_diff * this.tier1_override.multiplier
