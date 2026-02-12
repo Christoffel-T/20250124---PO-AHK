@@ -366,13 +366,14 @@ class TraderBot {
         inst := Helper0811_4Loss.Get()
         streak := this.stats.streak
         if (inst.level >= 2) {
+            Helper0811_4Loss.SetLevel(1)
             if this.streak_prev[1] = 1 and streak != this.streak_prev[1] {
                 Helper0811_4Loss.SetLevel(1)
-                if streak = 2 {
-                    this.tier1_override.idx := 1
-                } else if streak < 0 {
-                    this.tier1_override.idx++
-                }
+                ; if streak = 2 {
+                ;     this.tier1_override.idx := 1
+                ; } else if streak < 0 {
+                ;     this.tier1_override.idx++
+                ; }
             }
             if (this.win1_override.state != 'pause' and this.streak_prev[1] = -1 and this.streak_prev[2] = 1 and this.streak_prev[3] = -1 and this.streak_prev[4] = 1) {
                 ; this.win1_override.state := 'pause'
@@ -422,8 +423,19 @@ class TraderBot {
             }
         }
 
-        if (inst.level = 1 and streak < 0) {
-            this.amount := this.amount + [0.05, 0.15, 0.40][-streak] * this.tier1_override.idx
+        if (inst.level = 1) {
+            if (streak = 1 and this.streak_prev[1] = -3) {
+                this.tier1_override.idx := 1
+            } else if streak < 0 {
+                if (this.streak_prev[1] = -3) {
+                    this.tier1_override.idx++
+                }
+                if (streak = -3) {
+                    this.amount := this.stats.max_bal_diff * this.tier1_override.multiplier
+                    this.tier1_override.multiplier += 0.2
+                }
+                this.amount := this.amount + [0.05, 0.15, 0.40][-streak] * this.tier1_override.idx
+            }
         }
 
         if (this.win1_override.state = 'pause') {
@@ -529,7 +541,7 @@ class TraderBot {
                         if (this.switch_win_loss[n].state = 'active') {
                             this.switch_win_loss[n].state := 1
                         }
-                        Helper0811_4Loss.SetLevel(2)
+                        ; Helper0811_4Loss.SetLevel(2)
                         this.switch_win_loss[n].state := 1
                         this.switch_win_loss[n].idx2 := 0
                     }
@@ -977,7 +989,8 @@ class TraderBot {
             last_amt: 0
         }
         this.tier1_override := {
-            idx: 0
+            idx: 0,
+            multiplier: 0.3
         }
 
         for k, v in this.switch_win_loss {
