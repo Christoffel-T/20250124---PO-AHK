@@ -368,6 +368,7 @@ class TraderBot {
         this.AmountOverride2()
         
         if (streak = 1 and this.streak_prev[1] = -3) {
+            this.amount := 1
             this.tier1_override.idx := 1
             this.tier1_override.multiplier := 0.3
         } else if streak < 0 {
