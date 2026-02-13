@@ -394,6 +394,8 @@ class TraderBot {
             } else {
                 this.amount := 1
             }
+        } else {
+            this.amount := 1
         }
 
         if (this.stats.streak_real <= -7) {
