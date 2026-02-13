@@ -387,9 +387,12 @@ class TraderBot {
                 }
                 this.amount := amts[this.tier1_override.idx]
                 this.tier1_override.multiplier += 0.2
+            } else if (streak >= -2) {
+                amts := [1.35, 3.03]
+                this.amount := amts[-streak]
+                this.amount := this.amount + [0.05, 0.15][-streak] * (this.tier1_override.idx-1)
             } else {
-                this.amount := [1.35, 3.03][-streak]
-                this.amount := this.amount + [0.05, 0.15, 0.40][-streak] * this.tier1_override.idx
+                this.amount := 1
             }
         }
 
