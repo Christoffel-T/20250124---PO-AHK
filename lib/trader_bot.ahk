@@ -388,7 +388,8 @@ class TraderBot {
                 this.amount := amts[this.tier1_override.idx]
                 this.tier1_override.multiplier += 0.2
             } else {
-                this.amount := this.amount + [0.05, 0.15, 0.40][-this.stats.streak] * this.tier1_override.idx
+                this.amount := [1.35, 3.03][-streak]
+                this.amount := this.amount + [0.05, 0.15, 0.40][-streak] * this.tier1_override.idx
             }
         }
 
@@ -819,7 +820,7 @@ class TraderBot {
             last_amt: 0
         }
         this.tier1_override := {
-            idx: 0,
+            idx: 1,
             multiplier: 0.3
         }
 
