@@ -381,12 +381,12 @@ class TraderBot {
                 this.tier1_override.idx++
             }
             if (streak = -3) {
-                amts := [1,2,3]
+                amts := [2,3,5]
                 Loop 20 {
                     amts.Push(amts[-1]*2)
                 }
                 for v in amts {
-                    if A_Index < 6 {
+                    if v < 20 {
                         continue
                     }
                     amts[A_Index] := v/0.92
@@ -394,9 +394,9 @@ class TraderBot {
                 this.amount := amts[this.tier1_override.idx]
                 this.tier1_override.multiplier += 0.2
             } else if (streak >= -2) {
-                amts := [1.35, 3.03]
+                amts := [1.5, 5.5]
                 this.amount := amts[-streak]
-                this.amount := this.amount + [0.05, 0.15][-streak] * (this.tier1_override.idx-1)
+                this.amount := this.amount + [0.15, 0.50][-streak] * (this.tier1_override.idx-1)
             } else {
                 this.amount := 1
             }
