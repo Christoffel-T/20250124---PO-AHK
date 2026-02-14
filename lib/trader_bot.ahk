@@ -366,6 +366,11 @@ class TraderBot {
         inst := Helper0811_4Loss.Get()
         streak := this.stats.streak_real
         this.AmountOverride2()
+
+        if (streak = this.streak_prev[1]) {
+            this.amount := this.amt_prev[1]
+            return
+        }
         
         if (streak = 1 and this.streak_prev[1] = -3) {
             this.amount := 1
