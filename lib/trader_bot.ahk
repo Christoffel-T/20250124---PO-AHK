@@ -461,7 +461,7 @@ class TraderBot {
         }
         this.balance.last_trade := this.balance.current 
 
-        this.streak_prev.InsertAt(1, this.stats.streak)
+        this.streak_prev.InsertAt(1, this.stats.streak_real)
         while this.streak_prev.Length >= 10 {
             this.streak_prev.Pop()
         }
