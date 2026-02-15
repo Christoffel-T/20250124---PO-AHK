@@ -144,13 +144,13 @@ class Helper0811_4Loss {
             inst.idx_loss := 0
         }
 
-        ; if (inst.level = 1 and streak_prev_list[1] = -3 and streak != streak_prev_list[1]) {
+        if (inst.level = 1 and streak_prev_list[1] = -3 and streak != streak_prev_list[1]) {
             if (inst.streak < -4) {
                 inst.streak := -1
                 inst.level := 1
                 inst.wins := 0
             }
-        ; }
+        }
 
         if (streak_prev_list[1] = -4 and streak != streak_prev_list[1]) {
             if inst.streak < -4 {
@@ -168,6 +168,10 @@ class Helper0811_4Loss {
                 inst.level := Min(amts.Length, inst.level + 1)
                 inst.wins := 0
             }
+        }
+
+        if (inst.streak < -4) {
+            inst.streak := -1
         }
 
         if (inst.streak < 0)
