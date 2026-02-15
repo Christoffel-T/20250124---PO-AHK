@@ -394,9 +394,12 @@ class TraderBot {
                 this.amount := amts[this.tier1_override.idx]
                 this.tier1_override.multiplier += 0.2
             } else if (streak >= -2) {
-                amts := [1.5, 5.5]
+                amts := [1.5, 10]
                 this.amount := amts[-streak]
-                this.amount := this.amount + [0.15, 0.50][-streak] * (this.tier1_override.idx-1)
+                this.amount := this.amount + [1.5, 10][-streak] * (this.tier1_override.count_loss1)
+                if (streak = -1) {
+                    this.tier1_override.count_loss1++
+                }
             } else {
                 this.amount := 1
             }
@@ -832,6 +835,7 @@ class TraderBot {
         }
         this.tier1_override := {
             idx: 1,
+            count_loss1: 0,
             multiplier: 0.3
         }
 
