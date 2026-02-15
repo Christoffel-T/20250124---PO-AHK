@@ -145,7 +145,7 @@ class Helper0811_4Loss {
         }
 
         if (inst.level = 1 and streak_prev_list[1] = -3 and streak != streak_prev_list[1]) {
-            if (inst.streak = -4) {
+            if (inst.streak <= -4) {
                 inst.streak := -1
                 inst.level := 1
                 inst.wins := 0
