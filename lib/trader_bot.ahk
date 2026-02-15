@@ -397,7 +397,7 @@ class TraderBot {
                 amts := [1.5, 10]
                 this.amount := amts[-streak]
                 this.amount := this.amount + [1.5, 10][-streak] * (this.tier1_override.count_loss1)
-                if (streak = -1) {
+                if (this.streak_prev[1] = -1) {
                     this.tier1_override.count_loss1++
                 }
             } else {
