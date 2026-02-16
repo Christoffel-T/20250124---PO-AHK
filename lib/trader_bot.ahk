@@ -277,8 +277,8 @@ class TraderBot {
         this.ps := Map()
 
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
-        this.balance.starting := 1000
-        this.balance.reset_max := 1100
+        this.balance.starting := 1600
+        this.balance.reset_max := 1700
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
         
