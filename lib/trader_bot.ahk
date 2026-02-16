@@ -888,6 +888,7 @@ class TraderBot {
     MidNightReset() {
         for k, v in this.switch_win_loss {
             v.stats.longest_lose_streak := 0
+            v.max_idx3 := 0
         }
     }
 
@@ -916,7 +917,6 @@ class TraderBot {
             v.idx := 1
             v.idx2 := 0
             v.idx3 := 0
-            v.max_idx3 := 0
             v.state2_pause := 0
             v.counter_win_not_4loss := 1
             if (not v.HasOwnProp('stats')) {
