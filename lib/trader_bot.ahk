@@ -279,6 +279,13 @@ class TraderBot {
         this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance.starting := 2500
         this.balance.reset_max := 2600
+        this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
+        this.stats.bal_win := 12
+        this.stats.max_bal_diff := 0
+        this.stats.next_max_bal_diff := 0
+        this.stats.streak_real := 0
+        this.stats.max_streak_real := 0
+        
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
         
@@ -315,12 +322,6 @@ class TraderBot {
         this.countdown_close_str := ''
         this.win_rate := ''
         this.debug_str := ''
-        this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
-        this.stats.bal_win := 0
-        this.stats.max_bal_diff := 0
-        this.stats.next_max_bal_diff := 0
-        this.stats.streak_real := 0
-        this.stats.max_streak_real := 0
         this.candle_data := [{both_lines_touch: false, blue_line_y: [], color: '?', colors: [], colors_12: [], color_changes: ['?'], timeframe: Utils.get_timeframe(), moving_prices: [0]}]
         
         this.lose_streak := {max: 0, repeat: Map()}
