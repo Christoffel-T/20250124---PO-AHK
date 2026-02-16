@@ -147,7 +147,7 @@ class Helper0811_4Loss {
         if (inst.level = 1 and streak_prev_list[1] = -3 and streak != streak_prev_list[1]) {
             if (inst.streak < -4) {
                 inst.streak := -1
-                inst.level := 1
+                inst.level := 2
                 inst.wins := 0
             }
         }
@@ -353,8 +353,8 @@ class TraderBot {
         loop 30 {
             this.PERCENTAGES.Push(this.PERCENTAGES[-1] + 0.15)
         }
-        this.CUSTOM_AMOUNTS1 := [1,1,1,1,1,1,2, 4.85, 11.38, 25.73, 58.67, 134.37, 311.03, 715.97, 1641.81]
-        this.CUSTOM_AMOUNTS_loss4_win4 := [1,1,1,1,1,1, 2, 4, 20, 42, 88.2, 185.22, 388.97, 816.75]
+        this.CUSTOM_AMOUNTS1 := [1,1,1,1,1,1, 2, 5, 11, 27, 65, 135, 280, 580, 1075]
+        this.CUSTOM_AMOUNTS_loss4_win4 := [1,1, 11, 27, 65, 135, 280, 580]
         this.CUSTOM_AMOUNTS2 := [15, 35, 15]
 
         this.QualifiersReset()
@@ -375,48 +375,109 @@ class TraderBot {
             this.amount := this.amt_prev[1]
             return
         }
-        
-        if (streak = 1 and this.streak_prev[1] = -3) {
-            this.amount := 1
-            this.tier1_override.idx := 1
-            this.tier1_override.multiplier := 0.3
-        } else if streak < 0 {
-            if (this.streak_prev[1] = -3) {
-                this.tier1_override.idx++
-            }
-            if (streak = -3) {
-                amts := [2,3,5]
-                Loop 20 {
-                    amts.Push(amts[-1]*2)
-                }
-                for v in amts {
-                    if v < 20 {
-                        continue
-                    }
-                    amts[A_Index] := v/0.92
-                }
-                this.amount := amts[this.tier1_override.idx]
-                this.tier1_override.multiplier += 0.2
-            } else if (streak >= -2) {
-                amts := [1.5, 10]
-                this.amount := amts[-streak]
-                this.amount := this.amount + [1.5, 10][-streak] * (this.tier1_override.count_loss1)
-                if (this.streak_prev[1] = -1) {
-                    this.tier1_override.count_loss1++
-                    if (this.tier1_override.count_loss1 >= 3) {
-                        this.tier1_override.count_loss1 := 0
-                    }
-                }
-            } else {
-                this.amount := 1
-            }
-        } else {
-            this.amount := 1
+        returnValue := 0
+        if _val := HelperWin1(1) {
+            returnValue := _val
         }
-
+        for k, v in this.switch_win_loss {
+            _ := HelperWinLossN(k)
+            if (v.state = 'active' and returnValue = 0) {
+                returnValue := _
+            }
+        }
         if (this.stats.streak_real <= -7) {
             this.amount := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
             this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
+        }
+
+        HelperWinLossN(n) {
+            idx := Min(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
+            lose_streak := this.switch_win_loss[n].stats.lose_streak
+
+            if (this.switch_win_loss[n].state = 0 and inst.level >= 2) {
+                if not (inst.level = 2 and this.streak_prev[1] = -3)
+                    this.switch_win_loss[n].state := 1
+            }
+            return_val := 0
+            if (inst.streak = n) {
+                if (inst.streak = this.streak_prev[1]) {
+                    this.switch_win_loss[n].stats.draws++
+                }
+                if (this.switch_win_loss[n].state = 'active') {
+                    return_val := (this.CUSTOM_AMOUNTS1[Min(this.switch_win_loss[n].idx2, this.CUSTOM_AMOUNTS1.Length) or 1])
+                }
+            }
+            if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
+                if (this.switch_win_loss[n].state != 0) {
+                    if (this.switch_win_loss[n].state = 'active') {
+                        this.switch_win_loss[n].state := 1
+                    }
+                    Helper0811_4Loss.SetLevel(2)
+                    this.switch_win_loss[n].state := 1
+                    this.switch_win_loss[n].idx2 := 0
+                }
+                this.switch_win_loss[n].stats.lose_streak := 0
+                this.switch_win_loss[n].stats.wins_streak++
+                this.switch_win_loss[n].stats.wins++
+                this.switch_win_loss[n].idx := 1
+            }
+            if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
+                if (this.switch_win_loss[n].state != 0) {
+                    this.switch_win_loss[n].idx2++
+                }
+                this.switch_win_loss[n].stats.wins_streak := 0
+                this.switch_win_loss[n].stats.lose_streak++
+                this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].idx2, this.switch_win_loss[n].stats.longest_lose_streak)
+                this.switch_win_loss[n].idx++
+            }
+            check_active := false
+            for k, v in this.switch_win_loss {
+                if (v.state = 'active') {
+                    check_active := true
+                    break
+                }
+            }
+            if (not check_active) {
+                if (this.switch_win_loss[n].idx2 >= 7 or (Abs(n) = 4 and this.switch_win_loss[n].idx2 >= 3)) {
+                    this.switch_win_loss[n].state := 'active'
+                }
+            }
+            return return_val
+        }
+              
+        HelperWin1(n) {
+            if (inst.level < 2) {
+                return 0
+            }
+            this.switch_win_loss[n].state2_pause := 0
+            for k, v in this.switch_win_loss {
+                if (v.idx2 >= 3) {
+                    this.switch_win_loss[n].state2_pause := 1
+                    break
+                }
+            }
+
+            if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1] and this.switch_win_loss[n].state2_pause = 0) {
+                exception := false
+                for v in [1,2,3,7,9,11,13] {
+                    if (this.switch_win_loss[n].idx3 = v+7) {
+                        exception := true
+                        break
+                    }
+                }
+                if (exception) {
+                    this.switch_win_loss[n].idx3++
+                } else {
+                    this.switch_win_loss[n].idx3 := 0
+                }
+            }
+            if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1] and this.switch_win_loss[n].state2_pause = 0) {
+                this.switch_win_loss[n].idx3++
+            }
+            this.switch_win_loss[n].max_idx3 := max(this.switch_win_loss[n].idx3, this.switch_win_loss[n].max_idx3)
+            if (inst.streak = n and this.switch_win_loss[n].state2_pause = 0) {
+                return (this.CUSTOM_AMOUNTS2[Min(this.switch_win_loss[n].idx3+1, this.CUSTOM_AMOUNTS2.Length) or 1])
+            }
         }
     }
     
