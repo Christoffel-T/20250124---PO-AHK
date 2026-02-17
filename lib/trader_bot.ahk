@@ -811,7 +811,12 @@ class TraderBot {
                 _count_reload := 0
                 MsgBox('SetTradeAmount infinite loop detected...')
             }
-            this.CheckBalance()
+            real_demo_balance := this.CheckBalance()
+            if real_demo_balance >= 40000 {
+                this.balance.current := 50000
+                this.stats.bal_mark := 0
+                this.ResetDemoBalance()
+            }
             if this.balance.current < 1 and bal_mark {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
@@ -998,7 +1003,6 @@ class TraderBot {
         this.SetTradeAmount(false)
         this.CheckBalance()
         
-        MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
         ; MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
         ; sleep 100
         ; MouseClick('L', this.coords.cryptocurrencies.x + Random(-2, 2), this.coords.cryptocurrencies.y + Random(-2, 2), 1, 2)
@@ -1009,29 +1013,7 @@ class TraderBot {
         ; sleep 1000
         ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
         ; sleep 1000
-        MouseClick('L', this.coords.empty_area.x + Random(-2, 2), this.coords.empty_area.y, 1, 2)
-        sleep 300
-
-
-        while this.balance.current > this.balance.starting {
-            this.amount := 20000
-            this.SetTradeAmount(false)
-            sleep 200
-            MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,3,2)
-            sleep 600
-            this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
-            start_time := A_TickCount
-            while !this.CheckTradeClosed(true) or A_TickCount - start_time <= 6500
-                sleep 100
-            this.CheckBalance()
-        }
-        
-        this.CheckBalance()
-        while this.balance.current < this.balance.starting {
-            this.AddBalance(this.balance.starting-this.balance.current)
-            sleep 2000
-            this.CheckBalance()
-        }
+        this.ResetDemoBalance()
         
         this.amount := this.GetAmount(this.balance.current)
         this.SetTradeAmount()
@@ -1080,6 +1062,32 @@ class TraderBot {
         this.UpdateLog()
         sleep 100
     
+    }
+
+    ResetDemoBalance() {
+        MsgBox("WARNING! The script will zero your balance. Make sure you're using a demo!",, "0x30 T3")
+        MouseClick('L', this.coords.empty_area.x + Random(-2, 2), this.coords.empty_area.y, 1, 2)
+        sleep 300
+
+        while this.balance.current > this.balance.starting {
+            this.amount := 20000
+            this.SetTradeAmount(false)
+            sleep 200
+            MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,3,2)
+            sleep 600
+            this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
+            start_time := A_TickCount
+            while !this.CheckTradeClosed(true) or A_TickCount - start_time <= 6500
+                sleep 100
+            this.CheckBalance()
+        }
+        
+        this.CheckBalance()
+        while this.balance.current < this.balance.starting {
+            this.AddBalance(this.balance.starting-this.balance.current)
+            sleep 2000
+            this.CheckBalance()
+        }
     }
 
     CheckStuck() {
@@ -1954,6 +1962,10 @@ class TraderBot {
                     if RegExMatch(A_Clipboard, 'i)SIGN IN') {
                         ClickOnPage('SIGN IN')
                     }
+                    else {
+                        MsgBox('Unrecognized page. Reloading.',, 'T2')
+                        return 0
+                    }
                     tooltip('Error: No balance found`n' A_Clipboard)
                     sleep 80
                     Send('^f')
@@ -1975,10 +1987,8 @@ class TraderBot {
                     continue
                 }
                 ToolTip
-                cur_bal := StrReplace(match[], ',', '')
-                if cur_bal >= 500000 {
-                    MsgBox 'Balance too high.'
-                }
+                real_bal := StrReplace(match[], ',', '')
+                cur_bal := real_bal
                 cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
                 this.balance.current := cur_bal
                 this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
@@ -1986,7 +1996,7 @@ class TraderBot {
 
                 this.stats.max_bal_diff := this.balance.max - this.balance.current
                 this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
-                return 1
+                return real_bal
             }
         }
     }
