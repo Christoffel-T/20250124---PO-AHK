@@ -1964,7 +1964,7 @@ class TraderBot {
                     ClickOnPage('SIGN IN')
                     return 0
                 }
-                if !RegExMatch(A_Clipboard, 'QT Demo USD') {
+                if !RegExMatch(A_Clipboard, 'QT Demo') {
                     MsgBox('Not on demo website, reloading Demo version.',, 'T2')
                     return 0
                 }
