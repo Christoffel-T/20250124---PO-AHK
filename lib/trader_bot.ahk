@@ -1925,7 +1925,11 @@ class TraderBot {
     }
     
     CheckBalance() {
-        while !Helper() {
+        Loop {
+            returnValue := Helper()
+            if returnValue != 0 {
+                return returnValue
+            }
             this.ReloadWebsite()
         }
 
@@ -1962,8 +1966,7 @@ class TraderBot {
                 if !RegExMatch(A_Clipboard, 'USD') {
                     if RegExMatch(A_Clipboard, 'i)SIGN IN') {
                         ClickOnPage('SIGN IN')
-                    }
-                    else {
+                    } else {
                         MsgBox('Unrecognized page. Reloading.',, 'T2')
                         return 0
                     }
