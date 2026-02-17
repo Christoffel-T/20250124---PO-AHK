@@ -1928,7 +1928,9 @@ class TraderBot {
     
     CheckBalance() {
         Loop {
+            MsgBox('checking balance')
             returnValue := Helper()
+            MsgBox('checking balance done' returnValue)
             if returnValue != 0 {
                 return returnValue
             }
