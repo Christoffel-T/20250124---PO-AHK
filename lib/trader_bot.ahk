@@ -1014,9 +1014,7 @@ class TraderBot {
         ; sleep 1000
         ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
         ; sleep 1000
-        MsgBox 'test1'
         this.ResetDemoBalance()
-        MsgBox 'test2'
         
         this.amount := this.GetAmount(this.balance.current)
         this.SetTradeAmount()
@@ -1928,9 +1926,7 @@ class TraderBot {
     
     CheckBalance() {
         Loop {
-            MsgBox('checking balance')
             returnValue := Helper()
-            MsgBox('checking balance done' returnValue)
             if returnValue != 0 {
                 return returnValue
             }
