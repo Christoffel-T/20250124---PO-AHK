@@ -1968,6 +1968,7 @@ class TraderBot {
                     MsgBox('Not on demo website, reloading Demo version.',, 'T2')
                     return 0
                 }
+                MsgBox 'demo website ok'
                 if !RegExMatch(A_Clipboard, 'USD') {
                     tooltip('Error: No balance found`n' A_Clipboard)
                     sleep 80
@@ -1977,6 +1978,8 @@ class TraderBot {
                     sleep 50
                     continue
                 }
+                MsgBox 'usd ok'
+
                 if !RegExMatch(A_Clipboard, 'm)^\d{1,3}(,\d{3})*(\.\d{2})*$', &match) {
                     tooltip('Error: No balance found`n' A_Clipboard)
                     sleep 80
@@ -1986,6 +1989,7 @@ class TraderBot {
                     sleep 50
                     continue
                 }
+                MsgBox 'balaance ok'
                 ToolTip
                 real_bal := StrReplace(match[], ',', '')
                 cur_bal := real_bal
