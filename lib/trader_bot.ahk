@@ -812,20 +812,21 @@ class TraderBot {
                 MsgBox('SetTradeAmount infinite loop detected...')
             }
             real_demo_balance := this.CheckBalance()
-            if real_demo_balance >= 40000 {
-                this.balance.current := 50000
-                this.stats.bal_mark := 0
-                this.ResetDemoBalance()
-            }
             if this.balance.current < 1 and bal_mark {
                 this.stats.bal_lose++
                 this.AddBalance(this.balance.starting-this.balance.current)
                 BalanceReset()
                 continue
             } else if this.balance.current >= this.balance.reset_max and bal_mark {
+                if real_demo_balance >= 40000 {
+                    this.balance.current := 50000
+                    this.stats.bal_mark := 0
+                    this.ResetDemoBalance()
+                }
                 this.stats.bal_win++
-                this.stats.bal_mark += floor(this.balance.current/this.balance.starting)*this.balance.starting
-                this.AddBalance(Ceil(this.balance.current/this.balance.starting)*this.balance.starting - this.balance.current)
+                bal_mark_add := Floor(this.balance.current/100)*100
+                this.stats.bal_mark += bal_mark_add
+                this.AddBalance(bal_mark_add + this.balance.starting - this.balance.current)
                 BalanceReset()
                 continue
             }
