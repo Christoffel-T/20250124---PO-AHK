@@ -1928,6 +1928,8 @@ class TraderBot {
         Loop {
             returnValue := Helper()
             if returnValue != 0 {
+                if (returnValue = 'zero')
+                    return 0
                 return returnValue
             }
             this.ReloadWebsite()
@@ -1968,7 +1970,6 @@ class TraderBot {
                     MsgBox('Not on demo website, reloading Demo version.',, 'T2')
                     return 0
                 }
-                MsgBox 'demo website ok'
                 if !RegExMatch(A_Clipboard, 'USD') {
                     tooltip('Error: No balance found`n' A_Clipboard)
                     sleep 80
@@ -1978,8 +1979,6 @@ class TraderBot {
                     sleep 50
                     continue
                 }
-                MsgBox 'usd ok'
-
                 if !RegExMatch(A_Clipboard, 'm)^\d{1,3}(,\d{3})*(\.\d{2})*$', &match) {
                     tooltip('Error: No balance found`n' A_Clipboard)
                     sleep 80
@@ -1989,7 +1988,6 @@ class TraderBot {
                     sleep 50
                     continue
                 }
-                MsgBox 'balaance ok'
                 ToolTip
                 real_bal := StrReplace(match[], ',', '')
                 cur_bal := real_bal
@@ -2000,7 +1998,7 @@ class TraderBot {
 
                 this.stats.max_bal_diff := this.balance.max - this.balance.current
                 this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
-                return real_bal
+                return 'zero'
             }
         }
     }
