@@ -1963,17 +1963,16 @@ class TraderBot {
                     continue
                 }
                 sleep 100
-                if RegExMatch(A_Clipboard, 'QT Real') {
+                if RegExMatch(A_Clipboard, 'i)SIGN IN') {
+                    MsgBox('Signing in.',, 'T2')
+                    ClickOnPage('SIGN IN')
+                    return 0
+                }
+                if !RegExMatch(A_Clipboard, 'QT Demo USD') {
                     MsgBox('Not on demo website, reloading Demo version.',, 'T2')
                     return 0
                 }
                 if !RegExMatch(A_Clipboard, 'USD') {
-                    if RegExMatch(A_Clipboard, 'i)SIGN IN') {
-                        ClickOnPage('SIGN IN')
-                    } else {
-                        MsgBox('Unrecognized page. Reloading.',, 'T2')
-                        return 0
-                    }
                     tooltip('Error: No balance found`n' A_Clipboard)
                     sleep 80
                     Send('^f')
@@ -1983,9 +1982,6 @@ class TraderBot {
                     continue
                 }
                 if !RegExMatch(A_Clipboard, 'm)^\d{1,3}(,\d{3})*(\.\d{2})*$', &match) {
-                    if RegExMatch(A_Clipboard, 'i)SIGN IN') {
-                        ClickOnPage('SIGN IN')
-                    }
                     tooltip('Error: No balance found`n' A_Clipboard)
                     sleep 80
                     Send('^f')
