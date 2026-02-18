@@ -356,7 +356,7 @@ class TraderBot {
             this.PERCENTAGES.Push(this.PERCENTAGES[-1] + 0.15)
         }
         this.CUSTOM_AMOUNTS1 := [1,1,1,1,1,1, 2, 5, 11, 27, 65, 135, 280, 580, 1075]
-        this.CUSTOM_AMOUNTS_loss4_win4 := [1,1, 11, 27, 65, 135, 280, 580]
+        this.CUSTOM_AMOUNTS_loss4_win4 := [1,1, 11, 27, 65, 135, 280, 580, 1075]
         this.CUSTOM_AMOUNTS2 := [15, 35, 15]
 
         this.QualifiersReset()
