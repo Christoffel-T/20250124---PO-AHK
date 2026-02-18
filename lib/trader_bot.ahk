@@ -406,7 +406,8 @@ class TraderBot {
                     this.switch_win_loss[n].stats.draws++
                 }
                 if (this.switch_win_loss[n].state = 'active') {
-                    return_val := (this.CUSTOM_AMOUNTS1[Min(this.switch_win_loss[n].idx2, this.CUSTOM_AMOUNTS1.Length) or 1])
+                    cs_amts := Abs(n) = 4 ? this.CUSTOM_AMOUNTS_loss4_win4 : this.CUSTOM_AMOUNTS1
+                    return_val := (cs_amts[Min(this.switch_win_loss[n].idx2, cs_amts.Length) or 1])
                 }
             }
             if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
