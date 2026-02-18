@@ -387,6 +387,9 @@ class TraderBot {
                 returnValue := _
             }
         }
+        if returnValue {
+            this.amount := returnValue
+        }
         if (this.stats.streak_real <= -7) {
             this.amount := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
             this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
