@@ -280,7 +280,7 @@ class TraderBot {
         this.balance.starting := 3000
         this.balance.reset_max := 3100
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
-        this.stats.bal_win := 0
+        this.stats.bal_win := 15
         this.stats.max_bal_diff := 0
         this.stats.next_max_bal_diff := 0
         this.stats.streak_real := 0
