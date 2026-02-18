@@ -828,9 +828,9 @@ class TraderBot {
                     this.ResetDemoBalance()
                 }
                 this.stats.bal_win++
-                bal_mark_add := Floor(this.balance.current/100)*100
-                this.stats.bal_mark += bal_mark_add
-                this.AddBalance(bal_mark_add + this.balance.starting - this.balance.current)
+                bal_mark_add := Ceil(this.balance.current/100)*100
+                this.stats.bal_mark += Ceil((this.balance.current - this.balance.starting)/100)*100
+                this.AddBalance(bal_mark_add - this.balance.current)
                 BalanceReset()
                 continue
             }
