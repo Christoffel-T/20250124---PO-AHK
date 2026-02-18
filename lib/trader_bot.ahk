@@ -1604,7 +1604,8 @@ class TraderBot {
         str_f := ''
         for k, v in this.switch_win_loss {
             if (v.state = 'active') {
-                _suffix2 := ' ' Format('{:.2f}', this.CUSTOM_AMOUNTS1[Min(v.idx2, this.CUSTOM_AMOUNTS1.Length) or 1]) ') ' str_d
+                cs_amts := Abs(k) = 4 ? this.CUSTOM_AMOUNTS_loss4_win4 : this.CUSTOM_AMOUNTS1
+                _suffix2 := ' ' Format('{:.2f}', cs_amts[Min(v.idx2, cs_amts.Length) or 1]) ') ' str_d
                 if (k > 0) {
                     _prefix := 'SET win' k ' ON'
                 } else {
