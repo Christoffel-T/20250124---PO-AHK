@@ -280,7 +280,7 @@ class TraderBot {
         this.balance.starting := 5000
         this.balance.reset_max := 5100
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
-        this.stats.bal_win := 15
+        this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
         this.stats.next_max_bal_diff := 0
         this.stats.streak_real := 0
@@ -560,7 +560,14 @@ class TraderBot {
         }
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
-        this.AmountOverride1()        
+        this.AmountOverride1()
+        if (this.amount = 446) {
+            this.amount := 110
+        }
+        if (this.amount = 846) {
+            this.amount := 221
+        }
+            
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
