@@ -577,6 +577,7 @@ class TraderBot {
         if this.stats.max_bal_diff >= 750 {
             this.side_balance.val += 650
             this.balance.max -= 650
+            this.stats.max_bal_diff -= 650
         }
 
         RankScenarios() {
