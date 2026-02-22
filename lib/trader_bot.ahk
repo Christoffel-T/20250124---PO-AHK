@@ -541,7 +541,6 @@ class TraderBot {
             win := {ps:false}
             draw := {ps:true}
         }
-        this.balance.last_trade := this.balance.current 
 
         this.streak_prev.InsertAt(1, this.stats.streak_real)
         while this.streak_prev.Length >= 10 {
@@ -558,6 +557,9 @@ class TraderBot {
         } else if draw.ps {
             TradeDraw()
         }
+        this.side_balance.val += this.balance.current - this.balance.last_trade
+        this.balance.last_trade := this.balance.current 
+
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
 
         this.AmountOverride1()
@@ -2001,13 +2003,12 @@ class TraderBot {
                 cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
                 prev_bal := this.balance.current
                 this.balance.current := cur_bal
-                this.side_balance.val += this.balance.current - prev_bal
                 this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
                 this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
 
                 this.stats.max_bal_diff := this.balance.max - this.balance.current
                 this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
-                return 'zero'
+                return real_bal
             }
         }
     }
