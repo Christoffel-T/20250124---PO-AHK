@@ -1019,6 +1019,7 @@ class TraderBot {
         ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
         ; sleep 1000
         this.ResetDemoBalance()
+        this.side_balance.val := this.balance.current
         
         this.amount := this.GetAmount(this.balance.current)
         this.SetTradeAmount()
