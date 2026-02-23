@@ -394,6 +394,10 @@ class TraderBot {
             this.amount := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
             this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
         }
+        if (this.stats.streak_real >= 7) {
+            amts := [100, 80, 60, 40, 15, 1]
+            this.amount := amts[this.stats.streak_real - 6]
+        }
 
         HelperWinLossN(n) {
             idx := Min(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
@@ -568,6 +572,8 @@ class TraderBot {
         }
         if (this.amount = 846) {
             this.amount := 221
+        } else {
+            this.amount := Min(210, this.amount)
         }
             
         this.SetTradeAmount()
