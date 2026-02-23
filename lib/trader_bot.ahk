@@ -561,21 +561,23 @@ class TraderBot {
         } else if draw.ps {
             TradeDraw()
         }
-        this.balance.side += this.balance.current - this.balance.last_trade
-        this.balance.last_trade := this.balance.current 
-
+        
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
-
+        
         this.AmountOverride1()
-        if (this.amount = 446) {
-            this.amount := 110
+        if this.balance.side < 10000 {
+            this.balance.side += this.balance.current - this.balance.last_trade
+            if (this.amount = 446) {
+                this.amount := 110
+            }
+            if (this.amount = 846) {
+                this.amount := 221
+            } else {
+                this.amount := Min(210, this.amount)
+            }
         }
-        if (this.amount = 846) {
-            this.amount := 221
-        } else {
-            this.amount := Min(210, this.amount)
-        }
-            
+        
+        this.balance.last_trade := this.balance.current 
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
