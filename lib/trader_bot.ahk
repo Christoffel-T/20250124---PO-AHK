@@ -1936,7 +1936,7 @@ class TraderBot {
     CheckBalance() {
         Loop {
             returnValue := Helper()
-            if returnValue != 0 {
+            if returnValue != 'error' {
                 if (returnValue = 'zero')
                     return 0
                 return returnValue
@@ -1951,7 +1951,7 @@ class TraderBot {
                 _count_reload++
                 if _count_reload > 1000 {
                     _count_reload := 0
-                    return 0
+                    return 'error'
                 }
                 A_Clipboard := ''
                 if !WinActive(this.wtitle) {
@@ -1965,7 +1965,7 @@ class TraderBot {
                     ToolTip('Copy failed')
                     sleep 30
                     if A_Index > 20 {
-                        return 0
+                        return 'error'
                     }
                     continue
                 }
@@ -1973,11 +1973,11 @@ class TraderBot {
                 if RegExMatch(A_Clipboard, 'i)SIGN IN') {
                     MsgBox('Signing in.',, 'T2')
                     ClickOnPage('SIGN IN')
-                    return 0
+                    return 'error'
                 }
                 if !RegExMatch(A_Clipboard, 'QT Demo') {
                     MsgBox('Not on demo website, reloading Demo version.',, 'T2')
-                    return 0
+                    return 'error'
                 }
                 if !RegExMatch(A_Clipboard, 'USD') {
                     tooltip('Error: No balance found`n' A_Clipboard)
