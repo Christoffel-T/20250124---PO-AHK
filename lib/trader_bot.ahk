@@ -276,7 +276,7 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
 
-        this.balance := {current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {side: 0, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance.starting := 5000
         this.balance.reset_max := 5100
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
@@ -557,7 +557,7 @@ class TraderBot {
         } else if draw.ps {
             TradeDraw()
         }
-        this.side_balance.val += this.balance.current - this.balance.last_trade
+        this.balance.side += this.balance.current - this.balance.last_trade
         this.balance.last_trade := this.balance.current 
 
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
@@ -575,7 +575,7 @@ class TraderBot {
         RankScenarios()
 
         if this.stats.max_bal_diff >= 750 {
-            this.side_balance.val += 650
+            this.balance.side += 650
             this.balance.max -= 650
             this.stats.max_bal_diff -= 650
         }
@@ -910,7 +910,6 @@ class TraderBot {
         this.amount_override := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
         this.amount_override.helper3 := {state:0, amtWin1:7, amtLose1:8, countWin1:1, countLose1:1}
         this.amount_override.helper4 := {state:0}
-        this.side_balance := {val: 0, state: false, count: 0, mark: 0}
         this.custom_max_bet := 0
         this.win1_override := {
             state: 0,
@@ -1022,7 +1021,7 @@ class TraderBot {
         ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
         ; sleep 1000
         this.ResetDemoBalance()
-        this.side_balance.val := this.balance.current
+        this.balance.side := this.balance.current
         
         this.amount := this.GetAmount(this.balance.current)
         this.SetTradeAmount()
@@ -1643,7 +1642,7 @@ class TraderBot {
         if this.stats.streak = -1 or this.stats.streak = -2
             str_i := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_i
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
-        str_k := format('{:.2f}', this.side_balance.val)
+        str_k := format('{:.2f}', this.balance.side)
         str_o := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
         _count_reload := 0
         loop {
