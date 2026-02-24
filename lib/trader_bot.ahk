@@ -368,6 +368,33 @@ class TraderBot {
         }
     }
 
+    AmountOverride3() {
+        if this.balance.side < 10000 {
+            if (this.amount = 446) {
+                this.amount := 110
+            }
+            if (this.amount = 846) {
+                this.amount := 221
+            } else {
+                this.amount := Min(210, this.amount)
+            }
+            
+            streak := this.stats.streak_real
+            if (this.amt_prev[1] = 221 or this.amt_prev[1] = 210) {
+                if (streak < 0 and streak != this.streak_prev[1]) {
+                    this.qualifier_221_210.count++
+                }
+                if (streak > 0) {
+                    this.qualifier_221_210.count := 0
+                }
+            }
+
+            if (this.qualifier_221_210.count >= 2 and (this.amount = 221 or this.amount = 210)) {
+                this.amount += 75 * (this.qualifier_221_210.count-1)
+            }
+        }
+    }
+
     AmountOverride1() {
         inst := Helper0811_4Loss.Get()
         streak := this.stats.streak_real
@@ -554,16 +581,7 @@ class TraderBot {
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         
         this.AmountOverride1()
-        if this.balance.side < 10000 {
-            if (this.amount = 446) {
-                this.amount := 110
-            }
-            if (this.amount = 846) {
-                this.amount := 221
-            } else {
-                this.amount := Min(210, this.amount)
-            }
-        }
+        this.AmountOverride3()
         
         this.balance.last_trade := this.balance.current 
         this.SetTradeAmount()
@@ -897,6 +915,11 @@ class TraderBot {
 
     QualifiersReset() {
         Helper0811_4Loss.Reset()
+        this.qualifier_221_210 := {
+            state: 0,
+            count: 0,
+            last_amt: 0
+        }
         this.amount_override := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
         this.amount_override.helper3 := {state:0, amtWin1:7, amtLose1:8, countWin1:1, countLose1:1}
         this.amount_override.helper4 := {state:0}
@@ -1010,7 +1033,7 @@ class TraderBot {
         ; sleep 1000
         ; MouseClick('L', this.coords.coin_top.x*1.8 + Random(-2, 2), this.coords.coin_top.y + 1*28, 1, 2)
         ; sleep 1000
-        this.ResetDemoBalance()
+        ; this.ResetDemoBalance()
         this.balance.side := this.balance.current
         
         this.amount := this.GetAmount(this.balance.current)
@@ -1924,6 +1947,7 @@ class TraderBot {
     }
     
     CheckBalance() {
+        prev_bal := this.balance.current
         Loop {
             returnValue := Helper()
             if returnValue != 'error' {
@@ -1933,6 +1957,7 @@ class TraderBot {
             }
             this.ReloadWebsite()
         }
+        this.balance.side += this.balance.current - prev_bal
 
         Helper() {
             Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
@@ -1989,7 +2014,6 @@ class TraderBot {
                 }
                 ToolTip
                 real_bal := StrReplace(match[], ',', '')
-                this.balance.side := real_bal
                 cur_bal := real_bal
                 cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
                 prev_bal := this.balance.current
