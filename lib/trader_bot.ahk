@@ -1954,13 +1954,13 @@ class TraderBot {
         Loop {
             returnValue := Helper()
             if returnValue != 'error' {
+                this.balance.side += this.balance.current - prev_bal
                 if (returnValue = 'zero')
                     return 0
                 return returnValue
             }
             this.ReloadWebsite()
         }
-        this.balance.side += this.balance.current - prev_bal
 
         Helper() {
             Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
