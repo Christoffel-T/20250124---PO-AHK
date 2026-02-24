@@ -468,18 +468,7 @@ class TraderBot {
             }
 
             if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1] and this.switch_win_loss[n].state2_pause = 0) {
-                exception := false
-                for v in [1,2,3,7,9,11,13] {
-                    if (this.switch_win_loss[n].idx3 = v+7) {
-                        exception := true
-                        break
-                    }
-                }
-                if (exception) {
-                    this.switch_win_loss[n].idx3++
-                } else {
-                    this.switch_win_loss[n].idx3 := 0
-                }
+                this.switch_win_loss[n].idx3 := 0
             }
             if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1] and this.switch_win_loss[n].state2_pause = 0) {
                 this.switch_win_loss[n].idx3++
