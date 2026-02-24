@@ -566,7 +566,6 @@ class TraderBot {
         
         this.AmountOverride1()
         if this.balance.side < 10000 {
-            this.balance.side += this.balance.current - this.balance.last_trade
             if (this.amount = 446) {
                 this.amount := 110
             }
@@ -2001,6 +2000,7 @@ class TraderBot {
                 }
                 ToolTip
                 real_bal := StrReplace(match[], ',', '')
+                this.balance.side := real_bal
                 cur_bal := real_bal
                 cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
                 prev_bal := this.balance.current
