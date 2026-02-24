@@ -1642,11 +1642,13 @@ class TraderBot {
         str_f := RTrim(str_f, '|')
         if (this.stats.streak_real <= -7) {
             str_g := 'regular-ON: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
+            str_d := 'regular-ON | ' str_d
         } else {
             str_g := 'regular-OFF: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
         }
         if (this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
             str_h := 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
+            str_d := 'idx3(H)-ON | ' str_d
         } else {
             str_h := 'idx3-OFF: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
         }
