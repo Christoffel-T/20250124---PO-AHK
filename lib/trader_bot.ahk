@@ -829,6 +829,7 @@ class TraderBot {
             real_demo_balance := this.CheckBalance()
             if this.balance.current < 1 and bal_mark {
                 this.stats.bal_lose++
+                this.balance.side := this.balance.starting
                 this.AddBalance(this.balance.starting-this.balance.current)
                 BalanceReset()
                 continue
@@ -2032,6 +2033,7 @@ class TraderBot {
     }
 
     AddBalance(bal_amount) {
+        this.balance.current += bal_amount
         Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
         if bal_amount < 0 {
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
@@ -2059,7 +2061,6 @@ class TraderBot {
         MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
         this.balance.max := 0
         this.balance.min := 9**10
-        this.balance.current += bal_amount
         sleep 1000
         this.CheckBalance()
         return
