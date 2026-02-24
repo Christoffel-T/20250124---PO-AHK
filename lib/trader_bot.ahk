@@ -357,7 +357,7 @@ class TraderBot {
         }
         this.CUSTOM_AMOUNTS1 := [1,1,1,1,1,1, 2, 5, 11, 27, 65, 135, 280, 580, 1075]
         this.CUSTOM_AMOUNTS_loss4_win4 := [1,1, 11, 27, 65, 135, 280, 580, 1075]
-        this.CUSTOM_AMOUNTS2 := [15, 35, 15]
+        this.CUSTOM_AMOUNTS2 := [1,1,1,1,1,1, 15, 35, 15]
 
         this.QualifiersReset()
         this.MidNightReset()
@@ -502,7 +502,7 @@ class TraderBot {
             }
             this.switch_win_loss[n].max_idx3 := max(this.switch_win_loss[n].idx3, this.switch_win_loss[n].max_idx3)
             if (inst.streak = n and this.switch_win_loss[n].state2_pause = 0) {
-                return (this.CUSTOM_AMOUNTS2[Min(this.switch_win_loss[n].idx3+1, this.CUSTOM_AMOUNTS2.Length) or 1])
+                return (this.CUSTOM_AMOUNTS2[Min(this.switch_win_loss[n].idx3, this.CUSTOM_AMOUNTS2.Length) or 1])
             }
         }
     }
@@ -1647,7 +1647,7 @@ class TraderBot {
         } else {
             str_g := 'regular-OFF: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
         }
-        if (this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
+        if (this.switch_win_loss[1].idx3 >= 7 and this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
             str_h := 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
             str_d := 'idx3(H)-ON | ' str_d
         } else {
