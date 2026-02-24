@@ -280,7 +280,7 @@ class TraderBot {
         this.balance.starting := 5000
         this.balance.reset_max := 5100
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
-        this.stats.bal_win := 39
+        this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
         this.stats.next_max_bal_diff := 0
         this.stats.streak_real := 0
@@ -1036,7 +1036,6 @@ class TraderBot {
         ; sleep 1000
         this.ResetDemoBalance()
         this.balance.side := this.balance.current
-        this.balance.side := 8500
         
         this.amount := this.GetAmount(this.balance.current)
         this.SetTradeAmount()
