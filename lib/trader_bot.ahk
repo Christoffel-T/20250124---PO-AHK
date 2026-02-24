@@ -1642,7 +1642,7 @@ class TraderBot {
         str_f := RTrim(str_f, '|')
         if (this.stats.streak_real <= -7) {
             str_g := 'regular-ON: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
-            str_d := 'regular-ON | ' str_d
+            str_d := 'regular-ON(G) | ' str_d
         } else {
             str_g := 'regular-OFF: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
         }
