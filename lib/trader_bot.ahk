@@ -829,7 +829,6 @@ class TraderBot {
             real_demo_balance := this.CheckBalance()
             if this.balance.current < 1 and bal_mark {
                 this.stats.bal_lose++
-                this.balance.side := this.balance.starting
                 this.AddBalance(this.balance.starting-this.balance.current)
                 BalanceReset()
                 continue
