@@ -1636,6 +1636,9 @@ class TraderBot {
         if (this.win1_override.state = 'pause') {
             str_d := str_d ' intpause(' this.win1_override.count ')'
         }
+        if (this.qualifier_221_210.state = 1) {
+            str_d := '221/210 ON | ' str_d
+        }
 
         str_e := ''
         str_f := ''
