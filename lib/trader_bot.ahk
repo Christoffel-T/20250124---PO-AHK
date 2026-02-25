@@ -379,9 +379,10 @@ class TraderBot {
                 this.amount := Min(210, this.amount)
             }
 
-            for v in [110, 111] {
+            for v in [110, 111, 55] {
                 if (this.amount = v) {
                     this.amount := 5
+                    break
                 }
             }
 
@@ -396,15 +397,15 @@ class TraderBot {
             }
             
             if (this.amt_prev[1] = 221 or this.amt_prev[1] = 210) {
-                if (streak < 0 and streak != this.streak_prev[1]) {
-                    this.qualifier_221_210.count++
-                }
-                if (streak > 0) {
-                    this.qualifier_221_210.count := 0
-                }
+                this.qualifier_221_210.count++
+                ; if (streak < 0 and streak != this.streak_prev[1]) {
+                ; }
+                ; if (streak > 0) {
+                ;     this.qualifier_221_210.count := 0
+                ; }
             }
 
-            if (this.qualifier_221_210.count >= 2 and (this.amount = 221 or this.amount = 210)) {
+            if (this.qualifier_221_210.count >= 1 and (this.amount = 221 or this.amount = 210)) {
                 this.qualifier_221_210.state := 1
                 if (this.qualifier_221_210.last_amt = 0) {
                     this.qualifier_221_210.last_amt := this.amount + 75                    
