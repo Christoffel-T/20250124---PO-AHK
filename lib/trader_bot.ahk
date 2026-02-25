@@ -378,8 +378,17 @@ class TraderBot {
             } else {
                 this.amount := Min(210, this.amount)
             }
-            
+
             streak := this.stats.streak_real
+            if (this.qualifier_221_210.state = 1 and streak != this.streak_prev[1]) {
+                this.qualifier_221_210.state := 0
+                if (streak < 0) {
+                    this.qualifier_221_210.last_amt += 75
+                } else if (streak > 0) {
+                    this.qualifier_221_210.last_amt *= 0.5
+                }
+            }
+            
             if (this.amt_prev[1] = 221 or this.amt_prev[1] = 210) {
                 if (streak < 0 and streak != this.streak_prev[1]) {
                     this.qualifier_221_210.count++
@@ -390,7 +399,11 @@ class TraderBot {
             }
 
             if (this.qualifier_221_210.count >= 2 and (this.amount = 221 or this.amount = 210)) {
-                this.amount += 75 * (this.qualifier_221_210.count-1)
+                this.qualifier_221_210.state := 1
+                if (this.qualifier_221_210.last_amt = 0) {
+                    this.qualifier_221_210.last_amt := this.amount + 75                    
+                }
+                this.amount := this.qualifier_221_210.last_amt
             }
         }
     }
