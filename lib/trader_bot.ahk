@@ -2019,7 +2019,6 @@ class TraderBot {
                 real_bal := StrReplace(match[], ',', '')
                 cur_bal := real_bal
                 cur_bal := Format('{:.2f}', cur_bal - (this.stats.bal_mark))
-                prev_bal := this.balance.current
                 this.balance.current := cur_bal
                 this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
                 this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
@@ -2032,7 +2031,7 @@ class TraderBot {
     }
 
     AddBalance(bal_amount) {
-        this.balance.current += bal_amount
+        this.balance.current := this.balance.starting
         Send '{LCtrl up}{RCtrl up}{LShift up}{RShift up}{Alt up}{LWin up}{RWin up}'
         if bal_amount < 0 {
             MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
