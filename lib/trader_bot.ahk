@@ -379,6 +379,12 @@ class TraderBot {
                 this.amount := Min(210, this.amount)
             }
 
+            for v in [110, 111] {
+                if (this.amount = v) {
+                    this.amount := 5
+                }
+            }
+
             streak := this.stats.streak_real
             if (this.qualifier_221_210.state = 1 and streak != this.streak_prev[1]) {
                 this.qualifier_221_210.state := 0
