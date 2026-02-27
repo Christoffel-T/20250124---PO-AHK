@@ -2090,7 +2090,7 @@ class TraderBot {
 class Constants {
     static GetAmounts1() => [22.93, 47.86, 20]
     static GetAmounts2() => Map(
-                                1, [5, 12, 26, 27, 55, 111, 446, 894],
+                                1, [5, 12, 26, 27, 5], ; 55, 111, 446, 894
                                 2, [11, 24, 50, 52, 210, 211, 846, 1694]
                             )
     static GetAmounts3() => {1:4, 2:9, losses_ina_row:0}
