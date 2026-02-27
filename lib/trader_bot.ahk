@@ -7,7 +7,6 @@ modTime := FileGetTime(scriptPath, "M")
 formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
-
 /*
 tester(tst) {
     static inst := {streak: 1, amt: 1, level: 3}
@@ -368,9 +367,35 @@ class TraderBot {
         }
     }
 
+    AmountOverride5() {
+        if (this.stats.streak = -1) {
+            this.amount := 5
+        } else if (this.stats.streak != -2) {
+            this.amount := 1
+        }
+
+        if (this.qualifier_210.state = 1 and this.stats.streak != this.streak_prev[1]) {
+            if (this.stats.streak > 0) {
+                this.qualifier_210.count_wins++
+                this.amount := 210/(2**this.qualifier_210.count_wins)
+            } else {
+                this.qualifier_210.state := 0
+                this.qualifier_210.count_wins := 0
+            }
+        }
+        
+        if (this.stats.streak = 1 and this.streak_prev[1] = -1) {
+            this.amount := 210
+            this.qualifier_210.state := 1
+            this.qualifier_210.count_wins := 0
+        }
+
+    }
+
     AmountOverride4() {
         qual := this.qualifiers.loss_amount_modifier
         if this.stats.streak < 0 {
+            this.qualifier_210.count_wins := 0
             if this.stats.streak >= -3 {
                 if qual.state1 = 0 {
                     if this.stats.streak = -3 {
@@ -393,7 +418,7 @@ class TraderBot {
                             this.qualifier_210.state := 1
                         }
                         if (this.stats.streak = -2 and qual.idx[2] = Constants.GetAmounts2()[2].Length - 1) {
-                            return amts[-this.stats.streak][Min(qual.idx[2], amts[-this.stats.streak].Length)]/this.qualifier_210.count
+                            return amts[-this.stats.streak][Min(qual.idx[2], amts[-this.stats.streak].Length)]/(2**this.qualifier_210.count_wins)
                         }
                         return amts[-this.stats.streak][Min(qual.idx[2], amts[-this.stats.streak].Length)]
                     }
@@ -411,11 +436,8 @@ class TraderBot {
             if this.streak_prev[1] = -1 or this.streak_prev[1] = -2 {
                 if qual.state_2ndloss[-this.streak_prev[1]] < 2
                     qual.state_2ndloss[-this.streak_prev[1]] := 0
-                if (qual.idx[2] = Constants.GetAmounts2()[2].Length - 1) {
-                    this.qualifier_210.count *= 2
-                }
-                if (qual.idx[2] >= Constants.GetAmounts2()[2].Length) {
-                    this.qualifier_210.count := 1
+                if (this.qualifier_210.state = 1) {
+                    this.qualifier_210.count_wins++
                 }
                 if this.streak_prev[1] = -2 and qual.state1 = 1 {
                     qual.idx[2] := Max(qual.idx[2]-1, 1)
@@ -468,15 +490,15 @@ class TraderBot {
             }
             
             if (this.amt_prev[1] = 221 or this.amt_prev[1] = 210) {
-                this.qualifier_210.count++
+                this.qualifier_210.count_wins++
                 ; if (streak < 0 and streak != this.streak_prev[1]) {
                 ; }
                 ; if (streak > 0) {
-                ;     this.qualifier_210.count := 0
+                ;     this.qualifier_210.count_wins := 0
                 ; }
             }
 
-            if (this.qualifier_210.count >= 1 and (this.amount = 221 or this.amount = 210)) {
+            if (this.qualifier_210.count_wins >= 1 and (this.amount = 221 or this.amount = 210)) {
                 this.qualifier_210.state := 1
                 if (this.qualifier_210.last_amt = 0) {
                     this.qualifier_210.last_amt := this.amount + 75                    
@@ -493,7 +515,7 @@ class TraderBot {
 
         if (streak = this.streak_prev[1]) {
             this.amount := this.amt_prev[1]
-            return
+            return 0
         }
         returnValue := 0
         if _val := HelperWin1(1) {
@@ -672,7 +694,16 @@ class TraderBot {
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         this.amount := this.AmountOverride4()
         this.AmountOverride1()
-        ; this.AmountOverride3()
+        check_active := false
+        for k, v in this.switch_win_loss {
+            if (v.state = 'active') {
+                check_active := true
+                break
+            }
+        }
+        if (not check_active) {
+            this.AmountOverride5()
+        }
         
         this.balance.last_trade := this.balance.current 
         this.SetTradeAmount()
@@ -949,7 +980,7 @@ class TraderBot {
         Helper0811_4Loss.Reset()
         this.qualifier_210 := {
             state: 0,
-            count: 1,
+            count_wins: 0,
             last_amt: 0
         }
         this.amount_override := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
