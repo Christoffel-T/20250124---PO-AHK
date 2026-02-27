@@ -412,7 +412,7 @@ class TraderBot {
                 if qual.state_2ndloss[-this.streak_prev[1]] < 2
                     qual.state_2ndloss[-this.streak_prev[1]] := 0
                 if (qual.idx[2] = Constants.GetAmounts2()[2].Length - 1) {
-                    this.qualifier_210.count++
+                    this.qualifier_210.count *= 2
                 }
                 if (qual.idx[2] >= Constants.GetAmounts2()[2].Length) {
                     this.qualifier_210.count := 1
