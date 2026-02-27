@@ -436,6 +436,7 @@ class TraderBot {
                 this.qualifiers.loss_amount_modifier.amount_2 := (0.10*(this.stats.max_bal_diff)) / 0.92
             }
         }
+        return this.amount
     }
 
     AmountOverride3() {
