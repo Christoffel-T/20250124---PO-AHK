@@ -368,6 +368,12 @@ class TraderBot {
         }
     }
 
+    AmountOverride4() {
+        if (this.stats.streak = -1) {
+            this.amount := 5
+        }
+    }
+
     AmountOverride3() {
         if this.balance.side < 10000 {
             if (this.amount = 446) {
@@ -602,6 +608,7 @@ class TraderBot {
         
         this.AmountOverride1()
         this.AmountOverride3()
+        this.AmountOverride4()
         
         this.balance.last_trade := this.balance.current 
         this.SetTradeAmount()
