@@ -425,10 +425,10 @@ class TraderBot {
         inst := Helper0811_4Loss.Get()
         streak := this.stats.streak_real
         this.AmountOverride2()
-
+        overriden := 0
         if (streak = this.streak_prev[1]) {
             this.amount := this.amt_prev[1]
-            return
+            return overriden
         }
         returnValue := 0
         if _val := HelperWin1(1) {
@@ -442,15 +442,20 @@ class TraderBot {
         }
         if returnValue {
             this.amount := returnValue
+            overriden := 1
         }
         if (this.stats.streak_real <= -7) {
             this.amount := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
+            overriden := 1
             this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
         }
         if (this.stats.streak_real >= 7) {
             amts := [100, 80, 60, 40, 15, 1]
             this.amount := amts[this.stats.streak_real - 6]
+            overriden := 1
         }
+
+        return overriden
 
         HelperWinLossN(n) {
             idx := Min(this.switch_win_loss[n].idx, this.switch_win_loss[n].amts.Length)
@@ -606,8 +611,11 @@ class TraderBot {
         
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         
-        this.AmountOverride1()
-        this.AmountOverride3()
+        if (not this.AmountOverride1()) {
+            if (this.stats.streak = -2 or this.streak_prev[1] = -2) {
+                this.AmountOverride3()
+            }
+        }
         this.AmountOverride4()
         
         this.balance.last_trade := this.balance.current 
