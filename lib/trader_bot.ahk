@@ -387,7 +387,7 @@ class TraderBot {
                 }
             }
             
-            if (this.qualifiers.loss_amount_modifier.idx >= 5 and streak = -3 and streak != this.streak_prev[1]) {
+            if (this.qualifiers.loss_amount_modifier.idx[2] >= 5 and streak = -3 and streak != this.streak_prev[1]) {
                 this.qualifier_221_210.count++
             }
 
