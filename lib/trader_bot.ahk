@@ -375,47 +375,29 @@ class TraderBot {
     }
 
     AmountOverride3() {
-        if this.balance.side < 10000 {
-            if (this.amount = 446) {
-                this.amount := 110
-            }
-            if (this.amount = 846) {
-                this.amount := 221
-            } else {
-                this.amount := Min(210, this.amount)
-            }
-
-            for v in [110, 111, 55] {
-                if (this.amount = v) {
-                    this.amount := 5
-                    break
-                }
-            }
-
+        if (this.stats.streak = -2 or this.streak_prev[1] = -2) {
+        ; if this.balance.side < 10000 {
             streak := this.stats.streak_real
             if (this.qualifier_221_210.state = 1 and streak != this.streak_prev[1]) {
                 this.qualifier_221_210.state := 0
                 if (streak < 0) {
-                    this.qualifier_221_210.last_amt += 75
+                    this.qualifier_221_210.last_amt += 30
                 } else if (streak > 0) {
                     this.qualifier_221_210.last_amt *= 0.5
                 }
             }
             
-            if (this.amt_prev[1] = 221 or this.amt_prev[1] = 210) {
+            if (this.qualifiers.loss_amount_modifier.idx >= 5 and streak = -3 and streak != this.streak_prev[1]) {
                 this.qualifier_221_210.count++
-                ; if (streak < 0 and streak != this.streak_prev[1]) {
-                ; }
-                ; if (streak > 0) {
-                ;     this.qualifier_221_210.count := 0
-                ; }
             }
 
-            if (this.qualifier_221_210.count >= 1 and (this.amount = 221 or this.amount = 210)) {
+            if (this.qualifier_221_210.count >= 1) {
                 this.qualifier_221_210.state := 1
                 if (this.qualifier_221_210.last_amt = 0) {
-                    this.qualifier_221_210.last_amt := this.amount + 75                    
+                    this.qualifier_221_210.last_amt := 30
                 }
+            }
+            if (streak = -2) {
                 this.amount := this.qualifier_221_210.last_amt
             }
         }
@@ -612,9 +594,7 @@ class TraderBot {
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         
         if (not this.AmountOverride1()) {
-            if (this.stats.streak = -2 or this.streak_prev[1] = -2) {
-                this.AmountOverride3()
-            }
+            this.AmountOverride3()
         }
         this.AmountOverride4()
         
@@ -2107,7 +2087,7 @@ class Constants {
     static GetAmounts1() => [22.93, 47.86, 20]
     static GetAmounts2() => Map(
                                 1, [5, 12, 26, 27, 55, 111, 446, 894],
-                                2, [11, 24, 50, 52, 210, 211, 846, 1694]
+                                2, [11, 24, 50, 52, 30]
                             )
     static GetAmounts3() => {1:4, 2:9, losses_ina_row:0}
     static GetAmounts4() => {state:0, 1:50, 2:100, losses_ina_row:{1:0, 2:0}}
