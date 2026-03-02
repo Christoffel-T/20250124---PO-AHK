@@ -396,34 +396,9 @@ class TraderBot {
             if (this.qualifier_221_210.state = 1 and streak != this.streak_prev[1]) {
                 this.qualifier_221_210.state := 0
                 if (streak < 0) {
-                    if (this.qualifier_221_210.streak > 0) {
-                        this.qualifier_221_210.streak := 0
-                    }
-                    this.qualifier_221_210.streak--
-                    val := 75
-                    if (this.qualifier_221_210.streak <= -2) {
-                        val := 37.5
-                        if (this.qualifier_221_210.marked_max_diff = 0) {
-                            this.qualifier_221_210.marked_max_diff := this.stats.max_bal_diff
-                        }
-                    }
-                    this.qualifier_221_210.last_amt += val
+                    this.qualifier_221_210.last_amt += 75
                 } else if (streak > 0) {
-                    if (this.qualifier_221_210.streak <= -2) {
-                        val := 0.15
-                        if (this.stats.max_bal_diff >= 250 + this.qualifier_221_210.marked_max_diff) {
-                            this.qualifier_221_210.marked_max_diff := 0
-                            this.qualifier_221_210.streak := 0
-                            val := 0.5
-                        }
-                    } else {
-                        if (this.qualifier_221_210.streak < 0) {
-                            this.qualifier_221_210.streak := 0
-                        }
-                        this.qualifier_221_210.streak++
-                        val := 0.5
-                    }
-                    this.qualifier_221_210.last_amt *= val
+                    this.qualifier_221_210.last_amt *= 0.5
                 }
             }
             
@@ -976,8 +951,6 @@ class TraderBot {
     QualifiersReset() {
         Helper0811_4Loss.Reset()
         this.qualifier_221_210 := {
-            marked_max_diff: 0,
-            streak: 0,
             state: 0,
             count: 0,
             last_amt: 0
@@ -2055,7 +2028,6 @@ class TraderBot {
                 if RegExMatch(A_Clipboard, 'i)SIGN IN') {
                     MsgBox('Signing in.',, 'T2')
                     ClickOnPage('SIGN IN')
-                    sleep 7000
                     return 'error'
                 }
                 if !RegExMatch(A_Clipboard, 'QT Demo') {
