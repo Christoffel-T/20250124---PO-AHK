@@ -2028,6 +2028,7 @@ class TraderBot {
                 if RegExMatch(A_Clipboard, 'i)SIGN IN') {
                     MsgBox('Signing in.',, 'T2')
                     ClickOnPage('SIGN IN')
+                    sleep 7000
                     return 'error'
                 }
                 if !RegExMatch(A_Clipboard, 'QT Demo') {
