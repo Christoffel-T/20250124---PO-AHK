@@ -906,7 +906,7 @@ class TraderBot {
             A_Clipboard := ''
             Send('{Tab}^f')
             sleep 80
-            Send('USD{enter}{Escape}')
+            Send('USD{enter}+{enter}{Escape}')
             sleep 50
             MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
             return
@@ -2023,7 +2023,7 @@ class TraderBot {
                     sleep 80
                     Send('^f')
                     sleep 80
-                    Send('USD{enter}{Escape}')
+                    Send('USD{enter}+{enter}{Escape}')
                     sleep 50
                     continue
                 }
@@ -2032,7 +2032,7 @@ class TraderBot {
                     sleep 80
                     Send('^f')
                     sleep 80
-                    Send('USD{enter}{Escape}')
+                    Send('USD{enter}+{enter}{Escape}')
                     sleep 50
                     continue
                 }
