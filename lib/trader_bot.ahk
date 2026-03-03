@@ -390,6 +390,20 @@ class TraderBot {
                 this.qualifier_221_210.last_amt *= 0.5
             }
         }
+        
+        if (streak != this.streak_prev[1]) {
+            if (streak = -4) {
+                this.qualifier_221_210.override1 := 1
+                this.qualifier_221_210.last_amt := 3.75
+            }
+            if (streak = -3) {
+                this.qualifier_221_210.override2++
+                if (this.qualifier_221_210.override2 >= 2) {
+                    this.qualifier_221_210.last_amt := 3.75
+                    this.qualifier_221_210.override2--
+                }
+            }
+        }
     }
 
     AmountOverride1() {
@@ -477,7 +491,9 @@ class TraderBot {
                 }
             }
             if (not check_active) {
-                if (this.switch_win_loss[n].idx2 >= 7 or (Abs(n) = 4 and this.switch_win_loss[n].idx2 >= 3)) {
+                if (this.switch_win_loss[2].idx2 >= 12) {
+                    this.switch_win_loss[n].state := 'active'
+                } else if (this.switch_win_loss[n].idx2 >= 7 or (Abs(n) = 4 and this.switch_win_loss[n].idx2 >= 3)) {
                     this.switch_win_loss[n].state := 'active'
                 }
             }
@@ -923,6 +939,8 @@ class TraderBot {
     QualifiersReset() {
         Helper0811_4Loss.Reset()
         this.qualifier_221_210 := {
+            override1: 0,
+            override2: 0,
             state: 0,
             count: 0,
             last_amt: 0
