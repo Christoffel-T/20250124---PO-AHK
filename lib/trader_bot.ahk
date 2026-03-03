@@ -104,6 +104,8 @@ ClickOnPage(text, press_enter:=true, tabs:=0) {
     sleep default_delay2
     SendEvent('{Enter}{Escape}')
     sleep default_delay1
+    SendEvent('{Home}')
+    sleep default_delay1
     if press_enter {
         SendEvent('{Enter}')
         sleep default_delay1
@@ -907,6 +909,8 @@ class TraderBot {
             Send('{Tab}^f')
             sleep 80
             Send('USD{enter}+{enter}{Escape}')
+            sleep 50
+            SendEvent('{Home}')
             sleep 50
             MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
             return
@@ -2036,6 +2040,8 @@ class TraderBot {
                     sleep 50
                     continue
                 }
+                SendEvent('{Home}')
+                sleep 50
                 ToolTip
                 real_bal := StrReplace(match[], ',', '')
                 cur_bal := real_bal
