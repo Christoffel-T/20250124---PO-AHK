@@ -799,6 +799,7 @@ class TraderBot {
                 this.ReloadWebsite()
                 this.SetTradeAmount(false)
             }
+            SendEvent('{Home}')
             ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
             MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
             sleep 100
@@ -1940,6 +1941,8 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
         sleep 100
         Send('{Escape 2}')
+        sleep 100
+        SendEvent('{Home}')
 
         return
     }
