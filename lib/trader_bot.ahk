@@ -378,6 +378,14 @@ class TraderBot {
 
     AmountOverride3() {
         streak := this.stats.streak_real
+        if (this.qualifier_221_210.override1 = 1) {
+            for v in [-4,-5,-6] {
+                if (streak = v) {
+                    this.amount := 1
+                    break
+                }
+            }
+        }
         if (streak = -2) {
             if (this.qualifier_221_210.last_amt = 0) {
                 this.qualifier_221_210.last_amt := 30
@@ -385,9 +393,22 @@ class TraderBot {
             this.amount := this.qualifier_221_210.last_amt
         } else if (this.streak_prev[1] = -2) {
             if (streak = -3) {
-                this.qualifier_221_210.last_amt += 30
+                if (this.qualifier_221_210.override1 = 1) {
+                    this.qualifier_221_210.override1_count++
+                    additions := [5]
+                    loop 50 {
+                        additions.Push(additions[-1]+15)
+                    }
+                    this.qualifier_221_210.last_amt += additions[this.qualifier_221_210.override1_count]
+                } else {
+                    this.qualifier_221_210.last_amt += 30
+                }
             } else if (streak = 1) {
-                this.qualifier_221_210.last_amt *= 0.5
+                if (this.qualifier_221_210.override1 = 1) {
+                    this.qualifier_221_210.last_amt *= 1.5
+                } else {
+                    this.qualifier_221_210.last_amt *= 0.5
+                }
             }
         }
         
@@ -399,6 +420,7 @@ class TraderBot {
             if (streak = -3) {
                 this.qualifier_221_210.override2++
                 if (this.qualifier_221_210.override2 >= 2) {
+                    this.qualifier_221_210.override1 := 1
                     this.qualifier_221_210.last_amt := 3.75
                     this.qualifier_221_210.override2--
                 }
@@ -940,6 +962,7 @@ class TraderBot {
         Helper0811_4Loss.Reset()
         this.qualifier_221_210 := {
             override1: 0,
+            override1_count: 0,
             override2: 0,
             state: 0,
             count: 0,
