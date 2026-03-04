@@ -402,9 +402,9 @@ class TraderBot {
                 this.amount := 110
             }
             if (this.amount = 846) {
-                this.amount := 221
+                this.amount := 161
             } else {
-                this.amount := Min(210, this.amount)
+                this.amount := Min(150, this.amount)
             }
 
             for v in [110, 111, 55] {
@@ -424,7 +424,7 @@ class TraderBot {
                 }
             }
             
-            if (this.amt_prev[1] = 221 or this.amt_prev[1] = 210) {
+            if (this.amt_prev[1] = 161 or this.amt_prev[1] = 150) {
                 this.qualifier_221_210.count++
                 ; if (streak < 0 and streak != this.streak_prev[1]) {
                 ; }
@@ -433,7 +433,7 @@ class TraderBot {
                 ; }
             }
 
-            if (this.qualifier_221_210.count >= 1 and (this.amount = 221 or this.amount = 210)) {
+            if (this.qualifier_221_210.count >= 1 and (this.amount = 161 or this.amount = 150) or this.stats.max_bal_diff >= 150) {
                 this.qualifier_221_210.state := 1
                 if (this.qualifier_221_210.last_amt = 0) {
                     this.qualifier_221_210.last_amt := this.amount + 75                    
@@ -1680,7 +1680,7 @@ class TraderBot {
             str_d := str_d ' intpause(' this.win1_override.count ')'
         }
         if (this.qualifier_221_210.state = 1) {
-            str_d := '221/210 ON | ' str_d
+            str_d := '150/161 ON | ' str_d
         }
 
         str_e := ''
