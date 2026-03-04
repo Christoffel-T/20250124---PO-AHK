@@ -104,8 +104,6 @@ ClickOnPage(text, press_enter:=true, tabs:=0) {
     sleep default_delay2
     SendEvent('{Enter}{Escape}')
     sleep default_delay1
-    SendEvent('{Home}')
-    sleep default_delay1
     if press_enter {
         SendEvent('{Enter}')
         sleep default_delay1
@@ -377,53 +375,48 @@ class TraderBot {
     }
 
     AmountOverride3() {
-        streak := this.stats.streak_real
-        if (this.qualifier_221_210.override1 = 1) {
-            for v in [-4,-5,-6] {
-                if (streak = v) {
-                    this.amount := 1
+        if this.balance.side < 10000 {
+            if (this.amount = 446) {
+                this.amount := 110
+            }
+            if (this.amount = 846) {
+                this.amount := 221
+            } else {
+                this.amount := Min(210, this.amount)
+            }
+
+            for v in [110, 111, 55] {
+                if (this.amount = v) {
+                    this.amount := 5
                     break
                 }
             }
-        }
-        if (streak = -2) {
-            if (this.qualifier_221_210.last_amt = 0) {
-                this.qualifier_221_210.last_amt := 30
-            }
-            this.amount := this.qualifier_221_210.last_amt
-        } else if (this.streak_prev[1] = -2) {
-            if (streak = -3) {
-                if (this.qualifier_221_210.override1 = 1) {
-                    this.qualifier_221_210.override1_count++
-                    additions := [5]
-                    loop 50 {
-                        additions.Push(additions[-1]+15)
-                    }
-                    this.qualifier_221_210.last_amt += additions[this.qualifier_221_210.override1_count]
-                } else {
-                    this.qualifier_221_210.last_amt += 30
-                }
-            } else if (streak = 1) {
-                if (this.qualifier_221_210.override1 = 1) {
-                    this.qualifier_221_210.last_amt *= 1.5
-                } else {
+
+            streak := this.stats.streak_real
+            if (this.qualifier_221_210.state = 1 and streak != this.streak_prev[1]) {
+                this.qualifier_221_210.state := 0
+                if (streak < 0) {
+                    this.qualifier_221_210.last_amt += 75
+                } else if (streak > 0) {
                     this.qualifier_221_210.last_amt *= 0.5
                 }
             }
-        }
-        
-        if (streak != this.streak_prev[1]) {
-            if (streak = -4) {
-                this.qualifier_221_210.override1 := 1
-                this.qualifier_221_210.last_amt := 3.75
+            
+            if (this.amt_prev[1] = 221 or this.amt_prev[1] = 210) {
+                this.qualifier_221_210.count++
+                ; if (streak < 0 and streak != this.streak_prev[1]) {
+                ; }
+                ; if (streak > 0) {
+                ;     this.qualifier_221_210.count := 0
+                ; }
             }
-            if (streak = -3) {
-                this.qualifier_221_210.override2++
-                if (this.qualifier_221_210.override2 >= 2) {
-                    this.qualifier_221_210.override1 := 1
-                    this.qualifier_221_210.last_amt := 3.75
-                    this.qualifier_221_210.override2--
+
+            if (this.qualifier_221_210.count >= 1 and (this.amount = 221 or this.amount = 210)) {
+                this.qualifier_221_210.state := 1
+                if (this.qualifier_221_210.last_amt = 0) {
+                    this.qualifier_221_210.last_amt := this.amount + 75                    
                 }
+                this.amount := this.qualifier_221_210.last_amt
             }
         }
     }
@@ -513,9 +506,7 @@ class TraderBot {
                 }
             }
             if (not check_active) {
-                if (this.switch_win_loss[2].idx2 >= 12) {
-                    this.switch_win_loss[n].state := 'active'
-                } else if (this.switch_win_loss[n].idx2 >= 7 or (Abs(n) = 4 and this.switch_win_loss[n].idx2 >= 3)) {
+                if (this.switch_win_loss[n].idx2 >= 7 or (Abs(n) = 4 and this.switch_win_loss[n].idx2 >= 3)) {
                     this.switch_win_loss[n].state := 'active'
                 }
             }
@@ -621,7 +612,9 @@ class TraderBot {
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         
         if (not this.AmountOverride1()) {
-            this.AmountOverride3()
+            if (this.stats.streak = -2 or this.streak_prev[1] = -2) {
+                this.AmountOverride3()
+            }
         }
         this.AmountOverride4()
         
@@ -826,7 +819,6 @@ class TraderBot {
                 this.ReloadWebsite()
                 this.SetTradeAmount(false)
             }
-            SendEvent('{Home}')
             ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
             MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
             sleep 100
@@ -933,9 +925,7 @@ class TraderBot {
             A_Clipboard := ''
             Send('{Tab}^f')
             sleep 80
-            Send('USD{enter}+{enter}{Escape}')
-            sleep 50
-            SendEvent('{Home}')
+            Send('USD{enter}{Escape}')
             sleep 50
             MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
             return
@@ -961,9 +951,6 @@ class TraderBot {
     QualifiersReset() {
         Helper0811_4Loss.Reset()
         this.qualifier_221_210 := {
-            override1: 0,
-            override1_count: 0,
-            override2: 0,
             state: 0,
             count: 0,
             last_amt: 0
@@ -1973,8 +1960,6 @@ class TraderBot {
         MouseClick('L', this.coords.empty_area.x, this.coords.empty_area.y, 1, 2)
         sleep 100
         Send('{Escape 2}')
-        sleep 100
-        SendEvent('{Home}')
 
         return
     }
@@ -2055,7 +2040,7 @@ class TraderBot {
                     sleep 80
                     Send('^f')
                     sleep 80
-                    Send('USD{enter}+{enter}{Escape}')
+                    Send('USD{enter}{Escape}')
                     sleep 50
                     continue
                 }
@@ -2064,12 +2049,10 @@ class TraderBot {
                     sleep 80
                     Send('^f')
                     sleep 80
-                    Send('USD{enter}+{enter}{Escape}')
+                    Send('USD{enter}{Escape}')
                     sleep 50
                     continue
                 }
-                SendEvent('{Home}')
-                sleep 50
                 ToolTip
                 real_bal := StrReplace(match[], ',', '')
                 cur_bal := real_bal
@@ -2124,7 +2107,7 @@ class Constants {
     static GetAmounts1() => [22.93, 47.86, 20]
     static GetAmounts2() => Map(
                                 1, [5, 12, 26, 27, 55, 111, 446, 894],
-                                2, [11, 24, 50, 52, 30]
+                                2, [11, 24, 50, 52, 210, 211, 846, 1694]
                             )
     static GetAmounts3() => {1:4, 2:9, losses_ina_row:0}
     static GetAmounts4() => {state:0, 1:50, 2:100, losses_ina_row:{1:0, 2:0}}
