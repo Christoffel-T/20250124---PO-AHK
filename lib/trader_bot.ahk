@@ -378,7 +378,7 @@ class TraderBot {
         if (streak = -6 and streak != this.streak_prev[1]) {
             this.loss5_seq.state := 1
         }
-        if (this.loss5_seq.state = 1 and streak <= -3) {
+        if (this.loss5_seq.state = 1 and streak <= -2) {
             this.amount := 1
         }
         if (streak = 1) {
@@ -389,6 +389,7 @@ class TraderBot {
             }
             if (this.loss5_seq.win_after_2 = 1 and this.loss5_seq.win_after_3 = 1) {
                 this.loss5_seq.state := 0
+                this.qualifier_221_210.last_amt *= 0.5
                 this.loss5_seq.win_after_2 := 0
                 this.loss5_seq.win_after_3 := 0
             }
@@ -632,13 +633,13 @@ class TraderBot {
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         
         if (not this.AmountOverride1()) {
-            if (this.stats.streak_real = -2 or this.streak_prev[1] = -2) {
+            if (this.loss5_seq.state != 1 and (this.stats.streak_real = -2 or this.streak_prev[1] = -2)) {
                 this.AmountOverride3()
             }
         }
         this.AmountOverride4()
         
-        this.balance.last_trade := this.balance.current 
+        this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
