@@ -577,7 +577,6 @@ class TraderBot {
             if this.stats.max_bal_diff <= 0 {
                 Helper0811_4Loss.Reset()
             }
-                        
             return 0
         }
     }
@@ -633,7 +632,7 @@ class TraderBot {
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         
         if (not this.AmountOverride1()) {
-            if (this.stats.streak = -2 or this.streak_prev[1] = -2) {
+            if (this.stats.streak_real = -2 or this.streak_prev[1] = -2) {
                 this.AmountOverride3()
             }
         }
