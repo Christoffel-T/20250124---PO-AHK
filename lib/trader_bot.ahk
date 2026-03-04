@@ -371,8 +371,27 @@ class TraderBot {
     }
 
     AmountOverride4() {
-        if (this.stats.streak = -1) {
+        streak := this.stats.streak
+        if (streak = -1) {
             this.amount := 5
+        }
+        if (streak = -6 and streak != this.streak_prev[1]) {
+            this.loss5_seq.state := 1
+        }
+        if (this.loss5_seq.state = 1 and streak <= -3) {
+            this.amount := 1
+        }
+        if (streak = 1) {
+            if this.streak_prev[1] = -2 {
+                this.loss5_seq.win_after_2 := 1
+            } else if this.streak_prev[1] = -3 {
+                this.loss5_seq.win_after_3 := 1
+            }
+            if (this.loss5_seq.win_after_2 = 1 and this.loss5_seq.win_after_3 = 1) {
+                this.loss5_seq.state := 0
+                this.loss5_seq.win_after_2 := 0
+                this.loss5_seq.win_after_3 := 0
+            }
         }
     }
 
@@ -957,6 +976,12 @@ class TraderBot {
             state: 0,
             count: 0,
             last_amt: 0
+        }
+        this.loss5_seq := {
+            state: 0,
+            win_after_2: 0,
+            win_after_3: 0,
+            count: 0,
         }
         this.amount_override := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
         this.amount_override.helper3 := {state:0, amtWin1:7, amtLose1:8, countWin1:1, countLose1:1}
