@@ -104,6 +104,8 @@ ClickOnPage(text, press_enter:=true, tabs:=0) {
     sleep default_delay2
     SendEvent('{Enter}{Escape}')
     sleep default_delay1
+    SendEvent('{Home}')
+    sleep default_delay1
     if press_enter {
         SendEvent('{Enter}')
         sleep default_delay1
@@ -819,6 +821,7 @@ class TraderBot {
                 this.ReloadWebsite()
                 this.SetTradeAmount(false)
             }
+            SendEvent('{Home}')
             ToolTip('CHANGING COIN... ' A_Index, 500, 5, 12)
             MouseClick('L', this.coords.coin.x + Random(-2, 2), this.coords.coin.y + Random(-2, 2), 1, 2)
             sleep 100
@@ -925,7 +928,7 @@ class TraderBot {
             A_Clipboard := ''
             Send('{Tab}^f')
             sleep 80
-            Send('USD{enter}{Escape}')
+            Send('USD{enter}+{enter}{Escape}')
             sleep 50
             MouseMove(Random(-20, 20), Random(-20, 20), 4, 'R')
             return
@@ -2040,7 +2043,7 @@ class TraderBot {
                     sleep 80
                     Send('^f')
                     sleep 80
-                    Send('USD{enter}{Escape}')
+                    Send('USD{enter}+{enter}{Escape}')
                     sleep 50
                     continue
                 }
@@ -2049,7 +2052,7 @@ class TraderBot {
                     sleep 80
                     Send('^f')
                     sleep 80
-                    Send('USD{enter}{Escape}')
+                    Send('USD{enter}+{enter}{Escape}')
                     sleep 50
                     continue
                 }
