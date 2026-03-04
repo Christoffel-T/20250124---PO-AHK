@@ -415,7 +415,7 @@ class TraderBot {
             }
 
             streak := this.stats.streak_real
-            if (this.qualifier_221_210.state = 1 and streak != this.streak_prev[1]) {
+            if (this.qualifier_221_210.state = 1 and streak != this.streak_prev[1] and this.streak_prev[1] = -2) {
                 this.qualifier_221_210.state := 0
                 if (streak < 0) {
                     this.qualifier_221_210.last_amt += 75
@@ -433,12 +433,14 @@ class TraderBot {
                 ; }
             }
 
-            if (this.qualifier_221_210.count >= 1 and (this.amount = 161 or this.amount = 150) or this.stats.max_bal_diff >= 150) {
+            if (this.qualifier_221_210.count >= 1 and this.qualifiers.loss_amount_modifier.idx[2] >= 5 or this.stats.max_bal_diff >= 150) {
                 this.qualifier_221_210.state := 1
                 if (this.qualifier_221_210.last_amt = 0) {
                     this.qualifier_221_210.last_amt := this.amount + 75                    
                 }
-                this.amount := this.qualifier_221_210.last_amt
+                if (streak = -2) {
+                    this.amount := this.qualifier_221_210.last_amt
+                }
             }
         }
     }
