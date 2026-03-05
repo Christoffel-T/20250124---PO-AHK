@@ -375,7 +375,7 @@ class TraderBot {
         if (streak = -1) {
             this.amount := 5
         }
-        if (streak = -6 and streak != this.streak_prev[1]) {
+        if (streak = -4 and streak != this.streak_prev[1]) {
             this.loss5_seq.state := 1
         }
         if (this.loss5_seq.state = 1 and streak <= -2) {
