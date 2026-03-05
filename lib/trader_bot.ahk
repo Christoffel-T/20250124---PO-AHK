@@ -370,6 +370,44 @@ class TraderBot {
         }
     }
 
+    AmountOverride5() {
+        if (this.stats.max_bal_diff >= 300) {
+            this.F300.state := 1
+            val := this.stats.max_bal_diff/4
+            this.F300.last_amt.w3 := val
+            this.F300.last_amt.w4 := val
+            this.F300.last_amt.l3 := val
+            this.F300.last_amt.l4 := val
+        }
+        streak := this.stats.streak_real
+        if (this.F300.state = 1) {
+            this.amount := 1
+            if (streak = 3 or streak = 4) {
+                this.amount := this.F300.last_amt.w%streak%
+            }
+            if (streak = -3 or streak = -4) {
+                this.amount := this.F300.last_amt.l%streak%
+            }
+
+            if (streak != this.streak_prev[1]) {
+                if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
+                    if (streak = 1) {
+                        this.F300.last_amt.w%this.streak_prev[1]% := 1
+                    } else if (streak < 0 and this.F300.last_amt.w%this.streak_prev[1]% > 1) {
+                        this.F300.last_amt.w%this.streak_prev[1]% += 75
+                    }
+                }
+                if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
+                    if (streak = 1) {
+                        this.F300.last_amt.l%this.streak_prev[1]% := 1
+                    } else if (streak < 0 and this.F300.last_amt.w%this.streak_prev[1]% > 1) {
+                        this.F300.last_amt.l%this.streak_prev[1]% += 75
+                    }
+                }
+            }
+        }
+    }
+    
     AmountOverride4() {
         streak := this.stats.streak
         if (streak = -1) {
@@ -638,8 +676,9 @@ class TraderBot {
             if (this.loss5_seq.state != 1 and (this.stats.streak_real = -2 or this.streak_prev[1] = -2)) {
                 this.AmountOverride3()
             }
+            this.AmountOverride4()
         }
-        this.AmountOverride4()
+        this.AmountOverride5()
         
         this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
@@ -974,6 +1013,16 @@ class TraderBot {
 
     QualifiersReset() {
         Helper0811_4Loss.Reset()
+        this.F300 := {
+            state: 0,
+            count: 0,
+            last_amt: {
+                w3: 0,
+                w4: 0,
+                l3: 0,
+                l4: 0,
+            }
+        }
         this.qualifier_221_210 := {
             state: 0,
             count: 0,
