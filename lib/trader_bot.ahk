@@ -683,7 +683,7 @@ class TraderBot {
             if (this.loss5_seq.state != 1 and (this.stats.streak_real = -2 or this.streak_prev[1] = -2)) {
                 this.AmountOverride3()
             }
-            this.AmountOverride4()
+            ; this.AmountOverride4()
         }
         this.AmountOverride5()
         
