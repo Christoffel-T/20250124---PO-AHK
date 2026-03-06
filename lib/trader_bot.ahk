@@ -381,6 +381,13 @@ class TraderBot {
         }
         streak := this.stats.streak_real
         if (this.F300.state = 1) {
+            for k, v in this.F300.last_amt.OwnProps() {
+                if (v > 1) {
+                    break
+                }
+                this.F300.state := 0
+                return
+            }
             this.amount := 1
             if (streak = 3 or streak = 4) {
                 this.amount := this.F300.last_amt.w%streak%
