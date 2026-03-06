@@ -386,7 +386,7 @@ class TraderBot {
                 this.amount := this.F300.last_amt.w%streak%
             }
             if (streak = -3 or streak = -4) {
-                this.amount := this.F300.last_amt.l%streak%
+                this.amount := this.F300.last_amt.l%-streak%
             }
 
             if (streak != this.streak_prev[1]) {
@@ -399,9 +399,9 @@ class TraderBot {
                 }
                 if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
                     if (streak = 1) {
-                        this.F300.last_amt.l%this.streak_prev[1]% := 1
-                    } else if (streak < 0 and this.F300.last_amt.w%this.streak_prev[1]% > 1) {
-                        this.F300.last_amt.l%this.streak_prev[1]% += 75
+                        this.F300.last_amt.l%-this.streak_prev[1]% := 1
+                    } else if (streak < 0 and this.F300.last_amt.l%-this.streak_prev[1]% > 1) {
+                        this.F300.last_amt.l%-this.streak_prev[1]% += 75
                     }
                 }
             }
