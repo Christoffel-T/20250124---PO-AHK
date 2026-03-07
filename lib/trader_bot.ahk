@@ -410,16 +410,19 @@ class TraderBot {
                 this.F300.streaks.l%-this.streak_prev[1]%.losses++
             }
             if (this.F300.state = this.streak_prev[1]) {
+                this.F300.count_loss++
+                if (this.F300.count_loss > 5) {
+                    this.F300.count_loss := 1
+                    this.F300.iter_lost5++
+                }
                 amts := [3*this.F300.iter_lost5]
-                Loop 100 {
+                Loop 10 {
                     amts.Push(amts[1]*2+1)
                 }
                 if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
-                    this.F300.count_loss++
                     this.F300.streaks.w%this.streak_prev[1]%.amt := amts[this.F300.count_loss]
                 }
                 if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
-                    this.F300.count_loss++
                     this.F300.streaks.l%-this.streak_prev[1]%.amt := amts[this.F300.count_loss]
                 }
             }
@@ -1841,7 +1844,7 @@ class TraderBot {
                     str_i ',' 
                     str_j ',' 
                     str_k ','
-                    '(' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
+                    format('{:.2f}', this.amount) ' (' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
                     str.next_bal ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
