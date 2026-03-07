@@ -392,7 +392,7 @@ class TraderBot {
 
         if (this.F300.state != 0) {
             this.amount := 1
-            if (this.F300.state != 1) {
+            if (this.F300.state = streak) {
                 if (streak = 3 or streak = 4) {
                     this.amount := this.F300.streaks.w%streak%.amt
                 }
