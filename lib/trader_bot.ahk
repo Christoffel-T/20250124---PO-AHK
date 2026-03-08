@@ -1770,7 +1770,9 @@ class TraderBot {
         if (this.win1_override.state = 'pause') {
             str_d := str_d ' intpause(' this.win1_override.count ')'
         }
-        if (this.qualifier_221_210.state = 1) {
+        if (this.F300.state != 0) {
+            str_d := 'F300 ON (' this.F300.state '|idx:' this.F300.count_loss ') | ' str_d
+        } else if (this.qualifier_221_210.state = 1) {
             str_d := '150/161 ON | ' str_d
         }
 
