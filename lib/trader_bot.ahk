@@ -385,7 +385,9 @@ class TraderBot {
                 if (v.losses > max_loss) {
                     max_loss := v.losses
                     v.amt := 3
-                    this.F300.state := SubStr(k, 2)
+                    _ := StrReplace(k, 'w', '')
+                    _ := StrReplace(_, 'l', '-')
+                    this.F300.state := _
                 }
             }
         } 
