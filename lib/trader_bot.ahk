@@ -373,7 +373,7 @@ class TraderBot {
     AmountOverride5() {
         streak := this.stats.streak_real
 
-        if (this.stats.max_bal_diff >= 300) {
+        if (this.stats.max_bal_diff >= 300 and this.F300.state = 0) {
             this.F300.state := 1
             val := this.stats.max_bal_diff/4
             this.F300.bal := this.stats.max_bal_diff
