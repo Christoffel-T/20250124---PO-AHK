@@ -388,6 +388,7 @@ class TraderBot {
                     _ := StrReplace(k, 'w', '')
                     _ := StrReplace(_, 'l', '-')
                     this.F300.state := _
+                    this.F300.count_loss := 1
                 }
             }
         } 
@@ -422,10 +423,10 @@ class TraderBot {
                     amts.Push(amts[-1]*2+1)
                 }
                 if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
-                    this.F300.streaks.w%this.streak_prev[1]%.amt := amts[this.F300.count_loss+1]
+                    this.F300.streaks.w%this.streak_prev[1]%.amt := amts[this.F300.count_loss]
                 }
                 if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
-                    this.F300.streaks.l%-this.streak_prev[1]%.amt := amts[this.F300.count_loss+1]
+                    this.F300.streaks.l%-this.streak_prev[1]%.amt := amts[this.F300.count_loss]
                 }
             }
         }
@@ -711,11 +712,13 @@ class TraderBot {
         
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         
-        if (not this.AmountOverride1()) {
-            if (this.loss5_seq.state != 1 and (this.stats.streak_real = -2 or this.streak_prev[1] = -2)) {
-                this.AmountOverride3()
+        if (this.F300.state = 0) {
+            if (not this.AmountOverride1()) {
+                if (this.loss5_seq.state != 1 and (this.stats.streak_real = -2 or this.streak_prev[1] = -2)) {
+                    this.AmountOverride3()
+                }
+                ; this.AmountOverride4()
             }
-            ; this.AmountOverride4()
         }
         this.AmountOverride5()
         
@@ -1774,7 +1777,11 @@ class TraderBot {
             str_d := str_d ' intpause(' this.win1_override.count ')'
         }
         if (this.F300.state != 0) {
-            str_d := 'F300 ON (' this.F300.state '|idx:' this.F300.count_loss ') | ' str_d
+            if (this.F300.state != 1) {
+                str_d := 'F300 ON (' this.F300.state '|idx:' this.F300.count_loss ') | ' str_d
+            } else {
+                str_d := 'F300 ON (waiting...) | ' str_d
+            }
         } else if (this.qualifier_221_210.state = 1) {
             str_d := '150/161 ON | ' str_d
         }
