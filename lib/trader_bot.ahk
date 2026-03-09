@@ -1202,6 +1202,7 @@ class TraderBot {
         MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
         sleep 100
         this.CheckPayout(true)
+        this.balance.max := 5299
         SetTimer(this.Main.Bind(this), 100)
     }
 
