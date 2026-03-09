@@ -419,13 +419,13 @@ class TraderBot {
                 }
                 amts := [3*this.F300.iter_lost5]
                 Loop 10 {
-                    amts.Push(amts[1]*2+1)
+                    amts.Push(amts[-1]*2+1)
                 }
                 if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
-                    this.F300.streaks.w%this.streak_prev[1]%.amt := amts[this.F300.count_loss]
+                    this.F300.streaks.w%this.streak_prev[1]%.amt := amts[this.F300.count_loss+1]
                 }
                 if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
-                    this.F300.streaks.l%-this.streak_prev[1]%.amt := amts[this.F300.count_loss]
+                    this.F300.streaks.l%-this.streak_prev[1]%.amt := amts[this.F300.count_loss+1]
                 }
             }
         }
