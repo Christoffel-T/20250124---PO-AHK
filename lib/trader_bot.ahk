@@ -378,17 +378,25 @@ class TraderBot {
             val := this.stats.max_bal_diff/4
             this.F300.bal := this.stats.max_bal_diff
         }
+        amts := [3]
+        cent_amts := [0, 0.01]
+        Loop 10 {
+            amts.Push(amts[-1]*2+1)
+            cent_amts.Push(cent_amts[-1]*2+1)
+        }
 
         if (this.F300.state = 1) {
             max_loss := 0
             for k, v in this.F300.streaks.OwnProps() {
                 if (v.losses > max_loss) {
                     max_loss := v.losses
-                    v.amt := 6
+                    v.amt := amts[1]*(this.F300.iter_lost5+1)
                     _ := StrReplace(k, 'w', '')
                     _ := StrReplace(_, 'l', '-')
                     this.F300.state := _
                     this.F300.count_loss := 1
+                    this.F300.iter_cents++
+                    v.amt += cent_amts[this.F300.iter_cents]
                 }
             }
         } 
@@ -417,19 +425,19 @@ class TraderBot {
                 if (this.F300.count_loss > 5) {
                     this.F300.count_loss := 1
                     this.F300.iter_lost5++
-                }
-                amts := [3]
-                Loop 10 {
-                    amts.Push(amts[-1]*2+1)
+                    this.F300.iter_cents := 1
                 }
                 for v in amts {
                     amts[A_Index] := v*(this.F300.iter_lost5+1)
+                    cent_amts[A_Index] := cent_amts[A_Index]*(this.F300.iter_lost5)
                 }
                 if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
                     this.F300.streaks.w%this.streak_prev[1]%.amt := amts[this.F300.count_loss]
+                    this.F300.streaks.w%this.streak_prev[1]%.amt += cent_amts[this.F300.iter_cents]
                 }
                 if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
                     this.F300.streaks.l%-this.streak_prev[1]%.amt := amts[this.F300.count_loss]
+                    this.F300.streaks.l%-this.streak_prev[1]%.amt += cent_amts[this.F300.iter_cents]
                 }
             }
         }
@@ -1063,6 +1071,7 @@ class TraderBot {
             count: 0,
             count_loss: 0,
             iter_lost5: 1,
+            iter_cents: 0,
             streaks: {
                 w3: {losses: 0, amt: 0},
                 w4: {losses: 0, amt: 0},
