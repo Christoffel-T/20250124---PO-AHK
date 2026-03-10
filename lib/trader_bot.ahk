@@ -1938,6 +1938,7 @@ class TraderBot {
         sleep 200
         MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
         sleep 50
+        mark_time := A_TickCount
         loop {
             MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, 0)
             sleep 50
@@ -1949,7 +1950,7 @@ class TraderBot {
             if this.balance.current != this.balance.last_trade {
                 break
             }
-            if A_Index > 400 {
+            if A_TickCount - mark_time >= 10000 {
                 this.trade_opened[1] := false
                 this.active_trade := ''
                 return
