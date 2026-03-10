@@ -1789,7 +1789,7 @@ class TraderBot {
         }
         if (this.F300.state != 0) {
             if (this.F300.state != 1) {
-                str_d := 'F300 ON (' this.F300.state '|idx:' this.F300.count_loss ') | ' str_d
+                str_d := 'F300 ON (' this.F300.state '|idx:' this.F300.count_loss '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
             } else {
                 str_d := 'F300 ON (waiting...) | ' str_d
             }
