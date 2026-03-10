@@ -1065,6 +1065,8 @@ class TraderBot {
 
     QualifiersReset() {
         Helper0811_4Loss.Reset()
+        this.balance.max := 5300
+
         this.F300 := {
             state: 0,
             bal: 0,
@@ -1216,7 +1218,7 @@ class TraderBot {
         MouseClick('l', this.coords.empty_area.x, this.coords.empty_area.y,1,2)
         sleep 100
         this.CheckPayout(true)
-        this.balance.max := 5299
+        this.balance.max := 5300
         SetTimer(this.Main.Bind(this), 100)
     }
 
