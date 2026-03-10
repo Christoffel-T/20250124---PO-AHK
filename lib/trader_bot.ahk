@@ -418,9 +418,12 @@ class TraderBot {
                     this.F300.count_loss := 1
                     this.F300.iter_lost5++
                 }
-                amts := [3*this.F300.iter_lost5]
+                amts := [3]
                 Loop 10 {
                     amts.Push(amts[-1]*2+1)
+                }
+                for v in amts {
+                    v *= this.F300.iter_lost5+1
                 }
                 if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
                     this.F300.streaks.w%this.streak_prev[1]%.amt := amts[this.F300.count_loss]
