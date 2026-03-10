@@ -423,7 +423,7 @@ class TraderBot {
                     amts.Push(amts[-1]*2+1)
                 }
                 for v in amts {
-                    v *= this.F300.iter_lost5+1
+                    amts[A_Index] := v*(this.F300.iter_lost5+1)
                 }
                 if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
                     this.F300.streaks.w%this.streak_prev[1]%.amt := amts[this.F300.count_loss]
@@ -715,13 +715,11 @@ class TraderBot {
         
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         
-        if (this.F300.state = 0) {
-            if (not this.AmountOverride1()) {
-                if (this.loss5_seq.state != 1 and (this.stats.streak_real = -2 or this.streak_prev[1] = -2)) {
-                    this.AmountOverride3()
-                }
-                ; this.AmountOverride4()
+        if (not this.AmountOverride1()) {
+            if (this.loss5_seq.state != 1 and (this.stats.streak_real = -2 or this.streak_prev[1] = -2)) {
+                this.AmountOverride3()
             }
+            ; this.AmountOverride4()
         }
         this.AmountOverride5()
         
@@ -1800,7 +1798,9 @@ class TraderBot {
                 } else {
                     _prefix := 'SET loss' LTrim(k,'-') ' ON'
                 }
-                str_d := '(' _prefix '[-' v.idx2 ']' _suffix2
+                if (this.F300.state = 0) {
+                    str_d := '(' _prefix '[-' v.idx2 ']' _suffix2
+                }
             }
             _suffix2 := ':-' v.idx2 '[-' v.stats.longest_lose_streak ']' '|'
             if (k > 0) {
@@ -1814,13 +1814,17 @@ class TraderBot {
         str_f := RTrim(str_f, '|')
         if (this.stats.streak_real <= -7) {
             str_g := 'regular-ON: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
-            str_d := 'regular-ON(G) | ' str_d
+            if (this.F300.state = 0) {
+                str_d := 'regular-ON(G) | ' str_d
+            }
         } else {
             str_g := 'regular-OFF: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
         }
         if (this.switch_win_loss[1].idx3 >= 7 and this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
             str_h := 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
-            str_d := 'idx3(H)-ON | ' str_d
+            if (this.F300.state = 0) {
+                str_d := 'idx3(H)-ON | ' str_d
+            }
         } else {
             str_h := 'idx3-OFF: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
         }
