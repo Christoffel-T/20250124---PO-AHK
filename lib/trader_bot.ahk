@@ -433,11 +433,11 @@ class TraderBot {
                 }
                 if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
                     this.F300.streaks.w%this.streak_prev[1]%.amt := amts[this.F300.count_loss]
-                    this.F300.streaks.w%this.streak_prev[1]%.amt += cent_amts[this.F300.iter_cents]
+                    this.F300.streaks.w%this.streak_prev[1]%.amt += cent_amts[this.F300.count_loss]
                 }
                 if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
                     this.F300.streaks.l%-this.streak_prev[1]%.amt := amts[this.F300.count_loss]
-                    this.F300.streaks.l%-this.streak_prev[1]%.amt += cent_amts[this.F300.iter_cents]
+                    this.F300.streaks.l%-this.streak_prev[1]%.amt += cent_amts[this.F300.count_loss]
                 }
             }
         }
