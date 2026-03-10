@@ -446,7 +446,7 @@ class TraderBot {
             if (this.F300.state = this.streak_prev[1]) {
                 this.F300.state := 0
                 this.F300.count_loss := 0
-                this.F300.iter_lost5 := 1
+                ; this.F300.iter_lost5 := 1
             }
         }
     }
