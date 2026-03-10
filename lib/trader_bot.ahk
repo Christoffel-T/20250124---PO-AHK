@@ -562,6 +562,9 @@ class TraderBot {
             overriden := 1
             this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
         }
+
+        ; disable
+        this.amount := 1
         if (this.stats.streak_real >= 7) {
             amts := [100, 80, 60, 40, 15, 1]
             this.amount := amts[this.stats.streak_real - 6]
@@ -723,7 +726,7 @@ class TraderBot {
         }
         
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
-        
+        this.amount := 1
         if (not this.AmountOverride1()) {
             if (this.loss5_seq.state != 1 and (this.stats.streak_real = -2 or this.streak_prev[1] = -2)) {
                 ; this.AmountOverride3()
