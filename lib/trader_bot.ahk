@@ -596,8 +596,9 @@ class TraderBot {
             }
             if (inst.streak < 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1]) {
                 if (this.switch_win_loss[n].state != 0) {
-                    this.switch_win_loss[n].idx2++
+                    ; this.switch_win_loss[n].idx2++
                 }
+                this.switch_win_loss[n].idx2++ ; count immediately
                 this.switch_win_loss[n].stats.wins_streak := 0
                 this.switch_win_loss[n].stats.lose_streak++
                 this.switch_win_loss[n].stats.longest_lose_streak := max(this.switch_win_loss[n].idx2, this.switch_win_loss[n].stats.longest_lose_streak)
