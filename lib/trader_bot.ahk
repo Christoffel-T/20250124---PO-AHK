@@ -384,7 +384,7 @@ class TraderBot {
             for k, v in this.F300.streaks.OwnProps() {
                 if (v.losses > max_loss) {
                     max_loss := v.losses
-                    v.amt := 3
+                    v.amt := 6
                     _ := StrReplace(k, 'w', '')
                     _ := StrReplace(_, 'l', '-')
                     this.F300.state := _
