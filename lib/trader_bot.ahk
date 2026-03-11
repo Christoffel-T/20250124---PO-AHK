@@ -1773,7 +1773,7 @@ class TraderBot {
             str_d := str_d ' intpause(' this.win1_override.count ')'
         }
         if (this.F300.state != 0) {
-            pref := 'w3=' this.F300.streaks.w3.losses ' w4=' this.F300.streaks.w4.losses ' l3=' this.F300.streaks.l3.losses ' l4=' this.F300.streaks.l4.losses
+            pref := 'w3=' this.F300.streaks[3].losses ' w4=' this.F300.streaks[4].losses ' l3=' this.F300.streaks[-3].losses ' l4=' this.F300.streaks[-4].losses
             abs_state := Abs(this.F300.state)
             if (abs_state > 1) {
                 str_d := '(' pref ') ' 'F300 ON (w/l ' abs_state '|i-W:' this.F300.streaks[abs_state].idx ' i-L:' this.F300.streaks[-abs_state].idx '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
