@@ -1798,10 +1798,11 @@ class TraderBot {
             str_d := str_d ' intpause(' this.win1_override.count ')'
         }
         if (this.F300.state != 0) {
+            pref := 'w3=' this.F300.streaks.w3.losses ' w4=' this.F300.streaks.w4.losses ' l3=' this.F300.streaks.l3.losses ' l4=' this.F300.streaks.l4.losses
             if (this.F300.state != 1) {
-                str_d := 'F300 ON (w/l ' this.F300.state '|idx:' this.F300.count_loss '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
+                str_d := '(' pref ') ' 'F300 ON (w/l ' this.F300.state '|idx:' this.F300.count_loss '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
             } else {
-                str_d := 'F300 ON (waiting... w3=' this.F300.streaks.w3.losses ' w4=' this.F300.streaks.w4.losses ' l3=' this.F300.streaks.l3.losses ' l4=' this.F300.streaks.l4.losses ') | ' str_d
+                str_d := '(' pref ') ' 'F300 ON (waiting...) | ' str_d
             }
         } else if (this.qualifier_221_210.state = 1) {
             str_d := '150/161 ON | ' str_d
