@@ -456,7 +456,7 @@ class TraderBot {
                 this.F300.streaks.l%abs_streak_prev%.losses := 0
                 this.F300.streaks.w%abs_streak_prev%.amt := 0
             }
-            if (this.F300.state = abs_streak_prev) {
+            if (abs_streak_prev >= 3 and this.F300.state = abs_streak_prev) {
                 this.F300.state := 1
                 this.F300.count_loss := 0
                 this.F300.streaks.w%abs_streak_prev%.losses := 0
