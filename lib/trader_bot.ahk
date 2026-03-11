@@ -393,7 +393,8 @@ class TraderBot {
                     v.amt := amts[1]*(this.F300.iter_lost5+1)
                     _ := StrReplace(k, 'w', '')
                     _ := StrReplace(_, 'l', '-')
-                    this.F300.state := _
+                    this.F300.state := k
+                    ; this.F300.state := _
                     this.F300.count_loss := 1
                     this.F300.iter_cents++
                     v.amt += cent_amts[1]*this.F300.iter_lost5
@@ -416,12 +417,12 @@ class TraderBot {
         }
 
         if (this.F300.state != 0 and streak < this.streak_prev[1]) {
-            if (abs_streak_prev = 3 or abs_streak_prev = 4) {
-                this.F300.streaks.w%abs_streak_prev%.losses++
+            if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
+                this.F300.streaks.w%this.streak_prev[1]%.losses++
             }
-            ; if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
-            ;     this.F300.streaks.l%-this.streak_prev[1]%.losses++
-            ; }
+            if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
+                this.F300.streaks.l%-this.streak_prev[1]%.losses++
+            }
             if (this.F300.state = abs_streak_prev) {
                 this.F300.count_loss++
                 if (this.F300.count_loss > 5) {
