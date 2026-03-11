@@ -382,7 +382,7 @@ class TraderBot {
         cent_amts := [0.01]
         Loop 10 {
             amts.Push(amts[-1]*2+1)
-            cent_amts.Push(cent_amts[-1]*2+1)
+            cent_amts.Push(cent_amts[-1]*2+0.01)
         }
 
         if (this.F300.state = 1) {
@@ -396,7 +396,7 @@ class TraderBot {
                     this.F300.state := _
                     this.F300.count_loss := 1
                     this.F300.iter_cents++
-                    v.amt += cent_amts[2]*this.F300.iter_lost5
+                    v.amt += cent_amts[1]*this.F300.iter_lost5
                 }
             }
         } 
