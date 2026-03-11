@@ -418,10 +418,10 @@ class TraderBot {
 
         if (this.F300.state != 0 and streak < this.streak_prev[1]) {
             if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
-                this.F300.streaks.w%this.streak_prev[1]%.losses++
+                this.F300.streaks.w%abs_streak_prev%.losses++
             }
             if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
-                this.F300.streaks.l%-this.streak_prev[1]%.losses++
+                this.F300.streaks.l%abs_streak_prev%.losses++
             }
             if (this.F300.state = abs_streak_prev) {
                 this.F300.count_loss++
@@ -447,14 +447,14 @@ class TraderBot {
 
         if (streak > this.streak_prev[1]) {
             if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
-                this.F300.streaks.w%this.streak_prev[1]%.amt := 0
-                this.F300.streaks.w%this.streak_prev[1]%.losses := 0
-                this.F300.streaks.l%-this.streak_prev[1]%.amt := 0
+                this.F300.streaks.w%abs_streak_prev%.amt := 0
+                this.F300.streaks.w%abs_streak_prev%.losses := 0
+                this.F300.streaks.l%abs_streak_prev%.amt := 0
             }
             if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
-                this.F300.streaks.l%-this.streak_prev[1]%.amt := 0
-                this.F300.streaks.l%-this.streak_prev[1]%.losses := 0
-                this.F300.streaks.w%this.streak_prev[1]%.amt := 0
+                this.F300.streaks.l%abs_streak_prev%.amt := 0
+                this.F300.streaks.l%abs_streak_prev%.losses := 0
+                this.F300.streaks.w%abs_streak_prev%.amt := 0
             }
             if (this.F300.state = abs_streak_prev) {
                 this.F300.state := 1
