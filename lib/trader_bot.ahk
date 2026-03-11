@@ -280,7 +280,7 @@ class TraderBot {
 
         this.balance := {side: 0, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance.starting := 5000
-        this.balance.reset_max := 5100
+        this.balance.reset_max := 5300
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
         this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
@@ -387,17 +387,14 @@ class TraderBot {
 
         if (this.F300.state = 1) {
             max_loss := 0
-            for k, v in this.F300.streaks.OwnProps() {
+            for k, v in this.F300.streaks {
                 if (v.losses > max_loss) {
                     max_loss := v.losses
                     v.amt := amts[1]*(this.F300.iter_lost5+1)
-                    _ := StrReplace(k, 'w', '')
-                    _ := StrReplace(_, 'l', '-')
-                    this.F300.state := Abs(_)
-                    ; this.F300.state := _
-                    this.F300.count_loss := 1
-                    this.F300.iter_cents++
+                    v.idx := 1
                     v.amt += cent_amts[1]*this.F300.iter_lost5
+                    this.F300.state := k
+                    this.F300.iter_cents++
                 }
             }
         } 
@@ -406,27 +403,21 @@ class TraderBot {
         abs_streak_prev := Abs(this.streak_prev[1])
         if (this.F300.state != 0) {
             this.amount := 1
-            if (this.F300.state = abs_streak_current) {
+            if (Abs(this.F300.state) = abs_streak_current) {
                 if (abs_streak_current = 3 or abs_streak_current = 4) {
-                    this.amount := this.F300.streaks.w%abs_streak_current%.amt
+                    this.amount := this.F300.streaks[streak].amt
                 }
-                ; if (streak = -3 or streak = -4) {
-                ;     this.amount := this.F300.streaks.l%-streak%.amt
-                ; }
             }
         }
 
         if (this.F300.state != 0 and streak < this.streak_prev[1]) {
-            if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
-                this.F300.streaks.w%abs_streak_prev%.losses++
+            if (abs_streak_prev = 3 or abs_streak_prev  = 4) {
+                this.F300.streaks[this.streak_prev[1]].losses++
             }
-            if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
-                this.F300.streaks.l%abs_streak_prev%.losses++
-            }
-            if (this.F300.state = abs_streak_prev) {
-                this.F300.count_loss++
-                if (this.F300.count_loss > 5) {
-                    this.F300.count_loss := 1
+            if (this.F300.state = this.streak_prev[1]) {
+                this.F300.streaks[this.streak_prev[1]].idx++
+                if (this.F300.streaks[this.streak_prev[1]].idx > 5) {
+                    this.F300.streaks[this.streak_prev[1]].idx := 1
                     this.F300.iter_lost5++
                     this.F300.iter_cents := 1
                 }
@@ -435,33 +426,21 @@ class TraderBot {
                     cent_amts[A_Index] := cent_amts[A_Index]*(this.F300.iter_lost5)
                 }
                 if (abs_streak_prev = 3 or abs_streak_prev = 4) {
-                    this.F300.streaks.w%abs_streak_prev%.amt := amts[this.F300.count_loss]
-                    this.F300.streaks.w%abs_streak_prev%.amt += cent_amts[this.F300.count_loss]
+                    this.F300.streaks[this.streak_prev[1]].amt := amts[this.F300.streaks[this.streak_prev[1]].idx]
+                    this.F300.streaks[this.streak_prev[1]].amt += cent_amts[this.F300.streaks[this.streak_prev[1]].idx]
                 }
-                ; if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
-                ;     this.F300.streaks.l%-this.streak_prev[1]%.amt := amts[this.F300.count_loss]
-                ;     this.F300.streaks.l%-this.streak_prev[1]%.amt += cent_amts[this.F300.count_loss]
-                ; }
             }
         }
 
         if (streak > this.streak_prev[1]) {
-            if (this.streak_prev[1] = 3 or this.streak_prev[1] = 4) {
-                this.F300.streaks.w%abs_streak_prev%.amt := 0
-                this.F300.streaks.w%abs_streak_prev%.losses := 0
-                this.F300.streaks.l%abs_streak_prev%.amt := 0
+            if (abs_streak_prev = 3 or abs_streak_prev = 4) {
+                this.F300.streaks[this.streak_prev[1]].amt := 0
+                this.F300.streaks[this.streak_prev[1]].losses := 0
             }
-            if (this.streak_prev[1] = -3 or this.streak_prev[1] = -4) {
-                this.F300.streaks.l%abs_streak_prev%.amt := 0
-                this.F300.streaks.l%abs_streak_prev%.losses := 0
-                this.F300.streaks.w%abs_streak_prev%.amt := 0
-            }
-            if (abs_streak_prev >= 3 and this.F300.state = abs_streak_prev) {
+            if (abs_streak_prev >= 3 and Abs(this.F300.state) = abs_streak_prev) {
                 this.F300.state := 1
-                this.F300.count_loss := 0
-                this.F300.streaks.w%abs_streak_prev%.losses := 0
-                this.F300.streaks.l%abs_streak_prev%.losses := 0
-                ; this.F300.iter_lost5 := 1
+                this.F300.streaks[abs_streak_prev].idx := 0
+                this.F300.streaks[-abs_streak_prev].idx := 0
             }
         }
     }
@@ -1081,15 +1060,9 @@ class TraderBot {
             state: 0,
             bal: 0,
             count: 0,
-            count_loss: 0,
             iter_lost5: 1,
             iter_cents: 0,
-            streaks: {
-                w3: {losses: 0, amt: 0},
-                w4: {losses: 0, amt: 0},
-                l3: {losses: 0, amt: 0},
-                l4: {losses: 0, amt: 0},
-            }
+            streaks: Map(3, {idx: 0, losses: 0, amt: 0}, 4, {idx: 0, losses: 0, amt: 0}, -3, {idx: 0, losses: 0, amt: 0}, -4, {idx: 0, losses: 0, amt: 0})
         }
         this.qualifier_221_210 := {
             state: 0,
@@ -1113,7 +1086,7 @@ class TraderBot {
         }
         this.tier1_override := {
             idx: 1,
-            count_loss1: 0,
+            count_loss: 0,
             multiplier: 0.3
         }
 
@@ -1801,8 +1774,9 @@ class TraderBot {
         }
         if (this.F300.state != 0) {
             pref := 'w3=' this.F300.streaks.w3.losses ' w4=' this.F300.streaks.w4.losses ' l3=' this.F300.streaks.l3.losses ' l4=' this.F300.streaks.l4.losses
-            if (this.F300.state != 1) {
-                str_d := '(' pref ') ' 'F300 ON (w/l ' this.F300.state '|idx:' this.F300.count_loss '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
+            abs_state := Abs(this.F300.state)
+            if (abs_state > 1) {
+                str_d := '(' pref ') ' 'F300 ON (w/l ' abs_state '|i-W:' this.F300.streaks[abs_state].idx ' i-L:' this.F300.streaks[-abs_state].idx '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
             } else {
                 str_d := '(' pref ') ' 'F300 ON (waiting...) | ' str_d
             }
