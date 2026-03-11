@@ -393,7 +393,7 @@ class TraderBot {
                     v.amt := amts[1]*(this.F300.iter_lost5+1)
                     _ := StrReplace(k, 'w', '')
                     _ := StrReplace(_, 'l', '-')
-                    this.F300.state := k
+                    this.F300.state := Abs(_)
                     ; this.F300.state := _
                     this.F300.count_loss := 1
                     this.F300.iter_cents++
