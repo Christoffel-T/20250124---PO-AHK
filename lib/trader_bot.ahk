@@ -414,7 +414,7 @@ class TraderBot {
             if (abs_streak_prev = 3 or abs_streak_prev  = 4) {
                 this.F300.streaks[this.streak_prev[1]].losses++
             }
-            if (this.F300.state = this.streak_prev[1]) {
+            if (this.F300.state = this.streak_prev[1] and abs_streak_prev >= 3) {
                 this.F300.streaks[this.streak_prev[1]].idx++
                 if (this.F300.streaks[this.streak_prev[1]].idx > 5) {
                     this.F300.streaks[this.streak_prev[1]].idx := 1
