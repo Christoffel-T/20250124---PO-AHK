@@ -392,6 +392,10 @@ class TraderBot {
                     max_loss := v.losses
                     v.amt := amts[1]*(this.F300.iter_lost5+1)
                     v.idx := 1
+                    this.F300.streaks[Abs(k)].amt := amts[1]*(this.F300.iter_lost5+1)
+                    this.F300.streaks[-Abs(k)].amt := amts[1]*(this.F300.iter_lost5+1)
+                    this.F300.streaks[Abs(k)].idx := 1
+                    this.F300.streaks[-Abs(k)].idx := 1
                     v.amt += cent_amts[1]*this.F300.iter_lost5
                     this.F300.state := k
                     this.F300.iter_cents++
@@ -414,7 +418,7 @@ class TraderBot {
             if (abs_streak_prev = 3 or abs_streak_prev  = 4) {
                 this.F300.streaks[this.streak_prev[1]].losses++
             }
-            if (this.F300.state = this.streak_prev[1] and abs_streak_prev >= 3) {
+            if (this.F300.state = abs_streak_prev and abs_streak_prev >= 3) {
                 this.F300.streaks[this.streak_prev[1]].idx++
                 if (this.F300.streaks[this.streak_prev[1]].idx > 5) {
                     this.F300.streaks[this.streak_prev[1]].idx := 1
