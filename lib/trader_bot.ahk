@@ -404,7 +404,6 @@ class TraderBot {
                         this.F300.streaks[k].amt := amts[1]*(this.F300.iter_lost5+1)
                         this.F300.streaks[k].idx := 1
                         this.F300.%str_state% := k
-                        this.F300.iter_cents++
                         v.amt := amts[1]*(this.F300.iter_lost5+1)
                         v.idx := 1
                         v.amt += cent_amts[1]*this.F300.iter_lost5
@@ -425,7 +424,6 @@ class TraderBot {
                         if (this.F300.streaks[this.streak_prev[1]].idx > 5) {
                             this.F300.streaks[this.streak_prev[1]].idx := 1
                             this.F300.iter_lost5++
-                            this.F300.iter_cents := 1
                         }
                         for v in amts {
                             amts[A_Index] := v*(this.F300.iter_lost5+1)
@@ -1066,7 +1064,6 @@ class TraderBot {
             bal: 0,
             count: 0,
             iter_lost5: 1,
-            iter_cents: 0,
             streaks: Map(3, {idx: 0, losses: 0, amt: 0}, 4, {idx: 0, losses: 0, amt: 0}, -3, {idx: 0, losses: 0, amt: 0}, -4, {idx: 0, losses: 0, amt: 0})
         }
         this.qualifier_221_210 := {
@@ -1780,7 +1777,7 @@ class TraderBot {
         if (this.F300.stateW != 0 or this.F300.stateL != 0) {
             pref := 'w3=' this.F300.streaks[3].losses ' w4=' this.F300.streaks[4].losses ' l3=' this.F300.streaks[-3].losses ' l4=' this.F300.streaks[-4].losses
             if (this.F300.stateW > 1 and this.F300.stateL < -1) {
-                str_d := '(' pref ') ' 'F300 ON (W' this.F300.stateW '(' this.F300.streaks[this.F300.stateW] ')' ' L' this.F300.stateL '(' this.F300.streaks[this.F300.stateL] ')' '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
+                str_d := '(' pref ') ' 'F300 ON (W' this.F300.stateW '(' this.F300.streaks[this.F300.stateW].idx ')' ' L' this.F300.stateL '(' this.F300.streaks[this.F300.stateL].idx ')' '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
             } else {
                 str_d := '(' pref ') ' 'F300 ON (waiting... [' this.F300.stateW '&' this.F300.stateL ']) | ' str_d
             }
