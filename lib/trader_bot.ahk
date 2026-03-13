@@ -1779,10 +1779,10 @@ class TraderBot {
         }
         if (this.F300.stateW != 0 or this.F300.stateL != 0) {
             pref := 'w3=' this.F300.streaks[3].losses ' w4=' this.F300.streaks[4].losses ' l3=' this.F300.streaks[-3].losses ' l4=' this.F300.streaks[-4].losses
-            if (this.F300.stateW > 1 or this.F300.stateL < -1) {
+            if (this.F300.stateW > 1 and this.F300.stateL < -1) {
                 str_d := '(' pref ') ' 'F300 ON (W' this.F300.stateW '(' this.F300.streaks[this.F300.stateW] ')' ' L' this.F300.stateL '(' this.F300.streaks[this.F300.stateL] ')' '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
             } else {
-                str_d := '(' pref ') ' 'F300 ON (waiting...) | ' str_d
+                str_d := '(' pref ') ' 'F300 ON (waiting... [' this.F300.stateW '&' this.F300.stateL ']) | ' str_d
             }
         } else if (this.qualifier_221_210.state = 1) {
             str_d := '150/161 ON | ' str_d
