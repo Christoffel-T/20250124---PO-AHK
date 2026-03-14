@@ -434,8 +434,8 @@ class TraderBot {
                     }
                 } else if (streak > this.streak_prev[1]) {
                     this.F300.streaks[this.streak_prev[1]].amt := 0
-                    this.F300.streaks[this.streak_prev[1]].losses := 0
                     if (state = this.streak_prev[1]) {
+                        this.F300.streaks[this.streak_prev[1]].losses := 0
                         if state > 0
                             this.F300.%state% := 1
                         else
