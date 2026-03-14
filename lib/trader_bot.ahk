@@ -586,8 +586,8 @@ class TraderBot {
                     }
                     Helper0811_4Loss.SetLevel(2)
                     this.switch_win_loss[n].state := 1
-                    this.switch_win_loss[n].idx2 := 0
                 }
+                this.switch_win_loss[n].idx2 := 0
                 this.switch_win_loss[n].stats.lose_streak := 0
                 this.switch_win_loss[n].stats.wins_streak++
                 this.switch_win_loss[n].stats.wins++
