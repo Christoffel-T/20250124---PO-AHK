@@ -386,6 +386,11 @@ class TraderBot {
             amts.Push(amts[-1]*2+1)
             cent_amts.Push(cent_amts[-1]*2+0.01)
         }
+        for v in amts {
+            amts[A_Index] := v*(this.F300.iter_lost5+1)
+            cent_amts[A_Index] := cent_amts[A_Index]*(this.F300.iter_lost5)
+        }
+
 
         if (this.F300.stateW != 0 and this.F300.stateL != 0) {
             this.amount := 1
@@ -404,9 +409,9 @@ class TraderBot {
                         this.F300.streaks[k].amt := amts[1]*(this.F300.iter_lost5+1)
                         this.F300.streaks[k].idx := 1
                         this.F300.%str_state% := k
-                        v.amt := amts[1]*(this.F300.iter_lost5+1)
+                        v.amt := amts[1]
                         v.idx := 1
-                        v.amt += cent_amts[1]*this.F300.iter_lost5
+                        v.amt += cent_amts[1]
                         max_loss := v.losses
                     }
                 }
@@ -417,20 +422,23 @@ class TraderBot {
             }
 
             if ((abs_streak_prev = 3 or abs_streak_prev = 4) and state * this.streak_prev[1] > 0) {
+                streak_obj := this.F300.streaks[this.streak_prev[1]]
                 if (streak < this.streak_prev[1]) {
-                    this.F300.streaks[this.streak_prev[1]].losses++
+                    streak_obj.losses++
                     if (state = this.streak_prev[1]) {
-                        this.F300.streaks[this.streak_prev[1]].idx++
-                        if (this.F300.streaks[this.streak_prev[1]].idx > 5) {
-                            this.F300.streaks[this.streak_prev[1]].idx := 1
-                            this.F300.iter_lost5++
+                        streak_obj.idx++
+                        streak_obj.sum_amt += streak_obj.amt
+                        if (streak_obj.idx >= 5) {
+                            idx_new := streak_obj.idx - 4
+                            if (Mod(idx_new, 2) = 1) {
+                                streak_obj.amt := (streak_obj.sum_amt*0.5)/0.92
+                            } else {
+                                streak_obj.amt := streak_obj.sum_amt
+                            }
+                        } else {
+                            streak_obj.amt := amts[streak_obj.idx]
+                            streak_obj.amt += cent_amts[streak_obj.idx]
                         }
-                        for v in amts {
-                            amts[A_Index] := v*(this.F300.iter_lost5+1)
-                            cent_amts[A_Index] := cent_amts[A_Index]*(this.F300.iter_lost5)
-                        }
-                        this.F300.streaks[this.streak_prev[1]].amt := amts[this.F300.streaks[this.streak_prev[1]].idx]
-                        this.F300.streaks[this.streak_prev[1]].amt += cent_amts[this.F300.streaks[this.streak_prev[1]].idx]
                     }
                 } else if (streak > this.streak_prev[1]) {
                     this.F300.streaks[this.streak_prev[1]].amt := 0
@@ -440,6 +448,9 @@ class TraderBot {
                             this.F300.%str_state% := 1
                         else
                             this.F300.%str_state% := -1
+                        if (this.F300.streaks[this.streak_prev[1]].idx >= 5) {
+                            this.F300.iter_lost5++
+                        }
                         this.F300.streaks[this.streak_prev[1]].idx := 0
                     }
                 }
@@ -1064,7 +1075,13 @@ class TraderBot {
             bal: 0,
             count: 0,
             iter_lost5: 1,
-            streaks: Map(3, {idx: 0, losses: 0, amt: 0}, 4, {idx: 0, losses: 0, amt: 0}, -3, {idx: 0, losses: 0, amt: 0}, -4, {idx: 0, losses: 0, amt: 0})
+            streaks: Map(3, {}, 4, {}, -3, {}, -4, {})
+        }
+        for k, v in this.F300.streaks {
+            v.sum_amt := 0
+            v.idx := 0
+            v.losses := 0
+            v.amt := 0
         }
         this.qualifier_221_210 := {
             state: 0,
