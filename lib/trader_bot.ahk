@@ -433,10 +433,10 @@ class TraderBot {
             if (state = streak and abs_state >= 3) {
                 this.amount := this.F300.streaks[state].amt
             }
-
-            streak_obj := this.F300.streaks[this.streak_prev[1]]
-
+            
+            
             if ((abs_streak_prev = 3 or abs_streak_prev = 4) and state * this.streak_prev[1] > 0) {
+                streak_obj := this.F300.streaks[this.streak_prev[1]]
                 if (streak < this.streak_prev[1]) {
                     streak_obj.losses++
                     if (state = this.streak_prev[1]) {
