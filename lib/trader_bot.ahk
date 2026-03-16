@@ -403,7 +403,9 @@ class TraderBot {
                     this.F300.sum_4lost += this.F300.amt
                     this.F300.amt := this.F300.sum_4lost
                 }
+                this.F300.sum_4lost := Round(this.F300.sum_4lost, 2)
                 this.amount := this.F300.amt
+                MsgBox this.amount
                 return
             } else if (streak > 0) {
                 this.F300.sum_4lost := 0
