@@ -446,7 +446,7 @@ class TraderBot {
                         streak_obj.sum_amt := Round(streak_obj.sum_amt, 2)
                         streak_obj.amt := amts[streak_obj.idx]
                         streak_obj.amt += cent_amts[streak_obj.idx]
-                        if (streak_obj.idx >= 5) {
+                        if (streak_obj.idx >= 2) {
                             streak_obj.losses := 0
                             streak_obj.idx := 0
                             streak_obj.amt := 0
