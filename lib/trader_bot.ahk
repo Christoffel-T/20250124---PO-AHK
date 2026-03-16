@@ -447,7 +447,7 @@ class TraderBot {
                         streak_obj.sum_amt := Round(streak_obj.sum_amt, 2)
                         streak_obj.amt := amts[streak_obj.idx]
                         streak_obj.amt += cent_amts[streak_obj.idx]
-                        if (streak_obj.idx >= 2) {
+                        if (streak_obj.idx >= 5) {
                             streak_obj.losses := 0
                             streak_obj.idx := 0
                             streak_obj.amt := 0
@@ -465,6 +465,7 @@ class TraderBot {
                     }
                 } else if (streak > this.streak_prev[1]) {
                     this.F300.streaks[this.streak_prev[1]].amt := 0
+                    streak_obj.sum_amt := 0
                     if (state = this.streak_prev[1]) {
                         this.F300.streaks[this.streak_prev[1]].losses := 0
                         if state > 0
