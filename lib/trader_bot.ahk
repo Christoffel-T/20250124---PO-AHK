@@ -401,6 +401,7 @@ class TraderBot {
                     this.F300.amt := (this.F300.sum_4lost*0.5)/0.92
                 } else {
                     this.F300.sum_4lost += this.F300.amt
+                    this.F300.amt := this.F300.sum_4lost
                 }
                 this.amount := this.F300.amt
                 return
@@ -1812,15 +1813,15 @@ class TraderBot {
         }
         if (this.F300.stateW != 0 or this.F300.stateL != 0) {
             pref := 'w3=' this.F300.streaks[3].losses ' w4=' this.F300.streaks[4].losses ' l3=' this.F300.streaks[-3].losses ' l4=' this.F300.streaks[-4].losses
-            str_win := 'W0'
-            str_lose := 'L0'
+            str_win := 'W' this.F300.stateW
+            str_lose := 'L' this.F300.stateL
             if this.F300.stateW > 1 {
                 str_win := 'W' this.F300.stateW '(' this.F300.streaks[this.F300.stateW].idx ' | sum: ' this.F300.streaks[this.F300.stateW].sum_amt ')'
             }
             if this.F300.stateL < -1 {
                 str_lose := 'L' this.F300.stateL '(' this.F300.streaks[this.F300.stateL].idx ' | sum: ' this.F300.streaks[this.F300.stateL].sum_amt ')'
             }
-            str_d := '(' pref ') ' 'F300 ON (' str_win ' ' str_lose ')' '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
+            str_d := '(' pref ') ' 'F300 ON [' this.F300.sum_4lost '] (' str_win ' ' str_lose ')' '|5loss:' this.F300.iter_lost5-1 ') | ' str_d
 
         } else if (this.qualifier_221_210.state = 1) {
             str_d := '150/161 ON | ' str_d
