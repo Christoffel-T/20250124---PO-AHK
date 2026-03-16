@@ -464,15 +464,15 @@ class TraderBot {
 
                     }
                 } else if (streak > this.streak_prev[1]) {
-                    this.F300.streaks[this.streak_prev[1]].amt := 0
+                    streak_obj.amt := 0
                     streak_obj.sum_amt := 0
                     if (state = this.streak_prev[1]) {
-                        this.F300.streaks[this.streak_prev[1]].losses := 0
+                        streak_obj.losses := 0
+                        streak_obj.idx := 0
                         if state > 0
                             this.F300.%str_state% := 1
                         else
                             this.F300.%str_state% := -1
-                        this.F300.streaks[this.streak_prev[1]].idx := 0
                     }
                 }
             }
