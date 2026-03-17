@@ -281,6 +281,7 @@ class TraderBot {
         this.balance := {side: 0, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance.starting := 5000
         this.balance.reset_max := 5300
+        this.balance.min_all := this.balance.min
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
         this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
@@ -1911,7 +1912,7 @@ class TraderBot {
                     str_i ',' 
                     str_j ',' 
                     str_k ','
-                    format('{:.2f}', this.amount) ' (' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ')' ',' 
+                    format('{:.2f}', this.amount) ' (' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min '[' this.balance.min_all '])' ',' 
                     str.next_bal ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
@@ -2247,6 +2248,7 @@ class TraderBot {
                 this.balance.current := cur_bal
                 this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
                 this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
+                this.balance.min_all := Format('{:.2f}', min(cur_bal, this.balance.min_all))
 
                 this.stats.max_bal_diff := this.balance.max - this.balance.current
                 this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
