@@ -381,15 +381,11 @@ class TraderBot {
             this.F300.stateL := -1
             this.F300.bal := this.stats.max_bal_diff
         }
-        amts := [3]
-        cent_amts := [0.01]
+        amts := [3*this.F300.iter_lost5+1]
+        cent_amts := [0.01*this.F300.iter_lost5+1]
         Loop 10 {
-            amts.Push(amts[-1]*2+1)
+            amts.Push(amts[-1]*2+3)
             cent_amts.Push(cent_amts[-1]*2+0.01)
-        }
-        for v in amts {
-            amts[A_Index] := v*(this.F300.iter_lost5+1)
-            cent_amts[A_Index] := cent_amts[A_Index]*(this.F300.iter_lost5)
         }
 
         if (this.F300.stateW != 0 and this.F300.stateL != 0) {
@@ -410,6 +406,13 @@ class TraderBot {
                 this.amount := this.F300.amt
                 return
             } else if (streak > 0) {
+                if (this.F300.acc_sum_4lost = 0) {
+                    this.F300.acc_sum_4lost := 1
+                    this.F300.sum_4lost += this.F300.amt
+                    this.F300.amt := this.F300.sum_4lost
+                    this.amount := this.F300.amt
+                    return
+                }
                 this.F300.acc_sum_4lost := 0
                 this.F300.sum_4lost := 0
             }
