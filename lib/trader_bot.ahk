@@ -408,7 +408,7 @@ class TraderBot {
             } else if (streak > 0) {
                 if (this.F300.acc_sum_4lost = 0) {
                     this.F300.acc_sum_4lost := 1
-                    this.F300.sum_4lost += this.F300.amt
+                    ; this.F300.sum_4lost += this.F300.amt
                     this.F300.amt := this.F300.sum_4lost
                     this.amount := this.F300.amt
                     return
