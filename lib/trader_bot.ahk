@@ -382,7 +382,7 @@ class TraderBot {
             this.F300.bal := this.stats.max_bal_diff
         }
         amts := [3*(this.F300.iter_lost5+1)]
-        cent_amts := [0.01*this.F300.iter_lost5+1]
+        cent_amts := [0.01*(this.F300.iter_lost5+1)]
         Loop 10 {
             amts.Push(amts[-1]*2+3)
             cent_amts.Push(cent_amts[-1]*2+0.01)
@@ -440,7 +440,6 @@ class TraderBot {
             if (state = streak and abs_state >= 3) {
                 this.amount := this.F300.streaks[state].amt
             }
-            
             
             if ((abs_streak_prev = 3 or abs_streak_prev = 4) and state * this.streak_prev[1] > 0) {
                 streak_obj := this.F300.streaks[this.streak_prev[1]]
