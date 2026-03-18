@@ -449,15 +449,14 @@ class TraderBot {
                         streak_obj.idx++
                         streak_obj.sum_amt += streak_obj.amt
                         streak_obj.sum_amt := Round(streak_obj.sum_amt, 2)
-                        streak_obj.amt := amts[streak_obj.idx]
-                        streak_obj.amt += cent_amts[streak_obj.idx]
                         if (streak_obj.idx >= 5) {
                             streak_obj.losses := 0
-                            streak_obj.idx := 0
+                            streak_obj.idx := 1
                             streak_obj.amt := 0
-                            ; this.F300.sum_4lost := streak_obj.sum_amt
+                            this.F300.sum_4lost := streak_obj.sum_amt
+                            this.F300.sum2_4lost += this.F300.streak_obj.sum_amt
                             ; this.F300.amt := (this.F300.sum_4lost*0.5)/0.92
-                            this.amount := this.F300.amt
+                            ; this.amount := this.F300.amt
                             streak_obj.sum_amt := 0
                             this.F300.iter_lost5++
                             if state > 0
@@ -465,6 +464,8 @@ class TraderBot {
                             else
                                 this.F300.%str_state% := -1
                         }
+                        streak_obj.amt := amts[streak_obj.idx]
+                        streak_obj.amt += cent_amts[streak_obj.idx]
 
                     }
                 } else if (streak > this.streak_prev[1]) {
@@ -661,7 +662,7 @@ class TraderBot {
             this.switch_win_loss[n].state2_pause := 0
             for k, v in this.switch_win_loss {
                 if (v.idx2 >= 3) {
-                    this.switch_win_loss[n].state2_pause := 1
+                    ; this.switch_win_loss[n].state2_pause := 1
                     break
                 }
             }
@@ -678,7 +679,7 @@ class TraderBot {
             }
         }
     }
-    
+
     AmountOverride2() {
         streak := this.stats.streak        
         for helper in [_helper0811_4Loss] {
@@ -751,14 +752,22 @@ class TraderBot {
         
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         this.amount := 1
-        if (not this.AmountOverride1()) {
-            if (this.loss5_seq.state != 1 and (this.stats.streak_real = -2 or this.streak_prev[1] = -2)) {
-                ; this.AmountOverride3()
-            }
-            ; this.AmountOverride4()
-        }
+        this.AmountOverride1()
+        streak := this.stats.streak_real
         if (this.stats.streak_real != this.streak_prev[1])
             this.AmountOverride5()
+        
+        if (streak = 1) {
+            i := this.switch_win_loss[1].idx3 - 1
+            amts := [6]
+            Loop 100 {
+                amts.Push(amts[-1]*2+3)
+            }
+            if (i > 0) {
+                this.amount := amts[i]
+            }
+        }
+
         
         this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
@@ -1096,6 +1105,7 @@ class TraderBot {
         this.balance.max := 5300
 
         this.F300 := {
+            sum2_4lost: 0,
             acc_sum_4lost: 0,
             sum_4lost: 0,
             stateW: 0,
@@ -1869,14 +1879,16 @@ class TraderBot {
         } else {
             str_g := 'regular-OFF: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
         }
-        if (this.switch_win_loss[1].idx3 >= 7 and this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
-            str_h := 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
+        pref := '[sum-4: ' this.F300.sum2_4lost ' ] '
+        if (this.switch_win_loss[1].idx3 >= 2 and this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
+            str_h := pref 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
             if (this.F300.stateW = 0) {
                 str_d := 'idx3(H)-ON | ' str_d
             }
         } else {
-            str_h := 'idx3-OFF: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
+            str_h := pref 'idx3-OFF: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
         }
+
 
         str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
