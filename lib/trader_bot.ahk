@@ -381,7 +381,7 @@ class TraderBot {
             this.F300.stateL := -1
             this.F300.bal := this.stats.max_bal_diff
         }
-        amts := [3*this.F300.iter_lost5+1]
+        amts := [3*(this.F300.iter_lost5+1)]
         cent_amts := [0.01*this.F300.iter_lost5+1]
         Loop 10 {
             amts.Push(amts[-1]*2+3)
@@ -428,8 +428,6 @@ class TraderBot {
                         continue
                     }
                     if (v.losses > max_loss) {
-                        this.F300.streaks[k].amt := amts[1]*(this.F300.iter_lost5+1)
-                        this.F300.streaks[k].idx := 1
                         this.F300.%str_state% := k
                         v.amt := amts[1]
                         v.idx := 1
