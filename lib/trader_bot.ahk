@@ -591,7 +591,7 @@ class TraderBot {
         this.amount := 1
         if (this.stats.streak_real >= 7) {
             amts := [100, 80, 60, 40, 15, 1]
-            this.amount := amts[this.stats.streak_real - 6]
+            this.amount := amts[Min(this.stats.streak_real - 6, amts.Length)]
             overriden := 1
         }
 
