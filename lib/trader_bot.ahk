@@ -400,7 +400,7 @@ class TraderBot {
                 } else {
                     this.F300.acc_sum_4lost := 1
                     this.F300.sum_4lost += this.F300.amt
-                    this.F300.amt := this.F300.sum_4lost
+                    this.F300.amt := this.F300.sum_4lost/0.92
                 }
                 this.F300.sum_4lost := Round(this.F300.sum_4lost, 2)
                 this.amount := this.F300.amt
@@ -409,7 +409,7 @@ class TraderBot {
                 if (this.F300.acc_sum_4lost = 0) {
                     this.F300.acc_sum_4lost := 1
                     ; this.F300.sum_4lost += this.F300.amt
-                    this.F300.amt := this.F300.sum_4lost
+                    this.F300.amt := this.F300.sum_4lost/0.92
                     this.amount := this.F300.amt
                     return
                 }
