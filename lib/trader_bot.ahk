@@ -453,8 +453,8 @@ class TraderBot {
                             streak_obj.losses := 0
                             streak_obj.idx := 1
                             streak_obj.amt := 0
-                            this.F300.sum_4lost := streak_obj.sum_amt
-                            this.F300.sum2_4lost += streak_obj.sum_amt
+                            ; this.F300.sum_4lost := streak_obj.sum_amt
+                            ; this.F300.sum2_4lost += streak_obj.sum_amt
                             ; this.F300.amt := (this.F300.sum_4lost*0.5)/0.92
                             ; this.amount := this.F300.amt
                             streak_obj.sum_amt := 0
@@ -757,9 +757,13 @@ class TraderBot {
         if (this.stats.streak_real != this.streak_prev[1])
             this.AmountOverride5()
         
+        i := this.switch_win_loss[1].idx3 - 1
+        if (streak = -1 and this.streak_prev[1] = 1 and i >= 4) {
+            this.F300.iter_lost5++
+            this.switch_win_loss[1].idx3 := 0
+        }
         if (streak = 1) {
-            i := this.switch_win_loss[1].idx3 - 1
-            amts := [6]
+            amts := [3*(this.F300.iter_lost5+1)]
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
             }
@@ -1879,7 +1883,7 @@ class TraderBot {
         } else {
             str_g := 'regular-OFF: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
         }
-        pref := '[sum-4: ' this.F300.sum2_4lost ' ] '
+        ; pref := '[sum-4: ' this.F300.sum2_4lost ' ] '
         if (this.switch_win_loss[1].idx3 >= 2 and this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
             str_h := pref 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
             if (this.F300.stateW = 0) {
