@@ -454,7 +454,7 @@ class TraderBot {
                             streak_obj.idx := 1
                             streak_obj.amt := 0
                             this.F300.sum_4lost := streak_obj.sum_amt
-                            this.F300.sum2_4lost += this.F300.streak_obj.sum_amt
+                            this.F300.sum2_4lost += streak_obj.sum_amt
                             ; this.F300.amt := (this.F300.sum_4lost*0.5)/0.92
                             ; this.amount := this.F300.amt
                             streak_obj.sum_amt := 0
