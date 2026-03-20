@@ -371,6 +371,40 @@ class TraderBot {
         }
     }
 
+    AmountOverride6() {
+        streak := this.stats.streak_real
+        i := this.switch_win_loss[1].idx3 - 1
+        if (streak = -1 and this.streak_prev[1] = 1 and i > 4) {
+            this.F300.iter_lost5++
+            this.switch_win_loss[1].idx3 := 0
+        }
+        if (streak = 1) {
+            amts := [3*(this.F300.iter_lost5+1)]
+            Loop 100 {
+                amts.Push(amts[-1]*2+3)
+            }
+            if (i > 0) {
+                this.amount := amts[i]
+            }
+        }
+
+        lost4_won := this.F300.lost4_won
+        if (streak = 4) {
+            lost4_won.streaks[streak].amt := this.amount
+        } else if (streak > 4) {
+            if (lost4_won.streaks[streak].lost_before = 0) {
+                lost4_won.streaks[streak].amt := lost4_won.streaks[streak-1].amt * 0.5
+            }
+            lost4_won.streaks[this.streak_prev[1]].lost_before := 0
+            this.amount := lost4_won.streaks[streak].amt
+        }
+
+        if (streak < 0 and this.streak_prev[1] > 4) {
+            lost4_won.streaks[this.streak_prev[1]].amt := lost4_won.streaks[this.streak_prev[1]].amt*2 + 3
+            lost4_won.streaks[this.streak_prev[1]].lost_before := 1
+        }
+    }
+
     AmountOverride5() {
         streak := this.stats.streak_real
         abs_streak_current := Abs(streak)
@@ -752,26 +786,12 @@ class TraderBot {
         
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
         this.amount := 1
+
         this.AmountOverride1()
         streak := this.stats.streak_real
         if (this.stats.streak_real != this.streak_prev[1])
             this.AmountOverride5()
-        
-        i := this.switch_win_loss[1].idx3 - 1
-        if (streak = -1 and this.streak_prev[1] = 1 and i > 4) {
-            this.F300.iter_lost5++
-            this.switch_win_loss[1].idx3 := 0
-        }
-        if (streak = 1) {
-            amts := [3*(this.F300.iter_lost5+1)]
-            Loop 100 {
-                amts.Push(amts[-1]*2+3)
-            }
-            if (i > 0) {
-                this.amount := amts[i]
-            }
-        }
-
+        this.AmountOverride6()
         
         this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
@@ -1109,6 +1129,7 @@ class TraderBot {
         this.balance.max := 5300
 
         this.F300 := {
+            lost4_won: {state: 0, streaks: Map()},
             sum2_4lost: 0,
             acc_sum_4lost: 0,
             sum_4lost: 0,
@@ -1119,6 +1140,9 @@ class TraderBot {
             count: 0,
             iter_lost5: 1,
             streaks: Map(3, {}, 4, {}, -3, {}, -4, {})
+        }
+        Loop 20 {
+            this.F300.lost4_won.streaks[A_Index+3] := {lost_before: 0, amt: 0}
         }
         for k, v in this.F300.streaks {
             v.sum_amt := 0
