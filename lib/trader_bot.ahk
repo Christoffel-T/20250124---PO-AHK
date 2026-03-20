@@ -373,11 +373,11 @@ class TraderBot {
 
     AmountOverride6() {
         streak := this.stats.streak_real
-        i := this.switch_win_loss[1].idx3 - 1
-        if (streak = -1 and this.streak_prev[1] = 1 and i > 4) {
-            this.F300.iter_lost5++
-            this.switch_win_loss[1].idx3 := 0
-        }
+        i := this.switch_win_loss[1].idx3 - 2
+        ; if (streak = -1 and this.streak_prev[1] = 1 and i > 4) {
+        ;     this.F300.iter_lost5++
+        ;     this.switch_win_loss[1].idx3 := 0
+        ; }
         if (streak = 1) {
             amts := [3*(this.F300.iter_lost5+1)]
             Loop 100 {
@@ -483,21 +483,21 @@ class TraderBot {
                         streak_obj.idx++
                         streak_obj.sum_amt += streak_obj.amt
                         streak_obj.sum_amt := Round(streak_obj.sum_amt, 2)
-                        if (streak_obj.idx >= 5) {
-                            streak_obj.losses := 0
-                            streak_obj.idx := 1
-                            streak_obj.amt := 0
-                            ; this.F300.sum_4lost := streak_obj.sum_amt
-                            ; this.F300.sum2_4lost += streak_obj.sum_amt
-                            ; this.F300.amt := (this.F300.sum_4lost*0.5)/0.92
-                            ; this.amount := this.F300.amt
-                            streak_obj.sum_amt := 0
-                            this.F300.iter_lost5++
-                            if state > 0
-                                this.F300.%str_state% := 1
-                            else
-                                this.F300.%str_state% := -1
-                        }
+                        ; if (streak_obj.idx >= 5) {
+                        ;     streak_obj.losses := 0
+                        ;     streak_obj.idx := 1
+                        ;     streak_obj.amt := 0
+                        ;     ; this.F300.sum_4lost := streak_obj.sum_amt
+                        ;     ; this.F300.sum2_4lost += streak_obj.sum_amt
+                        ;     ; this.F300.amt := (this.F300.sum_4lost*0.5)/0.92
+                        ;     ; this.amount := this.F300.amt
+                        ;     streak_obj.sum_amt := 0
+                        ;     this.F300.iter_lost5++
+                        ;     if state > 0
+                        ;         this.F300.%str_state% := 1
+                        ;     else
+                        ;         this.F300.%str_state% := -1
+                        ; }
                         streak_obj.amt := amts[streak_obj.idx]
                         streak_obj.amt += cent_amts[streak_obj.idx]
 
