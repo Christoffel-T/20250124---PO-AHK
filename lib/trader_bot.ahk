@@ -758,7 +758,7 @@ class TraderBot {
             this.AmountOverride5()
         
         i := this.switch_win_loss[1].idx3 - 1
-        if (streak = -1 and this.streak_prev[1] = 1 and i >= 4) {
+        if (streak = -1 and this.streak_prev[1] = 1 and i > 4) {
             this.F300.iter_lost5++
             this.switch_win_loss[1].idx3 := 0
         }
