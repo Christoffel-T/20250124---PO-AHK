@@ -378,7 +378,9 @@ class TraderBot {
             if (i = 5) {
                 this.F300.iter_lost5++
             }
-            this.switch_win_loss[1].sum_amt := Round(this.switch_win_loss[1].sum_amt + this.switch_win_loss[1].amt, 2)
+            if (i > 1) {
+                this.switch_win_loss[1].sum_amt := Round(this.switch_win_loss[1].sum_amt + amts[i-1], 2)
+            }
             ; this.switch_win_loss[1].idx3 := 0
         }
         if (streak = 1) {
