@@ -374,6 +374,7 @@ class TraderBot {
     AmountOverride6() {
         streak := this.stats.streak_real
         i := this.switch_win_loss[1].idx3 - 2
+        amts := [6+(0.5*this.F300.iter_lost5-1)]
         if (streak = -1 and this.streak_prev[1] = 1) {
             if (i = 5) {
                 this.F300.iter_lost5++
@@ -384,7 +385,6 @@ class TraderBot {
             ; this.switch_win_loss[1].idx3 := 0
         }
         if (streak = 1) {
-            amts := [6+(0.5*this.F300.iter_lost5-1)]
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
             }
@@ -395,7 +395,7 @@ class TraderBot {
 
         lost4_won := this.F300.lost4_won
         if (streak = 4) {
-            lost4_won.streaks[streak].amt := this.amount
+            lost4_won.streaks [streak].amt := this.amount
         } else if (streak > 4) {
             if (lost4_won.streaks[streak].lost_before = 0) {
                 lost4_won.streaks[streak].amt := lost4_won.streaks[streak-1].amt * 0.5
