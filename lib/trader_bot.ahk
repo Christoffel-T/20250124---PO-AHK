@@ -374,7 +374,7 @@ class TraderBot {
     AmountOverride6() {
         streak := this.stats.streak_real
         i := this.switch_win_loss[1].idx3 - 2
-        amts := [6+(0.5*this.F300.iter_lost5-1)]
+        amts := [6+(0.5*this.F300.iter_lost5)]
         Loop 100 {
             amts.Push(amts[-1]*2+3)
         }
@@ -420,8 +420,8 @@ class TraderBot {
             this.F300.stateL := -1
             this.F300.bal := this.stats.max_bal_diff
         }
-        amts := [6+(0.5*this.F300.iter_lost5-1)]
-        cent_amts := [0.05*(this.F300.iter_lost5)]
+        amts := [6+(0.5*this.F300.iter_lost5)]
+        cent_amts := [0.05*(this.F300.iter_lost5+1)]
         Loop 10 {
             amts.Push(amts[-1]*2+3)
             cent_amts.Push(cent_amts[-1]*2+0.01)
@@ -1929,7 +1929,7 @@ class TraderBot {
         str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
             str_i := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_i
-        str_i := str_i ' (' Format('{:.2f}', 6+(0.5*this.F300.iter_lost5-1)) ')'
+        str_i := str_i ' (' Format('{:.2f}', 6+(0.5*this.F300.iter_lost5)) ')'
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_k := format('{:.2f}', this.balance.side)
         str_o := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
