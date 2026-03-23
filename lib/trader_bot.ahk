@@ -1924,7 +1924,7 @@ class TraderBot {
         } else {
             str_h := pref 'idx3-OFF: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
         }
-        str_h := str_h ' (' this.amount ' [sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
+        str_h := str_h ' (' format('{:.2f}', this.amount) ' [sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
 
         str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
