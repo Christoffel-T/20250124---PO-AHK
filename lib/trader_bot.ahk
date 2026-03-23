@@ -411,6 +411,12 @@ class TraderBot {
             lost4_won.streaks[this.streak_prev[1]].amt := lost4_won.streaks[this.streak_prev[1]].amt*2 + 3
             lost4_won.streaks[this.streak_prev[1]].lost_before := 1
         }
+
+        if (streak <= -7) {
+            amts_min7 := [2, 5, 11, 27, 65, 135, 280, 580, 1075, 2500]
+            i := Abs(streak) - 6
+            this.amount := amts_min7[i]
+        }
     }
 
     AmountOverride5() {
