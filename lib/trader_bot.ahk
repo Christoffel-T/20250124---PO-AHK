@@ -378,6 +378,11 @@ class TraderBot {
         Loop 100 {
             amts.Push(amts[-1]*2+3)
         }
+        if (streak = 1) {
+            if (i > 0) {
+                this.amount := amts[i]
+            }
+        }
         if (streak = -1 and this.streak_prev[1] = 1) {
             if (i = 5) {
                 this.F300.iter_lost5++
@@ -389,11 +394,6 @@ class TraderBot {
                 this.switch_win_loss[1].sum_amt := 0
             }
             ; this.switch_win_loss[1].idx3 := 0
-        }
-        if (streak = 1) {
-            if (i > 0) {
-                this.amount := amts[i]
-            }
         }
 
         lost4_won := this.F300.lost4_won
@@ -1926,14 +1926,25 @@ class TraderBot {
         pref := ''
         ; pref := '[sum-4: ' this.F300.sum2_4lost ' ] '
         if (this.switch_win_loss[1].idx3 >= 2 and this.switch_win_loss[1].state2_pause = 0 and Helper0811_4Loss.Get().level >= 2) {
-            str_h := pref 'idx3-ON: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
+            str_h := pref '[-' this.switch_win_loss[1].idx3 '] ' ; max=[-' this.switch_win_loss[1].max_idx3 ']'
             if (this.F300.stateW = 0) {
                 str_d := 'idx3(H)-ON | ' str_d
             }
         } else {
-            str_h := pref 'idx3-OFF: [-' this.switch_win_loss[1].idx3 '] max=[-' this.switch_win_loss[1].max_idx3 ']'
+            str_h := pref '[-' this.switch_win_loss[1].idx3 '] ' ; max=[-' this.switch_win_loss[1].max_idx3 ']'
         }
-        str_h := str_h ' (' format('{:.2f}', this.amount) ' [sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
+
+        next_bet := format('{:.2f}', 6)
+        streak := this.stats.streak_real
+        i := this.switch_win_loss[1].idx3 - 2
+        amts := [6+(0.5*this.F300.iter_lost5)]
+        Loop 100 {
+            amts.Push(amts[-1]*2+3)
+        }
+        if (i > 0) {
+            next_bet := amts[i]
+        }
+        str_h := str_h ' (next_bet: ' next_bet ' [sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
 
         str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
