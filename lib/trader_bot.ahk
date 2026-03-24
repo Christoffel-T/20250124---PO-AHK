@@ -1934,7 +1934,7 @@ class TraderBot {
             str_h := pref '[-' this.switch_win_loss[1].idx3 '] ' ; max=[-' this.switch_win_loss[1].max_idx3 ']'
         }
 
-        next_bet := format('{:.2f}', 6)
+        current_bet := format('{:.2f}', 6)
         streak := this.stats.streak_real
         i := this.switch_win_loss[1].idx3 - 2
         amts := [6+(0.5*this.F300.iter_lost5)]
@@ -1942,9 +1942,13 @@ class TraderBot {
             amts.Push(amts[-1]*2+3)
         }
         if (i > 0) {
-            next_bet := amts[i]
+            current_bet := amts[i]
         }
-        str_h := str_h ' (next_bet: ' next_bet ' [sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
+        if (streak = 1) {
+            str_h := str_h ' (bet: ' current_bet ' [sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
+        } else {
+            str_h := str_h ' ([sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
+        }
 
         str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
