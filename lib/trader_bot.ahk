@@ -383,15 +383,15 @@ class TraderBot {
                 this.amount := amts[i]
             }
         }
+        if (streak = 2 and this.streak_prev[1] = 1) {
+            this.switch_win_loss[1].sum_amt := 0
+        }
         if (streak = -1 and this.streak_prev[1] = 1) {
             if (i = 5) {
                 this.F300.iter_lost5++
             }
             if (i > 1) {
                 this.switch_win_loss[1].sum_amt := Round(this.switch_win_loss[1].sum_amt + amts[i-1], 2)
-            }
-            if (i = 1) {
-                this.switch_win_loss[1].sum_amt := 0
             }
             ; this.switch_win_loss[1].idx3 := 0
         }
