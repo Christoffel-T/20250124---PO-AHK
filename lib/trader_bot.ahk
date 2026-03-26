@@ -1200,7 +1200,7 @@ class TraderBot {
             v.idx := 0
             v.losses := 0
             v.amt := 0
-            v.state := 0
+            v.state_5lost := 0
         }
         this.qualifier_221_210 := {
             state: 0,
