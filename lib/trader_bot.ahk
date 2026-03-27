@@ -751,10 +751,8 @@ class TraderBot {
                 }
             }
 
-            if (streak = 1) {
-                if (i > 0) {
-                    this.switch_win_loss[1].amt := amts[i]
-                }
+            if (i > 0 and streak = 1 and streak_obj.state_5lost = 0) {
+                streak_obj.amt := amts[i]
             }
 
             this.switch_win_loss[n].max_idx3 := max(this.switch_win_loss[n].idx3, this.switch_win_loss[n].max_idx3)
@@ -1982,9 +1980,9 @@ class TraderBot {
             amts.Push(amts[-1]*2+3)
         }
         if (i > 0) {
-            current_bet := amts[i]
+            current_bet := this.switch_win_loss[1].amt
         }
-        if (streak = 1) {
+        if (streak = 1 and i > 0) {
             str_h := str_h ' (bet: ' current_bet ' [sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
         } else {
             str_h := str_h ' ([sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
