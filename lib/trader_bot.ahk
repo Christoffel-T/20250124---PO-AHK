@@ -380,21 +380,21 @@ class TraderBot {
             }
         }
 
-        lost4_won := this.F300.lost4_won
-        if (streak = 4) {
-            lost4_won.streaks [streak].amt := this.amount
-        } else if (streak > 4) {
-            if (lost4_won.streaks[streak].lost_before = 0) {
-                lost4_won.streaks[streak].amt := lost4_won.streaks[streak-1].amt * 0.5
-            }
-            lost4_won.streaks[this.streak_prev[1]].lost_before := 0
-            this.amount := lost4_won.streaks[streak].amt
-        }
+        ; lost4_won := this.F300.lost4_won
+        ; if (streak = 4) {
+        ;     lost4_won.streaks [streak].amt := this.amount
+        ; } else if (streak > 4) {
+        ;     if (lost4_won.streaks[streak].lost_before = 0) {
+        ;         lost4_won.streaks[streak].amt := lost4_won.streaks[streak-1].amt * 0.5
+        ;     }
+        ;     lost4_won.streaks[this.streak_prev[1]].lost_before := 0
+        ;     this.amount := lost4_won.streaks[streak].amt
+        ; }
 
-        if (streak < 0 and this.streak_prev[1] > 4) {
-            lost4_won.streaks[this.streak_prev[1]].amt := lost4_won.streaks[this.streak_prev[1]].amt*2 + 3
-            lost4_won.streaks[this.streak_prev[1]].lost_before := 1
-        }
+        ; if (streak < 0 and this.streak_prev[1] > 4) {
+        ;     lost4_won.streaks[this.streak_prev[1]].amt := lost4_won.streaks[this.streak_prev[1]].amt*2 + 3
+        ;     lost4_won.streaks[this.streak_prev[1]].lost_before := 1
+        ; }
 
         if (streak <= -7) {
             amts_min7 := [2, 5, 11, 27, 65, 135, 280, 580, 1075, 2500]
@@ -419,7 +419,7 @@ class TraderBot {
             amts.Push(amts[-1]*2+3)
             cent_amts.Push(cent_amts[-1]*2+0.01)
         }
-        percs := [0.4]
+        percs := [1.4]
         Loop 100 {
             percs.Push(percs[-1]+0.15)
         }
@@ -712,7 +712,7 @@ class TraderBot {
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
             }
-            percs := [0.4]
+            percs := [1.4]
             Loop 100 {
                 percs.Push(percs[-1]+0.15)
             }
