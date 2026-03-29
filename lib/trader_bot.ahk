@@ -419,7 +419,7 @@ class TraderBot {
             amts.Push(amts[-1]*2+3)
             cent_amts.Push(cent_amts[-1]*2+0.01)
         }
-        percs := [1.4]
+        percs := [0.4]
         Loop 100 {
             percs.Push(percs[-1]+0.15)
         }
@@ -523,7 +523,7 @@ class TraderBot {
                     }
                 }
             }
-        }        
+        }
     }
     
     AmountOverride4() {
@@ -712,7 +712,7 @@ class TraderBot {
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
             }
-            percs := [1.4]
+            percs := [0.4]
             Loop 100 {
                 percs.Push(percs[-1]+0.15)
             }
@@ -1175,6 +1175,8 @@ class TraderBot {
     QualifiersReset() {
         Helper0811_4Loss.Reset()
         this.balance.max := 5300
+
+        this.perc40 := Map('loss7', {}, 'win1')
 
         this.F300 := {
             2xplus3: {state: 0, streaks: Map()},
