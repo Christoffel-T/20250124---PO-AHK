@@ -1176,7 +1176,7 @@ class TraderBot {
         Helper0811_4Loss.Reset()
         this.balance.max := 5300
 
-        this.perc40 := Map('loss7', {}, 'win1')
+        this.perc40 := Map('loss7', {}, 'win1', {})
 
         this.F300 := {
             2xplus3: {state: 0, streaks: Map()},
