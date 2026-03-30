@@ -372,6 +372,10 @@ class TraderBot {
     }
 
     AmountOverride6() {
+        percs := [0.4]
+        Loop 100 {
+            percs.Push(percs[-1]+0.15)
+        }
         streak := this.stats.streak_real
         i := this.switch_win_loss[1].idx3 - 2
         if (streak = 1) {
@@ -380,26 +384,42 @@ class TraderBot {
             }
         }
 
-        ; lost4_won := this.F300.lost4_won
-        ; if (streak = 4) {
-        ;     lost4_won.streaks [streak].amt := this.amount
-        ; } else if (streak > 4) {
-        ;     if (lost4_won.streaks[streak].lost_before = 0) {
-        ;         lost4_won.streaks[streak].amt := lost4_won.streaks[streak-1].amt * 0.5
-        ;     }
-        ;     lost4_won.streaks[this.streak_prev[1]].lost_before := 0
-        ;     this.amount := lost4_won.streaks[streak].amt
-        ; }
-
-        ; if (streak < 0 and this.streak_prev[1] > 4) {
-        ;     lost4_won.streaks[this.streak_prev[1]].amt := lost4_won.streaks[this.streak_prev[1]].amt*2 + 3
-        ;     lost4_won.streaks[this.streak_prev[1]].lost_before := 1
-        ; }
-
+        streak_obj := this.F300.streak7_40
         if (streak <= -7) {
             amts_min7 := [2, 5, 11, 27, 65, 135, 280, 580, 1075, 2500]
             i := Abs(streak) - 6
             this.amount := amts_min7[i]
+            if (streak_obj.amt > 0) {
+                this.amount := streak_obj.amt
+            }
+        }
+        if (this.streak_prev[1] <= -12) {
+            if (streak < this.streak_prev[1]) {
+                streak_obj.sum_amt += streak_obj.amt
+                if (streak_obj.state_5lost = '5lostwon2') {
+                    streak_obj.amt := streak_obj.sum_amt * 2 + 3
+                } else if (streak_obj.state_5lost = '5lostwon1') {
+                    streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx]
+                } else if (streak_obj.idx >= 5) {
+                    streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx - 4]
+                    streak_obj.state_5lost := '5lost'
+                }
+            } else if (streak > this.streak_prev[1]) {
+                if (streak_obj.state_5lost = '5lost') {
+                    streak_obj.idx := 1
+                    streak_obj.state_5lost := '5lostwon1'
+                    streak_obj.amt := streak_obj.sum_amt * percs[1]
+                } else if (streak_obj.state_5lost = '5lostwon1') {
+                    streak_obj.state_5lost := '5lostwon2'
+                    streak_obj.amt := streak_obj.sum_amt * 2 + 3
+                } else {
+                    streak_obj.state_5lost := 0
+                    streak_obj.amt := 0
+                }
+            }
+            if (streak_obj.amt > 0) {
+                this.amount := streak_obj.amt
+            }
         }
     }
 
@@ -501,7 +521,7 @@ class TraderBot {
                     }
                 } else if (streak > this.streak_prev[1]) {
                     streak_obj.amt := 0
-                    streak_obj.sum_amt := 0
+                    streak_obj.sum_amt -= streak_obj.amt
                     if (state = this.streak_prev[1]) {
                         streak_obj.losses := 0
                         streak_obj.idx := 0
@@ -720,6 +740,7 @@ class TraderBot {
             
             if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1] and this.switch_win_loss[n].state2_pause = 0) {
                 streak_obj.idx3 := 0
+                streak_obj.sum_amt -= streak_obj.amt
                 if (streak_obj.state_5lost = '5lost') {
                     streak_obj.idx3 := 1 +2
                     streak_obj.state_5lost := '5lostwon1'
@@ -1176,9 +1197,14 @@ class TraderBot {
         Helper0811_4Loss.Reset()
         this.balance.max := 5300
 
-        this.perc40 := Map('loss7', {}, 'win1', {})
+        this.perc40 := Map('loss7', {}, 'win1', {}, 'wl34', {})
+        for k, v in this.perc40 {
+            v.state := 0
+            v.amt := 0
+        }
 
         this.F300 := {
+            streak7_40: {state_5lost: 0, amt: 0, sum_amt: 0, idx: 0, losses: 0},
             2xplus3: {state: 0, streaks: Map()},
             lost4_won: {state: 0, streaks: Map()},
             sum2_4lost: 0,
