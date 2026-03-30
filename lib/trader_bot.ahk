@@ -521,7 +521,7 @@ class TraderBot {
                     }
                 } else if (streak > this.streak_prev[1]) {
                     streak_obj.amt := 0
-                    streak_obj.sum_amt -= streak_obj.amt
+                    streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
                     if (state = this.streak_prev[1]) {
                         streak_obj.losses := 0
                         streak_obj.idx := 0
@@ -535,11 +535,12 @@ class TraderBot {
                         } else {
                             streak_obj.state_5lost := 0
                             streak_obj.amt := 0
+                            streak_obj.sum_amt := 0
+                            if state > 0
+                                this.F300.%str_state% := 1
+                            else
+                                this.F300.%str_state% := -1
                         }
-                        if state > 0
-                            this.F300.%str_state% := 1
-                        else
-                            this.F300.%str_state% := -1
                     }
                 }
             }
@@ -740,7 +741,7 @@ class TraderBot {
             
             if (inst.streak > 0 and this.streak_prev[1] = n and inst.streak != this.streak_prev[1] and this.switch_win_loss[n].state2_pause = 0) {
                 streak_obj.idx3 := 0
-                streak_obj.sum_amt -= streak_obj.amt
+                streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
                 if (streak_obj.state_5lost = '5lost') {
                     streak_obj.idx3 := 1 +2
                     streak_obj.state_5lost := '5lostwon1'
@@ -751,6 +752,7 @@ class TraderBot {
                 } else {
                     streak_obj.state_5lost := 0
                     streak_obj.amt := 0
+                    streak_obj.sum_amt := 0
                 }
             }
             i := this.switch_win_loss[1].idx3 - 2
@@ -1950,7 +1952,7 @@ class TraderBot {
             if this.F300.stateL < -1 {
                 str_lose := 'L' this.F300.stateL '(' this.F300.streaks[this.F300.stateL].idx ' | sum: ' this.F300.streaks[this.F300.stateL].sum_amt ')'
             }
-            str_d := '(' pref ') ' 'F300 ON [' this.F300.sum_4lost '] (' str_win ' ' str_lose ')' '|4loss:' this.F300.iter_lost5 ') | ' str_d
+            str_d := '(' pref ') ' 'F300 ON [' format('{:.2f}', this.F300.sum_4lost) '] (' str_win ' ' str_lose ')' '|4loss:' this.F300.iter_lost5 ') | ' str_d
 
         } else if (this.qualifier_221_210.state = 1) {
             str_d := '150/161 ON | ' str_d
@@ -2013,7 +2015,7 @@ class TraderBot {
         if (streak = 1 and i > 0) {
             str_h := str_h ' (bet: ' current_bet ' [sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
         } else {
-            str_h := str_h ' ([sum: ' Round(this.switch_win_loss[1].sum_amt, 2) '])'
+            str_h := str_h ' ([sum: ' format('{:.2f}', this.switch_win_loss[1].sum_amt) '])'
         }
 
         str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
