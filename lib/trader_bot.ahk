@@ -496,7 +496,6 @@ class TraderBot {
                         }
                     }
                 } else if (streak > this.streak_prev[1]) {
-                    streak_obj.amt := 0
                     streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
                     if (state = this.streak_prev[1]) {
                         streak_obj.losses := 0
