@@ -1198,7 +1198,7 @@ class TraderBot {
 
         this.win5andabove := Map(4, {amt: 100})
         Loop 20 {
-            this.win5andabove[A_Index+5] := {previous_lost: 0, amt: 0}
+            this.win5andabove[A_Index+4] := {previous_lost: 0, amt: 0}
         }
         this.F300 := {
             streak7_40: {state_5lost: 0, amt: 0, sum_amt: 0, idx: 0, losses: 0},
