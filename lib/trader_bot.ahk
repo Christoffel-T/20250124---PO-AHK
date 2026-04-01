@@ -623,8 +623,8 @@ class TraderBot {
         if (this.stats.streak_real <= -7) {
             this.amount := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
             overriden := 1
-            this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
         }
+        this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
 
         ; disable
         this.amount := 1
@@ -708,13 +708,9 @@ class TraderBot {
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
             }
-            amts2 := [30]
+            percs := [0.3]
             Loop 100 {
-                amts2.Push(amts2[-1]+10)
-            }
-            percs := [0.4]
-            Loop 100 {
-                percs.Push(percs[-1]+0.15)
+                percs.Push(percs[-1]+0.10)
             }
             streak_obj := this.switch_win_loss[n]
             
@@ -724,7 +720,7 @@ class TraderBot {
                 if (streak_obj.state_5lost = '5lost') {
                     streak_obj.idx3 := 1 +1
                     streak_obj.state_5lost := '5lostwon1'
-                    streak_obj.amt := amts2[1]
+                    streak_obj.amt := streak_obj.sum_amt *percs[1]
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.state_5lost := '5lostwon2'
                     streak_obj.amt := streak_obj.sum_amt * 2 + 3
@@ -744,9 +740,9 @@ class TraderBot {
                 if (streak_obj.state_5lost = '5lostwon2') {
                     streak_obj.amt := streak_obj.sum_amt * 2 + 3
                 } else if (streak_obj.state_5lost = '5lostwon1') {
-                    streak_obj.amt := amts2[streak_obj.idx3]
+                    streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx3]
                 } else if (i >= 5) {
-                    streak_obj.amt := amts2[i - 4]
+                    streak_obj.amt := streak_obj.sum_amt *percs[i - 4]
                     streak_obj.state_5lost := '5lost'
                 }
             }
@@ -1981,11 +1977,7 @@ class TraderBot {
 
         current_bet := format('{:.2f}', 6)
         streak := this.stats.streak_real
-        i := this.switch_win_loss[1].idx3 - 2
-        amts := [6+(0.5*this.F300.iter_lost5)]
-        Loop 100 {
-            amts.Push(amts[-1]*2+3)
-        }
+        i := this.switch_win_loss[1].idx3 - 1
         if (i > 0) {
             current_bet := this.switch_win_loss[1].amt
         }
