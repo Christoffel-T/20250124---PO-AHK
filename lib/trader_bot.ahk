@@ -454,7 +454,7 @@ class TraderBot {
             this.F300.stateL := -1
             this.F300.bal := this.stats.max_bal_diff
         }
-        amts := [6]
+        amts := [6+(0.5*this.F300.iter_lost5)]
         cent_amts := [0.05*(this.F300.iter_lost5+1)]
         Loop 10 {
             amts.Push(amts[-1]*2+3)
@@ -723,7 +723,7 @@ class TraderBot {
                     break
                 }
             }
-            amts := [6]
+            amts := [6+(0.5*this.F300.iter_lost5)]
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
             }
