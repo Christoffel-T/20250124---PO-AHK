@@ -721,7 +721,7 @@ class TraderBot {
                     break
                 }
             }
-            amts := [6+(0.5*this.F300.iter_lost5)]
+            amts := [6]
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
             }
