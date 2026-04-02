@@ -374,11 +374,13 @@ class TraderBot {
     AmountOverride7Win5() {
         streak := this.stats.streak_real
         streak_prev := this.streak_prev[1]
-        if (streak_prev >= 4) {
+        if (streak_prev >= 5) {
             if (streak > streak_prev) {
-                this.win5andabove[streak].amt := this.win5andabove[streak_prev].amt * 0.5
-                this.win5andabove[streak].previous_lost := 0
-            } else if (streak < streak_prev and streak_prev >= 5) {
+                if (this.win5andabove[streak].previous_lost = 0) {
+                    this.win5andabove[streak].amt := this.win5andabove[streak_prev].amt * 0.5
+                }
+                this.win5andabove[streak_prev].previous_lost := 0
+            } else if (streak < streak_prev) {
                 this.win5andabove[streak_prev].amt := this.win5andabove[streak_prev].amt * 2 + 3
                 this.win5andabove[streak_prev].previous_lost := 1
             }
@@ -2014,7 +2016,7 @@ class TraderBot {
         str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
             str_i := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_i
-        str_i := str_i ' (' Format('{:.2f}', 6) ')'
+        str_i := str_i ' (bet: ' Format('{:.2f}', this.amount) ')'
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_k := format('{:.2f}', this.balance.side)
         str_o := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
