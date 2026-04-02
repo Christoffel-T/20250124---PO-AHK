@@ -374,17 +374,18 @@ class TraderBot {
     AmountOverride7Win5() {
         streak := this.stats.streak_real
         streak_prev := this.streak_prev[1]
-        if (streak_prev >= 5) {
-            if (streak > streak_prev) {
-                if (this.win5andabove[streak].previous_lost = 0) {
-                    this.win5andabove[streak].amt := this.win5andabove[streak_prev].amt * 0.5
-                }
-                this.win5andabove[streak_prev].previous_lost := 0
-            } else if (streak < streak_prev) {
-                this.win5andabove[streak_prev].amt := this.win5andabove[streak_prev].amt * 2 + 3
-                this.win5andabove[streak_prev].previous_lost := 1
+
+        if (streak > streak_prev and streak_prev >= 4) {
+            if (this.win5andabove[streak].previous_lost = 0) {
+                this.win5andabove[streak].amt := this.win5andabove[streak_prev].amt * 0.5
             }
+            this.win5andabove[streak_prev].previous_lost := 0
         }
+        if (streak < streak_prev and streak_prev >= 5) {
+            this.win5andabove[streak_prev].amt := this.win5andabove[streak_prev].amt * 2 + 3
+            this.win5andabove[streak_prev].previous_lost := 1
+        }
+
         if (streak >= 5) {
             this.amount := this.win5andabove[streak].amt
         }
@@ -1198,7 +1199,7 @@ class TraderBot {
             v.amt := 0
         }
 
-        this.win5andabove := Map(4, {amt: 100})
+        this.win5andabove := Map(4, {previous_lost: 0, amt: 100})
         Loop 20 {
             this.win5andabove[A_Index+4] := {previous_lost: 0, amt: 0}
         }
