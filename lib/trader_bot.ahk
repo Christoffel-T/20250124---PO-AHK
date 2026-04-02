@@ -758,7 +758,7 @@ class TraderBot {
                     streak_obj.amt := streak_obj.sum_amt * 2 + 3
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx3]
-                } else if (i >= 5) {
+                } else if (i >= 3) {
                     streak_obj.amt := streak_obj.sum_amt *percs[i - 4]
                     streak_obj.state_5lost := '5lost'
                 }
@@ -2004,7 +2004,7 @@ class TraderBot {
             current_bet := this.switch_win_loss[1].amt
         }
         if (streak = 1 and i > 0) {
-            str_h := str_h ' (bet: ' current_bet ' [sum: ' format('{:.2f}', this.switch_win_loss[1].sum_amt) '])'
+            str_h := str_h ' (bet: ' format('{:.2f}', current_bet) ' [sum: ' format('{:.2f}', this.switch_win_loss[1].sum_amt) '])'
         } else {
             str_h := str_h ' ([sum: ' format('{:.2f}', this.switch_win_loss[1].sum_amt) '])'
         }
