@@ -374,13 +374,13 @@ class TraderBot {
     AmountOverride7Win5() {
         streak := this.stats.streak_real
         streak_prev := this.streak_prev[1]
-        streak_obj := this.win5andabove[streak_prev]
         percs := [0.4]
         Loop 100 {
             percs.Push(percs[-1]+0.15)
         }
-
+        
         if (streak > streak_prev and streak_prev >= 4) {
+            streak_obj := this.win5andabove[streak_prev]
             if (this.win5andabove[streak].count_loss = 0) {
                 this.win5andabove[streak].amt := Max(streak_obj.amt * 0.5, 1)
             }
@@ -400,6 +400,7 @@ class TraderBot {
             }
         }
         if (streak < streak_prev and streak_prev >= 5) {
+            streak_obj := this.win5andabove[streak_prev]
             streak_obj.count_loss++
             streak_obj.sum_amt += streak_obj.amt
             if (streak_obj.state_5lost = '5lostwon2') {
