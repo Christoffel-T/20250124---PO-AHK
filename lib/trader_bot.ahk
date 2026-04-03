@@ -374,16 +374,44 @@ class TraderBot {
     AmountOverride7Win5() {
         streak := this.stats.streak_real
         streak_prev := this.streak_prev[1]
+        streak_obj := this.win5andabove[streak_prev]
+        percs := [0.4]
+        Loop 100 {
+            percs.Push(percs[-1]+0.15)
+        }
 
         if (streak > streak_prev and streak_prev >= 4) {
-            if (this.win5andabove[streak].previous_lost = 0) {
-                this.win5andabove[streak].amt := this.win5andabove[streak_prev].amt * 0.5
+            if (this.win5andabove[streak].count_loss = 0) {
+                this.win5andabove[streak].amt := Max(streak_obj.amt * 0.5, 1)
             }
-            this.win5andabove[streak_prev].previous_lost := 0
+            streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
+            streak_obj.count_loss := 0
+            if (streak_obj.state_5lost = '5lost') {
+                streak_obj.idx := 1
+                streak_obj.state_5lost := '5lostwon1'
+                streak_obj.amt := streak_obj.sum_amt * percs[1]
+            } else if (streak_obj.state_5lost = '5lostwon1') {
+                streak_obj.state_5lost := '5lostwon2'
+                streak_obj.amt := streak_obj.sum_amt * 2 + 3
+            } else {
+                streak_obj.state_5lost := 0
+                streak_obj.amt := 0
+                streak_obj.sum_amt := 0
+            }
         }
         if (streak < streak_prev and streak_prev >= 5) {
-            this.win5andabove[streak_prev].amt := this.win5andabove[streak_prev].amt * 2 + 3
-            this.win5andabove[streak_prev].previous_lost := 1
+            streak_obj.count_loss++
+            streak_obj.sum_amt += streak_obj.amt
+            if (streak_obj.state_5lost = '5lostwon2') {
+                streak_obj.amt := streak_obj.sum_amt * 2 + 3
+            } else if (streak_obj.state_5lost = '5lostwon1') {
+                streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.count_loss]
+            } else if (streak_obj.count_loss >= 2) {
+                streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.count_loss - 1]
+                streak_obj.state_5lost := '5lost'
+            } else {
+                streak_obj.amt := streak_obj.amt * 2 + 3
+            }
         }
 
         if (streak >= 5) {
@@ -1199,9 +1227,9 @@ class TraderBot {
             v.amt := 0
         }
 
-        this.win5andabove := Map(4, {previous_lost: 0, amt: 100})
+        this.win5andabove := Map(4, {count_loss: 0, amt: 100, state_5lost: 0})
         Loop 20 {
-            this.win5andabove[A_Index+4] := {previous_lost: 0, amt: 0}
+            this.win5andabove[A_Index+4] := {count_loss: 0, amt: 0, state_5lost: 0}
         }
         this.F300 := {
             streak7_40: {state_5lost: 0, amt: 0, sum_amt: 0, idx: 0, losses: 0},
