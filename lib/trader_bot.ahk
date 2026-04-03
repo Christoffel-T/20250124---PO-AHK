@@ -1227,7 +1227,7 @@ class TraderBot {
             v.amt := 0
         }
 
-        this.win5andabove := Map(4, {count_loss: 0, amt: 100, state_5lost: 0})
+        this.win5andabove := Map(4, {count_loss: 0, amt: 100, state_5lost: 0, sum_amt: 0})
         Loop 20 {
             this.win5andabove[A_Index+4] := {count_loss: 0, amt: 0, state_5lost: 0}
         }
@@ -2046,6 +2046,9 @@ class TraderBot {
         if this.stats.streak = -1 or this.stats.streak = -2
             str_i := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_i
         str_i := str_i ' (bet: ' Format('{:.2f}', this.amount) ')'
+        if (streak >= 5) {
+            str_i := str_i ' sum=' Format('{:.2f}', this.win5andabove[streak].sum_amt) ')'
+        }
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_k := format('{:.2f}', this.balance.side)
         str_o := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
