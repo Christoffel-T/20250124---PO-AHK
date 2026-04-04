@@ -490,9 +490,9 @@ class TraderBot {
             amts.Push(amts[-1]*2+3)
             cent_amts.Push(cent_amts[-1]*2+0.01)
         }
-        percs := [0.4]
+        percs := [0.3]
         Loop 100 {
-            percs.Push(percs[-1]+0.15)
+            percs.Push(percs[-1]+0.10)
         }
 
         if (this.F300.stateW != 0 and this.F300.stateL != 0) {
@@ -530,17 +530,18 @@ class TraderBot {
                         streak_obj.idx++
                         streak_obj.sum_amt += streak_obj.amt
                         streak_obj.sum_amt := Round(streak_obj.sum_amt, 2)
-                        if (streak_obj.idx = 5) {
+                        lost_idx := 4
+                        if (streak_obj.idx = lost_idx) {
                             this.F300.iter_lost5++
                         }
                         streak_obj.amt := amts[streak_obj.idx]
                         streak_obj.amt += cent_amts[streak_obj.idx]
                         if (streak_obj.state_5lost = '5lostwon2') {
-                            streak_obj.amt := streak_obj.sum_amt * 2 + 3
+                            streak_obj.amt := streak_obj.sum_amt + 10
                         } else if (streak_obj.state_5lost = '5lostwon1') {
                             streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx]
-                        } else if (streak_obj.idx >= 5) {
-                            streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx - 4]
+                        } else if (streak_obj.idx >= lost_idx) {
+                            streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx - (lost_idx - 1)]
                             streak_obj.state_5lost := '5lost'
                         }
                     }
@@ -555,7 +556,7 @@ class TraderBot {
                             streak_obj.amt := streak_obj.sum_amt * percs[1]
                         } else if (streak_obj.state_5lost = '5lostwon1') {
                             streak_obj.state_5lost := '5lostwon2'
-                            streak_obj.amt := streak_obj.sum_amt * 2 + 3
+                            streak_obj.amt := streak_obj.sum_amt + 10
                         } else {
                             streak_obj.state_5lost := 0
                             streak_obj.amt := 0
