@@ -428,7 +428,7 @@ class TraderBot {
         streak := this.stats.streak_real
         i := this.switch_win_loss[1].idx3 - 1
         if (streak = 1) {
-            if (i > 0) {
+            if (this.switch_win_loss[1].amt > 0) {
                 this.amount := this.switch_win_loss[1].amt
             }
         }
@@ -2034,8 +2034,7 @@ class TraderBot {
 
         current_bet := format('{:.2f}', 6)
         streak := this.stats.streak_real
-        i := this.switch_win_loss[1].idx3 - 1
-        if (i > 0) {
+        if (this.switch_win_loss[1].amt > 0) {
             current_bet := this.switch_win_loss[1].amt
         } else {
             current_bet := this.amount
