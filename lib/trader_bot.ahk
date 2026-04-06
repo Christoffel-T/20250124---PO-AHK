@@ -797,7 +797,7 @@ class TraderBot {
                 }
             }
 
-            if (i > 0 and streak = 1 and streak_obj.state_5lost = 0) {
+            if (i > 0 and streak = 1 and this.streak_prev[1] = -1 and streak_obj.state_5lost = 0) {
                 streak_obj.amt := amts[i]
             }
 
