@@ -426,8 +426,8 @@ class TraderBot {
             percs.Push(percs[-1]+0.15)
         }
         streak := this.stats.streak_real
-        i := this.switch_win_loss[1].idx3 - 1
-        if (streak = 1) {
+        i := this.switch_win_loss[1].idx3
+        if (streak = 1 and this.streak_prev[1] = -1) {
             if (this.switch_win_loss[1].amt > 0) {
                 this.amount := this.switch_win_loss[1].amt
             }
@@ -657,7 +657,7 @@ class TraderBot {
             return overriden
         }
         returnValue := 0
-        if _val := HelperWin1(1) {
+        if _val := HelperWin1() {
             returnValue := _val
         }
         for k, v in this.switch_win_loss {
@@ -743,11 +743,11 @@ class TraderBot {
             return return_val
         }
               
-        HelperWin1(n) {
+        HelperWin1() {
             if (inst.level < 2) {
                 return 0
             }
-            this.switch_win_loss[n].state2_pause := 0
+            this.switch_win_loss[1].state2_pause := 0
             for k, v in this.switch_win_loss {
                 if (v.idx2 >= 3) {
                     ; this.switch_win_loss[n].state2_pause := 1
@@ -762,9 +762,9 @@ class TraderBot {
             Loop 100 {
                 percs.Push(percs[-1]+0.10)
             }
-            streak_obj := this.switch_win_loss[n]
+            streak_obj := this.switch_win_loss[1]
             
-            if (inst.streak > this.streak_prev[1] and this.streak_prev[1] = n and this.switch_win_loss[n].state2_pause = 0) {
+            if (inst.streak > this.streak_prev[1] and this.streak_prev[2] = -1 and this.streak_prev[1] = 1 and this.switch_win_loss[1].state2_pause = 0) {
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
                 streak_obj.idx3 := 0
                 if (streak_obj.state_5lost = '5lost') {
@@ -780,8 +780,8 @@ class TraderBot {
                     streak_obj.sum_amt := 0
                 }
             }
-            i := this.switch_win_loss[1].idx3 - 1
-            if (inst.streak < this.streak_prev[1] and this.streak_prev[1] = n and this.switch_win_loss[n].state2_pause = 0) {
+            i := this.switch_win_loss[1].idx3
+            if (inst.streak < this.streak_prev[1] and this.streak_prev[2] = -1 and this.streak_prev[1] = 1 and this.switch_win_loss[1].state2_pause = 0) {
                 streak_obj.idx3++
                 if (i = 5) {
                     this.F300.iter_lost5++
@@ -801,9 +801,9 @@ class TraderBot {
                 streak_obj.amt := amts[i]
             }
 
-            this.switch_win_loss[n].max_idx3 := max(this.switch_win_loss[n].idx3, this.switch_win_loss[n].max_idx3)
-            if (inst.streak = n and this.switch_win_loss[n].state2_pause = 0) {
-                return (this.CUSTOM_AMOUNTS2[Min(this.switch_win_loss[n].idx3, this.CUSTOM_AMOUNTS2.Length) or 1])
+            this.switch_win_loss[1].max_idx3 := max(this.switch_win_loss[1].idx3, this.switch_win_loss[1].max_idx3)
+            if (inst.streak = 1 and this.switch_win_loss[1].state2_pause = 0) {
+                return (this.CUSTOM_AMOUNTS2[Min(this.switch_win_loss[1].idx3, this.CUSTOM_AMOUNTS2.Length) or 1])
             }
         }
     }
@@ -2034,7 +2034,7 @@ class TraderBot {
 
         current_bet := format('{:.2f}', 6)
         streak := this.stats.streak_real
-        if (this.switch_win_loss[1].amt > 0) {
+        if (this.switch_win_loss[1].amt > 0 and streak = 1 and this.streak_prev[1] = -1) {
             current_bet := this.switch_win_loss[1].amt
         } else {
             current_bet := this.amount
