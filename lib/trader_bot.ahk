@@ -342,8 +342,8 @@ class TraderBot {
         
         this.pause_based_on_timeframe := ''
         this.qualifiers := {}
-        this.streak_prev := []
-        this.streak_prev_nodraw := []
+        this.streak_prev := [0, 0, 0]
+        this.streak_prev_nodraw := [0, 0, 0]
         this.amt_prev := []
         this.switch_win_loss:= Map(
             1, {},
