@@ -426,7 +426,7 @@ class TraderBot {
             percs.Push(percs[-1]+0.15)
         }
         streak := this.stats.streak_real
-        if (streak = 1 and this.streak_prev[1] = -1) {
+        if (streak = 1 and this.streak_prev_nodraw[1] = -1) {
             if (this.switch_win_loss[1].amt > 0) {
                 this.amount := this.switch_win_loss[1].amt
             }
@@ -2040,7 +2040,7 @@ class TraderBot {
 
         current_bet := format('{:.2f}', 6)
         streak := this.stats.streak_real
-        if (this.switch_win_loss[1].amt > 0 and streak = 1 and this.streak_prev[1] = -1) {
+        if (this.switch_win_loss[1].amt > 0 and streak = 1 and this.streak_prev_nodraw[1] = -1) {
             current_bet := this.switch_win_loss[1].amt
         } else {
             current_bet := this.amount
