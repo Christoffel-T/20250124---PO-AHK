@@ -862,10 +862,10 @@ class TraderBot {
             draw := {ps:true}
         }
 
+        this.streak_prev.InsertAt(1, this.stats.streak_real)
         if (this.stats.streak_real != this.streak_prev[1]) {
             this.streak_prev_nodraw.InsertAt(1, this.stats.streak_real)
         }
-        this.streak_prev.InsertAt(1, this.stats.streak_real)
 
         while this.streak_prev_nodraw.Length >= 10 {
             this.streak_prev_nodraw.Pop()
