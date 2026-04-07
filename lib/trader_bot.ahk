@@ -426,9 +426,6 @@ class TraderBot {
             percs.Push(percs[-1]+0.15)
         }
         streak := this.stats.streak_real
-        if streak = 1 {
-            MsgBox this.switch_win_loss[1].amt '`nprev1: ' this.streak_prev[1] '`nprev2: ' this.streak_prev[2] '`nprev_nodraw1: ' this.streak_prev_nodraw[1] '`nprev_nodraw2: ' this.streak_prev_nodraw[2]
-        }
         if (streak = 1 and this.streak_prev_nodraw[1] = -1 and this.switch_win_loss[1].amt > 0) {
             this.amount := this.switch_win_loss[1].amt
         }
@@ -863,8 +860,8 @@ class TraderBot {
         }
 
         this.streak_prev.InsertAt(1, this.stats.streak_real)
-        if (this.stats.streak_real != this.streak_prev[1]) {
-            this.streak_prev_nodraw.InsertAt(1, this.stats.streak_real)
+        if (this.stats.streak != this.streak_prev_nodraw[1]) {
+            this.streak_prev_nodraw.InsertAt(1, this.stats.streak)
         }
 
         while this.streak_prev_nodraw.Length >= 10 {
