@@ -860,8 +860,9 @@ class TraderBot {
         }
 
         this.streak_prev.InsertAt(1, this.stats.streak_real)
-        if (this.stats.streak != this.streak_prev_nodraw[1]) {
-            this.streak_prev_nodraw.InsertAt(1, this.stats.streak)
+        streak_mod := - (Mod(Abs(this.stats.streak_real) - 1, 4) + 1)
+        if (streak_mod != this.streak_prev_nodraw[1]) {
+            this.streak_prev_nodraw.InsertAt(1, streak_mod)
         }
 
         while this.streak_prev_nodraw.Length >= 10 {
