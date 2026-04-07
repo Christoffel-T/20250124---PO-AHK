@@ -793,9 +793,9 @@ class TraderBot {
                     streak_obj.state_5lost := '5lost'
                 }
             }
-            if streak = 1 {
-                MsgBox this.switch_win_loss[1].amt '`uidx3: ' this.switch_win_loss[1].idx3 '`nprev1: ' this.streak_prev[1] '`nprev2: ' this.streak_prev[2] '`nprev_nodraw1: ' this.streak_prev_nodraw[1] '`nprev_nodraw2: ' this.streak_prev_nodraw[2]
-            }
+            ; if streak = 1 {
+            ;     MsgBox this.switch_win_loss[1].amt '`uidx3: ' this.switch_win_loss[1].idx3 '`nprev1: ' this.streak_prev[1] '`nprev2: ' this.streak_prev[2] '`nprev_nodraw1: ' this.streak_prev_nodraw[1] '`nprev_nodraw2: ' this.streak_prev_nodraw[2]
+            ; }
 
             if (streak_obj.idx3 >= 0 and streak = 1 and this.streak_prev[1] = -1) {
                 streak_obj.amt := amts[streak_obj.idx3+1]
@@ -863,7 +863,10 @@ class TraderBot {
         }
 
         this.streak_prev.InsertAt(1, this.stats.streak_real)
-        streak_mod := - (Mod(Abs(this.stats.streak_real) - 1, 4) + 1)
+        streak_mod := this.stats.streak_real
+        if this.stats.streak_real < 0 {
+            streak_mod := - (Mod(Abs(this.stats.streak_real) - 1, 4) + 1)
+        }
         if (streak_mod != this.streak_prev_nodraw[1]) {
             this.streak_prev_nodraw.InsertAt(1, streak_mod)
         }
