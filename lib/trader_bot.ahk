@@ -343,6 +343,7 @@ class TraderBot {
         this.pause_based_on_timeframe := ''
         this.qualifiers := {}
         this.streak_prev := []
+        this.streak_prev_nodraw := []
         this.amt_prev := []
         this.switch_win_loss:= Map(
             1, {},
@@ -763,7 +764,7 @@ class TraderBot {
             }
             streak_obj := this.switch_win_loss[1]
             
-            if (inst.streak > this.streak_prev[1] and this.streak_prev[2] = -1 and this.streak_prev[1] = 1 and this.switch_win_loss[1].state2_pause = 0) {
+            if (inst.streak > this.streak_prev[1] and this.streak_prev_nodraw[2] = -1 and this.streak_prev[1] = 1 and this.switch_win_loss[1].state2_pause = 0) {
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
                 streak_obj.idx3 := 0
                 if (streak_obj.state_5lost = '5lost') {
@@ -780,7 +781,7 @@ class TraderBot {
                 }
             }
             i := this.switch_win_loss[1].idx3
-            if (inst.streak < this.streak_prev[1] and this.streak_prev[2] = -1 and this.streak_prev[1] = 1 and this.switch_win_loss[1].state2_pause = 0) {
+            if (inst.streak < this.streak_prev[1] and this.streak_prev_nodraw[2] = -1 and this.streak_prev[1] = 1 and this.switch_win_loss[1].state2_pause = 0) {
                 streak_obj.idx3++
                 if (i = 5) {
                     this.F300.iter_lost5++
@@ -861,10 +862,18 @@ class TraderBot {
             draw := {ps:true}
         }
 
+        if (this.stats.streak_real != this.streak_prev[1]) {
+            this.streak_prev_nodraw.InsertAt(1, this.stats.streak_real)
+        }
         this.streak_prev.InsertAt(1, this.stats.streak_real)
+
+        while this.streak_prev_nodraw.Length >= 10 {
+            this.streak_prev_nodraw.Pop()
+        }
         while this.streak_prev.Length >= 10 {
             this.streak_prev.Pop()
         }
+
         this.amt_prev.InsertAt(1, this.amount)
         while this.amt_prev.Length >= 10 {
             this.amt_prev.Pop()
