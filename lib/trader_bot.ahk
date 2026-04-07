@@ -797,7 +797,7 @@ class TraderBot {
             ;     MsgBox this.switch_win_loss[1].amt '`uidx3: ' this.switch_win_loss[1].idx3 '`nprev1: ' this.streak_prev[1] '`nprev2: ' this.streak_prev[2] '`nprev_nodraw1: ' this.streak_prev_nodraw[1] '`nprev_nodraw2: ' this.streak_prev_nodraw[2]
             ; }
 
-            if (streak_obj.idx3 >= 0 and streak = 1 and this.streak_prev[1] = -1) {
+            if (streak_obj.idx3 >= 0 and streak = 1 and this.streak_prev[1] = -1 and streak_obj.state_5lost = 0) {
                 streak_obj.amt := amts[streak_obj.idx3+1]
             }
 
