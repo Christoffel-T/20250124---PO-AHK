@@ -375,9 +375,9 @@ class TraderBot {
     AmountOverride7Win5() {
         streak := this.stats.streak_real
         streak_prev := this.streak_prev[1]
-        percs := [0.4]
+        percs := [0.3]
         Loop 100 {
-            percs.Push(percs[-1]+0.15)
+            percs.Push(percs[-1]+0.10)
         }
         
         if (streak > streak_prev and streak_prev >= 4) {
