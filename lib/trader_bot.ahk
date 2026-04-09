@@ -759,6 +759,9 @@ class TraderBot {
             percs := [0.3]
             Loop 100 {
                 percs.Push(percs[-1]+0.10)
+                if (percs[-1] >= 0.80) {
+                    percs[-1] := 0.4
+                }
             }
             streak_obj := this.switch_win_loss[1]
             cust_amt2won := [3,10,25,52,110, 230, 470]
