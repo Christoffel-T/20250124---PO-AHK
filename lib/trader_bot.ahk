@@ -382,7 +382,7 @@ class TraderBot {
         
         if (streak > streak_prev and streak_prev >= 4) {
             streak_obj := this.win5andabove[streak_prev]
-            if (this.win5andabove[streak].count_loss = 0) {
+            if (this.win5andabove[streak].count_loss = 0 and streak_obj.state_5lost = 0) {
                 this.win5andabove[streak].amt := Max(streak_obj.amt * 0.5, 1)
             }
             streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
