@@ -72,16 +72,17 @@ def monitor_log(file_path):
             with open(file_path, "r") as f:
                 f.seek(last_size)  # Move to last read position
                 new_data = f.read()
-                last_size = f.tell()  # Get current file size
+                # Don't update last_size yet
             
-            if os.path.getsize(file_path) < last_file_size:
-                last_file_size = os.path.getsize(file_path)
+            current_file_size = os.path.getsize(file_path)
+            if current_file_size < last_file_size:
+                last_file_size = current_file_size
                 last_size = 0
                 print(f"{datetime.now()} | File has been cleared, resetting last_size")
                 continue
 
             if new_data:
-                last_file_size = os.path.getsize(file_path)
+                last_file_size = current_file_size
                 data_to_output = new_data.strip()
                 # Reverse the order of the new data
                 reversed_data = "\n".join(data_to_output.split("\n")[::-1])
@@ -89,12 +90,17 @@ def monitor_log(file_path):
                 # Append reversed data to Google Sheets
                 try:
                     append_to_google_sheets(reversed_data, 2)
+                    # Success: clear the file and reset last_size
+                    with open(file_path, 'w') as f:
+                        pass
+                    last_size = 0
+                    print(f'{datetime.now()} | Worksheet updated successfully')
+                    time.sleep(15)  # Adjust as needed
                 except Exception as e:
                     print(f'Error:\n{e}')
+                    # Don't update last_size, so we retry next time
+                    time.sleep(5)  # Shorter sleep on error
                     continue
-
-                print(f'{datetime.now()} | Worksheet updated successfully')
-                time.sleep(15)  # Adjust as needed
             else:
                 print(f'{datetime.now()} | No new data')
                 time.sleep(5)  # Adjust as needed
