@@ -380,7 +380,6 @@ class TraderBot {
             percs.Push(percs[-1]+0.10)
         }
         cust_amt2won := [3,10,25,52,110, 230, 470]
-        Loop 
         
         if (streak > streak_prev and streak_prev >= 4) {
             streak_obj := this.win5andabove[streak_prev]
