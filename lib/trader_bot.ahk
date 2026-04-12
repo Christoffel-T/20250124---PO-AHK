@@ -776,14 +776,14 @@ class TraderBot {
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.idx3 := 1
                     streak_obj.state_5lost := '5lostwon2'
-                    streak_obj.amt := cust_amt2won[Max(streak_obj.idx3, cust_amt2won.Length)]
+                    streak_obj.amt := cust_amt2won[Min(streak_obj.idx3, cust_amt2won.Length)]
                 } else if (streak_obj.sum_amt <= 0) {
                     streak_obj.state_5lost := 0
                     streak_obj.amt := 0
                     streak_obj.sum_amt := 0
                 } else if (streak_obj.state_5lost = '5lostwon2') {
                     streak_obj.idx3 := 1
-                    streak_obj.amt := cust_amt2won[Max(streak_obj.idx3, cust_amt2won.Length)]
+                    streak_obj.amt := cust_amt2won[Min(streak_obj.idx3, cust_amt2won.Length)]
                 }
             }
             if (streak < this.streak_prev[1] and this.streak_prev[1] = 1 and this.streak_prev_nodraw[2] = -1) {
@@ -793,7 +793,7 @@ class TraderBot {
                 }
                 streak_obj.sum_amt += streak_obj.amt
                 if (streak_obj.state_5lost = '5lostwon2') {
-                    streak_obj.amt := cust_amt2won[Max(streak_obj.idx3, cust_amt2won.Length)]
+                    streak_obj.amt := cust_amt2won[Min(streak_obj.idx3, cust_amt2won.Length)]
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx3]
                 } else if (streak_obj.idx3 >= 2) {
