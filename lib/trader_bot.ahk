@@ -388,7 +388,9 @@ class TraderBot {
             }
             streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
             streak_obj.count_loss := 0
-            if (streak_obj.state_5lost = '5lost') {
+            if (streak_prev < 5) {
+                streak_obj.amt := 100
+            } else if (streak_obj.state_5lost = '5lost') {
                 streak_obj.idx := 1
                 streak_obj.state_5lost := '5lostwon1'
                 streak_obj.amt := streak_obj.sum_amt * percs[1]
