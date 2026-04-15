@@ -425,6 +425,9 @@ class TraderBot {
 
         if (streak >= 5) {
             this.amount := this.win5andabove[streak].amt
+            if (streak > 5) {
+                this.amount := 1
+            }
         }
     }
 
