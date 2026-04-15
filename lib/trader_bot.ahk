@@ -440,6 +440,9 @@ class TraderBot {
         if (streak = 1 and this.streak_prev_nodraw[1] = -1 and this.switch_win_loss[1].amt > 0) {
             this.amount := this.switch_win_loss[1].amt
         }
+        if (streak = -1 and this.streak_prev_nodraw[1] = -1 and this.switch_win_loss[-1].amt > 0) {
+            this.amount := this.switch_win_loss[-1].amt
+        }
 
         streak_obj := this.F300.streak7_40
         if (streak <= -7) {
@@ -668,6 +671,9 @@ class TraderBot {
         if _val := HelperWin1() {
             returnValue := _val
         }
+        if _val := HelperLose1() {
+            returnValue := _val
+        }
         for k, v in this.switch_win_loss {
             _ := HelperWinLossN(k)
             if (v.state = 'active' and returnValue = 0) {
@@ -822,6 +828,80 @@ class TraderBot {
 
             streak_obj.max_idx3 := max(streak_obj.idx3, streak_obj.max_idx3)
             if (streak = 1 and streak_obj.state2_pause = 0) {
+                return (this.CUSTOM_AMOUNTS2[Min(streak_obj.idx3, this.CUSTOM_AMOUNTS2.Length) or 1])
+            }
+        }
+        HelperLose1() {
+            ; if (inst.level < 2) {
+            ;     return 0
+            ; }
+            streak := this.stats.streak_real
+            this.switch_win_loss[-1].state2_pause := 0
+            for k, v in this.switch_win_loss {
+                if (v.idx2 >= 3) {
+                    ; this.switch_win_loss[n].state2_pause := 1
+                    break
+                }
+            }
+            amts := [6+(0.5*this.F300.iter_lost5)]
+            Loop 100 {
+                amts.Push(amts[-1]*2+3)
+            }
+            percs := [0.3]
+            Loop 100 {
+                percs.Push(percs[-1]+0.10)
+                if (percs[-1] >= 0.80) {
+                    percs[-1] := 0.4
+                }
+            }
+            streak_obj := this.switch_win_loss[-1]
+            cust_amt2won := [3,10,25,52,110, 230, 470]
+            
+            if (streak > this.streak_prev[1] and this.streak_prev[1] = -1 and this.streak_prev_nodraw[2] = 1) {
+                streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
+                streak_obj.idx3 := 0
+                if (streak_obj.state_5lost = '5lost') {
+                    streak_obj.idx3 := 1 + 0
+                    streak_obj.state_5lost := '5lostwon1'
+                    streak_obj.amt := streak_obj.sum_amt * percs[1]
+                } else if (streak_obj.state_5lost = '5lostwon1') {
+                    streak_obj.idx3 := 1
+                    streak_obj.state_5lost := '5lostwon2'
+                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx3 - 1, cust_amt2won.Length) + 1]
+                } else if (streak_obj.sum_amt <= 0) {
+                    streak_obj.state_5lost := 0
+                    streak_obj.amt := 0
+                    streak_obj.sum_amt := 0
+                } else if (streak_obj.state_5lost = '5lostwon2') {
+                    streak_obj.idx3 := 1
+                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx3 - 1, cust_amt2won.Length) + 1]
+                }
+            }
+            if (streak < this.streak_prev[1] and this.streak_prev[1] = -1 and this.streak_prev_nodraw[2] = 1) {
+                streak_obj.idx3++
+                if (streak_obj.idx3 = 5) {
+                    this.F300.iter_lost5++
+                }
+                streak_obj.sum_amt += streak_obj.amt
+                if (streak_obj.state_5lost = '5lostwon2') {
+                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx3 - 1, cust_amt2won.Length) + 1]
+                } else if (streak_obj.state_5lost = '5lostwon1') {
+                    streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx3]
+                } else if (streak_obj.idx3 >= 2) {
+                    streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx3 - 1]
+                    streak_obj.state_5lost := '5lost'
+                }
+            }
+            ; if streak = 1 {
+            ;     MsgBox this.switch_win_loss[1].amt '`uidx3: ' this.switch_win_loss[1].idx3 '`nprev1: ' this.streak_prev[1] '`nprev2: ' this.streak_prev[2] '`nprev_nodraw1: ' this.streak_prev_nodraw[1] '`nprev_nodraw2: ' this.streak_prev_nodraw[2]
+            ; }
+
+            if (streak_obj.idx3 >= 0 and streak = -1 and this.streak_prev[1] = 1 and streak_obj.state_5lost = 0) {
+                streak_obj.amt := amts[streak_obj.idx3+1]
+            }
+
+            streak_obj.max_idx3 := max(streak_obj.idx3, streak_obj.max_idx3)
+            if (streak = -1 and streak_obj.state2_pause = 0) {
                 return (this.CUSTOM_AMOUNTS2[Min(streak_obj.idx3, this.CUSTOM_AMOUNTS2.Length) or 1])
             }
         }
