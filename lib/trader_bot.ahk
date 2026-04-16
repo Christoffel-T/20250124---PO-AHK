@@ -437,10 +437,10 @@ class TraderBot {
             percs.Push(percs[-1]+0.15)
         }
         streak := this.stats.streak_real
-        if (streak = 1 and this.streak_prev_nodraw[1] = -1 and this.switch_win_loss[1].amt > 0) {
+        if (streak = 1 and this.switch_win_loss[1].amt > 0) {
             this.amount := this.switch_win_loss[1].amt
         }
-        if (streak = -1 and this.streak_prev_nodraw[1] = -1 and this.switch_win_loss[-1].amt > 0) {
+        if (streak = -1 and this.switch_win_loss[-1].amt > 0) {
             this.amount := this.switch_win_loss[-1].amt
         }
 
