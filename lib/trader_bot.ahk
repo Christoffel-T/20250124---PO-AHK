@@ -773,7 +773,7 @@ class TraderBot {
                 }
             }
             streak_obj := this.switch_win_loss[1]
-            cust_amt2won := [1.1, 1.42, 3.08, 6.5, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
+            cust_amt2won := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87, 1421.05, 2966.00]
             
             if (streak > this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
@@ -836,7 +836,7 @@ class TraderBot {
                 }
             }
             streak_obj := this.switch_win_loss[-1]
-            cust_amt2won := [1.1, 1.42, 3.08, 6.5, 13.67, 28.64, 59.88, 125.07, 261.13, 545.07, 1137.65, 2374.34]
+            cust_amt2won := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87, 1421.05, 2966.00]
             
             if (streak > this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
