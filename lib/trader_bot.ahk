@@ -368,7 +368,7 @@ class TraderBot {
         this.amount := this.GetAmount(this.balance.current)
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,amount,E,F,G,H,Streak,max_diff,side_bal,balance,next_target,last_trade,payout,Streaks,double_stats,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,amount,E,F,G,H,Streak,max_diff,side_bal,new_col,balance,next_target,last_trade,payout,Streaks,double_stats,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -2078,9 +2078,9 @@ class TraderBot {
             countdown_close_str := ''
         }
     
-        str_l := ''
+        str_doublestats := ''
         for k, v in this.lose_streak.repeat {
-            str_l .= k '<' v.win '|' v.lose '> '
+            str_doublestats .= k '<' v.win '|' v.lose '> '
         }
 
         try {    
@@ -2203,6 +2203,10 @@ class TraderBot {
         }
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_k := format('{:.2f}', this.balance.side)
+        str_l := '(' format('{:.2f}', this.lose5.idx) ') sum=' format('{:.2f}', this.lose5.sum)
+        if (streak = -5) {
+            str_l := 'bet: ' format('{:.2f}', this.amount) ' ' str_l
+        }
         str_o := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
         _count_reload := 0
         loop {
@@ -2232,12 +2236,12 @@ class TraderBot {
                     str_i ',' 
                     str_j ',' 
                     str_k ','
+                    str_l ','
                     format('{:.2f}', this.amount) ' (' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ' [' this.balance.min_all '])' ',' 
                     str.next_bal ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
-                    str_l ',' 
-									
+                    str_doublestats ',' 
                     str_ohlc ',' 
                     this.debug_str '`n',
                     this.log_file
