@@ -400,7 +400,7 @@ class TraderBot {
     AmountOverride7Win5() {
         streak := this.stats.streak_real
         streak_prev := this.streak_prev[1]
-        amts := [6+(0.5*this.F300.iter_lost5)]
+        amts := [50]
         cent_amts := [0.10*(this.F300.iter_lost5+1)]
         Loop 100 {
             amts.Push(amts[-1]*2+3)
@@ -539,7 +539,7 @@ class TraderBot {
             this.F300.stateL := -1
             this.F300.bal := this.stats.max_bal_diff
         }
-        amts := [50]
+        amts := [6+(0.5*this.F300.iter_lost5)]
         cent_amts := [0.10*(this.F300.iter_lost5+1)]
         Loop 100 {
             amts.Push(amts[-1]*2+3)
