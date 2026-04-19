@@ -829,11 +829,17 @@ class TraderBot {
             
             if (streak > this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
-                streak_obj.idx3 := 0
-                if (streak_obj.state_5lost = '5lost') {
-                    streak_obj.idx3 := 1 + 0
+                if (streak_obj.pause5 = 0) {
+                    streak_obj.idx3 := 0
+                }
+
+                if (streak_obj.pause5 = 1) {
+                    streak_obj.pause5 := 0
+                    streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx3]
+                } else if (streak_obj.state_5lost = '5lost') {
+                    streak_obj.idx3 := 1
                     streak_obj.state_5lost := '5lostwon1'
-                    streak_obj.amt := streak_obj.sum_amt * percs[1]
+                    streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx3]
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.idx3 := 1
                     streak_obj.state_5lost := '5lostwon2'
@@ -848,12 +854,20 @@ class TraderBot {
                 }
             }
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
-                streak_obj.idx3++
+                if (streak_obj.pause5 = 0) {
+                    streak_obj.idx3++
+                }
+                if (streak_obj.idx3 = 6) {
+                    streak_obj.pause5 := 1
+                    streak_obj.amt := 1.1
+                }
                 if (streak_obj.idx3 = 5) {
                     this.F300.iter_lost5++
                 }
                 streak_obj.sum_amt += streak_obj.amt
-                if (streak_obj.state_5lost = '5lostwon2') {
+                if (streak_obj.pause5 = 1) {
+                    streak_obj.amt := 1.1
+                } else if (streak_obj.state_5lost = '5lostwon2') {
                     streak_obj.amt := cust_amt2won[Mod(streak_obj.idx3 - 1, cust_amt2won.Length) + 1]
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     if percs[streak_obj.idx3] = 1.2
@@ -864,6 +878,7 @@ class TraderBot {
                     streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx3 - 1]
                     streak_obj.state_5lost := '5lost'
                 }
+                
             }
             if streak_obj.sum_amt >= 20 {
                 streak_obj.sum_over20 := 1
@@ -903,7 +918,14 @@ class TraderBot {
             if (streak > this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
                 streak_obj.idx3 := 0
-                if (streak_obj.state_5lost = '5lost') {
+                if (streak_obj.pause5 = 0) {
+                    streak_obj.idx3 := 0
+                }
+
+                if (streak_obj.pause5 = 1) {
+                    streak_obj.pause5 := 0
+                    streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx3]
+                } else if (streak_obj.state_5lost = '5lost') {
                     streak_obj.idx3 := 1 + 0
                     streak_obj.state_5lost := '5lostwon1'
                     streak_obj.amt := streak_obj.sum_amt * percs[1]
@@ -921,12 +943,20 @@ class TraderBot {
                 }
             }
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
-                streak_obj.idx3++
+                if (streak_obj.pause5 = 0) {
+                    streak_obj.idx3++
+                }
+                if (streak_obj.idx3 = 6) {
+                    streak_obj.pause5 := 1
+                    streak_obj.amt := 1.1
+                }
                 if (streak_obj.idx3 = 5) {
                     this.F300.iter_lost5++
                 }
                 streak_obj.sum_amt += streak_obj.amt
-                if (streak_obj.state_5lost = '5lostwon2') {
+                if (streak_obj.pause5 = 1) {
+                    streak_obj.amt := 1.1
+                } else if (streak_obj.state_5lost = '5lostwon2') {
                     streak_obj.amt := cust_amt2won[Mod(streak_obj.idx3 - 1, cust_amt2won.Length) + 1]
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx3]
@@ -1454,6 +1484,7 @@ class TraderBot {
         }
 
         for k, v in this.switch_win_loss {
+            v.pause5 := 0
             v.amt := 0
             v.state_5lost := 0
             v.state := 0
