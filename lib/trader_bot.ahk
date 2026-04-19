@@ -860,6 +860,8 @@ class TraderBot {
                 if (streak_obj.idx3 = 6) {
                     streak_obj.pause5 := 1
                     streak_obj.amt := 1.1
+                    streak_obj.sum_amt /= 2
+                    this.lose5.sum += streak_obj.sum_amt
                 }
                 if (streak_obj.idx3 = 5) {
                     this.F300.iter_lost5++
