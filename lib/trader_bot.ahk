@@ -373,25 +373,20 @@ class TraderBot {
     }
 
     AmOver8Lose5() {
-        amts := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
         streak := this.stats.streak_real
         str_prev := this.streak_prev[1]
         if (str_prev = -5 and this.lose5.sum > 0) {
             if (streak > str_prev) {
                 this.lose5.sum := Max(this.lose5.sum - this.lose5.amt, 0)
-                if (this.lose5.sum = 0) {
-                    this.lose5.idx := 1
-                }
+                this.lose5.idx := 0
             } else if (streak < str_prev) {
                 this.lose5.sum += this.lose5.amt
                 this.lose5.idx++
             }
-            this.lose5.amt := amts[Mod(this.lose5.idx - 1, amts.Length) + 1]
         }
+        perc := 0.2 + 0.1*this.lose5.idx
         if (streak = -5 and this.lose5.sum > 0) {
-            if (this.lose5.amt < amts[1]) {
-                this.lose5.amt := amts[1]
-            }
+            this.lose5.amt := perc * this.lose5.sum
             this.amount := this.lose5.amt
         }
 
@@ -410,7 +405,7 @@ class TraderBot {
         Loop 100 {
             percs.Push(percs[-1]+0.10)
         }
-        cust_amt2won := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87, 1421.05, 2966.00]
+        cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
         
         if (streak > streak_prev and streak_prev >= 4) {
             streak_obj := this.win5andabove[streak_prev]
@@ -553,7 +548,7 @@ class TraderBot {
         if (this.F300.stateW != 0 and this.F300.stateL != 0) {
             this.amount := 1
         }
-        cust_amt2won := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87, 1421.05, 2966.00]
+        cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
 
         for str_state in ['stateW', 'stateL'] {
             state := this.F300.%str_state%
@@ -828,7 +823,7 @@ class TraderBot {
                 percs.Push(percs[-1]+0.10)
             }
             streak_obj := this.switch_win_loss[1]
-            cust_amt2won := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87, 1421.05, 2966.00]
+            cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
             
             if (streak > this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
@@ -897,7 +892,7 @@ class TraderBot {
                 percs.Push(percs[-1]+0.10)
             }
             streak_obj := this.switch_win_loss[-1]
-            cust_amt2won := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87, 1421.05, 2966.00]
+            cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
             
             if (streak > this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
@@ -1384,7 +1379,7 @@ class TraderBot {
         this.lose5 := {
             amt: 0,
             sum: 0,
-            idx: 1,
+            idx: 0,
         }
 
         this.perc40 := Map('loss7', {}, 'win1', {}, 'wl34', {})
