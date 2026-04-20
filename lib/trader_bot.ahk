@@ -856,12 +856,12 @@ class TraderBot {
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx3++
-                }
-                if (streak_obj.idx3 = 6) {
-                    streak_obj.pause5 := 1
-                    streak_obj.amt := 1.1
-                    streak_obj.sum_amt /= 2
-                    this.lose5.sum += streak_obj.sum_amt
+                    if (streak_obj.idx3 = 6) {
+                        streak_obj.pause5 := 1
+                        streak_obj.amt := 1.1
+                        streak_obj.sum_amt /= 2
+                        this.lose5.sum += streak_obj.sum_amt
+                    }
                 }
                 if (streak_obj.idx3 = 5) {
                     this.F300.iter_lost5++
@@ -951,6 +951,8 @@ class TraderBot {
                 if (streak_obj.idx3 = 6) {
                     streak_obj.pause5 := 1
                     streak_obj.amt := 1.1
+                    streak_obj.sum_amt /= 2
+                    this.lose5.sum += streak_obj.sum_amt
                 }
                 if (streak_obj.idx3 = 5) {
                     this.F300.iter_lost5++
@@ -2226,8 +2228,11 @@ class TraderBot {
         str_h := str_h ' (L1: -' this.switch_win_loss[-1].idx3 '[sum=' format('{:.2f}', this.switch_win_loss[-1].sum_amt) '])'
 
         streak := this.stats.streak_real
-        if (streak = 1 or streak = -1) {
-            str_h := '(bet: ' format('{:.2f}', this.amount) ') ' str_h
+        if (streak = 1) {
+            str_h := '(W1bet: ' format('{:.2f}', this.amount) ') ' str_h
+        }
+        if (streak = -1) {
+            str_h := '(L1bet: ' format('{:.2f}', this.amount) ') ' str_h
         }
 
         str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
