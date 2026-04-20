@@ -920,7 +920,6 @@ class TraderBot {
             
             if (streak > this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
-                streak_obj.idx3 := 0
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx3 := 0
                 }
