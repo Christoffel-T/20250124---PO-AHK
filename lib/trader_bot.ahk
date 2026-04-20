@@ -886,6 +886,7 @@ class TraderBot {
                 streak_obj.sum_over20 := 1
             }
             if streak_obj.sum_amt < 20 and streak_obj.sum_over20 = 1 {
+                streak_obj.pause5 := 0
                 streak_obj.sum_over20 := 0
                 streak_obj.idx3 := 0
                 this.lose5.sum += streak_obj.sum_amt
@@ -973,6 +974,7 @@ class TraderBot {
                 streak_obj.sum_over20 := 1
             }
             if streak_obj.sum_amt < 20 and streak_obj.sum_over20 = 1 {
+                streak_obj.pause5 := 0
                 streak_obj.sum_over20 := 0
                 streak_obj.idx3 := 0
                 this.lose5.sum += streak_obj.sum_amt
