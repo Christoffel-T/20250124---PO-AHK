@@ -441,7 +441,7 @@ class TraderBot {
             } else if (streak_obj.state_5lost = '5lostwon1') {
                 streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx]
             } else if (streak_obj.idx >= 3) {
-                streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx - 1]
+                streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx - 2]
                 streak_obj.state_5lost := '5lost'
             }
         }
@@ -618,8 +618,8 @@ class TraderBot {
                             streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
                         } else if (streak_obj.state_5lost = '5lostwon1') {
                             streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx]
-                        } else if (streak_obj.idx >= 2) {
-                            streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx - 1]
+                        } else if (streak_obj.idx >= 3) {
+                            streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx - 2]
                             streak_obj.state_5lost := '5lost'
                         }
                     }
