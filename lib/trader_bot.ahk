@@ -378,13 +378,19 @@ class TraderBot {
         if (str_prev = -5 and this.lose5.sum > 0) {
             if (streak > str_prev) {
                 this.lose5.sum := Max(this.lose5.sum - this.lose5.amt, 0)
-                this.lose5.idx := 0
+                if (this.lose5.idx > 0) {
+                    this.lose5.wins++
+                }
+                if (this.lose5.wins >= 3) {
+                    this.lose5.idx := 0
+                    this.lose5.wins := 0
+                }
             } else if (streak < str_prev) {
                 this.lose5.sum += this.lose5.amt
                 this.lose5.idx++
             }
         }
-        perc := 0.2 + 0.1*this.lose5.idx
+        perc := 0.15 + 0.03*this.lose5.idx
         if (streak = -5 and this.lose5.sum > 0) {
             this.lose5.amt := perc * this.lose5.sum
             this.amount := this.lose5.amt
@@ -1419,6 +1425,7 @@ class TraderBot {
         Helper0811_4Loss.Reset()
         this.balance.max := 5300
         this.lose5 := {
+            wins: 0,
             amt: 0,
             sum: 0,
             idx: 0,
