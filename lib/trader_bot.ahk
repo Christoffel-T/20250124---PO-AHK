@@ -2236,7 +2236,7 @@ class TraderBot {
             str_h := '(L1bet: ' format('{:.2f}', this.amount) ') ' str_h
         }
 
-        str_i := this.stats.streak ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
+        str_i := this.stats.streak_real ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
         if this.stats.streak = -1 or this.stats.streak = -2
             str_i := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_i
         str_i := str_i ' (bet: ' Format('{:.2f}', this.amount) ')'
