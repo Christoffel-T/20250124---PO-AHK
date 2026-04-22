@@ -281,7 +281,7 @@ class TraderBot {
         this.balance.starting := 5000
         this.balance.reset_max := 5300
         this.balance.min_all := this.balance.min
-        this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, max_win_rate: 0, Min_win_rate: 100, reset_date: 0}
+        this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, max_win_rate: 0, min_win_rate: 100, reset_date: 0}
         this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
         this.stats.next_max_bal_diff := 0
@@ -1079,7 +1079,7 @@ class TraderBot {
         }
         
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
-        if (this.stats.win + this.stats.loss) >= 25 {
+        if (this.stats.win + this.stats.loss) >= 15 {
             this.stats.max_win_rate := Max(this.stats.win_rate, this.stats.max_win_rate)
             this.stats.min_win_rate := Min(this.stats.win_rate, this.stats.min_win_rate)
             if (this.stats.win_rate > 46.7) {
@@ -2269,8 +2269,8 @@ class TraderBot {
         if (this.flip_trade.state = 1) {
             win_rate := 'flip ' win_rate
         }
-        if (this.stats.win + this.stats.loss) >= 25 {
-            win_rate := win_rate ' [min:' format('{:.1f}', this.stats.win_rate_min) '% | max:' format('{:.1f}', this.stats.win_rate_max) '%]'
+        if (this.stats.win + this.stats.loss) >= 15 {
+            win_rate := win_rate ' [min:' format('{:.1f}', this.stats.min_win_rate) '% | max:' format('{:.1f}', this.stats.max_win_rate) '%]'
         }
         str_i := this.stats.streak_real ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate ')'
         if this.stats.streak = -1 or this.stats.streak = -2
