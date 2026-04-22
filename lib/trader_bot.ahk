@@ -2269,7 +2269,10 @@ class TraderBot {
         if (this.flip_trade.state = 1) {
             win_rate := 'flip ' win_rate
         }
-        str_i := this.stats.streak_real ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
+        if (this.stats.win + this.stats.loss) >= 25 {
+            win_rate := win_rate '% [min:' format('{:.1f}', this.stats.win_rate_min) '% | max:' format('{:.1f}', this.stats.win_rate_max) '%]'
+        }
+        str_i := this.stats.streak_real ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate ')'
         if this.stats.streak = -1 or this.stats.streak = -2
             str_i := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_i
         str_i := str_i ' (bet: ' Format('{:.2f}', this.amount) ')'
