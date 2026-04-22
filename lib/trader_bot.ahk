@@ -2171,7 +2171,6 @@ class TraderBot {
         }
         paused_str := this.paused ? 'Paused (' _pauser ')' : '()'
         err := 0
-        win_rate := Format('{:.1f}', this.stats.win_rate)
 
         str := Map()
         str.next_bal := '$1000: $99999999999999'
@@ -2266,11 +2265,12 @@ class TraderBot {
             str_h := '(L1bet: ' format('{:.2f}', this.amount) ') ' str_h
         }
 
+        win_rate := Format('{:.1f}', this.stats.win_rate) '%'
         if (this.flip_trade.state = 1) {
             win_rate := 'flip ' win_rate
         }
         if (this.stats.win + this.stats.loss) >= 25 {
-            win_rate := win_rate '% [min:' format('{:.1f}', this.stats.win_rate_min) '% | max:' format('{:.1f}', this.stats.win_rate_max) '%]'
+            win_rate := win_rate ' [min:' format('{:.1f}', this.stats.win_rate_min) '% | max:' format('{:.1f}', this.stats.win_rate_max) '%]'
         }
         str_i := this.stats.streak_real ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate ')'
         if this.stats.streak = -1 or this.stats.streak = -2
