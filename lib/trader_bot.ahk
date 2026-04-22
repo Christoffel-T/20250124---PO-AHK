@@ -7,7 +7,6 @@ modTime := FileGetTime(scriptPath, "M")
 formatted := FormatTime(modTime, "yyyy-MM-dd HH:mm:ss")
 traymenu := A_TrayMenu
 traymenu.Add("Last Modified: " formatted, (*) => '')
-
 /*
 tester(tst) {
     static inst := {streak: 1, amt: 1, level: 3}
@@ -282,7 +281,7 @@ class TraderBot {
         this.balance.starting := 5000
         this.balance.reset_max := 5300
         this.balance.min_all := this.balance.min
-        this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, reset_date: 0}
+        this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, max_win_rate: 0, Min_win_rate: 100, reset_date: 0}
         this.stats.bal_win := 0
         this.stats.max_bal_diff := 0
         this.stats.next_max_bal_diff := 0
@@ -1080,6 +1079,32 @@ class TraderBot {
         }
         
         this.stats.win_rate := this.stats.win > 0 ? this.stats.win/(this.stats.win+this.stats.loss+this.stats.draw)*100 : 0
+        if (this.stats.win + this.stats.loss) >= 25 {
+            this.stats.max_win_rate := Max(this.stats.win_rate, this.stats.max_win_rate)
+            this.stats.min_win_rate := Min(this.stats.win_rate, this.stats.min_win_rate)
+            if (this.stats.win_rate > 46.7) {
+                this.flip_trade.wait_for_reverse1 := 1
+            }
+            if (this.stats.win_rate < this.stats.min_win_rate + 0.6) {
+                this.flip_trade.wait_for_reverse_bot := 1
+            }
+            if (this.stats.win_rate > this.stats.max_win_rate - 0.6) {
+                this.flip_trade.wait_for_reverse_top := 1
+            }
+            if (this.stats.win_rate < 46.5 and this.flip_trade.wait_for_reverse1 = 1) {
+                this.flip_trade.wait_for_reverse1 := 0
+                this.flip_trade.state := !this.flip_trade.state
+            }
+            if (this.stats.win_rate > this.stats.min_win_rate + 0.6 and this.flip_trade.wait_for_reverse_bot = 1) {
+                this.flip_trade.wait_for_reverse_bot := 0
+                this.flip_trade.state := !this.flip_trade.state
+            }
+            if (this.stats.win_rate < this.stats.max_win_rate - 0.6 and this.flip_trade.wait_for_reverse_top = 1) {
+                this.flip_trade.wait_for_reverse_top := 0
+                this.flip_trade.state := !this.flip_trade.state
+            }
+        }
+
         this.amount := 1
 
         this.AmountOverride1()
@@ -1424,6 +1449,12 @@ class TraderBot {
     QualifiersReset() {
         Helper0811_4Loss.Reset()
         this.balance.max := 5300
+        this.flip_trade := {
+            state: 0,
+            wait_for_reverse1: 0,
+            wait_for_reverse_top: 0,
+            wait_for_reverse_bot: 0,
+        }
         this.lose5 := {
             wins: 0,
             amt: 0,
@@ -1532,11 +1563,6 @@ class TraderBot {
             1020: {
                 mark: 0,           ; Consolidated from later update
                 val: 10            ; Consolidated from later update
-            },
-            flip_trade: {
-                state: false,
-                marked_winrate: 0,
-                count: 0
             },
             pause_temp: {
                 state: false,
@@ -2174,9 +2200,6 @@ class TraderBot {
         
         str_c := str_c '(' this.candle_data[1].size ' | ' RegExReplace(this.coin_name, '[^\w]', ' ') ') (' this.stats.streak ') ' countdown_close_str ' | ' paused_str
         str_d := ' (' Helper0811_4Loss.Get().level ') ' format('{:.2f}', this.amount) '[' this.stats.streak_real ']'
-        if this.qualifiers.flip_trade.state = 1 {
-            str_d := 'FLIP ' str_d
-        }
         if Helper_Skip(this.stats.streak, true) {
             str_d := 'S ' str_d
         }
@@ -2243,7 +2266,7 @@ class TraderBot {
             str_h := '(L1bet: ' format('{:.2f}', this.amount) ') ' str_h
         }
 
-        if (this.stats.win_rate <= 46.7) {
+        if (this.flip_trade.state = 1) {
             win_rate := 'flip ' win_rate
         }
         str_i := this.stats.streak_real ' (' this.stats.win '|' this.stats.draw '|' this.stats.loss '|' win_rate '%)'
@@ -2256,10 +2279,10 @@ class TraderBot {
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_k := format('{:.2f}', this.balance.side)
         str_l := '(' format('{:.2f}', this.lose5.idx) ') sum=' format('{:.2f}', this.lose5.sum)
+        str_m := '(w3='
         if (streak = -5) {
             str_l := 'bet: ' format('{:.2f}', this.amount) ' ' str_l
         }
-        str_o := 'WW:' this.qualifiers.double_trade.WW ' | LL:' this.qualifiers.double_trade.LL ' | WL:' this.qualifiers.double_trade.WL
         _count_reload := 0
         loop {
             _count_reload++
@@ -2317,10 +2340,7 @@ class TraderBot {
             return
         }
 
-        if this.qualifiers.flip_trade.state = 1 {
-            action := (action = "buy") ? "sell" : "buy"
-        }
-        if (this.stats.win_rate <= 46.7) {
+        if (this.flip_trade.state = 1) {
             action := (action = "buy") ? "sell" : "buy"
         }
 
