@@ -361,6 +361,21 @@ class TraderBot {
         this.CUSTOM_AMOUNTS1 := [1,1,1,1,1,1, 2, 5, 11, 27, 65, 135, 280, 580, 1075]
         this.CUSTOM_AMOUNTS_loss4_win4 := [1,1, 11, 27, 65, 135, 280, 580, 1075]
         this.CUSTOM_AMOUNTS2 := [1,1,1,1,1,1, 15, 35, 15]
+        this.F300 := {
+            streak7_40: {state_5lost: 0, amt: 0, sum_amt: 0, idx: 0, losses: 0},
+            2xplus3: {state: 0, streaks: Map()},
+            lost4_won: {state: 0, streaks: Map()},
+            sum2_4lost: 0,
+            acc_sum_4lost: 0,
+            sum_4lost: 0,
+            stateW: 0,
+            stateL: 0,
+            amt: 0,
+            bal: 0,
+            count: 0,
+            iter_lost5: 0,
+            streaks: Map(3, {}, 4, {}, -3, {}, -4, {})
+        }
 
         this.QualifiersReset()
         this.MidNightReset()
@@ -406,7 +421,6 @@ class TraderBot {
             this.lose5.amt := perc * this.lose5.sum
             this.amount := this.lose5.amt
         }
-
     }
 
     AmountOverride7Win5() {
@@ -1488,6 +1502,21 @@ class TraderBot {
             sum: 0,
             idx: 0,
         }
+         
+        this.F300.streak7_40 := {state_5lost: 0, amt: 0, sum_amt: 0, idx: 0, losses: 0}
+        this.F300.2xplus3 := {state: 0, streaks: Map()}
+        this.F300.lost4_won := {state: 0, streaks: Map()}
+
+        this.F300.sum2_4lost := 0
+        this.F300.acc_sum_4lost := 0
+        this.F300.sum_4lost := 0
+        this.F300.stateW := 0
+        this.F300.stateL := 0
+        this.F300.amt := 0
+        this.F300.bal := 0
+        this.F300.count := 0
+
+        this.F300.streaks := Map(3, {}, 4, {}, -3, {}, -4, {})
 
         this.perc40 := Map('loss7', {}, 'win1', {}, 'wl34', {})
         for k, v in this.perc40 {
@@ -1501,21 +1530,6 @@ class TraderBot {
         }
         this.win5andabove[4].amt := 100
 
-        this.F300 := {
-            streak7_40: {state_5lost: 0, amt: 0, sum_amt: 0, idx: 0, losses: 0},
-            2xplus3: {state: 0, streaks: Map()},
-            lost4_won: {state: 0, streaks: Map()},
-            sum2_4lost: 0,
-            acc_sum_4lost: 0,
-            sum_4lost: 0,
-            stateW: 0,
-            stateL: 0,
-            amt: 0,
-            bal: 0,
-            count: 0,
-            iter_lost5: 0,
-            streaks: Map(3, {}, 4, {}, -3, {}, -4, {})
-        }
         Loop 20 {
             this.F300.lost4_won.streaks[A_Index+3] := {lost_before: 0, amt: 0}
         }
