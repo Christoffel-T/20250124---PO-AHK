@@ -469,7 +469,7 @@ class TraderBot {
             streak_obj := this.win5andabove[streak_prev]
             if (streak_obj.pause5 = 0) {
                 streak_obj.idx++
-                if (streak_obj.idx >= 6) {
+                if (streak_obj.idx >= 5) {
                     streak_obj.pause5 := 1
                     streak_obj.amt := 1.1
                     streak_obj.sum_amt /= 2
@@ -477,7 +477,9 @@ class TraderBot {
                 }
             }
             streak_obj.sum_amt += streak_obj.amt
-            streak_obj.amt := amts[streak_obj.idx]
+            if streak_obj.idx > 0 {
+                streak_obj.amt := amts[streak_obj.idx]
+            }
             ; streak_obj.amt += cent_amts[streak_obj.idx]
             if (streak_obj.pause5 = 1) {
                     streak_obj.amt := 1.1
@@ -657,7 +659,9 @@ class TraderBot {
                         if (streak_obj.idx = lost_idx) {
                             this.F300.iter_lost5++
                         }
-                        streak_obj.amt := amts[streak_obj.idx]
+                        if streak_obj.idx > 0 {
+                            streak_obj.amt := amts[streak_obj.idx]
+                        }
                         ; streak_obj.amt += cent_amts[streak_obj.idx]
                         if (streak_obj.state_5lost = '5lostwon2') {
                             streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
@@ -901,7 +905,7 @@ class TraderBot {
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx3++
-                    if (streak_obj.idx3 >= 6) {
+                    if (streak_obj.idx3 >= 5) {
                         streak_obj.pause5 := 1
                         streak_obj.amt := 1.1
                         streak_obj.sum_amt /= 2
@@ -992,7 +996,7 @@ class TraderBot {
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx3++
-                    if (streak_obj.idx3 >= 6) {
+                    if (streak_obj.idx3 >= 5) {
                         streak_obj.pause5 := 1
                         streak_obj.amt := 1.1
                         streak_obj.sum_amt /= 2
