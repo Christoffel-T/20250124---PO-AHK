@@ -677,7 +677,7 @@ class TraderBot {
                         }
                         ; streak_obj.amt += cent_amts[streak_obj.idx]
                         if (streak_obj.pause5 = 1) {
-                                streak_obj.amt := 1.1
+                            streak_obj.amt := 1.1
                         } else if (streak_obj.state_5lost = '5lostwon2') {
                             streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
                         } else if (streak_obj.state_5lost = '5lostwon1') {
@@ -1559,6 +1559,7 @@ class TraderBot {
             v.losses := 0
             v.amt := 0
             v.state_5lost := 0
+            v.pause5 := 0
         }
         this.qualifier_221_210 := {
             state: 0,
