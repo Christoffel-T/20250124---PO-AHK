@@ -1593,7 +1593,7 @@ class TraderBot {
             v.state := 0
             v.loss_multiplier := 1
             v.amts := [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61]
-            v.idx := 1
+            v.idx1 := 1
             v.idx2 := 0
             v.idx := 0
             v.sum_over20 := 0
