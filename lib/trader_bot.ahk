@@ -955,7 +955,7 @@ class TraderBot {
                         streak_obj.amt := streak_obj.sum_amt *1.1
                     else if percs[streak_obj.idx] != 1.1
                         streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx]
-                } else if (streak_obj.idx >= 3) {
+                } else if (streak_obj.idx >= 2) {
                     streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx - 1]
                     streak_obj.state_5lost := '5lost'
                 }
