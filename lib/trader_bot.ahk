@@ -408,10 +408,10 @@ class TraderBot {
             } else if (streak < str_prev) {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx++
-                    if (streak_obj.idx >= 6) {
-                        streak_obj.pause5 := 1
-                        streak_obj.amt := 1.1
-                    }
+                    ; if (streak_obj.idx >= 6) {
+                    ;     streak_obj.pause5 := 1
+                    ;     streak_obj.amt := 1.1
+                    ; }
                 }
                 this.lose5.sum += this.lose5.amt
             }
@@ -473,13 +473,13 @@ class TraderBot {
             streak_obj := this.win5andabove[streak_prev]
             if (streak_obj.pause5 = 0) {
                 streak_obj.idx++
-                if (streak_obj.idx >= 5) {
-                    streak_obj.pause5 := 1
-                    streak_obj.amt := 1.1
-                    sum_move := streak_obj.sum_amt * 0.4
-                    streak_obj.sum_amt -= sum_move
-                    this.lose5.sum += sum_move
-                }
+                ; if (streak_obj.idx >= 5) {
+                ;     streak_obj.pause5 := 1
+                ;     streak_obj.amt := 1.1
+                ;     sum_move := streak_obj.sum_amt * 0.4
+                ;     streak_obj.sum_amt -= sum_move
+                ;     this.lose5.sum += sum_move
+                ; }
             }
             streak_obj.sum_amt += streak_obj.amt
             if streak_obj.idx > 0 {
@@ -669,13 +669,13 @@ class TraderBot {
                     if (state = this.streak_prev[1]) {
                         if (streak_obj.pause5 = 0) {
                             streak_obj.idx++
-                            if (streak_obj.idx = 5 or streak_obj.idx = 6) {
-                                streak_obj.pause5 := 1
-                                streak_obj.amt := 1.1
-                                sum_move := streak_obj.sum_amt * 0.4
-                                streak_obj.sum_amt -= sum_move
-                                this.lose5.sum += sum_move
-                            }
+                            ; if (streak_obj.idx = 5 or streak_obj.idx = 6) {
+                            ;     streak_obj.pause5 := 1
+                            ;     streak_obj.amt := 1.1
+                            ;     sum_move := streak_obj.sum_amt * 0.4
+                            ;     streak_obj.sum_amt -= sum_move
+                            ;     this.lose5.sum += sum_move
+                            ; }
                         }
                         streak_obj.sum_amt += streak_obj.amt
                         lost_idx := 4
@@ -934,13 +934,13 @@ class TraderBot {
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx++
-                    if (streak_obj.idx >= 5) {
-                        streak_obj.pause5 := 1
-                        streak_obj.amt := 1.1
-                        sum_move := streak_obj.sum_amt * 0.4
-                        streak_obj.sum_amt -= sum_move
-                        this.lose5.sum += sum_move
-                    }
+                    ; if (streak_obj.idx >= 5) {
+                    ;     streak_obj.pause5 := 1
+                    ;     streak_obj.amt := 1.1
+                    ;     sum_move := streak_obj.sum_amt * 0.4
+                    ;     streak_obj.sum_amt -= sum_move
+                    ;     this.lose5.sum += sum_move
+                    ; }
                 }
                 if (streak_obj.idx = 5) {
                     this.F300.iter_lost5++
@@ -1030,13 +1030,13 @@ class TraderBot {
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx++
-                    if (streak_obj.idx >= 5) {
-                        streak_obj.pause5 := 1
-                        streak_obj.amt := 1.1
-                        sum_move := streak_obj.sum_amt * 0.4
-                        streak_obj.sum_amt -= sum_move
-                        this.lose5.sum += sum_move
-                    }
+                    ; if (streak_obj.idx >= 5) {
+                    ;     streak_obj.pause5 := 1
+                    ;     streak_obj.amt := 1.1
+                    ;     sum_move := streak_obj.sum_amt * 0.4
+                    ;     streak_obj.sum_amt -= sum_move
+                    ;     this.lose5.sum += sum_move
+                    ; }
                 }
                 if (streak_obj.idx = 5) {
                     this.F300.iter_lost5++
