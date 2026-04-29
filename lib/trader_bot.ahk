@@ -167,7 +167,7 @@ class TraderBot {
     AmountOverride7Win5() {
         streak := this.stats.streak_real
         streak_prev := this.streak_prev[1]
-        amts := [50]
+        amts := [25]
         cent_amts := [0.10*(this.F300.iter_lost5+1)]
         Loop 100 {
             amts.Push(amts[-1]*2+3)
@@ -426,10 +426,10 @@ class TraderBot {
                         }
                     }
                 } 
-                if streak_obj.sum_amt >= 20 {
+                if streak_obj.sum_amt >= 15 {
                     streak_obj.sum_over20 := 1
                 }
-                if streak_obj.sum_amt < 20 and streak_obj.sum_over20 = 1 {
+                if streak_obj.sum_amt < 15 and streak_obj.sum_over20 = 1 {
                     streak_obj.sum_over20 := 0
                     streak_obj.idx := 0
                     this.qstreak[2].sum_amt += streak_obj.sum_amt/2
@@ -683,10 +683,10 @@ class TraderBot {
                 }
                 
             }
-            if streak_obj.sum_amt >= 20 {
+            if streak_obj.sum_amt >= 15 {
                 streak_obj.sum_over20 := 1
             }
-            if streak_obj.sum_amt < 20 and streak_obj.sum_over20 = 1 {
+            if streak_obj.sum_amt < 15 and streak_obj.sum_over20 = 1 {
                 streak_obj.pause5 := 0
                 streak_obj.sum_over20 := 0
                 streak_obj.idx := 0
@@ -769,10 +769,10 @@ class TraderBot {
                     streak_obj.state_5lost := '5lost'
                 }
             }
-            if streak_obj.sum_amt >= 20 {
+            if streak_obj.sum_amt >= 15 {
                 streak_obj.sum_over20 := 1
             }
-            if streak_obj.sum_amt < 20 and streak_obj.sum_over20 = 1 {
+            if streak_obj.sum_amt < 15 and streak_obj.sum_over20 = 1 {
                 streak_obj.pause5 := 0
                 streak_obj.sum_over20 := 0
                 streak_obj.idx := 0
