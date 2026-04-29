@@ -2085,7 +2085,7 @@ class TraderBot {
             str_l := 'bet: ' format('{:.2f}', this.amount) ' ' str_l
         }
         str_m := '(' this.qstreak[-2].streak ' [wins=' this.qstreak[-2].wins '|loss=' this.qstreak[-2].losses ']) sum=' format('{:.2f}', this.qstreak[-2].sum_amt)
-        if (streak = 2) {
+        if (streak = -2) {
             str_m := 'bet: ' format('{:.2f}', this.amount) ' ' str_m
         }
         _count_reload := 0
