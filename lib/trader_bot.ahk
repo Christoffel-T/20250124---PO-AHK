@@ -677,7 +677,7 @@ class TraderBot {
                     streak_obj.idx++
                 }
                 if (streak_obj.idx = 6 or streak_obj.idx = 4) {
-3                   sum_trf := streak_obj.sum_amt * 0.4
+                    sum_trf := streak_obj.sum_amt * 0.4
                     this.qstreak[2].sum_amt += sum_trf/2
                     this.qstreak[-2].sum_amt += sum_trf/2
                     streak_obj.sum_amt -= sum_trf
