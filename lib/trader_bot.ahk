@@ -215,6 +215,12 @@ class TraderBot {
             if (streak_obj.pause5 = 0) {
                 streak_obj.idx++
             }
+            if (streak_obj.idx = 6 or streak_obj.idx = 4) {
+                sum_trf := streak_obj.sum_amt * 0.4
+                this.qstreak[2].sum_amt += sum_trf/2
+                this.qstreak[-2].sum_amt += sum_trf/2
+                streak_obj.sum_amt -= sum_trf
+            }
             streak_obj.sum_amt += streak_obj.amt
             if streak_obj.idx > 0 {
                 streak_obj.amt := amts[streak_obj.idx]
@@ -404,6 +410,12 @@ class TraderBot {
                     if (state = this.streak_prev[1]) {
                         if (streak_obj.pause5 = 0) {
                             streak_obj.idx++
+                        }
+                        if (streak_obj.idx = 6 or streak_obj.idx = 4) {
+                            sum_trf := streak_obj.sum_amt * 0.4
+                            this.qstreak[2].sum_amt += sum_trf/2
+                            this.qstreak[-2].sum_amt += sum_trf/2
+                            streak_obj.sum_amt -= sum_trf
                         }
                         streak_obj.sum_amt += streak_obj.amt
                         lost_idx := 4
@@ -664,6 +676,12 @@ class TraderBot {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx++
                 }
+                if (streak_obj.idx = 6 or streak_obj.idx = 4) {
+3                   sum_trf := streak_obj.sum_amt * 0.4
+                    this.qstreak[2].sum_amt += sum_trf/2
+                    this.qstreak[-2].sum_amt += sum_trf/2
+                    streak_obj.sum_amt -= sum_trf
+                }
                 if (streak_obj.idx = 5) {
                     this.F300.iter_lost5++
                 }
@@ -753,6 +771,12 @@ class TraderBot {
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx++
+                }
+                if (streak_obj.idx = 6 or streak_obj.idx = 4) {
+                    sum_trf := streak_obj.sum_amt * 0.4
+                    this.qstreak[2].sum_amt += sum_trf/2
+                    this.qstreak[-2].sum_amt += sum_trf/2
+                    streak_obj.sum_amt -= sum_trf
                 }
                 if (streak_obj.idx = 5) {
                     this.F300.iter_lost5++
