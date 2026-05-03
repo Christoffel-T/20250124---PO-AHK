@@ -136,6 +136,13 @@ class TraderBot {
         
         Helper(n) {
             amts := [1.5, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61]
+            cent_amts := [0.10]
+            Loop 100 {
+                cent_amts.Push(cent_amts[-1]*2+0.01)
+            }
+            for v in amts {
+                amts[A_Index] := v + cent_amts[A_Index]*this.qstreak[2].transfers
+            }
             streak := this.stats.streak_real
             str_prev := this.streak_prev[1]
             streak_obj := this.qstreak[n]
@@ -215,8 +222,12 @@ class TraderBot {
             if (streak_obj.pause5 = 0) {
                 streak_obj.idx++
             }
-            if (streak_obj.idx = 6 or streak_obj.idx = 4) {
+            if (streak_obj.idx = 7 or streak_obj.idx = 5) {
+                this.qstreak[2].transfers++
                 sum_trf := streak_obj.sum_amt * 0.4
+                if streak_obj.idx = 7 {
+                    sum_trf := streak_obj.sum_amt * 0.8
+                }
                 this.qstreak[2].sum_amt += sum_trf/2
                 this.qstreak[-2].sum_amt += sum_trf/2
                 streak_obj.sum_amt -= sum_trf
@@ -280,8 +291,10 @@ class TraderBot {
         streak_obj := this.F300.streak7_40
         if (streak <= -7) {
             amts_min7 := [2, 5, 11, 27, 65, 135, 280, 580, 1075, 2500]
+            if this.balance.side > 10000
+                amts_min7 := [1.5, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61]
             i := Abs(streak) - 6
-            this.amount := amts_min7[i]
+            this.amount := amts_min7[Min(i, amts_min7.Length)]
             if (streak_obj.amt > 0) {
                 this.amount := streak_obj.amt
             }
@@ -411,8 +424,12 @@ class TraderBot {
                         if (streak_obj.pause5 = 0) {
                             streak_obj.idx++
                         }
-                        if (streak_obj.idx = 6 or streak_obj.idx = 4) {
+                        if (streak_obj.idx = 7 or streak_obj.idx = 5) {
+                            this.qstreak[2].transfers++
                             sum_trf := streak_obj.sum_amt * 0.4
+                            if streak_obj.idx = 7 {
+                                sum_trf := streak_obj.sum_amt * 0.8
+                            }
                             this.qstreak[2].sum_amt += sum_trf/2
                             this.qstreak[-2].sum_amt += sum_trf/2
                             streak_obj.sum_amt -= sum_trf
@@ -676,8 +693,12 @@ class TraderBot {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx++
                 }
-                if (streak_obj.idx = 6 or streak_obj.idx = 4) {
+                if (streak_obj.idx = 7 or streak_obj.idx = 5) {
+                    this.qstreak[2].transfers++
                     sum_trf := streak_obj.sum_amt * 0.4
+                    if streak_obj.idx = 7 {
+                        sum_trf := streak_obj.sum_amt * 0.8
+                    }
                     this.qstreak[2].sum_amt += sum_trf/2
                     this.qstreak[-2].sum_amt += sum_trf/2
                     streak_obj.sum_amt -= sum_trf
@@ -772,8 +793,12 @@ class TraderBot {
                 if (streak_obj.pause5 = 0) {
                     streak_obj.idx++
                 }
-                if (streak_obj.idx = 6 or streak_obj.idx = 4) {
+                if (streak_obj.idx = 7 or streak_obj.idx = 5) {
+                    this.qstreak[2].transfers++
                     sum_trf := streak_obj.sum_amt * 0.4
+                    if streak_obj.idx = 7 {
+                        sum_trf := streak_obj.sum_amt * 0.8
+                    }
                     this.qstreak[2].sum_amt += sum_trf/2
                     this.qstreak[-2].sum_amt += sum_trf/2
                     streak_obj.sum_amt -= sum_trf
@@ -1282,6 +1307,7 @@ class TraderBot {
             v.wins := 0
             v.losses := 0
             v.streak := 0
+            v.transfers := 0
         }
          
         this.F300.streak7_40 := {state_5lost: 0, amt: 0, sum_amt: 0, idx: 0, losses: 0}
