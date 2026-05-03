@@ -287,7 +287,7 @@ class TraderBot {
         if (streak = -1 and this.switch_win_loss[-1].amt > 0) {
             this.amount := this.switch_win_loss[-1].amt
         }
-
+ 
         streak_obj := this.F300.streak7_40
         if (streak <= -7) {
             amts_min7 := [2, 5, 11, 27, 65, 135, 280, 580, 1075, 2500]
