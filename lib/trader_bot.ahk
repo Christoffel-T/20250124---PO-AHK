@@ -179,9 +179,10 @@ class TraderBot {
                     } else if (streak_obj.state_5lost = '5lostwon1') {
                         streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * idx))
                     } else if (idx >= 2) {
-                        streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * idx-2))
+                        streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * (idx-2)))
                         streak_obj.state_5lost := '5lost'
-                    }
+                        4
+                    } 
                 }
             }
             if streak_obj.sum_amt >= 15 {
@@ -200,7 +201,7 @@ class TraderBot {
                 if ((streak_obj.streak > 0 or streak_obj.streak = -1) and streak_obj.state_5lost = 0) {
                     streak_obj.amt := (streak_obj.sum_amt + 7)/0.92
                 }
-                this.amount := Abs(streak_obj.amt)
+                this.amount := streak_obj.amt
             }
         }
     }
