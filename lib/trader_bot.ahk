@@ -175,7 +175,7 @@ class TraderBot {
                         streak_obj.sum_amt -= sum_trf
                     }
                     if (streak_obj.state_5lost = '5lostwon2') {
-                        streak_obj.amt := cust_amt2won[Mod(idx - 1, cust_amt2won.Length) + 1]
+                        streak_obj.amt := cust_amt2won[Mod(idx, cust_amt2won.Length) + 1]
                     } else if (streak_obj.state_5lost = '5lostwon1') {
                         streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * idx))
                     } else if (idx >= 2) {
@@ -241,14 +241,14 @@ class TraderBot {
             } else if (streak_obj.state_5lost = '5lostwon1') {
                 streak_obj.idx := 1
                 streak_obj.state_5lost := '5lostwon2'
-                streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                streak_obj.amt := cust_amt2won[1]
             } else if (streak_obj.sum_amt <= 10) {
                 streak_obj.state_5lost := 0
                 streak_obj.amt := 0
                 streak_obj.sum_amt := 0
             } else if (streak_obj.state_5lost = '5lostwon2') {
                 streak_obj.idx := 1
-                streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                streak_obj.amt := cust_amt2won[1]
             }
         }
         if (streak < streak_prev and streak_prev >= 5) {
@@ -274,7 +274,7 @@ class TraderBot {
             if (streak_obj.pause5 = 1) {
                 streak_obj.amt := 1.1
             } else if (streak_obj.state_5lost = '5lostwon2') {
-                streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
             } else if (streak_obj.state_5lost = '5lostwon1') {
                 streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx]
             } else if (streak_obj.idx >= 3) {
@@ -437,7 +437,7 @@ class TraderBot {
                         } else if (streak_obj.state_5lost = '5lostwon1') {
                             streak_obj.idx := 1
                             streak_obj.state_5lost := '5lostwon2'
-                            streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                            streak_obj.amt := cust_amt2won[1]
                         } else if (streak_obj.sum_amt <= 10) {
                             streak_obj.state_5lost := 0
                             streak_obj.amt := 0
@@ -448,7 +448,7 @@ class TraderBot {
                                 this.F300.%str_state% := -1
                         } else if (streak_obj.state_5lost = '5lostwon2') {
                             streak_obj.idx := 1
-                            streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                            streak_obj.amt := [1]
                         }
                     }
                 }
@@ -480,7 +480,7 @@ class TraderBot {
                         if (streak_obj.pause5 = 1) {
                             streak_obj.amt := 1.1
                         } else if (streak_obj.state_5lost = '5lostwon2') {
-                            streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                            streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
                         } else if (streak_obj.state_5lost = '5lostwon1') {
                             streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx]
                         } else if (streak_obj.idx >= 3) {
@@ -713,14 +713,14 @@ class TraderBot {
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.idx := 1
                     streak_obj.state_5lost := '5lostwon2'
-                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                    streak_obj.amt := cust_amt2won[1]
                 } else if (streak_obj.sum_amt <= 10) {
                     streak_obj.state_5lost := 0
                     streak_obj.amt := 0
                     streak_obj.sum_amt := 0
                 } else if (streak_obj.state_5lost = '5lostwon2') {
                     streak_obj.idx := 1
-                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                    streak_obj.amt := cust_amt2won[1]
                 }
             }
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
@@ -744,7 +744,7 @@ class TraderBot {
                 if (streak_obj.pause5 = 1) {
                     streak_obj.amt := 1.1
                 } else if (streak_obj.state_5lost = '5lostwon2') {
-                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     if percs[streak_obj.idx] = 1.2
                         streak_obj.amt := streak_obj.sum_amt *1.1
@@ -813,14 +813,14 @@ class TraderBot {
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.idx := 1
                     streak_obj.state_5lost := '5lostwon2'
-                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                    streak_obj.amt := cust_amt2won[1]
                 } else if (streak_obj.sum_amt <= 10) {
                     streak_obj.state_5lost := 0
                     streak_obj.amt := 0
                     streak_obj.sum_amt := 0
                 } else if (streak_obj.state_5lost = '5lostwon2') {
                     streak_obj.idx := 1
-                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                    streak_obj.amt := cust_amt2won[1]
                 }
             }
             if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
@@ -844,7 +844,7 @@ class TraderBot {
                 if (streak_obj.pause5 = 1) {
                     streak_obj.amt := 1.1
                 } else if (streak_obj.state_5lost = '5lostwon2') {
-                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx]
                 } else if (streak_obj.idx >= 2) {
@@ -2278,6 +2278,7 @@ class TraderBot {
         MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
         sleep 50
         mark_time := A_TickCount
+        retries := 0
         loop {
             MouseMove(this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, 0)
             sleep 50
@@ -2289,7 +2290,21 @@ class TraderBot {
             if this.balance.current != this.balance.last_trade {
                 break
             }
-            if A_TickCount - mark_time >= 10000 {
+            if (A_TickCount - mark_time >= 10000 and retries <= 0) {
+                retries++
+                if not this.qualifiers.double_trade.state {
+                    MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
+                } else {
+                    MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
+                    ; sleep Random(800, 1200)
+                    ; _act2 := action = 'BUY' ? 'SELL' : 'BUY'
+                    ; MouseClick('L', this.coords.%_act2%.x + Random(-5, 5), this.coords.%_act2%.y + Random(-1, 1), 1, 2)
+                }
+                
+                sleep 200
+                MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
+                sleep 50
+            } else if (A_TickCount - mark_time >= 20000) {
                 this.trade_opened[1] := false
                 this.active_trade := ''
                 return
