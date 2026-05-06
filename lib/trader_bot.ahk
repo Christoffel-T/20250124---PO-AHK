@@ -175,7 +175,7 @@ class TraderBot {
                         streak_obj.sum_amt -= sum_trf
                     }
                     if (streak_obj.state_5lost = '5lostwon2') {
-                        streak_obj.amt := cust_amt2won[Mod(streak_obj.idx - 1, cust_amt2won.Length) + 1]
+                        streak_obj.amt := cust_amt2won[Mod(idx - 1, cust_amt2won.Length) + 1]
                     } else if (streak_obj.state_5lost = '5lostwon1') {
                         streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * idx))
                     } else if (idx >= 2) {
