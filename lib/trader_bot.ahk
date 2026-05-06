@@ -181,7 +181,6 @@ class TraderBot {
                     } else if (idx >= 2) {
                         streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * (idx-2)))
                         streak_obj.state_5lost := '5lost'
-                        4
                     } 
                 }
             }
