@@ -170,7 +170,7 @@ class TraderBot {
                         if (idx = 7) {
                             sum_trf := streak_obj.sum_amt * 0.8
                         }
-                        this.switch_win_loss[1].sum_amt += sum_trf/2
+                        this.switch_win_loss[1].sum_amt  += sum_trf/2
                         this.switch_win_loss[-1].sum_amt += sum_trf/2
                         streak_obj.sum_amt -= sum_trf
                     }
@@ -183,6 +183,18 @@ class TraderBot {
                         streak_obj.state_5lost := '5lost'
                     }
                 }
+            }
+            if streak_obj.sum_amt >= 15 {
+                streak_obj.sum_over20 := 1
+            }
+            if streak_obj.sum_amt < 15 and streak_obj.sum_over20 = 1 {
+                streak_obj.pause5 := 0
+                streak_obj.sum_over20 := 0
+                streak_obj.idx := 0
+                this.switch_win_loss[1].sum_amt  += streak_obj.sum_amt/2
+                this.switch_win_loss[-1].sum_amt += streak_obj.sum_amt/2
+                streak_obj.sum_amt := 0
+                streak_obj.state_5lost := 0
             }
             if (streak = n) {
                 if ((streak_obj.streak > 0 or streak_obj.streak = -1) and streak_obj.state_5lost = 0) {
@@ -1331,6 +1343,7 @@ class TraderBot {
             v.streak := 0
             v.transfers := 0
             v.state_5lost := 0
+            v.sum_over20 := 0
         }
          
         this.F300.streak7_40 := {state_5lost: 0, amt: 0, sum_amt: 0, idx: 0, losses: 0}
