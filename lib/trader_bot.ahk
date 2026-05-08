@@ -216,7 +216,7 @@ class TraderBot {
                 if ((streak_obj.streak > 0 or streak_obj.streak = -1) and streak_obj.state_5lost = 0) {
                     streak_obj.amt := (streak_obj.sum_amt + 7)/0.92
                 }
-                idx := streak_obj.idx
+                idx := streak_obj.streak < 0 ? Abs(streak_obj.streak) : 0
                 perc_base := 0.3
                 if streak_obj.sum_amt >= 200 {
                     streak_obj.sum_over200 := 1
