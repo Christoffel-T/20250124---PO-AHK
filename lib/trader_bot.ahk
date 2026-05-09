@@ -190,10 +190,10 @@ class TraderBot {
                     } 
                 }
             }
-            if streak_obj.sum_amt >= 15 {
+            if streak_obj.sum_amt >= 20.99 {
                 streak_obj.sum_over20 := 1
             }
-            if streak_obj.sum_amt < 15 and streak_obj.sum_over20 = 1 {
+            if streak_obj.sum_amt < 20.99 and streak_obj.sum_over20 = 1 {
                 streak_obj.pause5 := 0
                 streak_obj.sum_over20 := 0
                 streak_obj.idx := 0
@@ -535,10 +535,10 @@ class TraderBot {
                         }
                     }
                 } 
-                if streak_obj.sum_amt >= 15 {
+                if streak_obj.sum_amt >= 20.99 {
                     streak_obj.sum_over20 := 1
                 }
-                if streak_obj.sum_amt < 15 and streak_obj.sum_over20 = 1 {
+                if streak_obj.sum_amt < 20.99 and streak_obj.sum_over20 = 1 {
                     streak_obj.sum_over20 := 0
                     streak_obj.idx := 0
                     sum_trf := streak_obj.sum_amt / 5
@@ -825,10 +825,10 @@ class TraderBot {
                     streak_obj.state_5lost := '5lost'
                 }
             }
-            if streak_obj.sum_amt >= 15 {
+            if streak_obj.sum_amt >= 20.99 {
                 streak_obj.sum_over20 := 1
             }
-            if streak_obj.sum_amt < 15 and streak_obj.sum_over20 = 1 {
+            if streak_obj.sum_amt < 20.99 and streak_obj.sum_over20 = 1 {
                 streak_obj.pause5 := 0
                 streak_obj.sum_over20 := 0
                 streak_obj.idx := 0
@@ -947,10 +947,10 @@ class TraderBot {
                     streak_obj.state_5lost := '5lost'
                 }
             }
-            if streak_obj.sum_amt >= 15 {
+            if streak_obj.sum_amt >= 20.99 {
                 streak_obj.sum_over20 := 1
             }
-            if streak_obj.sum_amt < 15 and streak_obj.sum_over20 = 1 {
+            if streak_obj.sum_amt < 20.99 and streak_obj.sum_over20 = 1 {
                 streak_obj.pause5 := 0
                 streak_obj.sum_over20 := 0
                 streak_obj.idx := 0
