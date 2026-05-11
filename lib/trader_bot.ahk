@@ -1133,8 +1133,12 @@ class TraderBot {
                 this.amount := this.switch_win_loss[-1].amt
             }
         }
-        if (this.stats.streak_real != this.streak_prev[1])
+        if (this.streak_prev[1] = -4 and streak < this.streak_prev[1]) {
+            this.F300.iter_lost5++
+        }
+        if (this.stats.streak_real != this.streak_prev[1]) {
             this.AmountOverride5wl34()
+        }
         this.AmountOverride6()
         this.AmountOverride7Win5()
         this.AmountOverride8_22()
