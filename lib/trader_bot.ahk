@@ -841,7 +841,6 @@ class TraderBot {
                 streak_obj.sum_amt := 0
                 streak_obj.sum_over200 := 0
                 streak_obj.state_5lost := 0
-                this.pause_except_1.state := 0
             }
 
             streak_obj.max_idx := max(streak_obj.idx, streak_obj.max_idx)
@@ -964,7 +963,6 @@ class TraderBot {
                 streak_obj.sum_amt := 0
                 streak_obj.sum_over200 := 0
                 streak_obj.state_5lost := 0
-                this.pause_except_1.state := 0
             }
 
             streak_obj.max_idx := max(streak_obj.idx, streak_obj.max_idx)
@@ -1099,38 +1097,11 @@ class TraderBot {
         streak := this.stats.streak_real
         PauseExcept1()
         PauseExcept1() {
-            if (this.pause_except_1.state = 0) {
-                if (this.pause_except_1.over250 = 0 and this.stats.max_bal_diff >= 250) {
-                    this.pause_except_1.over250 := 1
-                } else if (this.pause_except_1.over250 = 1 and this.stats.max_bal_diff < 250) {
-                    this.pause_except_1.over250 := 2
-                } else if (this.pause_except_1.over250 = 2 and this.stats.max_bal_diff >= 250) {
-                    this.pause_except_1.state := 1
-                    this.pause_except_1.over250 := 0
-                }
-                if (this.pause_except_1.over275 = 0 and this.stats.max_bal_diff >= 275) {
-                    this.pause_except_1.over275 := 1
-                } else if (this.pause_except_1.over275 = 1 and this.stats.max_bal_diff < 275) {
-                    this.pause_except_1.over275 := 2
-                } else if (this.pause_except_1.over275 = 2 and this.stats.max_bal_diff >= 275) {
-                    this.pause_except_1.state := 1
-                    this.pause_except_1.over275 := 0
-                }
+            if (this.balance.side < this.balance.starting - 275) {
+                this.pause_except_1.state := 1
             }
-            if (this.stats.win_rate >= 45.01 and this.stats.win_rate <= 45.99) {
-                this.pause_except_1wr.state := 1
-                this.pause_except_1wr.w1 := 0
-                this.pause_except_1wr.l1 := 0
-            } else if (this.pause_except_1wr.w1 = 1 and this.pause_except_1wr.l1 = 1) {
-                this.pause_except_1wr.state := 0
-                this.pause_except_1wr.w1 := 0
-                this.pause_except_1wr.l1 := 0
-            }
-            if (streak = 1 and this.switch_win_loss[1].amt > 0) {
-                this.amount := this.switch_win_loss[1].amt
-            }
-            if (streak = -1 and this.switch_win_loss[-1].amt > 0) {
-                this.amount := this.switch_win_loss[-1].amt
+            if (this.balance.side >= this.balance.starting) {
+                this.pause_except_1.state := 0
             }
         }
         if (this.streak_prev[1] = -4 and streak < this.streak_prev[1]) {
