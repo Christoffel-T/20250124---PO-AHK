@@ -866,8 +866,8 @@ class TraderBot {
             } else if (idx >= 1 and streak = target_streak and streak_obj.state_5lost = 0) {
                 streak_obj.amt := amts[idx]
                 if (idx <= 2) {
-                    v.add_cent_mult[idx]++
-                    streak_obj.amt += [0.01, 0.03][idx]*v.add_cent_mult[idx]
+                    streak_obj.add_cent_mult[idx]++
+                    streak_obj.amt += [0.01, 0.03][idx]*streak_obj.add_cent_mult[idx]
                 }
             }
 
@@ -991,8 +991,8 @@ class TraderBot {
             } else if (idx >= 1 and streak = target_streak and streak_obj.state_5lost = 0) {
                 streak_obj.amt := amts[idx]
                 if (idx <= 2) {
-                    v.add_cent_mult[idx]++
-                    streak_obj.amt += [0.01, 0.03][idx]*v.add_cent_mult[idx]
+                    streak_obj.add_cent_mult[idx]++
+                    streak_obj.amt += [0.01, 0.03][idx]*streak_obj.add_cent_mult[idx]
                 }
             }
 
