@@ -224,6 +224,9 @@ class TraderBot {
                 if (streak_obj.sum_over200 = 1) {
                     streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*(idx)
                 }
+                if (this.pause_except_1.state = 1) {
+                    streak_obj.amt := 1
+                }
                 this.amount := streak_obj.amt
             }
         }
@@ -334,10 +337,13 @@ class TraderBot {
                 streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*(idx)
             }
         }
-
+        
         if (streak >= 5) {
+            if (this.pause_except_1.state = 1) {
+                this.win5andabove[streak].amt := 1
+            }
             this.amount := this.win5andabove[streak].amt
-            if (this.amount <= 2) {
+            if (this.amount <= 2 and this.pause_except_1.state = 0) {
                 this.amount := amts[1]
             }
             if (streak > 5) {
@@ -360,6 +366,9 @@ class TraderBot {
                 amts_min7 := [1.5, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61]
             i := Abs(streak) - 6
             this.amount := amts_min7[Min(i, amts_min7.Length)]
+            if (this.pause_except_1.state = 1) {
+                streak_obj.amt := 1
+            }
             if (streak_obj.amt > 0) {
                 this.amount := streak_obj.amt
             }
@@ -389,6 +398,9 @@ class TraderBot {
                     streak_obj.amt := 0
                     streak_obj.sum_amt := 0
                 }
+            }
+            if (this.pause_except_1.state = 1) {
+                streak_obj.amt := 1
             }
             if (streak_obj.amt > 0) {
                 this.amount := streak_obj.amt
@@ -442,6 +454,9 @@ class TraderBot {
             }
 
             if (state = streak and abs_state >= 3) {
+                if (this.pause_except_1.state = 1) {
+                    this.F300.streaks[state].amt := 1
+                }
                 this.amount := this.F300.streaks[state].amt
             }
             
@@ -1113,7 +1128,7 @@ class TraderBot {
         this.AmountOverride6()
         this.AmountOverride7Win5()
         this.AmountOverride8_22()
-        if (this.pause_except_1.state = 0 and this.pause_except_1wr.state = 0) {
+        if (this.pause_except_1.state = 1) {
             this.amount := 1
         }
         if (streak = 1 and this.switch_win_loss[1].amt > 0) {
