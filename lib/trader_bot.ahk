@@ -808,6 +808,8 @@ class TraderBot {
                 streak_obj.sum_amt += streak_obj.amt
                 idx := streak_obj.idx
                 if (Mod(idx, 4) = 1 and idx > 1) {
+                    streak_obj.sum_over20 := 0
+                    streak_obj.sum_over200 := 0
                     sum_trf := streak_obj.sum_amt / 6
                     ; this.switch_win_loss[1].sum_amt  += sum_trf
                     this.switch_win_loss[-1].sum_amt += sum_trf
@@ -825,6 +827,9 @@ class TraderBot {
                     streak_obj.amt := 1.1
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.amt := streak_obj.sum_amt *(percs[streak_obj.idx]+0.03)
+                    if (streak_obj.idx >= 5 and streak_obj.idx <= 8) {
+                        streak_obj.amt := (streak_obj.sum_amt + 5)/0.92
+                    }
                 } else if (streak_obj.state_5lost = '5lostwon2') {
                     streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
                 } else if (streak_obj.idx >= 2) {
@@ -927,6 +932,8 @@ class TraderBot {
                 streak_obj.sum_amt += streak_obj.amt
                 idx := streak_obj.idx
                 if (Mod(idx, 4) = 1 and idx > 1) {
+                    streak_obj.sum_over20 := 0
+                    streak_obj.sum_over200 := 0
                     sum_trf := streak_obj.sum_amt / 6
                     this.switch_win_loss[1].sum_amt  += sum_trf
                     ; this.switch_win_loss[-1].sum_amt += sum_trf
@@ -950,6 +957,9 @@ class TraderBot {
                     streak_obj.amt := 1.1
                 } else if (streak_obj.state_5lost = '5lostwon1') {
                     streak_obj.amt := streak_obj.sum_amt *(percs[streak_obj.idx]+0.03)
+                    if (streak_obj.idx >= 5 and streak_obj.idx <= 8) {
+                        streak_obj.amt := (streak_obj.sum_amt + 5)/0.92
+                    }
                 } else if (streak_obj.state_5lost = '5lostwon2') {
                     streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
                 } else if (streak_obj.idx >= 2) {
