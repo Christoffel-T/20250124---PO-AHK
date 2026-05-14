@@ -785,7 +785,7 @@ class TraderBot {
                     streak_obj.sum_over20 := 0
                     streak_obj.sum_over200 := 0
                     sum_trf := streak_obj.sum_amt / 6
-                    ; this.switch_win_loss[1].sum_amt  += sum_trf
+                    this.switch_win_loss[1].sum_amt  += sum_trf
                     this.switch_win_loss[-1].sum_amt += sum_trf
                     this.qstreak[2].sum_amt += sum_trf
                     this.qstreak[-2].sum_amt += sum_trf
@@ -1111,6 +1111,31 @@ class TraderBot {
         }
         if (streak = -1 and this.switch_win_loss[-1].amt > 0) {
             this.amount := this.switch_win_loss[-1].amt
+        }
+
+        AmountOverride9_bal()
+        AmountOverride9_bal() {
+            next_bal := this.balance.current - this.amount
+            target_bal := this.balance.starting - 100
+            this.bal_under_100.str_info := ''
+            if (this.bal_under_100.state = 0 and next_bal < target_bal) {
+                this.bal_under_100.state := 1
+                this.amount /= 2
+                sum_trf := this.amount / 6
+                this.switch_win_loss[1].sum_amt  += sum_trf
+                this.switch_win_loss[-1].sum_amt += sum_trf
+                this.qstreak[2].sum_amt += sum_trf
+                this.qstreak[-2].sum_amt += sum_trf
+                if (Abs(this.F300.stateW) >= 3) {
+                    this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
+                }
+                if (Abs(this.F300.stateL) >= 3) {
+                    this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
+                }
+                this.bal_under_100.str_info := '(HALVED)'
+            } else if (this.bal_under_100.state = 1 and this.balance.current >= target_bal) {
+                this.bal_under_100.state := 0
+            }
         }
         
         this.balance.last_trade := this.balance.current
@@ -1446,6 +1471,10 @@ class TraderBot {
 
     QualifiersReset() {
         Helper0811_4Loss.Reset()
+        this.bal_under_100 := {
+            state: 0,
+            str_info: '',
+        }
         this.balance.max := 5300
         this.pause_except_1 := {
             state: 0,
@@ -2273,6 +2302,9 @@ class TraderBot {
         } else {
             str_g := 'regular-OFF: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
         }
+
+        str_d := str_d ' ' this.bal_under_100.str_info
+        
         str_h := '(W1: -' this.switch_win_loss[1].idx '[sum=' format('{:.2f}', this.switch_win_loss[1].sum_amt) '])'
         str_h := str_h ' (L1: -' this.switch_win_loss[-1].idx '[sum=' format('{:.2f}', this.switch_win_loss[-1].sum_amt) '])'
 
