@@ -1137,6 +1137,18 @@ class TraderBot {
                 this.bal_under_100.state := 0
             }
         }
+
+        AmountOverride10_maxdiff()
+        AmountOverride10_maxdiff() {
+            if (this.stats.max_bal_diff >= 500) {
+                am := this.stats.max_bal_diff - 400
+                this.balance.max := this.balance.current + 400
+                this.switch_win_loss[ 1].sum_amt -= am/2
+                this.switch_win_loss[-1].sum_amt -= am/2
+                this.qstreak[ 2].sum_amt += am/2
+                this.qstreak[-2].sum_amt += am/2
+            }
+        }
         
         this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
