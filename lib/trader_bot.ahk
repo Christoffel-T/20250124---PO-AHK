@@ -1115,6 +1115,7 @@ class TraderBot {
                 }
             }
         }
+
         if (this.pause_except_1.state = 1) {
             this.amount := 1
         }
@@ -1144,16 +1145,16 @@ class TraderBot {
                 if (Abs(this.F300.stateL) >= 3) {
                     this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
                 }
-                this.bal_under_100.count++
                 this.bal_under_100.str_info := '(HALVED)'
             } else if (this.bal_under_100.state = 1 and this.balance.current >= target_bal) {
                 this.bal_under_100.state := 0
             }
         }
-
+        
         AmountOverride10_maxdiff()
         AmountOverride10_maxdiff() {
             if (this.stats.max_bal_diff >= 500) {
+                this.bal_under_100.count++
                 am := this.stats.max_bal_diff - 400
                 this.balance.max := this.balance.current + 400
                 this.stats.max_bal_diff := 400
