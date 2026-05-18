@@ -339,9 +339,9 @@ class TraderBot {
                         this.F300.%str_state% := k
                         v.amt := amts[1]
                         if (str_state = 'stateW') {
-                            v.sum_amt := += this.F300.temp_sumW
+                            v.sum_amt += this.F300.temp_sumW
                         } else {
-                            v.sum_amt := += this.F300.temp_sumL
+                            v.sum_amt += this.F300.temp_sumL
                         }
                         v.idx := 1
                         ; v.amt += cent_amts[1]
