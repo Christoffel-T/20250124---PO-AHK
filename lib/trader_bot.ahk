@@ -1151,7 +1151,7 @@ class TraderBot {
             }
         }
 
-        ; AmountOverride10_maxdiff()
+        AmountOverride10_maxdiff()
         AmountOverride10_maxdiff() {
             if (this.stats.max_bal_diff >= 500) {
                 am := this.stats.max_bal_diff - 400
