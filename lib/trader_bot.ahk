@@ -307,7 +307,7 @@ class TraderBot {
             target_streak := 1
 
             streak := this.stats.streak_real
-            amts := [2+(0.5*this.F300.iter_lost5)]
+            amts := [6+(0.5*this.F300.iter_lost5)]
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
             }
@@ -423,7 +423,7 @@ class TraderBot {
             target_streak := -1
             
             streak := this.stats.streak_real
-            amts := [2+(0.5*this.F300.iter_lost5)]
+            amts := [6+(0.5*this.F300.iter_lost5)]
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
             }
