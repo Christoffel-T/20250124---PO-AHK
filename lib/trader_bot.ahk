@@ -1098,13 +1098,11 @@ class TraderBot {
                     streak_obj.state_5lost := 0
                 }
                 if (streak = n) {
+                    idx := streak_obj.streak < 0 ? Abs(streak_obj.streak) : 0
                     if ((streak_obj.streak > 0 or streak_obj.streak = -1) and streak_obj.state_5lost = 0) {
                         streak_obj.amt := (streak_obj.sum_amt + 7)/0.92
-                    }
-                    idx := streak_obj.streak < 0 ? Abs(streak_obj.streak) : 0
-                    amt := 2
-                    if idx > 0 and idx <= 2 {
-                        Loop (idx-1) {
+                        amt := 2
+                        Loop (idx) {
                             amt := amt*2 + 3 
                         }
                         streak_obj.amt := amt
