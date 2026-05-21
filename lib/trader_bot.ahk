@@ -1102,6 +1102,13 @@ class TraderBot {
                         streak_obj.amt := (streak_obj.sum_amt + 7)/0.92
                     }
                     idx := streak_obj.streak < 0 ? Abs(streak_obj.streak) : 0
+                    amt := 2
+                    if idx > 0 and idx <= 2 {
+                        Loop (idx-1) {
+                            amt := amt*2 + 3 
+                        }
+                        streak_obj.amt := amt
+                    }
                     perc_base := 0.3
                     if streak_obj.sum_amt >= 200 {
                         streak_obj.sum_over200 := 1
