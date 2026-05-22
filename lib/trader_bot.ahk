@@ -347,7 +347,7 @@ class TraderBot {
                 }
                 streak_obj.sum_amt += streak_obj.amt
                 idx := streak_obj.idx
-                if (Mod(idx+1, 4) = 1 and idx > 1) {
+                if (Mod(idx, 4) = 0 and idx > 1) {
                     streak_obj.sum_over20 := 0
                     streak_obj.sum_over200 := 0
                     sum_trf := streak_obj.sum_amt / 6
@@ -459,7 +459,7 @@ class TraderBot {
                 }
                 streak_obj.sum_amt += streak_obj.amt
                 idx := streak_obj.idx
-                if (Mod(idx+1, 4) = 1 and idx > 1) {
+                if (Mod(idx, 4) = 0 and idx > 1) {
                     streak_obj.sum_over20 := 0
                     streak_obj.sum_over200 := 0
                     sum_trf := streak_obj.sum_amt / 6
@@ -756,7 +756,7 @@ class TraderBot {
                                 }
                                 streak_obj.sum_amt += streak_obj.amt
                                 idx := streak_obj.idx
-                                if (Mod(idx+1, 4) = 1 and idx > 1) {
+                                if (Mod(idx, 4) = 0 and idx > 1) {
                                     sum_trf := streak_obj.sum_amt / 6
                                     this.switch_win_loss[1].sum_amt  += sum_trf
                                     this.switch_win_loss[-1].sum_amt += sum_trf
@@ -1049,7 +1049,7 @@ class TraderBot {
                         streak_obj.streak--
                         streak_obj.sum_amt += streak_obj.amt
                         idx := Abs(streak_obj.streak)
-                        if (Mod(idx+1, 4) = 1 and idx > 1) {
+                        if (Mod(idx, 4) = 0 and idx > 1) {
                             sum_trf := streak_obj.sum_amt / 6
                             this.switch_win_loss[1].sum_amt  += sum_trf
                             this.switch_win_loss[-1].sum_amt += sum_trf
