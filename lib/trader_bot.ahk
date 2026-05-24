@@ -86,7 +86,7 @@ class TraderBot {
         this.qualifiers := {}
         this.streak_prev := [0, 0, 0]
         this.streak_prev_nodraw := [0, 0, 0]
-        this.amt_prev := []
+        this.amt_prev := [0]
         this.switch_win_loss:= Map(
             1, {},
             2, {},
