@@ -153,24 +153,30 @@ class TraderBot {
     }
 
     CheckTradeClosed(just_check:=false) {
-        Sub1()
+        return_value := Sub1()
+        if (return_value = 0) {
+            return false
+        }
+        if (return_value = 1) {
+            return true
+        }
         Sub1() {
             if not this.trade_opened[1] and not just_check {
-                return false
+                return 0
             }
             
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             sleep 50
             loop 3 {
                 if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
-                    return false
+                    return 0
                 }
                 sleep 50
             }
             sleep 500
             
             if just_check
-                return true
+                return 1
             
             this.active_trade := ''
             this.trade_opened[1] := false
@@ -240,6 +246,7 @@ class TraderBot {
                     this.flip_trade.state := !this.flip_trade.state
                 }
             }
+            return 'continue'
         }
 
         this.amount := 1
