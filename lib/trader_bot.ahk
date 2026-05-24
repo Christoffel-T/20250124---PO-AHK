@@ -62,7 +62,7 @@ class TraderBot {
         this.crossovers_arr := []
         this.last_trade := ''
         this.active_trade := ''
-        this.executed_trades := ['']
+        this.executed_trades := ['NONE']
         this.countdown_close := 0
         this.countdown_close_str := ''
         this.win_rate := ''
