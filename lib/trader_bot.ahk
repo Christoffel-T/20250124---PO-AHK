@@ -30,6 +30,7 @@ class TraderBot {
         this.stats.next_max_bal_diff := 0
         this.stats.streak_real := 0
         this.stats.max_streak_real := 0
+        this.stats.NONE := {win_rate: 0, rank: 0, win:0, lose:0, draw:0}
         
         this.amount_arr := []
         this.amount_arr.Push([1, 1.80, 3.80, 8, 16.7, 35, 73, 153, 316, 670, 1350])
