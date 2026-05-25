@@ -20,7 +20,7 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
 
-        this.balance := {side: 0, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {side_high: 0, side_low: 0, side: 0, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance.starting := 5000
         this.balance.reset_max := 5300
         this.balance.min_all := this.balance.min
@@ -614,7 +614,7 @@ class TraderBot {
             abs_streak_current := Abs(streak)
             abs_streak_prev := Abs(this.streak_prev[1])
 
-            if (this.stats.max_bal_diff >= 300 and this.F300.stateW = 0 and this.F300.stateL = 0) {
+            if (this.stats.max_bal_diff >= 0 and this.F300.stateW = 0 and this.F300.stateL = 0) {
                 this.F300.stateW := 1
                 this.F300.stateL := -1
                 this.F300.bal := this.stats.max_bal_diff
@@ -1752,6 +1752,8 @@ class TraderBot {
         this.ResetDemoBalance()
         this.balance.side := this.balance.current
         this.balance.min_all := 9**10
+        this.balance.side_high := Max(this.balance.side, this.balance.side_high)
+        this.balance.side_low := Min(this.balance.side, this.balance.side_low)
         
         this.amount := this.GetAmount(this.balance.current)
         this.SetTradeAmount()
@@ -2414,7 +2416,7 @@ class TraderBot {
             str_i := str_i ' sum=' Format('{:.2f}', this.win5andabove[streak].sum_amt) ')'
         }
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
-        str_k := format('{:.2f}', this.balance.side)
+        str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.high) ' L=' format('{:.2f}', this.balance.low)
         str_l := '(' this.qstreak[2].streak ' [wins=' this.qstreak[2].wins '|loss=' this.qstreak[2].losses ']) sum=' format('{:.2f}', this.qstreak[2].sum_amt)
         if (streak = 2) {
             str_l := 'bet: ' format('{:.2f}', this.amount) ' ' str_l
