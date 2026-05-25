@@ -312,8 +312,8 @@ class TraderBot {
                             amts.Push(amts[-1]*2 + 3)
                         }
                     }
-                    idx := this.maxdiff350.streaks[n].streak + 1
-                    this.amount := amts[idx]
+                    idx := Abs(this.maxdiff350.streaks[n].streak) + 1
+                    this.amount := amts[Max(1, idx)]
                 }
             }
         }
