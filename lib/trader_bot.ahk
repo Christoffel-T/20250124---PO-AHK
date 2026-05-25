@@ -425,6 +425,7 @@ class TraderBot {
                     if (this.pause_except_1.state = 1) {
                         streak_obj.amt := 1
                     }
+                    idx := idx + 1
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     this.amount := streak_obj.amt
                 }
@@ -538,7 +539,7 @@ class TraderBot {
             }
             
             if (streak >= 5) {
-                idx := Min(1, this.win5andabove[streak].idx)
+                idx := Max(1, this.win5andabove[streak].idx)
                 this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
                 if (this.pause_except_1.state = 1) {
                     this.amount := 1
@@ -611,7 +612,7 @@ class TraderBot {
 
                 if (state = streak and abs_state >= 3) {
                     streak_obj := this.F300.streaks[state]
-                    idx := Min(1, streak_obj.idx)
+                    idx := Max(1, streak_obj.idx)
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     if (this.pause_except_1.state = 1) {
                         streak_obj.amt := 1
