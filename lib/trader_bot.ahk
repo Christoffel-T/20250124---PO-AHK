@@ -425,7 +425,7 @@ class TraderBot {
                     if (this.pause_except_1.state = 1) {
                         streak_obj.amt := 1
                     }
-                    idx := idx + 1
+                    idx := Max(1, idx + 1)
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     this.amount := streak_obj.amt
                 }
