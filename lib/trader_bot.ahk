@@ -1530,6 +1530,8 @@ class TraderBot {
 
     SubReset1() {
         this.AddBalance(this.balance.starting-this.balance.current)
+        this.stats.max_bal_diff := 300
+        this.balance.max := 5300
         sum_trf := this.switch_win_loss[1].sum_amt + this.switch_win_loss[-1].sum_amt
         this.switch_win_loss[1].sum_amt  := 0
         this.switch_win_loss[-1].sum_amt := 0
