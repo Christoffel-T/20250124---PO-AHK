@@ -2302,7 +2302,7 @@ class TraderBot {
             str_i := str_i ' sum=' Format('{:.2f}', this.win5andabove[streak].sum_amt) ')'
         }
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
-        str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.high) ' L=' format('{:.2f}', this.balance.low)
+        str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)
         str_l := '(' this.qstreak[2].streak ' [wins=' this.qstreak[2].wins '|loss=' this.qstreak[2].losses ']) sum=' format('{:.2f}', this.qstreak[2].sum_amt)
         if (streak = 2) {
             str_l := 'bet: ' format('{:.2f}', this.amount) ' ' str_l
