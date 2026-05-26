@@ -1635,6 +1635,8 @@ class TraderBot {
         ; sleep 1000
         this.ResetDemoBalance()
         this.balance.side := this.balance.current
+        this.balance.side_high := this.balance.current
+        this.balance.side_low := this.balance.current
         this.balance.min_all := 9**10
         
         this.amount := this.GetAmount(this.balance.current)
