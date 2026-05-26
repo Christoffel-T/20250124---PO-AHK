@@ -2342,7 +2342,7 @@ class TraderBot {
                     str_k ','
                     str_l ','
                     str_m ','
-                    format('{:.2f}', this.amount) ' (' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (' this.balance.max ' | ' this.balance.min ' [' this.balance.min_all '])' ',' 
+                    format('{:.2f}', this.amount) ' (' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (H=' this.balance.max ' | L=' this.balance.min ' [' this.balance.min_all '])' ',' 
                     str.next_bal ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
