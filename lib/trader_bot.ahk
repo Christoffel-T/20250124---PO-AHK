@@ -20,7 +20,7 @@ class TraderBot {
         this.colors := settings_obj.colors
         this.ps := Map()
 
-        this.balance := {side_high: 0, side_low: 0, side: 0, current: 0, min: 999999999, max: 0, last_trade: 0}
+        this.balance := {side_high: 0, side_low: 9**10, side: 0, current: 0, min: 999999999, max: 0, last_trade: 0}
         this.balance.starting := 5000
         this.balance.reset_max := 5300
         this.balance.min_all := this.balance.min
@@ -279,7 +279,7 @@ class TraderBot {
                 this.extra_str := 'maxdiff350'
                 this.SubReset1()
                 this.maxdiff350.state := 1
-            } else if (this.stats.max_bal_diff <= 275 and this.maxdiff350.state = 1) {
+            } else if (this.stats.max_bal_diff <= 290 and this.maxdiff350.state = 1) {
                 this.extra_str := 'maxdiff350 END'
                 this.maxdiff350.state := 0
                 this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
