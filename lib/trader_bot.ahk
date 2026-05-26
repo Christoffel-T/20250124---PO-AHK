@@ -1636,8 +1636,6 @@ class TraderBot {
         this.ResetDemoBalance()
         this.balance.side := this.balance.current
         this.balance.min_all := 9**10
-        this.balance.side_high := Max(this.balance.side, this.balance.side_high)
-        this.balance.side_low := Min(this.balance.side, this.balance.side_low)
         
         this.amount := this.GetAmount(this.balance.current)
         this.SetTradeAmount()
