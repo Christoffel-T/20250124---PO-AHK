@@ -309,9 +309,9 @@ class TraderBot {
                             amts.Push(amts[-1]*2 + 3)
                         }
                     }
-                    idx := Abs(this.maxdiff350.streaks[n].streak) + 1
-                    this.amount := amts[Max(1, idx)]
-                }
+                    idx := Max(1, Abs(this.maxdiff350.streaks[n].streak) + 1)
+                    this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                } 
             }
         }
 
@@ -2690,6 +2690,8 @@ class TraderBot {
                 this.balance.max := Format('{:.2f}', max(cur_bal, this.balance.max))
                 this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
                 this.balance.min_all := Format('{:.2f}', min(cur_bal, this.balance.min_all))
+                this.balance.side_high := Max(this.balance.side, this.balance.side_high)
+                this.balance.side_low := Min(this.balance.side, this.balance.side_low)
 
                 this.stats.max_bal_diff := this.balance.max - this.balance.current
                 this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
