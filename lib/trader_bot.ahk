@@ -249,27 +249,24 @@ class TraderBot {
             return 'continue'
         }
 
-        this.amount := 1
-
         streak := this.stats.streak_real
         if (this.streak_prev[1] = -4 and streak < this.streak_prev[1]) {
             this.F300.iter_lost5++
         }
 
-        if (this.maxdiff350.state = 1) {
-            AmountOverride9_wl1()
-        } else {
+        this.amount := 1
+        if (this.maxdiff350.state = 0) {
             AmountOverride1()
-            AmountOverride5wl34()
-            AmountOverride6_Lose7()
-            AmountOverride7_Win5()
-            AmountOverride8_22()
-            if (streak = 1 and this.switch_win_loss[1].amt > 0) {
-                this.amount := this.switch_win_loss[1].amt
-            }
-            if (streak = -1 and this.switch_win_loss[-1].amt > 0) {
-                this.amount := this.switch_win_loss[-1].amt
-            }
+        }
+        AmountOverride5wl34()
+        AmountOverride6_Lose7()
+        AmountOverride7_Win5()
+        AmountOverride8_22()
+        if (streak = 1 and this.switch_win_loss[1].amt > 0) {
+            this.amount := this.switch_win_loss[1].amt
+        }
+        if (streak = -1 and this.switch_win_loss[-1].amt > 0) {
+            this.amount := this.switch_win_loss[-1].amt
         }
 
         CheckMaxDiff()
