@@ -276,7 +276,7 @@ class TraderBot {
             } else if (this.stats.max_bal_diff >= 310) {
                 this.extra_str := 'maxdiff310'
                 this.maxdiff350.state := 1
-            } else if (this.stats.max_bal_diff <= 290 and this.maxdiff350.state = 1) {
+            } else if (this.stats.max_bal_diff <= 297 and this.maxdiff350.state = 1) {
                 this.extra_str := 'maxdiff350 END'
                 this.maxdiff350.state := 0
                 ; this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
