@@ -255,19 +255,16 @@ class TraderBot {
         }
 
         this.amount := 1
+        if (streak = this.streak_prev[1]) {
+            this.amount := this.amt_prev[1]
+        }
         if (this.maxdiff350.state = 0) {
-            AmountOverride1()
+            AmountOverride1_wl1_win7above()
         }
         AmountOverride5wl34()
         AmountOverride6_Lose7()
         AmountOverride7_Win5()
         AmountOverride8_22()
-        if (streak = 1 and this.switch_win_loss[1].amt > 0) {
-            this.amount := this.switch_win_loss[1].amt
-        }
-        if (streak = -1 and this.switch_win_loss[-1].amt > 0) {
-            this.amount := this.switch_win_loss[-1].amt
-        }
 
         CheckMaxDiff()
         CheckMaxDiff() {
@@ -288,7 +285,6 @@ class TraderBot {
         }
 
         AmountOverride9_wl1() {
-            this.amount := 1
             streak := this.stats.streak_real
             streak_prev := this.streak_prev[1]
             Helper(-1)
@@ -586,9 +582,6 @@ class TraderBot {
                 percs.Push(percs[-1]+0.10)
             }
 
-            if (this.F300.stateW != 0 and this.F300.stateL != 0) {
-                this.amount := 1
-            }
             cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
 
             for str_state in ['stateW', 'stateL'] {
@@ -737,14 +730,13 @@ class TraderBot {
             }
         }
         
-        AmountOverride1() {
+        AmountOverride1_wl1_win7above() {
             inst := Helper0811_4Loss.Get()
             streak := this.stats.streak_real
             this.AmountOverride2()
             overriden := 0
             if (streak = this.streak_prev[1]) {
-                this.amount := this.amt_prev[1]
-                return overriden
+                return
             }
             returnValue := 0
             if _val := HelperWin1() {
@@ -759,24 +751,17 @@ class TraderBot {
                     returnValue := _
                 }
             }
-            if returnValue {
-                this.amount := returnValue
-                overriden := 1
-            }
-            if (this.stats.streak_real <= -7) {
-                this.amount := this.CUSTOM_AMOUNTS1[Min(-this.stats.streak_real, this.CUSTOM_AMOUNTS1.Length)]
-                overriden := 1
-            }
-            this.stats.max_streak_real := Min(this.stats.streak_real, this.stats.max_streak_real)
-
-            ; disable
-            this.amount := 1
             if (this.stats.streak_real >= 7) {
                 amts := [100, 80, 60, 40, 15, 1]
                 this.amount := amts[Min(this.stats.streak_real - 6, amts.Length)]
                 overriden := 1
             }
-
+            if (streak = 1 and this.switch_win_loss[1].amt > 0) {
+                this.amount := this.switch_win_loss[1].amt
+            }
+            if (streak = -1 and this.switch_win_loss[-1].amt > 0) {
+                this.amount := this.switch_win_loss[-1].amt
+            }
             return overriden
 
             HelperWinLossN(n) {
