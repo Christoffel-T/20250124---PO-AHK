@@ -279,8 +279,8 @@ class TraderBot {
             } else if (this.stats.max_bal_diff <= 290 and this.maxdiff350.state = 1) {
                 this.extra_str := 'maxdiff350 END'
                 this.maxdiff350.state := 0
-                this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
-                this.maxdiff350.stored_4loss_count := 0
+                ; this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
+                ; this.maxdiff350.stored_4loss_count := 0
             }
         }
 
@@ -1406,8 +1406,8 @@ class TraderBot {
         this.switch_win_loss[-1].sum_amt := 0
         this.qstreak[ 2].sum_amt += sum_trf/2
         this.qstreak[-2].sum_amt += sum_trf/2
-        this.maxdiff350.stored_4loss_count := this.F300.iter_lost5
-        this.F300.iter_lost5 := 0
+        ; this.maxdiff350.stored_4loss_count := this.F300.iter_lost5
+        ; this.F300.iter_lost5 := 0
         for k, v in this.maxdiff350.streaks {
             v.streak := 0
         }
