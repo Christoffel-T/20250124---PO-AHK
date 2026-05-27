@@ -276,6 +276,9 @@ class TraderBot {
                 this.extra_str := 'maxdiff350'
                 this.SubReset1()
                 this.maxdiff350.state := 1
+            } else if (this.stats.max_bal_diff >= 310) {
+                this.extra_str := 'maxdiff310'
+                this.maxdiff350.state := 1
             } else if (this.stats.max_bal_diff <= 290 and this.maxdiff350.state = 1) {
                 this.extra_str := 'maxdiff350 END'
                 this.maxdiff350.state := 0
@@ -900,12 +903,12 @@ class TraderBot {
                     }
                     if (streak_obj.pause5 = 1) {
                         streak_obj.amt := 1.1
-                    } else if (streak_obj.state_5lost = '5lostwon1') {
-                        streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*idx))
-                    } else if (streak_obj.state_5lost = '5lostwon2') {
-                        streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
+                    ; } else if (streak_obj.state_5lost = '5lostwon1') {
+                    ;     streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*idx))
+                    ; } else if (streak_obj.state_5lost = '5lostwon2') {
+                    ;     streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
                     } else if (streak_obj.idx >= 2) {
-                        streak_obj.amt := streak_obj.sum_amt * (0.01 + percs[1] + (0.1*idx))
+                        streak_obj.amt := streak_obj.sum_amt * (0.15 + percs[1] + (0.1*idx))
                         streak_obj.state_5lost := '5lost'
                     }
                 }
@@ -1023,12 +1026,12 @@ class TraderBot {
                     }
                     if (streak_obj.pause5 = 1) {
                         streak_obj.amt := 1.1
-                    } else if (streak_obj.state_5lost = '5lostwon1') {
-                        streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*idx))
-                    } else if (streak_obj.state_5lost = '5lostwon2') {
-                        streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
+                    ; } else if (streak_obj.state_5lost = '5lostwon1') {
+                    ;     streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*idx))
+                    ; } else if (streak_obj.state_5lost = '5lostwon2') {
+                    ;     streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
                     } else if (streak_obj.idx >= 2) {
-                        streak_obj.amt := streak_obj.sum_amt * (0.01 + percs[1] + (0.1*idx))
+                        streak_obj.amt := streak_obj.sum_amt * (0.15 + percs[1] + (0.1*idx))
                         streak_obj.state_5lost := '5lost'
                     }
                 }
