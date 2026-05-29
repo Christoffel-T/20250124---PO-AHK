@@ -316,19 +316,20 @@ class TraderBot {
                 streak := this.stats.streak_real
                 str_prev := this.streak_prev[1]
                 streak_obj := this.qstreak[n]
+                idx := streak_obj.idx > 0 ? 0 : Abs(streak_obj.streak)
                 perc_base := 0.3
                 streak_prev := this.streak_prev[1]
                 target_streak := n
-                if (streak_obj.idx != 4 and this.pause_temp.pause_until_win != 0) {
+                if (idx != 4 and this.pause_temp.pause_until_win != 0) {
                     this.pause_temp.pause_until_win := 0
                 }
-                if (streak_obj.idx = 4 and this.pause_temp.pause_until_win = 0) {
+                if (idx = 4 and this.pause_temp.pause_until_win = 0) {
                     this.pause_temp.pause_until_win := 1
                 }
-                if (streak_obj.idx != 3 and streak_obj.pause_temp != 0) {
+                if (idx != 3 and streak_obj.pause_temp != 0) {
                     streak_obj.pause_temp := 0
                 }
-                if (streak_obj.idx = 3 and streak_obj.pause_temp = 0) {
+                if (idx = 3 and streak_obj.pause_temp = 0) {
                     streak_obj.pause_temp := 1
                 } else if (streak_obj.pause_temp = 1 and streak > streak_prev and streak_prev = target_streak) {
                     streak_obj.pause_temp := 2
@@ -1421,6 +1422,7 @@ class TraderBot {
         }
         this.qstreak := Map(2, {}, -2, {})
         for k, v in this.qstreak {
+            v.pause_temp := 0
             v.sum_amt := 0
             v.sum_over200 := 0
             v.amt := 0
@@ -1463,6 +1465,7 @@ class TraderBot {
             this.F300.lost4_won.streaks[A_Index+3] := {lost_before: 0, amt: 0}
         }
         for k, v in this.F300.streaks {
+            v.pause_temp := 0
             v.sum_over20 := 0
             v.sum_over200 := 0
             v.sum_amt := 0
