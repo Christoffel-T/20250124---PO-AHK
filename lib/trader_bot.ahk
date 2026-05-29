@@ -316,7 +316,7 @@ class TraderBot {
                 streak := this.stats.streak_real
                 str_prev := this.streak_prev[1]
                 streak_obj := this.qstreak[n]
-                idx := streak_obj.idx > 0 ? 0 : Abs(streak_obj.streak)
+                idx := streak_obj.streak > 0 ? 0 : Abs(streak_obj.streak)
                 perc_base := 0.3
                 streak_prev := this.streak_prev[1]
                 target_streak := n
