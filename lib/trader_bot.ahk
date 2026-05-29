@@ -799,9 +799,6 @@ class TraderBot {
                 }
                 percs := [0.30, 0.40]
                 streak_obj := this.switch_win_loss[target_streak]
-                if (this.maxdiff350.state != 0 and streak_obj.sum_amt <= 25) {
-                    return
-                }
                 cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
 
                 if (streak_obj.idx != 4 and this.pause_temp.pause_until_win != 0) {
