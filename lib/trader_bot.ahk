@@ -258,7 +258,19 @@ class TraderBot {
         if (streak = this.streak_prev[1]) {
             this.amount := this.amt_prev[1]
         }
-
+        if (this.amt_prev[1] <= 1 and streak < this.streak_prev[1]) {
+            sum_trf := 1 / 6
+            this.switch_win_loss[1].sum_amt  += sum_trf
+            this.switch_win_loss[-1].sum_amt += sum_trf
+            this.qstreak[2].sum_amt += sum_trf
+            this.qstreak[-2].sum_amt += sum_trf
+            if (Abs(this.F300.stateW) >= 3) {
+                this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
+            }
+            if (Abs(this.F300.stateL) >= 3) {
+                this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
+            }
+        }
         if (this.pause_temp.pause_until_win = 1) {
             this.amount := 1
             if streak > this.streak_prev[1] {
@@ -317,6 +329,8 @@ class TraderBot {
                 str_prev := this.streak_prev[1]
                 streak_obj := this.qstreak[n]
                 idx := streak_obj.streak > 0 ? 0 : Abs(streak_obj.streak)
+                idx1 := this.qstreak[2].streak > 0 ? 0 : Abs(this.qstreak[2].streak)
+                idx2 := this.qstreak[-2].streak > 0 ? 0 : Abs(this.qstreak[-2].streak)
                 perc_base := 0.3
                 streak_prev := this.streak_prev[1]
                 target_streak := n
@@ -326,10 +340,10 @@ class TraderBot {
                 if (idx = 4 and this.pause_temp.pause_until_win = 0) {
                     this.pause_temp.pause_until_win := 1
                 }
-                if (idx != 3 and streak_obj.pause_temp != 0) {
+                if (streak_obj.idx < 3 and streak_obj.pause_temp != 0) {
                     streak_obj.pause_temp := 0
                 }
-                if (idx = 3 and streak_obj.pause_temp = 0) {
+                if (idx1 >= 3 and idx2 >= 3 and streak_obj.pause_temp = 0) {
                     streak_obj.pause_temp := 1
                 } else if (streak_obj.pause_temp = 1 and streak > streak_prev and streak_prev = target_streak) {
                     streak_obj.pause_temp := 2
@@ -338,6 +352,9 @@ class TraderBot {
                 if (streak_obj.pause_temp = 1) {
                     if (streak = target_streak) {
                         this.amount := 1
+                    }
+                    if (streak < str_prev and str_prev = target_streak) {
+                        streak_obj.sum_amt += 1
                     }
                     return
                 }
@@ -564,13 +581,16 @@ class TraderBot {
         AmountOverride6_Lose7() {
             streak := this.stats.streak_real
             if (streak <= -7) {
-                idx := Abs(streak) - 6
-                this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
-                if (idx = 5 and this.pause_temp.pause_until_win = 0) {
+                idx1 := Abs(streak) - 6
+                idx2 := idx1 + this.pause_temp.loss7
+                this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
+                if (idx1 = 5 and this.pause_temp.pause_until_win = 0) {
                     this.pause_temp.pause_until_win := 1
+                    this.pause_temp.loss7 := 5
                 }
-                if (idx != 5 and this.pause_temp.pause_until_win != 0) {
+                if (idx1 != 5 and this.pause_temp.pause_until_win != 0) {
                     this.pause_temp.pause_until_win := 0
+                    this.pause_temp.loss7 := 0
                 }
             }
         }
@@ -603,6 +623,8 @@ class TraderBot {
 
             for str_state in ['stateW', 'stateL'] {
                 state := this.F300.%str_state%
+                stateW := this.F300.stateW
+                stateL := this.F300.stateL
                 abs_state := Abs(state) 
                 if (abs_state = 1) {
                     max_loss := 0
@@ -630,18 +652,24 @@ class TraderBot {
                     if (streak_obj.idx = 4 and this.pause_temp.pause_until_win = 0) {
                         this.pause_temp.pause_until_win := 1
                     }
-                    if (streak_obj.idx != 3 and streak_obj.pause_temp != 0) {
+                    if (streak_obj.idx < 3 and streak_obj.pause_temp != 0) {
                         streak_obj.pause_temp := 0
                     }
-                    if (streak_obj.idx = 3 and streak_obj.pause_temp = 0) {
-                        streak_obj.pause_temp := 1
-                    } else if (streak_obj.pause_temp = 1 and streak > streak_prev and streak_prev = target_streak) {
+                    if (streak_obj.pause_temp = 1 and streak > streak_prev and streak_prev = target_streak) {
                         streak_obj.pause_temp := 2
                         return
+                    }
+                    if (Abs(stateW) >= 3 and Abs(stateL) >= 3) {
+                        if (this.F300.streaks[stateW].idx >= 3 and this.F300.streaks[stateL].idx >= 3 and streak_obj.pause_temp = 0) {
+                            streak_obj.pause_temp := 1
+                        }
                     }
                     if (streak_obj.pause_temp = 1) {
                         if (streak = target_streak) {
                             this.amount := 1
+                        }
+                        if (streak < streak_prev and streak_prev = target_streak) {
+                            streak_obj.sum_amt += 1
                         }
                         return
                     }
@@ -807,10 +835,10 @@ class TraderBot {
                 if (streak_obj.idx = 4 and this.pause_temp.pause_until_win = 0) {
                     this.pause_temp.pause_until_win := 1
                 }
-                if (streak_obj.idx != 3 and streak_obj.pause_temp != 0) {
+                if (streak_obj.idx < 3 and streak_obj.pause_temp != 0) {
                     streak_obj.pause_temp := 0
                 }
-                if (streak_obj.idx = 3 and streak_obj.pause_temp = 0) {
+                if (this.switch_win_loss[1].idx >= 3 and this.switch_win_loss[-1].idx >= 3 and streak_obj.pause_temp = 0) {
                     streak_obj.pause_temp := 1
                 } else if (streak_obj.pause_temp = 1 and streak > streak_prev and streak_prev = target_streak) {
                     streak_obj.pause_temp := 2
@@ -819,6 +847,9 @@ class TraderBot {
                 if (streak_obj.pause_temp = 1) {
                     if (streak = target_streak) {
                         this.amount := 1
+                    }
+                    if (streak < streak_prev and streak_prev = target_streak) {
+                        streak_obj.sum_amt += 1
                     }
                     return
                 }
