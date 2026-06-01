@@ -340,7 +340,7 @@ class TraderBot {
                 if (idx = 4 and this.pause_temp.pause_until_win = 0) {
                     this.pause_temp.pause_until_win := 1
                 }
-                if (streak_obj.idx < 3 and streak_obj.pause_temp != 0) {
+                if (idx < 3 and streak_obj.pause_temp != 0) {
                     streak_obj.pause_temp := 0
                 }
                 if (idx1 >= 3 and idx2 >= 3 and streak_obj.pause_temp = 0) {
