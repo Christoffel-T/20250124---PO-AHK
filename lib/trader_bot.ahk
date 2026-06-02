@@ -271,19 +271,11 @@ class TraderBot {
                 this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
             }
         }
-        if (streak_obj.pause_temp2 = 1) {
-            this.amount := 1
-            if streak > this.streak_prev[1] {
-                streak_obj.pause_temp2 := 2
-            }
-        } 
-        if (streak_obj.pause_temp2 != 1) {
-            AmountOverride1_wl1_win7above()
-            AmountOverride5_wl34()
-            AmountOverride6_Lose7()
-            AmountOverride7_Win5()
-            AmountOverride8_22()
-        }
+        AmountOverride1_wl1_win7above()
+        AmountOverride5_wl34()
+        AmountOverride6_Lose7()
+        AmountOverride7_Win5()
+        AmountOverride8_22()
 
         CheckMaxDiff()
 
@@ -610,12 +602,12 @@ class TraderBot {
                 idx1 := Abs(streak) - 6
                 idx2 := idx1 + this.pause_temp.loss7
                 this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
-                if (idx1 = 5 and streak_obj.pause_temp2 = 0) {
-                    streak_obj.pause_temp2 := 1
+                if (idx1 = 5 and this.pause_temp.pause_temp2 = 0) {
+                    this.pause_temp.pause_temp2 := 1
                     this.pause_temp.loss7 := 5
                 }
-                if (idx1 != 5 and streak_obj.pause_temp2 != 0) {
-                    streak_obj.pause_temp2 := 0
+                if (idx1 != 5 and this.pause_temp.pause_temp2 != 0) {
+                    this.pause_temp.pause_temp2 := 0
                     this.pause_temp.loss7 := 0
                 }
             }
@@ -1445,6 +1437,7 @@ class TraderBot {
     QualifiersReset() {
         this.pause_temp := {
             loss7: 0,
+            pause_temp2: 0,
         }
         for k, v in this.switch_win_loss {
             v.pause_temp2 := 0
