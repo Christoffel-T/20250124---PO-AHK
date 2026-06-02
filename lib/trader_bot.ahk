@@ -576,23 +576,24 @@ class TraderBot {
             if (streak >= 5) {
                 idx := Max(1, this.win5andabove[streak].idx)
                 this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
-                if (idx != 5 and streak_obj.pause_temp2 != 0) {
-                    streak_obj.pause_temp2 := 0
-                }
-                if (idx = 5 and streak_obj.pause_temp2 = 0) {
-                    streak_obj.pause_temp2 := 1
-                } else if (streak_obj.pause_temp2 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                    streak_obj.pause_temp2 := 2
-                    return
-                }
-                if (streak_obj.pause_temp2 = 1) {
-                    if (streak = target_streak) {
+                if streak_prev >= 5 {
+                    streak_obj := this.win5andabove[streak_prev]
+                    if (idx != 5 and streak_obj.pause_temp2 != 0) {
+                        streak_obj.pause_temp2 := 0
+                    }
+                    if (idx = 5 and streak_obj.pause_temp2 = 0) {
+                        streak_obj.pause_temp2 := 1
+                    } else if (streak_obj.pause_temp2 = 1 and streak > streak_prev) {
+                        streak_obj.pause_temp2 := 2
+                        return
+                    }
+                    if (streak_obj.pause_temp2 = 1) {
                         this.amount := 1
+                        if (streak < streak_prev) {
+                            streak_obj.sum_amt += 1
+                        }
+                        return
                     }
-                    if (streak < streak_prev and streak_prev = target_streak) {
-                        streak_obj.sum_amt += 1
-                    }
-                    return
                 }
                 if (this.pause_except_1.state = 1) {
                     this.amount := 1
@@ -607,15 +608,15 @@ class TraderBot {
             streak := this.stats.streak_real
             if (streak <= -7) {
                 idx1 := Abs(streak) - 6
-                idx2 := idx1 + this.pause_temp1.loss7
+                idx2 := idx1 + this.pause_temp.loss7
                 this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
                 if (idx1 = 5 and streak_obj.pause_temp2 = 0) {
                     streak_obj.pause_temp2 := 1
-                    this.pause_temp1.loss7 := 5
+                    this.pause_temp.loss7 := 5
                 }
                 if (idx1 != 5 and streak_obj.pause_temp2 != 0) {
                     streak_obj.pause_temp2 := 0
-                    this.pause_temp1.loss7 := 0
+                    this.pause_temp.loss7 := 0
                 }
             }
         }
@@ -1442,6 +1443,9 @@ class TraderBot {
     }
 
     QualifiersReset() {
+        this.pause_temp := {
+            loss7: 0,
+        }
         for k, v in this.switch_win_loss {
             v.pause_temp2 := 0
             v.pause_temp1 := 0
