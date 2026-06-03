@@ -1506,6 +1506,7 @@ class TraderBot {
             v.idx := 0
             v.idx1 := 1
             v.idx2 := 0
+            v.lose_streak := 1
             v.loss_multiplier := 1
             v.losses := 0
             v.pause5 := 0
