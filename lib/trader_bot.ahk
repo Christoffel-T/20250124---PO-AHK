@@ -258,6 +258,19 @@ class TraderBot {
         if (streak = this.streak_prev[1]) {
             this.amount := this.amt_prev[1]
         }
+        if (streak > this.streak_prev[1]) {
+            sum_trf := (this.amt_prev[1] * 0.08) / 6
+            this.switch_win_loss[1].sum_amt  += sum_trf
+            this.switch_win_loss[-1].sum_amt += sum_trf
+            this.qstreak[2].sum_amt += sum_trf
+            this.qstreak[-2].sum_amt += sum_trf
+            if (Abs(this.F300.stateW) >= 3) {
+                this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
+            }
+            if (Abs(this.F300.stateL) >= 3) {
+                this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
+            }
+        }
         if (this.amt_prev[1] <= 1 and streak < this.streak_prev[1]) {
             sum_trf := 1 / 6
             this.switch_win_loss[1].sum_amt  += sum_trf
@@ -454,6 +467,16 @@ class TraderBot {
                     }
                     idx := Max(1, idx + 1)
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                    addition := 0
+                    Loop (this.F300.iter_lost5//4) {
+                        if (A_Index = 1) {
+                            addition := 0.01
+                        } else {
+                            addition := addition * 2 + 0.01
+                        }
+                    }
+                    streak_obj.amt += addition
+
                     this.amount := streak_obj.amt
                 }
             }
@@ -568,6 +591,16 @@ class TraderBot {
             if (streak >= 5) {
                 idx := Max(1, this.win5andabove[streak].idx)
                 this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                addition := 0
+                Loop (this.F300.iter_lost5//4) {
+                    if (A_Index = 1) {
+                        addition := 0.01
+                    } else {
+                        addition := addition * 2 + 0.01
+                    }
+                }
+                this.amount += addition
+                
                 if streak_prev >= 5 {
                     streak_obj := this.win5andabove[streak_prev]
                     if (idx != 5 and streak_obj.pause_temp2 != 0) {
@@ -602,6 +635,16 @@ class TraderBot {
                 idx1 := Abs(streak) - 6
                 idx2 := idx1 + this.pause_temp.loss7
                 this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
+                addition := 0
+                Loop (this.F300.iter_lost5//4) {
+                    if (A_Index = 1) {
+                        addition := 0.01
+                    } else {
+                        addition := addition * 2 + 0.01
+                    }
+                }
+                this.amount += addition
+
                 if (idx1 = 5 and this.pause_temp.pause_temp2 = 0) {
                     this.pause_temp.pause_temp2 := 1
                     this.pause_temp.loss7 := 5
@@ -710,6 +753,16 @@ class TraderBot {
                     streak_obj := this.F300.streaks[state]
                     idx := Max(1, streak_obj.idx)
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                    addition := 0
+                    Loop (this.F300.iter_lost5//4) {
+                        if (A_Index = 1) {
+                            addition := 0.01
+                        } else {
+                            addition := addition * 2 + 0.01
+                        }
+                    }
+                    streak_obj.amt += addition
+
                     if (this.pause_except_1.state = 1) {
                         streak_obj.amt := 1
                     }
@@ -1008,6 +1061,16 @@ class TraderBot {
                     if (this.stats.max_bal_diff >= 310) {
                         idx := Max(1, idx + 1)
                         streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                        addition := 0
+                        Loop (this.F300.iter_lost5//4) {
+                            if (A_Index = 1) {
+                                addition := 0.01
+                            } else {
+                                addition := addition * 2 + 0.01
+                            }
+                        }
+                        streak_obj.amt += addition
+
                         if streak_obj.sum_amt >= 25 {
                             streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
                         }
