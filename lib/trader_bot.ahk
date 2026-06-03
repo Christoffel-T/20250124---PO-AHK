@@ -488,6 +488,9 @@ class TraderBot {
 
         Helper4(streak_obj, target_streak) {
             amts := [6+(0.5*this.F300.iter_lost5)]
+            Loop 100 {
+                amts.Push(amts[-1]*2+3)
+            }
             if streak_obj.sum_amt >= 200 {
                 streak_obj.sum_over200 := 1
             }
@@ -544,9 +547,6 @@ class TraderBot {
                 target_streak := n
                 streak := this.stats.streak_real
                 streak_prev := this.streak_prev[1]
-                Loop 100 {
-                    amts.Push(amts[-1]*2+3)
-                }
 
                 streak_obj := this.switch_win_loss[target_streak]
                 
