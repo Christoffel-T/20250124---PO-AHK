@@ -1532,7 +1532,7 @@ class TraderBot {
         
         this.win5andabove := Map()
         Loop 20 {
-            this.win5andabove[A_Index+3] := {pause5: 0, sum_over20: 0, idx: 0, count_loss: 0, amt: 0, state_5lost: 0, sum_amt: 0, sum_over200: 0}
+            this.win5andabove[A_Index+3] := {pause_temp2: 0, pause5: 0, sum_over20: 0, idx: 0, count_loss: 0, amt: 0, state_5lost: 0, sum_amt: 0, sum_over200: 0}
         }
         this.win5andabove[4].amt := 100
 
