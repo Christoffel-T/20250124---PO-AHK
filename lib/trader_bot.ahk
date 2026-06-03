@@ -1494,9 +1494,7 @@ class TraderBot {
             loss7: 0,
             pause_temp2: 0,
         }
-        PropSerializer() {
-            v := {}
-
+        PropSerializer(v) {
             v.ls_pause_temp3 := 0
             v.pause_temp3 := 0
             
@@ -1533,22 +1531,22 @@ class TraderBot {
             return v
         }
         for k, v in this.switch_win_loss {
-            v := PropSerializer()
+            v := PropSerializer(v)
         }
         
         this.wl34 := Map(3, {}, 4, {}, -3, {}, -4, {})
         for k, v in this.wl34 {
-            v := PropSerializer()
+            v := PropSerializer(v)
         }
         
         this.wl2 := Map(2, {}, -2, {})
         for k, v in this.wl2 {
-            v := PropSerializer()
+            v := PropSerializer(v)
         }
         
         this.win5andabove := Map()
         Loop 20 {
-            this.win5andabove[A_Index+3] := PropSerializer()
+            this.win5andabove[A_Index+3] := PropSerializer({})
         }
         this.win5andabove[4].amt := 100
 
