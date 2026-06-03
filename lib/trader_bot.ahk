@@ -262,26 +262,26 @@ class TraderBot {
             sum_trf := (this.amt_prev[1] * 0.08) / 6
             this.switch_win_loss[1].sum_amt  += sum_trf
             this.switch_win_loss[-1].sum_amt += sum_trf
-            this.qstreak[2].sum_amt += sum_trf
-            this.qstreak[-2].sum_amt += sum_trf
+            this.wl2[2].sum_amt += sum_trf
+            this.wl2[-2].sum_amt += sum_trf
             if (Abs(this.F300.stateW) >= 3) {
-                this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
+                this.wl34[this.F300.stateW].sum_amt += sum_trf
             }
             if (Abs(this.F300.stateL) >= 3) {
-                this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
+                this.wl34[this.F300.stateL].sum_amt += sum_trf
             }
         }
         if (this.amt_prev[1] <= 1 and streak < this.streak_prev[1]) {
             sum_trf := 1 / 6
             this.switch_win_loss[1].sum_amt  += sum_trf
             this.switch_win_loss[-1].sum_amt += sum_trf
-            this.qstreak[2].sum_amt += sum_trf
-            this.qstreak[-2].sum_amt += sum_trf
+            this.wl2[2].sum_amt += sum_trf
+            this.wl2[-2].sum_amt += sum_trf
             if (Abs(this.F300.stateW) >= 3) {
-                this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
+                this.wl34[this.F300.stateW].sum_amt += sum_trf
             }
             if (Abs(this.F300.stateL) >= 3) {
-                this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
+                this.wl34[this.F300.stateL].sum_amt += sum_trf
             }
         }
         AmountOverride1_wl1_win7above()
@@ -304,10 +304,10 @@ class TraderBot {
             ;     this.extra_str := 'maxdiff350'
             ;     this.SubReset1()
             ;     this.maxdiff350.state := 1
-            if (this.stats.max_bal_diff >= 310) {
+            if (this.stats.max_bal_diff >= 325) {
                 this.extra_str := 'maxdiff310'
                 this.maxdiff350.state := 1
-            } else if (this.stats.max_bal_diff <= 297 and this.maxdiff350.state = 1) {
+            } else if (this.stats.max_bal_diff <= 310 and this.maxdiff350.state = 1) {
                 this.extra_str := 'maxdiff350 END'
                 this.maxdiff350.state := 0
                 ; this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
@@ -316,442 +316,200 @@ class TraderBot {
         }
 
         PauseExcept1() {
-            if (this.stats.max_bal_diff >= 310) {
+            if (this.stats.max_bal_diff >= 325) {
                 this.pause_except_1.state := 1
             }
-            if (this.stats.max_bal_diff <= 290) {
+            if (this.stats.max_bal_diff <= 310) {
                 this.pause_except_1.state := 0
             }
         }
-        
-        AmountOverride8_22() {
-            Helper(2)
-            Helper(-2)
-            
-            Helper(n) {
-                cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
-                streak := this.stats.streak_real
-                str_prev := this.streak_prev[1]
-                streak_obj := this.qstreak[n]
-                idx := streak_obj.streak > 0 ? 0 : Abs(streak_obj.streak)
-                idx1 := this.qstreak[2].streak > 0 ? 0 : Abs(this.qstreak[2].streak)
-                idx2 := this.qstreak[-2].streak > 0 ? 0 : Abs(this.qstreak[-2].streak)
-                perc_base := 0.3
-                streak_prev := this.streak_prev[1]
-                target_streak := n
-                if (idx != 5 and streak_obj.pause_temp2 != 0) {
-                    streak_obj.pause_temp2 := 0
-                }
-                if (idx = 5 and streak_obj.pause_temp2 = 0) {
-                    streak_obj.pause_temp2 := 1
-                } else if (streak_obj.pause_temp2 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                    streak_obj.pause_temp2 := 2
-                    return
-                }
-                if (streak_obj.pause_temp2 = 1) {
-                    if (streak = target_streak) {
-                        this.amount := 1
-                    }
-                    if (streak < streak_prev and streak_prev = target_streak) {
-                        streak_obj.sum_amt += 1
-                    }
-                    return
-                }
 
-                if (idx < 3 and streak_obj.pause_temp1 != 0) {
-                    streak_obj.pause_temp1 := 0
-                }
-                if (idx1 >= 3 and idx2 >= 3 and streak_obj.pause_temp1 = 0) {
-                    streak_obj.pause_temp1 := 1
-                } else if (streak_obj.pause_temp1 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                    streak_obj.pause_temp1 := 2
-                    return
-                }
-                if (streak_obj.pause_temp1 = 1) {
-                    if (streak = target_streak) {
-                        this.amount := 1
-                    }
-                    if (streak < str_prev and str_prev = target_streak) {
-                        streak_obj.sum_amt += 1
-                    }
-                    return
-                }
-                
-                if (str_prev = n) {
-                    if (streak > str_prev) {
-                        if streak_obj.streak < 0 {
-                            streak_obj.streak := 0
-                        }
-                        streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
-                        streak_obj.wins++
-                        streak_obj.streak++
-                        if (streak_obj.state_5lost = '5lost') {
-                            streak_obj.state_5lost := '5lostwon1'
-                            streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*2
-                        } else if (streak_obj.state_5lost = '5lostwon1') {
-                            streak_obj.state_5lost := '5lostwon2'
-                            streak_obj.amt := cust_amt2won[1]
-                        } else if (streak_obj.state_5lost = '5lostwon2') {
-                            streak_obj.amt := cust_amt2won[1]
-                        }
-                    } else if (streak < str_prev) {
-                        if streak_obj.streak > 0 {
-                            streak_obj.streak := 0
-                        }
-                        streak_obj.losses++
-                        streak_obj.streak--
-                        streak_obj.sum_amt += streak_obj.amt
-                        idx := Abs(streak_obj.streak)
-                        if (Mod(idx, 4) = 1 and idx > 1) {
-                            sum_trf := streak_obj.sum_amt / 6
-                            this.switch_win_loss[1].sum_amt  += sum_trf
-                            this.switch_win_loss[-1].sum_amt += sum_trf
-                            this.qstreak[-n].sum_amt += sum_trf
-                            if (Abs(this.F300.stateW) >= 3) {
-                                this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
-                            }
-                            if (Abs(this.F300.stateL) >= 3) {
-                                this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
-                            }
-                            streak_obj.sum_amt := sum_trf
-                        }
-                        if streak_obj.sum_amt >= 200 {
-                            streak_obj.sum_over200 := 1
-                        }
-                        if (streak_obj.state_5lost = '5lostwon1') {
-                            streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * idx))
-                        } else if (streak_obj.state_5lost = '5lostwon2') {
-                            streak_obj.amt := cust_amt2won[Mod(idx, cust_amt2won.Length) + 1]
-                        } else if (idx >= 2) {
-                            streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * (idx-2)))
-                            streak_obj.state_5lost := '5lost'
-                        } 
-                    }
-                }
-                if streak_obj.sum_amt >= 5 {
-                    streak_obj.sum_over20 := 1
-                }
-                if streak_obj.sum_amt < 5 and streak_obj.sum_over20 = 1 {
-                    streak_obj.pause5 := 0
-                    streak_obj.sum_over20 := 0
-                    streak_obj.idx := 0
-                    sum_trf := streak_obj.sum_amt / 5
-                    this.switch_win_loss[ 1].sum_amt += sum_trf
-                    this.switch_win_loss[-1].sum_amt += sum_trf
-                    this.qstreak[ 2].sum_amt += sum_trf
-                    this.qstreak[-2].sum_amt += sum_trf
-                    if (Abs(this.F300.stateW) >= 3) {
-                        this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
-                    }
-                    if (Abs(this.F300.stateL) >= 3) {
-                        this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
-                    }
-                    streak_obj.sum_amt := 0
-                    streak_obj.sum_over200 := 0
-                    streak_obj.state_5lost := 0
-                }
-                if (streak = n) {
-                    if ((streak_obj.streak > 0 or streak_obj.streak = -1) and streak_obj.state_5lost = 0) {
-                        streak_obj.amt := (streak_obj.sum_amt + 7)/0.92
-                    }
-                    idx := streak_obj.streak < 0 ? Abs(streak_obj.streak) : 0
-                    perc_base := 0.3
-                    if streak_obj.sum_amt >= 200 {
-                        streak_obj.sum_over200 := 1
-                    }
-                    if (streak_obj.sum_over200 = 1) {
-                        streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*(idx)
-                    }
-                    if (this.pause_except_1.state = 1) {
-                        streak_obj.amt := 1
-                    }
-                    idx := Max(1, idx + 1)
-                    streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
-                    addition := 0
-                    Loop (this.F300.iter_lost5//4) {
-                        if (A_Index = 1) {
-                            addition := 0.01
-                        } else {
-                            addition := addition * 2 + 0.01
-                        }
-                    }
-                    streak_obj.amt += addition
-
-                    this.amount := streak_obj.amt
-                }
+        HelperSumAmt(streak_obj, target_streak) {
+            streak := this.stats.streak_real
+            streak_prev := this.streak_prev[1]
+            if (streak_prev = target_streak and streak < streak_prev) {
+                streak_obj.sum_amt += this.amt_prev[1]
+            }
+            if (streak_prev = target_streak and streak > streak_prev) {
+                streak_obj.sum_amt := Max(streak_obj.sum_amt - this.amt_prev[1], 0)
             }
         }
 
-        AmountOverride7_Win5() {
+        HelperPause1(streak_obj, target_streak, obj1, obj2) {
             streak := this.stats.streak_real
             streak_prev := this.streak_prev[1]
-            amts := [25]
-            cent_amts := [0.10*(this.F300.iter_lost5+1)]
-            Loop 100 {
-                amts.Push(amts[-1]*2+3)
-                cent_amts.Push(cent_amts[-1]*3+0.01)
-            }
-            percs := [0.3]
-            Loop 100 {
-                percs.Push(percs[-1]+0.10)
-            }
-            cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
+            idx := streak_obj.lose_streak
             
-            if (streak > streak_prev and streak_prev >= 4) {
-                streak_obj := this.win5andabove[streak_prev]
-                streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
-                if (streak_obj.pause5 = 0) {
-                    streak_obj.idx := 0
+            if (idx < 3 and streak_obj.pause_temp1 != 0) {
+                streak_obj.pause_temp1 := 0
+            }
+            try {
+                if (obj1.idx >= 3 and obj2.idx >= 3 and streak_obj.pause_temp1 = 0) {
+                    streak_obj.pause_temp1 := 1
+                }
+            }
+            if (streak_obj.pause_temp1 = 1 and streak > streak_prev and streak_prev = target_streak) {
+                streak_obj.pause_temp1 := 2
+                return 1
+            }
+            if (streak_obj.pause_temp1 = 1) {
+                if (streak = target_streak) {
+                    this.amount := 1
+                }
+                return 1
+            }
+            return 0
+        }
+        
+        HelperPause2(streak_obj, target_streak) {
+            streak := this.stats.streak_real
+            streak_prev := this.streak_prev[1]
+            idx := streak_obj.lose_streak
+            
+            if (idx != 5 and streak_obj.pause_temp2 != 0) {
+                streak_obj.pause_temp2 := 0
+            }
+
+            if (idx = 5 and streak_obj.pause_temp2 = 0) {
+                streak_obj.pause_temp2 := 1
+            } else if (idx = 5 and streak_obj.pause_temp2 = 1 and streak > streak_prev and streak_prev = target_streak) {
+                streak_obj.pause_temp2 := 2
+            }
+
+            if (streak_obj.pause_temp2 >= 1 and streak = target_streak) {
+                this.amount := 1
+                return 1
+            }
+
+            if (streak_obj.pause_temp2 >= 1 and streak_prev = target_streak) {
+                if (streak_obj.pause_temp2 = 2 and streak < streak_prev and streak_prev = target_streak) {
+                    return 0
+                }
+                return 1
+            }
+            return 0
+        }
+
+        HelperPause3(streak_obj, target_streak) {
+            streak := this.stats.streak_real
+            streak_prev := this.streak_prev[1]
+            idx := streak_obj.lose_streak
+
+            if (idx >= 6 and streak_obj.pause_temp3 = 0) {
+                if (streak = target_streak) {
+                    this.amount := 1
+                }
+                if (streak_prev = target_streak and streak < streak_prev) {
+                    streak_obj.lose_streak++
+                    return 1
+                } else if (streak_prev = target_streak and streak > streak_prev) {
+                    streak_obj.pause_temp3 := 1
+                    streak_obj.ls_pause_temp3 := idx
+                    return 1
+                }
+            } else if (idx >= 6 and streak_obj.pause_temp3 = 1) {
+                if (streak = target_streak) {
+                    this.amount := streak_obj.amt
+                }
+                if (streak_prev = target_streak and streak < streak_prev) {
+                    streak_obj.pause_temp3 := 0
+                    streak_obj.lose_streak++
+                    return 1
+                } else if (streak_prev = target_streak and streak > streak_prev) {
+                    streak_obj.pause_temp3 := 1
+                    streak_obj.ls_pause_temp3 := idx
+                    return 0
                 }
 
-                if (streak_obj.pause5 = 1) {
-                    streak_obj.pause5 := 0
-                    idx := streak_obj.idx
-                    if (streak_obj.idx < 1) {
-                        idx := 1
-                    }
-                    streak_obj.amt := streak_obj.sum_amt * percs[idx]
-                } else if (streak_obj.state_5lost = '5lost') {
-                    streak_obj.idx := 1 + 1
+            }
+        }
+
+        Helper3(streak_obj, target_streak) {
+            percs := [0.30, 0.40]
+            if (streak > this.streak_prev[1] and this.streak_prev[1] = target_streak) {
+                streak_obj.lose_streak := 0
+                if (streak_obj.state_5lost = '5lost') {
                     streak_obj.state_5lost := '5lostwon1'
-                    streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx]
                 } else if (streak_obj.state_5lost = '5lostwon1') {
-                    streak_obj.idx := 1
                     streak_obj.state_5lost := '5lostwon2'
-                    streak_obj.amt := cust_amt2won[1]
-                } else if (streak_obj.sum_amt <= 10) {
-                    streak_obj.state_5lost := 0
-                    streak_obj.amt := 0
-                    streak_obj.sum_amt := 0
-                    streak_obj.sum_over200 := 0
                 } else if (streak_obj.state_5lost = '5lostwon2') {
-                    streak_obj.idx := 1
-                    streak_obj.amt := cust_amt2won[1]
                 }
             }
-            if (streak < streak_prev and streak_prev >= 5) {
-                streak_obj := this.win5andabove[streak_prev]
-                if (streak_obj.pause5 = 0) {
-                    streak_obj.idx++
+            if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
+                streak_obj.lose_streak++
+                streak_obj.max_lose_streak := max(streak_obj.lose_streak, streak_obj.max_lose_streak)
+                if (streak_obj.lose_streak = 5) {
+                    this.F300.iter_lost5++
                 }
-                streak_obj.sum_amt += streak_obj.amt
-                if (streak_obj.idx = 7 or streak_obj.idx = 5) {
-                    this.qstreak[2].transfers++
-                    sum_trf := streak_obj.sum_amt * 0.4
-                    if streak_obj.idx = 7 {
-                        sum_trf := streak_obj.sum_amt * 0.8
+                idx := streak_obj.lose_streak
+                if (Mod(idx, 4) = 1 and idx > 1) {
+                    streak_obj.sum_over20 := 0
+                    streak_obj.sum_over200 := 0
+                    sum_trf := streak_obj.sum_amt / 6
+                    this.switch_win_loss[1].sum_amt  += sum_trf
+                    this.switch_win_loss[-1].sum_amt += sum_trf
+                    this.wl2[2].sum_amt += sum_trf
+                    this.wl2[-2].sum_amt += sum_trf
+                    if (Abs(this.F300.stateW) >= 3) {
+                        this.wl34[this.F300.stateW].sum_amt += sum_trf
                     }
-                    this.qstreak[2].sum_amt += sum_trf/2
-                    this.qstreak[-2].sum_amt += sum_trf/2
-                    streak_obj.sum_amt -= sum_trf
+                    if (Abs(this.F300.stateL) >= 3) {
+                        this.wl34[this.F300.stateL].sum_amt += sum_trf
+                    }
+                    streak_obj.sum_amt := sum_trf
                 }
-                if streak_obj.sum_amt >= 200 {
-                    streak_obj.sum_over200 := 1
-                }
-                if streak_obj.idx > 0 {
-                    streak_obj.amt := amts[streak_obj.idx]
-                }
-                ; streak_obj.amt += cent_amts[streak_obj.idx]
-                if (streak_obj.pause5 = 1) {
-                    streak_obj.amt := 1.1
-                } else if (streak_obj.state_5lost = '5lostwon1') {
-                    streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx]
-                } else if (streak_obj.state_5lost = '5lostwon2') {
-                    streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
-                } else if (streak_obj.idx >= 3) {
-                    streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx - 2]
+                if (streak_obj.lose_streak >= 2) {
+                    streak_obj.amt := streak_obj.sum_amt * (0.15 + percs[1] + (0.1*idx))
                     streak_obj.state_5lost := '5lost'
                 }
             }
-
-            if streak_prev >= 5 {
-                streak_obj := this.win5andabove[streak_prev]
-                if streak_obj.sum_amt >= 80 {
-                    streak_obj.sum_over20 := 1
-                }
-                if streak_obj.sum_amt < 80 and streak_obj.sum_over20 = 1 {
-                    streak_obj.sum_over20 := 0
-                    streak_obj.idx := 0
-                    this.qstreak[2].sum_amt += streak_obj.sum_amt/2
-                    this.qstreak[-2].sum_amt += streak_obj.sum_amt/2
-                    streak_obj.sum_amt := 0
-                    streak_obj.sum_over200 := 0
-                    streak_obj.state_5lost := 0
-                }
-                idx := streak_obj.idx
-                perc_base := 0.3
-                if streak_obj.sum_amt >= 200 {
-                    streak_obj.sum_over200 := 1
-                }
-                if (streak_obj.sum_over200 = 1) {
-                    streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*(idx)
-                }
+            if streak_obj.sum_amt >= 5 {
+                streak_obj.sum_over20 := 1
             }
-            
-            if (streak >= 5) {
-                idx := Max(1, this.win5andabove[streak].idx)
-                this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
-                addition := 0
-                Loop (this.F300.iter_lost5//4) {
-                    if (A_Index = 1) {
-                        addition := 0.01
-                    } else {
-                        addition := addition * 2 + 0.01
-                    }
+            if streak_obj.sum_amt < 5 and streak_obj.sum_over20 = 1 {
+                streak_obj.sum_over20 := 0
+                streak_obj.lose_streak := 0
+                sum_trf := streak_obj.sum_amt / 6
+                this.switch_win_loss[ 1].sum_amt += sum_trf
+                this.switch_win_loss[-1].sum_amt += sum_trf
+                this.wl2[ 2].sum_amt += sum_trf
+                this.wl2[-2].sum_amt += sum_trf
+                if (Abs(this.F300.stateW) >= 3) {
+                    this.wl34[this.F300.stateW].sum_amt += sum_trf
                 }
-                this.amount += addition
-                
-                if streak_prev >= 5 {
-                    streak_obj := this.win5andabove[streak_prev]
-                    if (idx != 5 and streak_obj.pause_temp2 != 0) {
-                        streak_obj.pause_temp2 := 0
-                    }
-                    if (idx = 5 and streak_obj.pause_temp2 = 0) {
-                        streak_obj.pause_temp2 := 1
-                    } else if (streak_obj.pause_temp2 = 1 and streak > streak_prev) {
-                        streak_obj.pause_temp2 := 2
-                        return
-                    }
-                    if (streak_obj.pause_temp2 = 1) {
-                        this.amount := 1
-                        if (streak < streak_prev) {
-                            streak_obj.sum_amt += 1
-                        }
-                        return
-                    }
+                if (Abs(this.F300.stateL) >= 3) {
+                    this.wl34[this.F300.stateL].sum_amt += sum_trf
                 }
-                if (this.pause_except_1.state = 1) {
-                    this.amount := 1
-                }
-                if (streak > 5) {
-                    this.amount := 1
-                }
+                streak_obj.sum_amt := sum_trf
+                streak_obj.sum_over200 := 0
+                streak_obj.state_5lost := 0
             }
         }
 
-        AmountOverride6_Lose7() {
-            streak := this.stats.streak_real
-            if (streak <= -7) {
-                idx1 := Abs(streak) - 6
-                idx2 := idx1 + this.pause_temp.loss7
-                this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
-                addition := 0
-                Loop (this.F300.iter_lost5//4) {
-                    if (A_Index = 1) {
-                        addition := 0.01
-                    } else {
-                        addition := addition * 2 + 0.01
-                    }
-                }
-                this.amount += addition
-
-                if (idx1 = 5 and this.pause_temp.pause_temp2 = 0) {
-                    this.pause_temp.pause_temp2 := 1
-                    this.pause_temp.loss7 := 5
-                }
-                if (idx1 != 5 and this.pause_temp.pause_temp2 != 0) {
-                    this.pause_temp.pause_temp2 := 0
-                    this.pause_temp.loss7 := 0
-                }
-            }
-        }
-
-        AmountOverride5_wl34() {
-            streak := this.stats.streak_real
-            if (streak = this.streak_prev[1]) {
-                return
-            }
-            abs_streak_current := Abs(streak)
-            abs_streak_prev := Abs(this.streak_prev[1])
-
-            if (this.stats.max_bal_diff >= 0 and this.F300.stateW = 0 and this.F300.stateL = 0) {
-                this.F300.stateW := 1
-                this.F300.stateL := -1
-                this.F300.bal := this.stats.max_bal_diff
-            }
+        Helper4(streak_obj, target_streak) {
             amts := [6+(0.5*this.F300.iter_lost5)]
-            cent_amts := [0.10*(this.F300.iter_lost5+1)]
-            Loop 100 {
-                amts.Push(amts[-1]*2+3)
-                cent_amts.Push(cent_amts[-1]*3+0.01)
+            if streak_obj.sum_amt >= 200 {
+                streak_obj.sum_over200 := 1
             }
-            percs := [0.3]
-            Loop 100 {
-                percs.Push(percs[-1]+0.10)
+            if (streak_obj.lose_streak >= 5 and streak_obj.lose_streak <= 8) {
+                streak_obj.amt := (streak_obj.sum_amt + 5)/0.92
             }
-
-            cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
-
-            for str_state in ['stateW', 'stateL'] {
-                state := this.F300.%str_state%
-                stateW := this.F300.stateW
-                stateL := this.F300.stateL
-                abs_state := Abs(state) 
-                if (abs_state = 1) {
-                    max_loss := 0
-                    for k, v in this.F300.streaks {
-                        if (k * state < 0) {
-                            continue
-                        }
-                        if (v.losses > max_loss) {
-                            this.F300.%str_state% := k
-                            v.amt := amts[1]
-                            v.idx := 1
-                            ; v.amt += cent_amts[1]
-                            max_loss := v.losses
-                        }
+            if (streak = target_streak) {
+                idx := streak_obj.lose_streak+1
+                if (streak_obj.sum_over200 = 1) {
+                    streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*idx))
+                } else if (idx >= 1 and streak_obj.state_5lost = 0) {
+                    streak_obj.amt := amts[idx]
+                    if (idx <= 2) {
+                        streak_obj.add_cent_mult[idx]++
+                        streak_obj.amt += [0.01, 0.03][idx]*streak_obj.add_cent_mult[idx]
                     }
                 }
-
-                if (abs_state >= 3) {
-                    streak_obj := this.F300.streaks[state]
-                    streak_prev := this.streak_prev[1]
-                    target_streak := state
-                        idx := streak_obj.idx
-                    if (idx != 5 and streak_obj.pause_temp2 != 0) {
-                        streak_obj.pause_temp2 := 0
-                    }
-                    if (idx = 5 and streak_obj.pause_temp2 = 0) {
-                        streak_obj.pause_temp2 := 1
-                    } else if (streak_obj.pause_temp2 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                        streak_obj.pause_temp2 := 2
-                        return
-                    }
-                    if (streak_obj.pause_temp2 = 1) {
-                        if (streak = target_streak) {
-                            this.amount := 1
-                        }
-                        if (streak < streak_prev and streak_prev = target_streak) {
-                            streak_obj.sum_amt += 1
-                        }
-                        return
-                    }
-                    if (streak_obj.idx < 3 and streak_obj.pause_temp1 != 0) {
-                        streak_obj.pause_temp1 := 0
-                    }
-                    if (streak_obj.pause_temp1 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                        streak_obj.pause_temp1 := 2
-                        return
-                    }
-                    if (Abs(stateW) >= 3 and Abs(stateL) >= 3) {
-                        if (this.F300.streaks[stateW].idx >= 3 and this.F300.streaks[stateL].idx >= 3 and streak_obj.pause_temp1 = 0) {
-                            streak_obj.pause_temp1 := 1
-                        }
-                    }
-                    if (streak_obj.pause_temp1 = 1) {
-                        if (streak = target_streak) {
-                            this.amount := 1
-                        }
-                        if (streak < streak_prev and streak_prev = target_streak) {
-                            streak_obj.sum_amt += 1
-                        }
-                        return
-                    }
+                if (streak_obj.state_5lost = '5lost') {
+                    streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*streak_obj.lose_streak))
                 }
-
-                if (state = streak and abs_state >= 3) {
-                    streak_obj := this.F300.streaks[state]
-                    idx := Max(1, streak_obj.idx)
+                if (this.stats.max_bal_diff >= 325) {
+                    idx := Max(1, idx)
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     addition := 0
                     Loop (this.F300.iter_lost5//4) {
@@ -763,129 +521,11 @@ class TraderBot {
                     }
                     streak_obj.amt += addition
 
-                    if (this.pause_except_1.state = 1) {
-                        streak_obj.amt := 1
-                    }
-                    if (idx >= 3) {
-                        streak_obj.amt := 1
-                    }
-                    this.amount := streak_obj.amt
-                }
-                
-                if ((abs_streak_prev = 3 or abs_streak_prev = 4) and state * this.streak_prev[1] > 0) {
-                    streak_obj := this.F300.streaks[this.streak_prev[1]]
-                    if (streak > this.streak_prev[1]) {
-                        streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
-                        if (state = this.streak_prev[1]) {
-                            streak_obj.losses := 0
-                            if (streak_obj.pause5 = 0) {
-                                streak_obj.idx := 0
-                            }
-                            if (streak_obj.pause5 = 1) {
-                                streak_obj.pause5 := 0
-                                idx := streak_obj.idx
-                                if (streak_obj.idx < 1) {
-                                    idx := 1
-                                }
-                                streak_obj.amt := streak_obj.sum_amt * percs[idx]
-                            } else if (streak_obj.state_5lost = '5lost') {
-                                streak_obj.idx := 1 + 1
-                                streak_obj.state_5lost := '5lostwon1'
-                                streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.idx]
-                            } else if (streak_obj.state_5lost = '5lostwon1') {
-                                streak_obj.idx := 1
-                                streak_obj.state_5lost := '5lostwon2'
-                                streak_obj.amt := cust_amt2won[1]
-                            } else if (streak_obj.sum_amt <= 10) {
-                                streak_obj.state_5lost := 0
-                                streak_obj.amt := 0
-                                streak_obj.sum_amt := 0
-                                streak_obj.sum_over200 := 0
-                                if state > 0
-                                    this.F300.%str_state% := 1
-                                else
-                                    this.F300.%str_state% := -1
-                            } else if (streak_obj.state_5lost = '5lostwon2') {
-                                streak_obj.idx := 1
-                                streak_obj.amt := cust_amt2won[1]
-                            }
-                        }
-                    }
-                    if (streak < this.streak_prev[1]) {
-                        streak_obj.losses++
-                        if (state = this.streak_prev[1]) {
-                            if (streak_obj.pause5 = 0) {
-                                streak_obj.idx++
-                            }
-                            streak_obj.sum_amt += streak_obj.amt
-                            idx := streak_obj.idx
-                            if (Mod(idx, 4) = 1 and idx > 1) {
-                                sum_trf := streak_obj.sum_amt / 6
-                                this.switch_win_loss[1].sum_amt  += sum_trf
-                                this.switch_win_loss[-1].sum_amt += sum_trf
-                                this.qstreak[2].sum_amt += sum_trf
-                                this.qstreak[-2].sum_amt += sum_trf
-                                if (Abs(this.F300.stateW) >= 3 and str_state = 'stateL') {
-                                    this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
-                                }
-                                if (Abs(this.F300.stateL) >= 3 and str_state = 'stateW') {
-                                    this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
-                                }
-                                streak_obj.sum_amt := sum_trf
-                            }
-                            if streak_obj.sum_amt >= 200 {
-                                streak_obj.sum_over200 := 1
-                            }
-                            lost_idx := 4
-                            if (streak_obj.idx = lost_idx) {
-                                this.F300.iter_lost5++
-                            }
-                            if streak_obj.idx > 0 {
-                                streak_obj.amt := amts[streak_obj.idx]
-                            }
-                            ; streak_obj.amt += cent_amts[streak_obj.idx]
-                            if (streak_obj.pause5 = 1) {
-                                streak_obj.amt := 1.1
-                            } else if (streak_obj.state_5lost = '5lostwon1') {
-                                streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx]
-                            } else if (streak_obj.state_5lost = '5lostwon2') {
-                                streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
-                            } else if (streak_obj.idx >= 3) {
-                                streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.idx - 2]
-                                streak_obj.state_5lost := '5lost'
-                            }
-                        }
-                    }
-                    if streak_obj.sum_amt >= 5 {
-                        streak_obj.sum_over20 := 1
-                    }
-                    if streak_obj.sum_amt < 5 and streak_obj.sum_over20 = 1 {
-                        streak_obj.sum_over20 := 0
-                        streak_obj.idx := 0
-                        sum_trf := streak_obj.sum_amt / 5
-                        this.switch_win_loss[ 1].sum_amt += sum_trf
-                        this.switch_win_loss[-1].sum_amt += sum_trf
-                        this.qstreak[ 2].sum_amt += sum_trf
-                        this.qstreak[-2].sum_amt += sum_trf
-                        if (Abs(this.F300.stateW) >= 3 and str_state = 'stateL') {
-                            this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
-                        }
-                        if (Abs(this.F300.stateL) >= 3 and str_state = 'stateW') {
-                            this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
-                        }
-                        streak_obj.sum_amt := 0
-                        streak_obj.sum_over200 := 0
-                        streak_obj.state_5lost := 0
-                    }
-                    idx := streak_obj.idx
-                    perc_base := 0.3
-                    if streak_obj.sum_amt >= 200 {
-                        streak_obj.sum_over200 := 1
-                    }
-                    if (streak_obj.sum_over200 = 1) {
-                        streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*(idx)
+                    if streak_obj.sum_amt >= 25 {
+                        streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
                     }
                 }
+                this.amount := streak_obj.amt
             }
         }
         
@@ -902,184 +542,31 @@ class TraderBot {
             Helper_wl1(-1)
             Helper_wl1(n) {
                 target_streak := n
-
                 streak := this.stats.streak_real
                 streak_prev := this.streak_prev[1]
-                amts := [6+(0.5*this.F300.iter_lost5)]
                 Loop 100 {
                     amts.Push(amts[-1]*2+3)
                 }
-                percs := [0.30, 0.40]
+
                 streak_obj := this.switch_win_loss[target_streak]
-                cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
-                idx := streak_obj.idx
                 
-                if (idx != 5 and streak_obj.pause_temp2 != 0) {
-                    streak_obj.pause_temp2 := 0
-                }
-                if (idx = 5 and streak_obj.pause_temp2 = 0) {
-                    streak_obj.pause_temp2 := 1
-                } else if (streak_obj.pause_temp2 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                    streak_obj.pause_temp2 := 2
+                HelperSumAmt(streak_obj, target_streak)
+                if HelperPause1(streak_obj, target_streak, this.switch_win_loss[1], this.switch_win_loss[-1]) {
                     return
                 }
-                if (streak_obj.pause_temp2 = 1) {
-                    if (streak = target_streak) {
-                        this.amount := 1
-                    }
-                    if (streak < streak_prev and streak_prev = target_streak) {
-                        streak_obj.sum_amt += 1
-                    }
+                if HelperPause2(streak_obj, target_streak) {
                     return
                 }
-
-                if (idx < 3 and streak_obj.pause_temp1 != 0) {
-                    streak_obj.pause_temp1 := 0
-                }
-                if (this.switch_win_loss[1].idx >= 3 and this.switch_win_loss[-1].idx >= 3 and streak_obj.pause_temp1 = 0) {
-                    streak_obj.pause_temp1 := 1
-                } else if (streak_obj.pause_temp1 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                    streak_obj.pause_temp1 := 2
-                    return
-                }
-                if (streak_obj.pause_temp1 = 1) {
-                    if (streak = target_streak) {
-                        this.amount := 1
-                    }
-                    if (streak < streak_prev and streak_prev = target_streak) {
-                        streak_obj.sum_amt += 1
-                    }
+                if HelperPause3(streak_obj, target_streak) {
                     return
                 }
                 
-                if (streak > this.streak_prev[1] and this.streak_prev[1] = target_streak) {
-                    streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
-                    if (streak_obj.pause5 = 0) {
-                        streak_obj.idx := 0
-                    }
-                    this.pause_except_1wr.w1 := 1
-
-                    if (streak_obj.pause5 = 1) {
-                        streak_obj.pause5 := 0
-                        streak_obj.amt := streak_obj.sum_amt * (0.01 + percs[1] + (0.1*idx))
-                    } else if (streak_obj.state_5lost = '5lost') {
-                        streak_obj.idx := 0
-                        streak_obj.state_5lost := '5lostwon1'
-                        streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*streak_obj.idx))
-                    } else if (streak_obj.state_5lost = '5lostwon1') {
-                        streak_obj.idx := 0
-                        streak_obj.state_5lost := '5lostwon2'
-                        streak_obj.amt := cust_amt2won[1]
-                    } else if (streak_obj.sum_amt <= 10) {
-                        streak_obj.state_5lost := 0
-                        streak_obj.amt := 0
-                        streak_obj.sum_amt := 0
-                        streak_obj.sum_over200 := 0
-                    } else if (streak_obj.state_5lost = '5lostwon2') {
-                        streak_obj.idx := 0
-                        streak_obj.amt := cust_amt2won[1]
-                    }
-                }
-                if (streak < this.streak_prev[1] and this.streak_prev[1] = target_streak) {
-                    if (streak_obj.pause5 = 0) {
-                        streak_obj.idx++
-                    }
-                    if (streak_obj.idx = 5) {
-                        this.F300.iter_lost5++
-                    }
-                    streak_obj.sum_amt += streak_obj.amt
-                    idx := streak_obj.idx
-                    if (Mod(idx, 4) = 1 and idx > 1) {
-                        streak_obj.sum_over20 := 0
-                        streak_obj.sum_over200 := 0
-                        sum_trf := streak_obj.sum_amt / 6
-                        this.switch_win_loss[1].sum_amt  += sum_trf
-                        this.switch_win_loss[-1].sum_amt += sum_trf
-                        this.qstreak[2].sum_amt += sum_trf
-                        this.qstreak[-2].sum_amt += sum_trf
-                        if (Abs(this.F300.stateW) >= 3) {
-                            this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
-                        }
-                        if (Abs(this.F300.stateL) >= 3) {
-                            this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
-                        }
-                        streak_obj.sum_amt := sum_trf
-                    }
-                    if (streak_obj.pause5 = 1) {
-                        streak_obj.amt := 1.1
-                    ; } else if (streak_obj.state_5lost = '5lostwon1') {
-                    ;     streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*idx))
-                    ; } else if (streak_obj.state_5lost = '5lostwon2') {
-                    ;     streak_obj.amt := cust_amt2won[Mod(streak_obj.idx, cust_amt2won.Length) + 1]
-                    } else if (streak_obj.idx >= 2) {
-                        streak_obj.amt := streak_obj.sum_amt * (0.15 + percs[1] + (0.1*idx))
-                        streak_obj.state_5lost := '5lost'
-                    }
-                }
-                if streak_obj.sum_amt >= 5 {
-                    streak_obj.sum_over20 := 1
-                }
-                if streak_obj.sum_amt < 5 and streak_obj.sum_over20 = 1 {
-                    streak_obj.pause5 := 0
-                    streak_obj.sum_over20 := 0
-                    streak_obj.idx := 0
-                    sum_trf := streak_obj.sum_amt / 6
-                    this.switch_win_loss[ 1].sum_amt += sum_trf
-                    this.switch_win_loss[-1].sum_amt += sum_trf
-                    this.qstreak[ 2].sum_amt += sum_trf
-                    this.qstreak[-2].sum_amt += sum_trf
-                    if (Abs(this.F300.stateW) >= 3) {
-                        this.F300.streaks[this.F300.stateW].sum_amt += sum_trf
-                    }
-                    if (Abs(this.F300.stateL) >= 3) {
-                        this.F300.streaks[this.F300.stateL].sum_amt += sum_trf
-                    }
-                    streak_obj.sum_amt := sum_trf
-                    streak_obj.sum_over200 := 0
-                    streak_obj.state_5lost := 0
-                }
-
-                streak_obj.max_idx := max(streak_obj.idx, streak_obj.max_idx)
-
-                if streak_obj.sum_amt >= 200 {
-                    streak_obj.sum_over200 := 1
-                }
-                idx := streak_obj.idx+1
-                if (streak_obj.sum_over200 = 1 and streak = target_streak) {
-                    streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*idx))
-                } else if (idx >= 1 and streak = target_streak and streak_obj.state_5lost = 0) {
-                    streak_obj.amt := amts[idx]
-                    if (idx <= 2) {
-                        streak_obj.add_cent_mult[idx]++
-                        streak_obj.amt += [0.01, 0.03][idx]*streak_obj.add_cent_mult[idx]
-                    }
-                }
-                if (streak_obj.idx >= 5 and streak_obj.idx <= 8) {
-                    streak_obj.amt := (streak_obj.sum_amt + 5)/0.92
-                }
-                if (streak = target_streak) {
-                    if (this.stats.max_bal_diff >= 310) {
-                        idx := Max(1, idx + 1)
-                        streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
-                        addition := 0
-                        Loop (this.F300.iter_lost5//4) {
-                            if (A_Index = 1) {
-                                addition := 0.01
-                            } else {
-                                addition := addition * 2 + 0.01
-                            }
-                        }
-                        streak_obj.amt += addition
-
-                        if streak_obj.sum_amt >= 25 {
-                            streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
-                        }
-                    }
-                    this.amount := streak_obj.amt
-                }
+                Helper3(streak_obj, target_streak)
+                Helper4(streak_obj, target_streak)
 
                 return 1
             }
+
             Helper_WLN_old()
             if (this.stats.streak_real >= 7) {
                 amts := [100, 80, 60, 40, 15, 1]
@@ -1152,6 +639,511 @@ class TraderBot {
                     }
                 }
                 return return_val
+            }
+        }
+
+        AmountOverride5_wl34() {
+            streak := this.stats.streak_real
+            if (streak = this.streak_prev[1]) {
+                return
+            }
+            abs_streak_current := Abs(streak)
+            abs_streak_prev := Abs(this.streak_prev[1])
+
+            if (this.stats.max_bal_diff >= 0 and this.F300.stateW = 0 and this.F300.stateL = 0) {
+                this.F300.stateW := 1
+                this.F300.stateL := -1
+                this.F300.bal := this.stats.max_bal_diff
+            }
+            amts := [6+(0.5*this.F300.iter_lost5)]
+            cent_amts := [0.10*(this.F300.iter_lost5+1)]
+            Loop 100 {
+                amts.Push(amts[-1]*2+3)
+                cent_amts.Push(cent_amts[-1]*3+0.01)
+            }
+            percs := [0.3]
+            Loop 100 {
+                percs.Push(percs[-1]+0.10)
+            }
+
+            cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
+
+            for str_state in ['stateW', 'stateL'] {
+                state := this.F300.%str_state%
+                stateW := this.F300.stateW
+                stateL := this.F300.stateL
+                abs_state := Abs(state) 
+                if (abs_state = 1) {
+                    max_loss := 0
+                    for k, v in this.wl34 {
+                        if (k * state < 0) {
+                            continue
+                        }
+                        if (v.losses > max_loss) {
+                            this.F300.%str_state% := k
+                            v.amt := amts[1]
+                            v.idx := 1
+                            ; v.amt += cent_amts[1]
+                            max_loss := v.losses
+                        }
+                    }
+                }
+
+                if (abs_state >= 3) {
+                    streak_obj := this.wl34[state]
+                    streak_prev := this.streak_prev[1]
+                    target_streak := state
+                    HelperSumAmt(streak_obj, target_streak)
+                    if HelperPause1(streak_obj, target_streak, this.wl34[stateW], this.wl34[stateL]) {
+                        return
+                    }
+                    if HelperPause2(streak_obj, target_streak) {
+                        return
+                    }
+                    if HelperPause3(streak_obj, target_streak) {
+                        return
+                    }
+                    
+                    ; Helper3(streak_obj, target_streak)
+                    ; Helper4(streak_obj, target_streak)
+                }
+
+                if (state = streak and abs_state >= 3) {
+                    streak_obj := this.wl34[state]
+                    idx := Max(1, streak_obj.lose_streak)
+                    streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                    addition := 0
+                    Loop (this.F300.iter_lost5//4) {
+                        if (A_Index = 1) {
+                            addition := 0.01
+                        } else {
+                            addition := addition * 2 + 0.01
+                        }
+                    }
+                    streak_obj.amt += addition
+
+                    if (this.pause_except_1.state = 1) {
+                        streak_obj.amt := 1
+                    }
+                    if (idx >= 3) {
+                        streak_obj.amt := 1
+                    }
+                    this.amount := streak_obj.amt
+                }
+                
+                if ((abs_streak_prev = 3 or abs_streak_prev = 4) and state * this.streak_prev[1] > 0) {
+                    streak_obj := this.wl34[this.streak_prev[1]]
+                    if (streak > this.streak_prev[1]) {
+                        if (state = this.streak_prev[1]) {
+                            streak_obj.losses := 0
+                            if (streak_obj.pause5 = 0) {
+                                streak_obj.lose_streak := 0
+                            }
+                            if (streak_obj.pause5 = 1) {
+                                streak_obj.pause5 := 0
+                                idx := streak_obj.lose_streak
+                                if (streak_obj.lose_streak < 1) {
+                                    idx := 1
+                                }
+                                streak_obj.amt := streak_obj.sum_amt * percs[idx]
+                            } else if (streak_obj.state_5lost = '5lost') {
+                                streak_obj.lose_streak := 1 + 1
+                                streak_obj.state_5lost := '5lostwon1'
+                                streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.lose_streak]
+                            } else if (streak_obj.state_5lost = '5lostwon1') {
+                                streak_obj.lose_streak := 1
+                                streak_obj.state_5lost := '5lostwon2'
+                                streak_obj.amt := cust_amt2won[1]
+                            } else if (streak_obj.sum_amt <= 10) {
+                                streak_obj.state_5lost := 0
+                                streak_obj.amt := 0
+                                streak_obj.sum_amt := 0
+                                streak_obj.sum_over200 := 0
+                                if state > 0
+                                    this.F300.%str_state% := 1
+                                else
+                                    this.F300.%str_state% := -1
+                            } else if (streak_obj.state_5lost = '5lostwon2') {
+                                streak_obj.lose_streak := 1
+                                streak_obj.amt := cust_amt2won[1]
+                            }
+                        }
+                    }
+                    if (streak < this.streak_prev[1]) {
+                        streak_obj.losses++
+                        if (state = this.streak_prev[1]) {
+                            if (streak_obj.pause5 = 0) {
+                                streak_obj.lose_streak++
+                            }
+                            idx := streak_obj.lose_streak
+                            if (Mod(idx, 4) = 1 and idx > 1) {
+                                sum_trf := streak_obj.sum_amt / 6
+                                this.switch_win_loss[1].sum_amt  += sum_trf
+                                this.switch_win_loss[-1].sum_amt += sum_trf
+                                this.wl2[2].sum_amt += sum_trf
+                                this.wl2[-2].sum_amt += sum_trf
+                                if (Abs(this.F300.stateW) >= 3 and str_state = 'stateL') {
+                                    this.wl34[this.F300.stateW].sum_amt += sum_trf
+                                }
+                                if (Abs(this.F300.stateL) >= 3 and str_state = 'stateW') {
+                                    this.wl34[this.F300.stateL].sum_amt += sum_trf
+                                }
+                                streak_obj.sum_amt := sum_trf
+                            }
+                            if streak_obj.sum_amt >= 200 {
+                                streak_obj.sum_over200 := 1
+                            }
+                            lost_idx := 4
+                            if (streak_obj.lose_streak = lost_idx) {
+                                this.F300.iter_lost5++
+                            }
+                            if streak_obj.lose_streak > 0 {
+                                streak_obj.amt := amts[streak_obj.lose_streak]
+                            }
+                            ; streak_obj.amt += cent_amts[streak_obj.lose_streak]
+                            if (streak_obj.pause5 = 1) {
+                                streak_obj.amt := 1.1
+                            } else if (streak_obj.state_5lost = '5lostwon1') {
+                                streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.lose_streak]
+                            } else if (streak_obj.state_5lost = '5lostwon2') {
+                                streak_obj.amt := cust_amt2won[Mod(streak_obj.lose_streak, cust_amt2won.Length) + 1]
+                            } else if (streak_obj.lose_streak >= 3) {
+                                streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.lose_streak - 2]
+                                streak_obj.state_5lost := '5lost'
+                            }
+                        }
+                    }
+                    if streak_obj.sum_amt >= 5 {
+                        streak_obj.sum_over20 := 1
+                    }
+                    if streak_obj.sum_amt < 5 and streak_obj.sum_over20 = 1 {
+                        streak_obj.sum_over20 := 0
+                        streak_obj.lose_streak := 0
+                        sum_trf := streak_obj.sum_amt / 5
+                        this.switch_win_loss[ 1].sum_amt += sum_trf
+                        this.switch_win_loss[-1].sum_amt += sum_trf
+                        this.wl2[ 2].sum_amt += sum_trf
+                        this.wl2[-2].sum_amt += sum_trf
+                        if (Abs(this.F300.stateW) >= 3 and str_state = 'stateL') {
+                            this.wl34[this.F300.stateW].sum_amt += sum_trf
+                        }
+                        if (Abs(this.F300.stateL) >= 3 and str_state = 'stateW') {
+                            this.wl34[this.F300.stateL].sum_amt += sum_trf
+                        }
+                        streak_obj.sum_amt := 0
+                        streak_obj.sum_over200 := 0
+                        streak_obj.state_5lost := 0
+                    }
+                    idx := streak_obj.lose_streak
+                    perc_base := 0.3
+                    if streak_obj.sum_amt >= 200 {
+                        streak_obj.sum_over200 := 1
+                    }
+                    if (streak_obj.sum_over200 = 1) {
+                        streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*(idx)
+                    }
+                }
+            }
+        }
+        
+        AmountOverride8_22() {
+            Helper(2)
+            Helper(-2)
+            
+            Helper(n) {
+                cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
+                streak := this.stats.streak_real
+                str_prev := this.streak_prev[1]
+                streak_obj := this.wl2[n]
+                idx := streak_obj.lose_streak > 0 ? 0 : Abs(streak_obj.lose_streak)
+                perc_base := 0.3
+                streak_prev := this.streak_prev[1]
+                target_streak := n
+                HelperSumAmt(streak_obj, target_streak)
+                if HelperPause1(streak_obj, target_streak, this.wl2[2], this.wl2[-2]) {
+                    return
+                }
+                if HelperPause2(streak_obj, target_streak) {
+                    return
+                }
+                if HelperPause3(streak_obj, target_streak) {
+                    return
+                }
+                
+                if (str_prev = n) {
+                    if (streak > str_prev) {
+                        if streak_obj.lose_streak < 0 {
+                            streak_obj.lose_streak := 0
+                        }
+                        streak_obj.wins++
+                        streak_obj.lose_streak++
+                        if (streak_obj.state_5lost = '5lost') {
+                            streak_obj.state_5lost := '5lostwon1'
+                            streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*2
+                        } else if (streak_obj.state_5lost = '5lostwon1') {
+                            streak_obj.state_5lost := '5lostwon2'
+                            streak_obj.amt := cust_amt2won[1]
+                        } else if (streak_obj.state_5lost = '5lostwon2') {
+                            streak_obj.amt := cust_amt2won[1]
+                        }
+                    } else if (streak < str_prev) {
+                        if streak_obj.lose_streak > 0 {
+                            streak_obj.lose_streak := 0
+                        }
+                        streak_obj.losses++
+                        streak_obj.lose_streak--
+                        idx := Abs(streak_obj.lose_streak)
+                        if (Mod(idx, 4) = 1 and idx > 1) {
+                            sum_trf := streak_obj.sum_amt / 6
+                            this.switch_win_loss[1].sum_amt  += sum_trf
+                            this.switch_win_loss[-1].sum_amt += sum_trf
+                            this.wl2[-n].sum_amt += sum_trf
+                            if (Abs(this.F300.stateW) >= 3) {
+                                this.wl34[this.F300.stateW].sum_amt += sum_trf
+                            }
+                            if (Abs(this.F300.stateL) >= 3) {
+                                this.wl34[this.F300.stateL].sum_amt += sum_trf
+                            }
+                            streak_obj.sum_amt := sum_trf
+                        }
+                        if streak_obj.sum_amt >= 200 {
+                            streak_obj.sum_over200 := 1
+                        }
+                        if (streak_obj.state_5lost = '5lostwon1') {
+                            streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * idx))
+                        } else if (streak_obj.state_5lost = '5lostwon2') {
+                            streak_obj.amt := cust_amt2won[Mod(idx, cust_amt2won.Length) + 1]
+                        } else if (idx >= 2) {
+                            streak_obj.amt := streak_obj.sum_amt * (perc_base + (0.10 * (idx-2)))
+                            streak_obj.state_5lost := '5lost'
+                        } 
+                    }
+                }
+                if streak_obj.sum_amt >= 5 {
+                    streak_obj.sum_over20 := 1
+                }
+                if streak_obj.sum_amt < 5 and streak_obj.sum_over20 = 1 {
+                    streak_obj.pause5 := 0
+                    streak_obj.sum_over20 := 0
+                    streak_obj.lose_streak := 0
+                    sum_trf := streak_obj.sum_amt / 5
+                    this.switch_win_loss[ 1].sum_amt += sum_trf
+                    this.switch_win_loss[-1].sum_amt += sum_trf
+                    this.wl2[ 2].sum_amt += sum_trf
+                    this.wl2[-2].sum_amt += sum_trf
+                    if (Abs(this.F300.stateW) >= 3) {
+                        this.wl34[this.F300.stateW].sum_amt += sum_trf
+                    }
+                    if (Abs(this.F300.stateL) >= 3) {
+                        this.wl34[this.F300.stateL].sum_amt += sum_trf
+                    }
+                    streak_obj.sum_amt := 0
+                    streak_obj.sum_over200 := 0
+                    streak_obj.state_5lost := 0
+                }
+                if (streak = n) {
+                    if ((streak_obj.lose_streak > 0 or streak_obj.lose_streak = -1) and streak_obj.state_5lost = 0) {
+                        streak_obj.amt := (streak_obj.sum_amt + 7)/0.92
+                    }
+                    idx := streak_obj.lose_streak < 0 ? Abs(streak_obj.lose_streak) : 0
+                    perc_base := 0.3
+                    if streak_obj.sum_amt >= 200 {
+                        streak_obj.sum_over200 := 1
+                    }
+                    if (streak_obj.sum_over200 = 1) {
+                        streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*(idx)
+                    }
+                    if (this.pause_except_1.state = 1) {
+                        streak_obj.amt := 1
+                    }
+                    idx := Max(1, idx + 1)
+                    streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                    addition := 0
+                    Loop (this.F300.iter_lost5//4) {
+                        if (A_Index = 1) {
+                            addition := 0.01
+                        } else {
+                            addition := addition * 2 + 0.01
+                        }
+                    }
+                    streak_obj.amt += addition
+
+                    this.amount := streak_obj.amt
+                }
+            }
+        }
+
+        AmountOverride6_Lose7() {
+            streak := this.stats.streak_real
+            if (streak <= -7) {
+                idx1 := Abs(streak) - 6
+                idx2 := idx1 + this.pause_temp.loss7
+                this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
+                addition := 0
+                Loop (this.F300.iter_lost5//4) {
+                    if (A_Index = 1) {
+                        addition := 0.01
+                    } else {
+                        addition := addition * 2 + 0.01
+                    }
+                }
+                this.amount += addition
+
+                if (idx1 = 5 and this.pause_temp.pause_temp2 = 0) {
+                    this.pause_temp.pause_temp2 := 1
+                    this.pause_temp.loss7 := 5
+                }
+                if (idx1 != 5 and this.pause_temp.pause_temp2 != 0) {
+                    this.pause_temp.pause_temp2 := 0
+                    this.pause_temp.loss7 := 0
+                }
+            }
+        }
+
+        AmountOverride7_Win5() {
+            streak := this.stats.streak_real
+            streak_prev := this.streak_prev[1]
+            amts := [25]
+            cent_amts := [0.10*(this.F300.iter_lost5+1)]
+            Loop 100 {
+                amts.Push(amts[-1]*2+3)
+                cent_amts.Push(cent_amts[-1]*3+0.01)
+            }
+            percs := [0.3]
+            Loop 100 {
+                percs.Push(percs[-1]+0.10)
+            }
+            cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
+            
+            if (streak > streak_prev and streak_prev >= 4) {
+                streak_obj := this.win5andabove[streak_prev]
+                streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
+                if (streak_obj.pause5 = 0) {
+                    streak_obj.lose_streak := 0
+                }
+
+                if (streak_obj.pause5 = 1) {
+                    streak_obj.pause5 := 0
+                    idx := streak_obj.lose_streak
+                    if (streak_obj.lose_streak < 1) {
+                        idx := 1
+                    }
+                    streak_obj.amt := streak_obj.sum_amt * percs[idx]
+                } else if (streak_obj.state_5lost = '5lost') {
+                    streak_obj.lose_streak := 1 + 1
+                    streak_obj.state_5lost := '5lostwon1'
+                    streak_obj.amt := streak_obj.sum_amt * percs[streak_obj.lose_streak]
+                } else if (streak_obj.state_5lost = '5lostwon1') {
+                    streak_obj.lose_streak := 1
+                    streak_obj.state_5lost := '5lostwon2'
+                    streak_obj.amt := cust_amt2won[1]
+                } else if (streak_obj.sum_amt <= 10) {
+                    streak_obj.state_5lost := 0
+                    streak_obj.amt := 0
+                    streak_obj.sum_amt := 0
+                    streak_obj.sum_over200 := 0
+                } else if (streak_obj.state_5lost = '5lostwon2') {
+                    streak_obj.lose_streak := 1
+                    streak_obj.amt := cust_amt2won[1]
+                }
+            }
+            if (streak < streak_prev and streak_prev >= 5) {
+                streak_obj := this.win5andabove[streak_prev]
+                if (streak_obj.pause5 = 0) {
+                    streak_obj.lose_streak++
+                }
+                streak_obj.sum_amt += streak_obj.amt
+                if (streak_obj.lose_streak = 7 or streak_obj.lose_streak = 5) {
+                    this.wl2[2].transfers++
+                    sum_trf := streak_obj.sum_amt * 0.4
+                    if streak_obj.lose_streak = 7 {
+                        sum_trf := streak_obj.sum_amt * 0.8
+                    }
+                    this.wl2[2].sum_amt += sum_trf/2
+                    this.wl2[-2].sum_amt += sum_trf/2
+                    streak_obj.sum_amt -= sum_trf
+                }
+                if streak_obj.sum_amt >= 200 {
+                    streak_obj.sum_over200 := 1
+                }
+                if streak_obj.lose_streak > 0 {
+                    streak_obj.amt := amts[streak_obj.lose_streak]
+                }
+                ; streak_obj.amt += cent_amts[streak_obj.lose_streak]
+                if (streak_obj.pause5 = 1) {
+                    streak_obj.amt := 1.1
+                } else if (streak_obj.state_5lost = '5lostwon1') {
+                    streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.lose_streak]
+                } else if (streak_obj.state_5lost = '5lostwon2') {
+                    streak_obj.amt := cust_amt2won[Mod(streak_obj.lose_streak, cust_amt2won.Length) + 1]
+                } else if (streak_obj.lose_streak >= 3) {
+                    streak_obj.amt := streak_obj.sum_amt *percs[streak_obj.lose_streak - 2]
+                    streak_obj.state_5lost := '5lost'
+                }
+            }
+
+            if streak_prev >= 5 {
+                streak_obj := this.win5andabove[streak_prev]
+                if streak_obj.sum_amt >= 80 {
+                    streak_obj.sum_over20 := 1
+                }
+                if streak_obj.sum_amt < 80 and streak_obj.sum_over20 = 1 {
+                    streak_obj.sum_over20 := 0
+                    streak_obj.lose_streak := 0
+                    this.wl2[2].sum_amt += streak_obj.sum_amt/2
+                    this.wl2[-2].sum_amt += streak_obj.sum_amt/2
+                    streak_obj.sum_amt := 0
+                    streak_obj.sum_over200 := 0
+                    streak_obj.state_5lost := 0
+                }
+                idx := streak_obj.lose_streak
+                perc_base := 0.3
+                if streak_obj.sum_amt >= 200 {
+                    streak_obj.sum_over200 := 1
+                }
+                if (streak_obj.sum_over200 = 1) {
+                    streak_obj.amt := streak_obj.sum_amt * perc_base+0.10*(idx)
+                }
+            }
+            
+            if (streak >= 5) {
+                idx := Max(1, this.win5andabove[streak].idx)
+                this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                addition := 0
+                Loop (this.F300.iter_lost5//4) {
+                    if (A_Index = 1) {
+                        addition := 0.01
+                    } else {
+                        addition := addition * 2 + 0.01
+                    }
+                }
+                this.amount += addition
+
+                if streak_prev >= 5 {
+                    streak_obj := this.win5andabove[streak_prev]
+                    if (idx != 5 and streak_obj.pause_temp2 != 0) {
+                        streak_obj.pause_temp2 := 0
+                    }
+                    if (idx = 5 and streak_obj.pause_temp2 = 0) {
+                        streak_obj.pause_temp2 := 1
+                    } else if (streak_obj.pause_temp2 = 1 and streak > streak_prev) {
+                        streak_obj.pause_temp2 := 2
+                        return
+                    }
+                    if (streak_obj.pause_temp2 = 1) {
+                        this.amount := 1
+                        if (streak < streak_prev) {
+                            streak_obj.sum_amt += 1
+                        }
+                        return
+                    }
+                }
+                if (this.pause_except_1.state = 1) {
+                    this.amount := 1
+                }
+                if (streak > 5) {
+                    this.amount := 1
+                }
             }
         }
 
@@ -1477,7 +1469,7 @@ class TraderBot {
     MidNightReset() {
         for k, v in this.switch_win_loss {
             v.stats.longest_lose_streak := 0
-            v.max_idx := 0
+            v.max_lose_streak := 0
         }
     }
 
@@ -1488,8 +1480,8 @@ class TraderBot {
         sum_trf := this.switch_win_loss[1].sum_amt + this.switch_win_loss[-1].sum_amt
         this.switch_win_loss[1].sum_amt  := 0
         this.switch_win_loss[-1].sum_amt := 0
-        this.qstreak[ 2].sum_amt += sum_trf/2
-        this.qstreak[-2].sum_amt += sum_trf/2
+        this.wl2[ 2].sum_amt += sum_trf/2
+        this.wl2[-2].sum_amt += sum_trf/2
         ; this.maxdiff350.stored_4loss_count := this.F300.iter_lost5
         ; this.F300.iter_lost5 := 0
         for k, v in this.maxdiff350.streaks {
@@ -1502,32 +1494,63 @@ class TraderBot {
             loss7: 0,
             pause_temp2: 0,
         }
-        for k, v in this.switch_win_loss {
-            v.pause_temp2 := 0
-            v.pause_temp1 := 0
+        PropSerializer() {
+            v := {}
+
+            v.ls_pause_temp3 := 0
+            v.pause_temp3 := 0
+            
             v.add_cent_mult := Map(1, 0, 2, 0)
-            v.pause5 := 0
             v.amt := 0
-            v.state_5lost := 0
-            v.state := 0
-            v.loss_multiplier := 1
             v.amts := [1.35, 1.85, 3.97, 8.39, 17.62, 36.88, 77.07, 160.96, 336.02, 701.37, 1128.79, 1990.61]
+            v.count_loss := 0
+            v.counter_win_not_4loss := 1
+            v.idx := 0
             v.idx1 := 1
             v.idx2 := 0
-            v.idx := 0
-            v.sum_over20 := 0
-            v.sum_over200 := 0
-            v.sum_amt := 0
+            v.loss_multiplier := 1
+            v.losses := 0
+            v.pause5 := 0
+            v.pause_temp1 := 0
+            v.pause_temp2 := 0
+            v.state := 0
             v.state2_pause := 0
-            v.counter_win_not_4loss := 1
+            v.state_5lost := 0
+
             if (not v.HasOwnProp('stats')) {
                 v.stats := {}
             }
-            v.stats.wins_streak := 0
-            v.stats.lose_streak := 0
             v.stats.draws := 0
+            v.stats.lose_streak := 0
             v.stats.wins := 0
+            v.stats.wins_streak := 0
+            v.streak := 0
+            v.sum_amt := 0
+            v.sum_over20 := 0
+            v.sum_over200 := 0
+            v.transfers := 0
+            v.wins := 0
+            return v
         }
+        for k, v in this.switch_win_loss {
+            v := PropSerializer()
+        }
+        
+        this.wl34 := Map(3, {}, 4, {}, -3, {}, -4, {})
+        for k, v in this.wl34 {
+            v := PropSerializer()
+        }
+        
+        this.wl2 := Map(2, {}, -2, {})
+        for k, v in this.wl2 {
+            v := PropSerializer()
+        }
+        
+        this.win5andabove := Map()
+        Loop 20 {
+            this.win5andabove[A_Index+3] := PropSerializer()
+        }
+        this.win5andabove[4].amt := 100
 
         this.cust_amts := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87, 1421.05, 2966.00]
         this.extra_str := ''
@@ -1546,30 +1569,11 @@ class TraderBot {
             over250: 0,
             over275: 0,
         }
-        this.pause_except_1wr := {
-            state: 0,
-            w1: 0,
-            l1: 0,
-        }
         this.flip_trade := {
             state: 0,
             wait_for_reverse1: 0,
             wait_for_reverse_top: 0,
             wait_for_reverse_bot: 0,
-        }
-        this.qstreak := Map(2, {}, -2, {})
-        for k, v in this.qstreak {
-            v.pause_temp2 := 0
-            v.pause_temp1 := 0
-            v.sum_amt := 0
-            v.sum_over200 := 0
-            v.amt := 0
-            v.wins := 0
-            v.losses := 0
-            v.streak := 0
-            v.transfers := 0
-            v.state_5lost := 0
-            v.sum_over20 := 0
         }
          
         this.F300.streak7_40 := {state_5lost: 0, amt: 0, sum_amt: 0, idx: 0, losses: 0}
@@ -1585,34 +1589,14 @@ class TraderBot {
         this.F300.bal := 0
         this.F300.count := 0
 
-        this.F300.streaks := Map(3, {}, 4, {}, -3, {}, -4, {})
-
         this.perc40 := Map('loss7', {}, 'win1', {}, 'wl34', {})
         for k, v in this.perc40 {
             v.state := 0
             v.amt := 0
         }
         
-        this.win5andabove := Map()
-        Loop 20 {
-            this.win5andabove[A_Index+3] := {pause_temp2: 0, pause5: 0, sum_over20: 0, idx: 0, count_loss: 0, amt: 0, state_5lost: 0, sum_amt: 0, sum_over200: 0}
-        }
-        this.win5andabove[4].amt := 100
-
         Loop 20 {
             this.F300.lost4_won.streaks[A_Index+3] := {lost_before: 0, amt: 0}
-        }
-        for k, v in this.F300.streaks {
-            v.pause_temp2 := 0
-            v.pause_temp1 := 0
-            v.sum_over20 := 0
-            v.sum_over200 := 0
-            v.sum_amt := 0
-            v.idx := 0
-            v.losses := 0
-            v.amt := 0
-            v.state_5lost := 0
-            v.pause5 := 0
         }
         this.qualifier_221_210 := {
             state: 0,
@@ -2300,14 +2284,14 @@ class TraderBot {
         }
         sub_str_d := ''
         if (this.F300.stateW != 0 or this.F300.stateL != 0) {
-            pref := 'w3=' this.F300.streaks[3].losses ' w4=' this.F300.streaks[4].losses ' l3=' this.F300.streaks[-3].losses ' l4=' this.F300.streaks[-4].losses
+            pref := 'w3=' this.wl34[3].losses ' w4=' this.wl34[4].losses ' l3=' this.wl34[-3].losses ' l4=' this.wl34[-4].losses
             str_win := 'W' this.F300.stateW
             str_lose := 'L' this.F300.stateL
             if this.F300.stateW > 1 {
-                str_win := 'W' this.F300.stateW '(' this.F300.streaks[this.F300.stateW].idx ' | sum: ' format('{:.2f}', this.F300.streaks[this.F300.stateW].sum_amt) ')'
+                str_win := 'W' this.F300.stateW '(' this.wl34[this.F300.stateW].idx ' | sum: ' format('{:.2f}', this.wl34[this.F300.stateW].sum_amt) ')'
             }
             if this.F300.stateL < -1 {
-                str_lose := 'L' this.F300.stateL '(' this.F300.streaks[this.F300.stateL].idx ' | sum: ' format('{:.2f}', this.F300.streaks[this.F300.stateL].sum_amt) ')'
+                str_lose := 'L' this.F300.stateL '(' this.wl34[this.F300.stateL].idx ' | sum: ' format('{:.2f}', this.wl34[this.F300.stateL].sum_amt) ')'
             }
             sub_str_d := '(' pref ') ' 'F300 ON [' format('{:.2f}', this.F300.sum_4lost) '] (' str_win ' ' str_lose ')' str_d
         } else if (this.qualifier_221_210.state = 1) {
@@ -2363,9 +2347,6 @@ class TraderBot {
         if (this.pause_except_1.state = 1) {
             str_h := str_h ' P1'
         }
-        if (this.pause_except_1wr.state = 1) {
-            str_h := str_h ' P2'
-        }
 
         win_rate := Format('{:.1f}', this.stats.win_rate) '%'
         if (this.flip_trade.state = 1) {
@@ -2383,11 +2364,11 @@ class TraderBot {
         }
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)
-        str_l := '(' this.qstreak[2].streak ' [wins=' this.qstreak[2].wins '|loss=' this.qstreak[2].losses ']) sum=' format('{:.2f}', this.qstreak[2].sum_amt)
+        str_l := '(' this.wl2[2].streak ' [wins=' this.wl2[2].wins '|loss=' this.wl2[2].losses ']) sum=' format('{:.2f}', this.wl2[2].sum_amt)
         if (streak = 2) {
             str_l := 'bet: ' format('{:.2f}', this.amount) ' ' str_l
         }
-        str_m := '(' this.qstreak[-2].streak ' [wins=' this.qstreak[-2].wins '|loss=' this.qstreak[-2].losses ']) sum=' format('{:.2f}', this.qstreak[-2].sum_amt)
+        str_m := '(' this.wl2[-2].streak ' [wins=' this.wl2[-2].wins '|loss=' this.wl2[-2].losses ']) sum=' format('{:.2f}', this.wl2[-2].sum_amt)
         if (streak = -2) {
             str_m := 'bet: ' format('{:.2f}', this.amount) ' ' str_m
         }
