@@ -1108,7 +1108,7 @@ class TraderBot {
             }
             
             if (streak >= 5) {
-                idx := Max(1, this.win5andabove[streak].idx)
+                idx := Max(1, this.win5andabove[streak].lose_streak)
                 this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
                 addition := 0
                 Loop (this.F300.iter_lost5//4) {
@@ -1119,9 +1119,20 @@ class TraderBot {
                     }
                 }
                 this.amount += addition
+                if (streak > 5) {
+                    this.amount := 1
+                }
 
                 if streak_prev >= 5 {
                     streak_obj := this.win5andabove[streak_prev]
+                    if HelperPause2(streak_obj, streak_prev) {
+                        this.amount := 1
+                        return
+                    }
+                    if HelperPause3(streak_obj, streak_prev) {
+                        this.amount := 1
+                        return
+                    }
                     if (idx != 5 and streak_obj.pause_temp2 != 0) {
                         streak_obj.pause_temp2 := 0
                     }
@@ -1140,9 +1151,6 @@ class TraderBot {
                     }
                 }
                 if (this.pause_except_1.state = 1) {
-                    this.amount := 1
-                }
-                if (streak > 5) {
                     this.amount := 1
                 }
             }
