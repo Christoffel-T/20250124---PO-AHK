@@ -398,8 +398,8 @@ class TraderBot {
             if (idx >= 6 and streak_obj.pause_temp3 = 0) {
                 if (streak = target_streak) {
                     this.amount := 1
-                }
-                if (streak_prev = target_streak and streak < streak_prev) {
+                    return 1
+                } else if (streak_prev = target_streak and streak < streak_prev) {
                     streak_obj.lose_streak++
                     return 1
                 } else if (streak_prev = target_streak and streak > streak_prev) {
@@ -410,8 +410,8 @@ class TraderBot {
             } else if (idx >= 6 and streak_obj.pause_temp3 = 1) {
                 if (streak = target_streak) {
                     this.amount := 1
-                }
-                if (streak_prev = target_streak and streak < streak_prev) {
+                    return 1
+                } else if (streak_prev = target_streak and streak < streak_prev) {
                     this.amount := streak_obj.amt
                     streak_obj.pause_temp3 := 0
                     streak_obj.lose_streak++
