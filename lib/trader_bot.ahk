@@ -344,7 +344,7 @@ class TraderBot {
                 streak_obj.pause_temp1 := 0
             }
             try {
-                if (obj1.idx >= 3 and obj2.idx >= 3 and streak_obj.pause_temp1 = 0) {
+                if (obj1.lose_streak >= 3 and obj2.lose_streak >= 3 and streak_obj.pause_temp1 = 0) {
                     streak_obj.pause_temp1 := 1
                 }
             }
