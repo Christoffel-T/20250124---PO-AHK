@@ -409,16 +409,17 @@ class TraderBot {
                 }
             } else if (idx >= 6 and streak_obj.pause_temp3 = 1) {
                 if (streak = target_streak) {
-                    this.amount := streak_obj.amt
+                    this.amount := 1
                 }
                 if (streak_prev = target_streak and streak < streak_prev) {
+                    this.amount := streak_obj.amt
                     streak_obj.pause_temp3 := 0
                     streak_obj.lose_streak++
-                    return 1
+                    return 0
                 } else if (streak_prev = target_streak and streak > streak_prev) {
                     streak_obj.pause_temp3 := 1
                     streak_obj.ls_pause_temp3 := idx
-                    return 0
+                    return 1
                 }
 
             }
