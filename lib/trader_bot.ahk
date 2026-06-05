@@ -395,7 +395,7 @@ class TraderBot {
             streak_prev := this.streak_prev[1]
             idx := streak_obj.lose_streak
 
-            if (idx >= 6 and streak_obj.pause_temp3 = 0) {
+            if (idx >= 6) {
                 if (streak = target_streak) {
                     this.amount := 1
                     return 1
@@ -404,25 +404,13 @@ class TraderBot {
                     return 1
                 } else if (streak_prev = target_streak and streak > streak_prev) {
                     streak_obj.pause_temp3 := 1
+                    streak_obj.amt_pause_temp3 := streak_obj.amt
                     streak_obj.ls_pause_temp3 := idx
+                    streak_obj.lose_streak := 0
                     return 1
                 }
-            } else if (idx >= 6 and streak_obj.pause_temp3 = 1) {
-                if (streak = target_streak) {
-                    this.amount := 1
-                    return 1
-                } else if (streak_prev = target_streak and streak < streak_prev) {
-                    this.amount := streak_obj.amt
-                    streak_obj.pause_temp3 := 0
-                    streak_obj.lose_streak++
-                    return 0
-                } else if (streak_prev = target_streak and streak > streak_prev) {
-                    streak_obj.pause_temp3 := 1
-                    streak_obj.ls_pause_temp3 := idx
-                    return 1
-                }
-
             }
+            return 0
         }
 
         Helper3(streak_obj, target_streak) {
@@ -528,6 +516,10 @@ class TraderBot {
                     if streak_obj.sum_amt >= 25 {
                         streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
                     }
+                }
+                if (streak_obj.pause_temp3 = 1) {
+                    streak_obj.amt := streak_obj.amt_pause_temp3
+                    streak_obj.pause_temp3 := 0
                 }
                 this.amount := streak_obj.amt
             }
@@ -728,6 +720,10 @@ class TraderBot {
                     }
                     if (idx >= 3) {
                         streak_obj.amt := 1
+                    }
+                    if (streak_obj.pause_temp3 = 1) {
+                        streak_obj.amt := streak_obj.amt_pause_temp3
+                        streak_obj.pause_temp3 := 0
                     }
                     this.amount := streak_obj.amt
                 }
@@ -968,6 +964,10 @@ class TraderBot {
                         }
                     }
                     streak_obj.amt += addition
+                    if (streak_obj.pause_temp3 = 1) {
+                        streak_obj.amt := streak_obj.amt_pause_temp3
+                        streak_obj.pause_temp3 := 0
+                    }
 
                     this.amount := streak_obj.amt
                 }
@@ -1109,6 +1109,10 @@ class TraderBot {
             
             if (streak >= 5) {
                 idx := Max(1, this.win5andabove[streak].lose_streak)
+                if (streak_obj.pause_temp3 = 1) {
+                    idx := 5
+                    streak_obj.pause_temp3 := 0
+                }
                 this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
                 addition := 0
                 Loop (this.F300.iter_lost5//4) {
@@ -1504,6 +1508,7 @@ class TraderBot {
             pause_temp2: 0,
         }
         PropSerializer(v) {
+            v.amt_pause_temp3 := 0
             v.ls_pause_temp3 := 0
             v.pause_temp3 := 0
             
