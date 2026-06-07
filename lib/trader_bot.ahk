@@ -422,7 +422,6 @@ class TraderBot {
                 } else if (streak < streak_prev) {
                     streak_obj.losses++
                     streak_obj.lose_streak++
-                    streak_obj.max_lose_streak := max(streak_obj.lose_streak, streak_obj.max_lose_streak)
                     if (streak_obj.lose_streak = 5) {
                         this.F300.iter_lost5++
                     }
@@ -1239,7 +1238,6 @@ class TraderBot {
     MidNightReset() {
         for k, v in this.switch_win_loss {
             v.stats.longest_lose_streak := 0
-            v.max_lose_streak := 0
         }
     }
 
