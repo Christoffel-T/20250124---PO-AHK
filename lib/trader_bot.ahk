@@ -634,11 +634,12 @@ class TraderBot {
 
         AmountOverride5_wl34() {
             streak := this.stats.streak_real
-            if (streak = this.streak_prev[1]) {
+            streak_prev := this.streak_prev[1]
+            if (streak = streak_prev) {
                 return
             }
             abs_streak_current := Abs(streak)
-            abs_streak_prev := Abs(this.streak_prev[1])
+            abs_streak_prev := Abs(streak_prev)
 
             if (this.stats.max_bal_diff >= 0 and this.F300.stateW = 0 and this.F300.stateL = 0) {
                 this.F300.stateW := 1
@@ -681,7 +682,6 @@ class TraderBot {
 
                 if (abs_state >= 3) {
                     streak_obj := this.wl34[state]
-                    streak_prev := this.streak_prev[1]
                     target_streak := state
                     HelperSumAmt(streak_obj, target_streak)
                     if HelperPause1(streak_obj, target_streak, this.wl34[stateW], this.wl34[stateL]) {
@@ -713,11 +713,10 @@ class TraderBot {
             Helper(target_streak) {
                 cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
                 streak := this.stats.streak_real
-                str_prev := this.streak_prev[1]
+                streak_prev := this.streak_prev[1]
                 streak_obj := this.wl2[target_streak]
                 idx := streak_obj.lose_streak > 0 ? 0 : Abs(streak_obj.lose_streak)
                 perc_base := 0.3
-                streak_prev := this.streak_prev[1]
                 HelperSumAmt(streak_obj, target_streak)
                 if HelperPause1(streak_obj, target_streak, this.wl2[2], this.wl2[-2]) {
                     return
