@@ -737,7 +737,7 @@ class TraderBot {
             streak := this.stats.streak_real
             if (streak <= -7) {
                 idx1 := Abs(streak) - 6
-                idx2 := idx1 + this.pause_temp.loss7
+                idx2 := idx1
                 this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
                 addition := 0
                 Loop (this.F300.iter_lost5//4) {
@@ -748,6 +748,11 @@ class TraderBot {
                     }
                 }
                 this.amount += addition
+
+                if (streak <= -13) {
+                    this.amount := 1
+                    return
+                }
 
                 if (idx1 = 5 and this.pause_temp.pause_temp2 = 0) {
                     this.pause_temp.pause_temp2 := 1
