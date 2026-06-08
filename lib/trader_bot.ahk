@@ -508,13 +508,14 @@ class TraderBot {
                 if (this.maxdiff350.state = 1) {
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     addition := 0
-                    Loop (this.F300.iter_lost5//4) {
+                    Loop (idx) {
                         if (A_Index = 1) {
                             addition := 0.01
                         } else {
                             addition := addition * 2 + 0.01
                         }
                     }
+                    addition *= (this.F300.iter_lost5//4)
                     streak_obj.amt += addition
                 }
                 this.amount := streak_obj.amt
@@ -1246,7 +1247,7 @@ class TraderBot {
         this.stats.max_bal_diff := 300
         this.balance.max := 5300
         sum_trf := this.switch_win_loss[1].sum_amt + this.switch_win_loss[-1].sum_amt
-        this.switch_win_loss[1].sum_amt  := 0
+        this.switch_win_loss[ 1].sum_amt  := 0
         this.switch_win_loss[-1].sum_amt := 0
         this.wl2[ 2].sum_amt += sum_trf/2
         this.wl2[-2].sum_amt += sum_trf/2
