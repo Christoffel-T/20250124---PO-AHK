@@ -398,7 +398,7 @@ class TraderBot {
                 } else if (streak_prev = target_streak and streak > streak_prev) {
                     streak_obj.pause_temp3 := 1
                     streak_obj.amt_pause_temp3 := streak_obj.amt
-                    streak_obj.ls_pause_temp3 := 5
+                    streak_obj.ls_pause_temp3 += 5
                     streak_obj.lose_streak := 0
                     return 1
                 }
@@ -413,6 +413,8 @@ class TraderBot {
                 if (streak > streak_prev) {
                     streak_obj.wins++
                     streak_obj.lose_streak := 0
+                    streak_obj.ls_pause_temp3 := 0
+                    streak_obj.pause_temp3 := 0
                     if (streak_obj.state_5lost = '5lost') {
                         streak_obj.state_5lost := '5lostwon1'
                     } else if (streak_obj.state_5lost = '5lostwon1') {
@@ -500,9 +502,7 @@ class TraderBot {
                     streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
                 }
                 if (streak_obj.pause_temp3 = 1) {
-                    ; streak_obj.amt := streak_objf.amt_pause_temp3
-                    idx := streak_obj.ls_pause_temp3
-                    streak_obj.pause_temp3 := 0
+                    idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
                 }
                 idx := Max(1, idx)
                 if (this.maxdiff350.state = 1) {
@@ -779,11 +779,24 @@ class TraderBot {
                 percs.Push(percs[-1]+0.10)
             }
             cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
-            
+            if streak_prev >= 5 {
+                streak_obj := this.win5andabove[streak_prev]
+                if HelperPause2(streak_obj, streak_prev) {
+                    this.amount := 1
+                    return
+                }
+                if HelperPause3(streak_obj, streak_prev) {
+                    this.amount := 1
+                    return
+                }
+            }
+
             if (streak > streak_prev and streak_prev >= 4) {
                 streak_obj := this.win5andabove[streak_prev]
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
                 streak_obj.lose_streak := 0
+                streak_obj.ls_pause_temp3 := 0
+                streak_obj.pause_temp3 := 0
 
                 if (streak_obj.pause5 = 1) {
                     streak_obj.pause5 := 0
@@ -872,8 +885,7 @@ class TraderBot {
             if (streak >= 5) {
                 idx := Max(1, this.win5andabove[streak].lose_streak)
                 if (streak_obj.pause_temp3 = 1) {
-                    idx := 5
-                    streak_obj.pause_temp3 := 0
+                    idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
                 }
                 this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
                 addition := 0
@@ -889,33 +901,6 @@ class TraderBot {
                     this.amount := 1
                 }
 
-                if streak_prev >= 5 {
-                    streak_obj := this.win5andabove[streak_prev]
-                    if HelperPause2(streak_obj, streak_prev) {
-                        this.amount := 1
-                        return
-                    }
-                    if HelperPause3(streak_obj, streak_prev) {
-                        this.amount := 1
-                        return
-                    }
-                    if (idx != 5 and streak_obj.pause_temp2 != 0) {
-                        streak_obj.pause_temp2 := 0
-                    }
-                    if (idx = 5 and streak_obj.pause_temp2 = 0) {
-                        streak_obj.pause_temp2 := 1
-                    } else if (streak_obj.pause_temp2 = 1 and streak > streak_prev) {
-                        streak_obj.pause_temp2 := 2
-                        return
-                    }
-                    if (streak_obj.pause_temp2 = 1) {
-                        this.amount := 1
-                        if (streak < streak_prev) {
-                            streak_obj.sum_amt += 1
-                        }
-                        return
-                    }
-                }
                 if (this.pause_except_1.state = 1) {
                     this.amount := 1
                 }
