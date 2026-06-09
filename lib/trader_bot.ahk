@@ -342,8 +342,8 @@ class TraderBot {
                 }
             }
             if (streak_obj.pause_temp1 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                streak_obj.pause_temp1 := 2
-                return 1
+                streak_obj.pause_temp1 := 0
+                return 0
             }
             if (streak_obj.pause_temp1 = 1) {
                 if (streak = target_streak) {
@@ -398,7 +398,7 @@ class TraderBot {
                 } else if (streak_prev = target_streak and streak > streak_prev) {
                     streak_obj.pause_temp3 := 1
                     streak_obj.amt_pause_temp3 := streak_obj.amt
-                    streak_obj.ls_pause_temp3 := idx
+                    streak_obj.ls_pause_temp3 := 5
                     streak_obj.lose_streak := 0
                     return 1
                 }
@@ -500,7 +500,7 @@ class TraderBot {
                     streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
                 }
                 if (streak_obj.pause_temp3 = 1) {
-                    streak_obj.amt := streak_obj.amt_pause_temp3
+                    ; streak_obj.amt := streak_objf.amt_pause_temp3
                     idx := streak_obj.ls_pause_temp3
                     streak_obj.pause_temp3 := 0
                 }
