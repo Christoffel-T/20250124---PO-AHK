@@ -455,6 +455,8 @@ class TraderBot {
             }
             if streak_obj.sum_amt < 5 and streak_obj.sum_over20 = 1 {
                 streak_obj.sum_over20 := 0
+                streak_obj.sum_over200 := 0
+                streak_obj.state_5lost := 0
                 streak_obj.lose_streak := 0
                 sum_trf := streak_obj.sum_amt / 6
                 this.switch_win_loss[ 1].sum_amt += sum_trf
@@ -468,8 +470,6 @@ class TraderBot {
                     this.wl34[this.F300.stateL].sum_amt += sum_trf
                 }
                 streak_obj.sum_amt := sum_trf
-                streak_obj.sum_over200 := 0
-                streak_obj.state_5lost := 0
             }
         }
 
@@ -485,27 +485,11 @@ class TraderBot {
                 streak_obj.amt := (streak_obj.sum_amt + 5)/0.92
             }
             if (streak = target_streak) {
-                idx := streak_obj.lose_streak+1
-                if (streak_obj.sum_over200 = 1) {
-                    streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*streak_obj.lose_streak))
-                } else if (idx >= 1 and streak_obj.state_5lost = 0) {
-                    streak_obj.amt := amts[idx]
-                    if (idx <= 2) {
-                        streak_obj.add_cent_mult[idx]++
-                        streak_obj.amt += [0.01, 0.03][idx]*streak_obj.add_cent_mult[idx]
-                    }
-                }
-                if (streak_obj.state_5lost = '5lost') {
-                    streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*streak_obj.lose_streak))
-                }
-                if streak_obj.sum_amt >= 25 {
-                    streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
-                }
-                if (streak_obj.pause_temp3 = 1) {
-                    idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
-                }
-                idx := Max(1, idx)
+                idx := Max(1, streak_obj.lose_streak+1)
                 if (this.maxdiff350.state = 1) {
+                    if (streak_obj.pause_temp3 = 1) {
+                        idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
+                    }
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     addition := 0
                     Loop (idx) {
@@ -517,7 +501,21 @@ class TraderBot {
                     }
                     addition *= (this.F300.iter_lost5//4)
                     streak_obj.amt += addition
+                ; } else if (streak_obj.sum_over200 = 1) {
+                ;     streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*streak_obj.lose_streak))
+                } else if (idx >= 1 and streak_obj.state_5lost = 0) {
+                    streak_obj.amt := amts[idx]
+                    if (idx <= 2) {
+                        streak_obj.add_cent_mult[idx]++
+                        streak_obj.amt += [0.01, 0.03][idx]*streak_obj.add_cent_mult[idx]
+                    }
                 }
+                if (streak_obj.state_5lost = '5lost') {
+                    streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*streak_obj.lose_streak))
+                }
+                ; if streak_obj.sum_amt >= 25 {
+                ;     streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
+                ; }
                 this.amount := streak_obj.amt
             }
         }
@@ -656,9 +654,7 @@ class TraderBot {
             Loop 100 {
                 percs.Push(percs[-1]+0.10)
             }
-
-            cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
-
+            
             for str_state in ['stateW', 'stateL'] {
                 state := this.F300.%str_state%
                 stateW := this.F300.stateW
@@ -711,7 +707,6 @@ class TraderBot {
             Helper(-2)
             
             Helper(target_streak) {
-                cust_amt2won := [2.1,4.41,9.26,19.44,40.84,85.76,180.10,378.22,794.98,1667.78]
                 streak := this.stats.streak_real
                 streak_prev := this.streak_prev[1]
                 streak_obj := this.wl2[target_streak]
