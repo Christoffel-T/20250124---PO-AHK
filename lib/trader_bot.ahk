@@ -12,6 +12,7 @@ traymenu.Add("Last Modified: " formatted, (*) => '')
 */
 
 ;}
+
 class TraderBot {
     __New(settings_obj) {
         this.settings_obj := settings_obj
@@ -123,7 +124,7 @@ class TraderBot {
 
         this.QualifiersReset()
         this.MidNightReset()
-        this.amount := this.GetAmount(this.balance.current)
+        this.amount := 1
 
         if !FileExist(this.log_file) {
             FileAppend('date,time,active_trade,amount,E,F,G,H,Streak,max_diff,side_bal,new_col2W,new_col2L,balance,next_target,last_trade,payout,Streaks,double_stats,OHLC,debug`n', this.log_file)
@@ -343,13 +344,12 @@ class TraderBot {
             }
             if (streak_obj.pause_temp1 = 1 and streak > streak_prev and streak_prev = target_streak) {
                 streak_obj.pause_temp1 := 0
-                return 0
             }
             if (streak_obj.pause_temp1 = 1) {
                 if (streak = target_streak) {
                     this.amount := 1
+                    return 1
                 }
-                return 1
             }
             return 0
         }
@@ -481,9 +481,6 @@ class TraderBot {
             if streak_obj.sum_amt >= 200 {
                 streak_obj.sum_over200 := 1
             }
-            if (streak_obj.lose_streak >= 5 and streak_obj.lose_streak <= 8) {
-                streak_obj.amt := (streak_obj.sum_amt + 5)/0.92
-            }
             if (streak = target_streak) {
                 idx := Max(1, streak_obj.lose_streak+1)
                 if (this.maxdiff350.state = 1) {
@@ -491,28 +488,26 @@ class TraderBot {
                         idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
                     }
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
-                    addition := 0
-                    Loop (idx) {
-                        if (A_Index = 1) {
-                            addition := 0.01
-                        } else {
-                            addition := addition * 2 + 0.01
-                        }
+                    addition := 0.01
+                    Loop (streak_obj.lose_streak) {
+                        addition := addition * 2 + 0.01
                     }
                     addition *= (this.F300.iter_lost5//4)
                     streak_obj.amt += addition
-                ; } else if (streak_obj.sum_over200 = 1) {
-                ;     streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*streak_obj.lose_streak))
                 } else if (idx >= 1 and streak_obj.state_5lost = 0) {
                     streak_obj.amt := amts[idx]
                     if (idx <= 2) {
                         streak_obj.add_cent_mult[idx]++
                         streak_obj.amt += [0.01, 0.03][idx]*streak_obj.add_cent_mult[idx]
                     }
-                }
-                if (streak_obj.state_5lost = '5lost') {
+                    if (streak_obj.lose_streak >= 5 and streak_obj.lose_streak <= 8) {
+                        streak_obj.amt := (streak_obj.sum_amt + 5)/0.92
+                    }
+                } else if (streak_obj.state_5lost = '5lost') {
                     streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*streak_obj.lose_streak))
                 }
+                ; } else if (streak_obj.sum_over200 = 1) {
+                ;     streak_obj.amt := streak_obj.sum_amt * (0.03 + 0.40 + (0.1*streak_obj.lose_streak))
                 ; if streak_obj.sum_amt >= 25 {
                 ;     streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
                 ; }
@@ -1459,7 +1454,7 @@ class TraderBot {
         this.balance.side_low := this.balance.current
         this.balance.min_all := 9**10
         
-        this.amount := this.GetAmount(this.balance.current)
+        this.amount := 1
         this.SetTradeAmount()
         sleep 100
         MouseClick('L', this.coords.time1.x + Random(-2, 2), this.coords.time1.y + Random(-2, 2), 1, 2)
