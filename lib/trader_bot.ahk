@@ -2045,9 +2045,9 @@ class TraderBot {
             if this.F300.stateL < -1 { 
                 str_lose := 'L' Abs(this.F300.stateL) '(' this.wl34[this.F300.stateL].lose_streak ' | sum: ' format('{:.2f}', this.wl34[this.F300.stateL].sum_amt) ')'
             }
-            sub_str_d := '(' pref ') ' 'F300 ON [' format('{:.2f}', this.F300.sum_4lost) '] (' str_win ' ' str_lose ')' str_d
+            sub_str_d := '(' pref ') ' 'F300 ON [' format('{:.2f}', this.F300.sum_4lost) '] (' str_win ' ' str_lose ')'
         } else if (this.qualifier_221_210.state = 1) {
-            sub_str_d := '150/161 ON | ' str_d
+            sub_str_d := '150/161 ON | '
         }
         str_d := sub_str_d '|4loss:' this.F300.iter_lost5 ') | ' str_d
 
