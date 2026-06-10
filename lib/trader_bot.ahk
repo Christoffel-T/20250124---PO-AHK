@@ -652,9 +652,9 @@ class TraderBot {
             
             for str_state in ['stateW', 'stateL'] {
                 state := this.F300.%str_state%
+                abs_state := Abs(state) 
                 stateW := this.F300.stateW
                 stateL := this.F300.stateL
-                abs_state := Abs(state) 
                 if (abs_state = 1) {
                     max_loss := 0
                     for k, v in this.wl34 {
@@ -664,11 +664,15 @@ class TraderBot {
                         if (v.losses > max_loss) {
                             this.F300.%str_state% := k
                             v.amt := amts[1]
-                            v.idx := 1
+                            v.idx := 0
+                            v.lose_streak := 0
                             ; v.amt += cent_amts[1]
                             max_loss := v.losses
                         }
                     }
+                    state := this.F300.%str_state%
+                    abs_state := Abs(state) 
+                    this.wl34[state].losses := 0
                 }
 
                 if (abs_state >= 3) {
