@@ -706,7 +706,6 @@ class TraderBot {
                 streak_prev := this.streak_prev[1]
                 streak_obj := this.wl2[target_streak]
                 idx := streak_obj.lose_streak > 0 ? 0 : Abs(streak_obj.lose_streak)
-                perc_base := 0.3
                 HelperSumAmt(streak_obj, target_streak)
                 if HelperPause1(streak_obj, target_streak, this.wl2[2], this.wl2[-2]) {
                     return
