@@ -304,17 +304,36 @@ class TraderBot {
         CheckMaxDiff() {
             this.extra_str := ''
             ; if (this.stats.max_bal_diff >= 350) {
-            ;     this.extra_str := 'maxdiff350'
+            ;     this.extra_str := 'maxdiff325'
             ;     this.SubReset1()
             ;     this.maxdiff350.state := 1
             if (this.stats.max_bal_diff >= 325) {
-                this.extra_str := 'maxdiff310'
+                if (this.maxdiff350.state = 0) {
+                    ResetLoseStreaks()
+                }
+                this.extra_str := 'maxdiff325'
                 this.maxdiff350.state := 1
             } else if (this.stats.max_bal_diff <= 319 and this.maxdiff350.state = 1) {
-                this.extra_str := 'maxdiff350 END'
+                if (this.maxdiff350.state = 1) {
+                    ResetLoseStreaks()
+                }
+                this.extra_str := 'maxdiff325 END'
                 this.maxdiff350.state := 0
                 ; this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
                 ; this.maxdiff350.stored_4loss_count := 0
+            }
+
+            ResetLoseStreaks() {
+                this.switch_win_loss[1].lose_streak := 0
+                this.switch_win_loss[-1].lose_streak := 0
+                this.wl2[2].lose_streak := 0
+                this.wl2[-2].lose_streak := 0
+                if (Abs(this.F300.stateW) >= 3) {
+                    this.wl34[this.F300.stateW].lose_streak := 0
+                }
+                if (Abs(this.F300.stateL) >= 3) {
+                    this.wl34[this.F300.stateL].lose_streak := 0
+                }
             }
         }
 
