@@ -300,7 +300,6 @@ class TraderBot {
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
 
-
         CheckMaxDiff() {
             this.extra_str := ''
             ; if (this.stats.max_bal_diff >= 350) {
