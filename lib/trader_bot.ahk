@@ -310,7 +310,7 @@ class TraderBot {
             if (this.stats.max_bal_diff >= 325) {
                 this.extra_str := 'maxdiff310'
                 this.maxdiff350.state := 1
-            } else if (this.stats.max_bal_diff <= 310 and this.maxdiff350.state = 1) {
+            } else if (this.stats.max_bal_diff <= 319 and this.maxdiff350.state = 1) {
                 this.extra_str := 'maxdiff350 END'
                 this.maxdiff350.state := 0
                 ; this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
@@ -387,6 +387,18 @@ class TraderBot {
             streak := this.stats.streak_real
             streak_prev := this.streak_prev[1]
             idx := streak_obj.lose_streak
+            if (idx = 0 and streak_obj.pause_after_5 = 2 and streak_prev = target_streak and streak > streak_prev) {
+                streak_obj.pause_after_5 := 0
+            }
+            if (streak_obj.pause_after_5 = 1) {
+                if (streak = target_streak and idx >= 1) {
+                    this.amount := 1
+                    return 1
+                } else if (idx = 0 and streak_prev = target_streak and streak > streak_prev) {
+                    streak_obj.pause_after_5 := 2
+                    return 1
+                }
+            }
 
             if (idx >= 6) {
                 if (streak = target_streak) {
@@ -396,6 +408,7 @@ class TraderBot {
                     streak_obj.lose_streak++
                     return 1
                 } else if (streak_prev = target_streak and streak > streak_prev) {
+                    streak_obj.pause_after_5 := 1
                     streak_obj.pause_temp3 := 1
                     streak_obj.amt_pause_temp3 := streak_obj.amt
                     streak_obj.ls_pause_temp3 += 5
@@ -1247,6 +1260,7 @@ class TraderBot {
             pause_temp2: 0,
         }
         PropSerializer(v) {
+            v.pause_after_5 := 0
             v.amt_pause_temp3 := 0
             v.ls_pause_temp3 := 0
             v.pause_temp3 := 0
