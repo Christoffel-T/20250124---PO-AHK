@@ -286,14 +286,14 @@ class TraderBot {
             }
         }
         percs := [0.30, 0.40]
+        
+        CheckMaxDiff()
 
         AmountOverride1_wl1_win7above()
         AmountOverride5_wl34()
         AmountOverride6_Lose7()
         AmountOverride7_Win5()
         AmountOverride8_22()
-
-        CheckMaxDiff()
 
         this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
@@ -516,7 +516,7 @@ class TraderBot {
                 idx := Max(1, streak_obj.lose_streak+1)
                 if (this.maxdiff350.state = 1) {
                     if (streak_obj.pause_temp3 = 1) {
-                        idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
+                        ; idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
                     }
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     addition := 0.01
@@ -909,7 +909,7 @@ class TraderBot {
             if (streak >= 5) {
                 idx := Max(1, this.win5andabove[streak].lose_streak)
                 if (streak_obj.pause_temp3 = 1) {
-                    idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
+                    ; idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
                 }
                 this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
                 addition := 0
@@ -1729,9 +1729,9 @@ class TraderBot {
             
             condition_buy  := false
             condition_sell  := false
-            if condition_both and this.candle_data[1].color = 'G' and rand = 1
+            if condition_both and this.candle_data[1].color = 'G'
                 condition_buy  := true
-            if condition_both and this.candle_data[1].color = 'R' and rand = 2
+            if condition_both and this.candle_data[1].color = 'R'
                 condition_sell  := true
             
             if (condition_buy) {
@@ -2157,6 +2157,7 @@ class TraderBot {
             str_m := 'bet: ' format('{:.2f}', this.amount) ' ' str_m
         }
         _count_reload := 0
+        str_n := this.stats.streak_real ' [' format('{:.2f}', this.amount) '] (' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (H=' this.balance.max ' | L=' this.balance.min ' [' this.balance.min_all '])'
         loop {
             _count_reload++
             if _count_reload > 1000 {
@@ -2186,7 +2187,7 @@ class TraderBot {
                     str_k ','
                     str_l ','
                     str_m ','
-                    format('{:.2f}', this.amount) ' (' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (H=' this.balance.max ' | L=' this.balance.min ' [' this.balance.min_all '])' ',' 
+                    str_n ','
                     str.next_bal ',' 
                     this.last_trade ',' 
                     ' | ' this.payout '%=' format('{:.2f}', this.amount*1.92) ' (' this.coin_name ')' ',' 
@@ -2223,15 +2224,19 @@ class TraderBot {
             return false
         _name := action reason
         if this.stats.HasOwnProp(_name) and this.stats.%_name%.rank > 4 and this.qualifiers.streak_reset.val = this.stats.streak and this.qualifiers.streak_reset.val = -2
-            return false
-        if this.qualifiers.pause_temp1.state {
-            this.qualifiers.pause_temp1.count++
-            if this.qualifiers.pause_temp1.count > 5 {
-                this.qualifiers.pause_temp1.state := false
-                this.qualifiers.pause_temp1.count := 0
-            } else {
+            if !InStr(StrLower(reason), 'random') {
                 return false
             }
+            if this.qualifiers.pause_temp1.state {
+                this.qualifiers.pause_temp1.count++
+                if this.qualifiers.pause_temp1.count > 5 {
+                    this.qualifiers.pause_temp1.state := false
+                    this.qualifiers.pause_temp1.count := 0
+                } else {
+                    if !InStr(StrLower(reason), 'random') {
+                        return false
+                    }
+                }
         }
         this.qualifiers.custom_amount_modifier.count++
 
