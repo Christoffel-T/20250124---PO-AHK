@@ -2157,7 +2157,7 @@ class TraderBot {
             str_m := 'bet: ' format('{:.2f}', this.amount) ' ' str_m
         }
         _count_reload := 0
-        str_n := this.stats.streak_real ' [' format('{:.2f}', this.amount) '] (' this.qualifiers.balance_mark.mark ') ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (H=' this.balance.max ' | L=' this.balance.min ' [' this.balance.min_all '])'
+        str_n := this.stats.streak_real ' [bet: ' format('{:.2f}', this.amount) '] ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (H=' this.balance.max ' | L=' this.balance.min ' [' this.balance.min_all '])'
         loop {
             _count_reload++
             if _count_reload > 1000 {
