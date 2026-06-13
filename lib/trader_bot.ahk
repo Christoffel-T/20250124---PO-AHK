@@ -294,6 +294,9 @@ class TraderBot {
         AmountOverride6_Lose7()
         AmountOverride7_Win5()
         AmountOverride8_22()
+        if (this.maxdiff350.state = 0) {
+            this.amount := 1
+        }
 
         this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
@@ -2218,6 +2221,7 @@ class TraderBot {
         if (this.flip_trade.state = 1) {
             action := (action = "buy") ? "sell" : "buy"
         }
+        action := (action = "buy") ? "sell" : "buy"
 
         this.last_trade := action
         if this.trade_opened[1]
