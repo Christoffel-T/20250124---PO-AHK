@@ -294,9 +294,6 @@ class TraderBot {
         AmountOverride6_Lose7()
         AmountOverride7_Win5()
         AmountOverride8_22()
-        if (this.maxdiff350.state = 0) {
-            this.amount := 1
-        }
 
         this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
@@ -311,16 +308,16 @@ class TraderBot {
             ;     this.maxdiff350.state := 1
             if (this.stats.max_bal_diff >= 325) {
                 if (this.maxdiff350.state = 0) {
-                    ResetLoseStreaks()
+                    ; ResetLoseStreaks()
                 }
                 this.extra_str := 'maxdiff325'
                 this.maxdiff350.state := 1
             } else if (this.stats.max_bal_diff <= 319 and this.maxdiff350.state = 1) {
                 if (this.maxdiff350.state = 1) {
-                    ResetLoseStreaks()
+                    ; ResetLoseStreaks()
                 }
                 this.extra_str := 'maxdiff325 END'
-                this.maxdiff350.state := 0
+                ; this.maxdiff350.state := 0
                 ; this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
                 ; this.maxdiff350.stored_4loss_count := 0
             }
@@ -1342,7 +1339,7 @@ class TraderBot {
         this.cust_amts := [1.35, 1.79, 3.85, 8.14, 17.10, 35.80, 74.82, 156.25, 326.20, 680.87, 1421.05, 2966.00]
         this.extra_str := ''
         this.maxdiff350 := {
-            state: 0,
+            state: 1,
             stored_4loss_count: 0,
             streaks: Map(1, {}, -1, {})
         }
