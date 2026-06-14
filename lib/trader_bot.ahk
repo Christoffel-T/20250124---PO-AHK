@@ -356,8 +356,9 @@ class TraderBot {
                 streak_obj.pause_temp1 := 0
             }
             try {
-                if (obj1.lose_streak >= 3 and obj2.lose_streak >= 3 and streak_obj.pause_temp1 = 0) {
+                if (obj1.lose_streak >= 3 and obj2.lose_streak >= 3) {
                     streak_obj.pause_temp1 := 1
+                    streak_obj.ls_pause_temp := streak_obj.lose_streak
                 }
             }
             if (streak_obj.pause_temp1 = 1 and streak > streak_prev and streak_prev = target_streak) {
@@ -429,7 +430,7 @@ class TraderBot {
                     streak_obj.pause_after_5 := 1
                     streak_obj.pause_temp3 := 1
                     streak_obj.amt_pause_temp3 := streak_obj.amt
-                    streak_obj.ls_pause_temp3 += 5
+                    streak_obj.ls_pause_temp := 5
                     streak_obj.lose_streak := 0
                     return 1
                 }
@@ -443,9 +444,12 @@ class TraderBot {
             if (streak_prev = target_streak) {
                 if (streak > streak_prev) {
                     streak_obj.wins++
+                    if (streak_obj.lose_streak = 0) {
+                        streak_obj.pause_temp1 := 0
+                        streak_obj.pause_temp3 := 0
+                        streak_obj.ls_pause_temp := 0
+                    }
                     streak_obj.lose_streak := 0
-                    streak_obj.ls_pause_temp3 := 0
-                    streak_obj.pause_temp3 := 0
                     if (streak_obj.state_5lost = '5lost') {
                         streak_obj.state_5lost := '5lostwon1'
                     } else if (streak_obj.state_5lost = '5lostwon1') {
@@ -454,6 +458,9 @@ class TraderBot {
                     }
                 } else if (streak < streak_prev) {
                     streak_obj.losses++
+                    if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak = 0) {
+                        streak_obj.ls_pause_temp++
+                    }
                     streak_obj.lose_streak++
                     if (streak_obj.lose_streak = 5) {
                         this.F300.iter_lost5++
@@ -515,15 +522,15 @@ class TraderBot {
             if (streak = target_streak) {
                 idx := Max(1, streak_obj.lose_streak+1)
                 if (this.maxdiff350.state = 1) {
-                    if (streak_obj.pause_temp3 = 1) {
-                        ; idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
+                    if (streak_obj.ls_pause_temp > 0) {
+                        idx := streak_obj.lose_streak + streak_obj.ls_pause_temp 
                     }
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     addition := 0.01
                     Loop (streak_obj.lose_streak) {
                         addition := addition * 2 + 0.01
                     }
-                    addition *= (this.F300.iter_lost5//4)
+                    addition *= (this.F300.iter_lost5//2)
                     streak_obj.amt += addition
                 } else if (idx >= 1 and streak_obj.state_5lost = 0) {
                     streak_obj.amt := amts[idx]
@@ -764,7 +771,7 @@ class TraderBot {
                 idx2 := idx1
                 this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
                 addition := 0
-                Loop (this.F300.iter_lost5//4) {
+                Loop (this.F300.iter_lost5//2) {
                     if (A_Index = 1) {
                         addition := 0.01
                     } else {
@@ -818,10 +825,13 @@ class TraderBot {
             if (streak > streak_prev and streak_prev >= 4) {
                 streak_obj := this.win5andabove[streak_prev]
                 streak_obj.sum_amt := Max(streak_obj.sum_amt - streak_obj.amt, 0)
+                if (streak_obj.lose_streak = 0) {
+                    streak_obj.pause_temp1 := 0
+                    streak_obj.pause_temp3 := 0
+                    streak_obj.ls_pause_temp := 0
+                }
                 streak_obj.lose_streak := 0
-                streak_obj.ls_pause_temp3 := 0
-                streak_obj.pause_temp3 := 0
-
+                
                 if (streak_obj.pause5 = 1) {
                     streak_obj.pause5 := 0
                     idx := streak_obj.lose_streak
@@ -849,6 +859,9 @@ class TraderBot {
             }
             if (streak < streak_prev and streak_prev >= 5) {
                 streak_obj := this.win5andabove[streak_prev]
+                if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak = 0) {
+                    streak_obj.ls_pause_temp++
+                }
                 if (streak_obj.pause5 = 0) {
                     streak_obj.lose_streak++
                 }
@@ -908,12 +921,12 @@ class TraderBot {
             
             if (streak >= 5) {
                 idx := Max(1, this.win5andabove[streak].lose_streak)
-                if (streak_obj.pause_temp3 = 1) {
-                    ; idx := streak_obj.lose_streak + streak_obj.ls_pause_temp3 
+                if (streak_obj.ls_pause_temp > 0) {
+                    idx := streak_obj.lose_streak + streak_obj.ls_pause_temp 
                 }
                 this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
                 addition := 0
-                Loop (this.F300.iter_lost5//4) {
+                Loop (this.F300.iter_lost5//2) {
                     if (A_Index = 1) {
                         addition := 0.01
                     } else {
@@ -1280,7 +1293,7 @@ class TraderBot {
         PropSerializer(v) {
             v.pause_after_5 := 0
             v.amt_pause_temp3 := 0
-            v.ls_pause_temp3 := 0
+            v.ls_pause_temp := 0
             v.pause_temp3 := 0
             
             v.add_cent_mult := Map(1, 0, 2, 0)
