@@ -358,7 +358,7 @@ class TraderBot {
             try {
                 if (obj1.lose_streak >= 3 and obj2.lose_streak >= 3) {
                     streak_obj.pause_temp1 := 1
-                    streak_obj.ls_pause_temp := streak_obj.lose_streak
+                    streak_obj.ls_pause_temp := streak_obj.lose_streak+1
                 }
             }
             if (streak_obj.pause_temp1 = 1 and streak > streak_prev and streak_prev = target_streak) {
