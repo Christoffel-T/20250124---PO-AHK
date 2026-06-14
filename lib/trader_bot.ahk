@@ -522,16 +522,20 @@ class TraderBot {
             if (streak = target_streak) {
                 idx := Max(1, streak_obj.lose_streak+1)
                 if (this.maxdiff350.state = 1) {
-                    if (streak_obj.ls_pause_temp > 0) {
-                        idx := streak_obj.lose_streak + streak_obj.ls_pause_temp 
-                    }
-                    streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     addition := 0.01
                     Loop (streak_obj.lose_streak) {
                         addition := addition * 2 + 0.01
                     }
                     addition *= (this.F300.iter_lost5//2)
+
+                    if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak = 0) {
+                        idx := streak_obj.lose_streak + streak_obj.ls_pause_temp 
+                    }
+                    streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     streak_obj.amt += addition
+                    if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak != 0) {
+                        streak_obj.amt := 1
+                    }
                 } else if (idx >= 1 and streak_obj.state_5lost = 0) {
                     streak_obj.amt := amts[idx]
                     if (idx <= 2) {
@@ -921,10 +925,14 @@ class TraderBot {
             
             if (streak >= 5) {
                 idx := Max(1, this.win5andabove[streak].lose_streak)
-                if (streak_obj.ls_pause_temp > 0) {
+                if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak = 0) {
                     idx := streak_obj.lose_streak + streak_obj.ls_pause_temp 
                 }
                 this.amount := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak != 0) {
+                    this.amount := 1
+                }
+
                 addition := 0
                 Loop (this.F300.iter_lost5//2) {
                     if (A_Index = 1) {
