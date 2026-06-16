@@ -360,7 +360,7 @@ class TraderBot {
                             streak_obj.ls_pause_temp++
                         }
                     } else {
-                        streak_obj.ls_pause_temp := streak_obj.lose_streak+1
+                        streak_obj.ls_pause_temp := streak_obj.lose_streak
                     }
                 }
             }
