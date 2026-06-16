@@ -356,7 +356,7 @@ class TraderBot {
                 if (obj1.lose_streak >= 3 and obj2.lose_streak >= 3) {
                     streak_obj.pause_temp1 := 1
                     if (streak_obj.ls_pause_temp > 0) {
-                        if (streak < streak_prev) {
+                        if (streak < streak_prev and streak_prev = target_streak) {
                             streak_obj.ls_pause_temp++
                         }
                     } else {
@@ -460,7 +460,7 @@ class TraderBot {
             streak := this.stats.streak_real
             streak_prev := this.streak_prev[1]
             idx := streak_obj.lose_streak
-            if (streak > streak_prev) {
+            if (streak > streak_prev and streak_prev = target_streak) {
                 if (streak_obj.lose_streak = 0) {
                     if (streak_obj.pause_temp2 = 1 or streak_obj.pause_temp2 = 'split1_lost') {
                         streak_obj.pause_temp2 := 'split1_won'                        
@@ -470,7 +470,7 @@ class TraderBot {
                     }
                     streak_obj.pause_temp1 := 0
                 }
-            } else if (streak < streak_prev) {
+            } else if (streak < streak_prev and streak_prev = target_streak) {
                 if (streak_obj.lose_streak = 0 and streak_obj.ls_pause_temp > 0) {
                     if (streak_obj.pause_temp2 = 1) {
                         streak_obj.pause_temp2 := 'split1_lost'
