@@ -596,6 +596,9 @@ class TraderBot {
                     if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak = 0) {
                         idx += streak_obj.ls_pause_temp 
                     }
+                    if streak_obj.ls_pause_temp != 0 {
+                        MsgBox 'ls pause temp: ' streak_obj.ls_pause_temp
+                    }
                     addition := 0.01
                     Loop (idx) {
                         addition := addition * 2 + 0.01
