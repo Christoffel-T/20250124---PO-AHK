@@ -432,7 +432,8 @@ class TraderBot {
                 }
             }
 
-            if (idx >= 5) {
+            num_target := 2
+            if (idx >= num_target) {
                 if (streak = target_streak) {
                     this.amount := 1
                     return 1
@@ -446,7 +447,7 @@ class TraderBot {
                     if (streak_obj.ls_pause_temp > 0) {
                         streak_obj.ls_pause_temp++
                     } else {
-                        streak_obj.ls_pause_temp := 5
+                        streak_obj.ls_pause_temp := num_target
                     }
                     streak_obj.lose_streak := 0
                     return 1
