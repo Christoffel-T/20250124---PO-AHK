@@ -409,13 +409,13 @@ class TraderBot {
             streak := this.stats.streak_real
             streak_prev := this.streak_prev[1]
             idx := streak_obj.lose_streak
-            if (streak > streak_prev) {
+            if (streak > streak_prev and streak_prev = target_streak) {
                 if (streak_obj.lose_streak = 0) {
                     streak_obj.pause_temp2 := 0
                     streak_obj.ls_pause_temp := 0
                     streak_obj.pause_temp1 := 0
                 }
-            } else if (streak < streak_prev) {
+            } else if (streak < streak_prev and streak_prev = target_streak) {
                 if (streak_obj.lose_streak = 0 and streak_obj.ls_pause_temp > 0) {
                     streak_obj.ls_pause_temp++
                 }
@@ -596,9 +596,6 @@ class TraderBot {
                 if (this.maxdiff350.state = 1) {
                     if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak = 0) {
                         idx += streak_obj.ls_pause_temp 
-                    }
-                    if streak_obj.ls_pause_temp != 0 {
-                        MsgBox 'ls pause temp: ' streak_obj.ls_pause_temp
                     }
                     addition := 0.01
                     Loop (idx) {
