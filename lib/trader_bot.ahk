@@ -355,52 +355,16 @@ class TraderBot {
             try {
                 if (obj1.lose_streak >= 3 and obj2.lose_streak >= 3) {
                     streak_obj.pause_temp1 := 1
-                    if (streak_obj.ls_pause_temp > 0) {
-                        if (streak < streak_prev and streak_prev = target_streak) {
-                            streak_obj.ls_pause_temp++
-                        }
-                    } else {
+                    if (streak_obj.ls_pause_temp = 0 and streak_obj.pause_temp2 = 0) {
                         streak_obj.ls_pause_temp := streak_obj.lose_streak
                     }
                 }
-            }
-            if (streak_obj.pause_temp1 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                streak_obj.pause_temp1 := 0
             }
             if (streak_obj.pause_temp1 = 1) {
                 if (streak = target_streak) {
                     this.amount := 1
                     return 1
                 }
-            }
-            return 0
-        }
-        
-        HelperPause_Special5(streak_obj, target_streak) {
-            streak := this.stats.streak_real
-            streak_prev := this.streak_prev[1]
-            idx := streak_obj.lose_streak
-            
-            if (idx != 5 and streak_obj.pause_temp2 != 0) {
-                streak_obj.pause_temp2 := 0
-            }
-
-            if (idx = 5 and streak_obj.pause_temp2 = 0) {
-                streak_obj.pause_temp2 := 1
-            } else if (idx = 5 and streak_obj.pause_temp2 = 1 and streak > streak_prev and streak_prev = target_streak) {
-                streak_obj.pause_temp2 := 2
-            }
-
-            if (streak_obj.pause_temp2 >= 1 and streak = target_streak) {
-                this.amount := 1
-                return 1
-            }
-
-            if (streak_obj.pause_temp2 >= 1 and streak_prev = target_streak) {
-                if (streak_obj.pause_temp2 = 2 and streak < streak_prev and streak_prev = target_streak) {
-                    return 0
-                }
-                return 1
             }
             return 0
         }
@@ -411,9 +375,9 @@ class TraderBot {
             idx := streak_obj.lose_streak
             if (streak > streak_prev and streak_prev = target_streak) {
                 if (streak_obj.lose_streak = 0) {
+                    streak_obj.pause_temp1 := 0
                     streak_obj.pause_temp2 := 0
                     streak_obj.ls_pause_temp := 0
-                    streak_obj.pause_temp1 := 0
                 }
             } else if (streak < streak_prev and streak_prev = target_streak) {
                 if (streak_obj.lose_streak = 0 and streak_obj.ls_pause_temp > 0) {
