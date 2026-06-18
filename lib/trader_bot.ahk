@@ -2309,7 +2309,7 @@ class TraderBot {
             if this.balance.current != this.balance.last_trade {
                 break
             }
-            if (A_TickCount - mark_time >= 10000 and retries <= 0) {
+            if (A_TickCount - mark_time >= 5000 and retries <= 0) {
                 retries++
                 if not this.qualifiers.double_trade.state {
                     MouseClick('L', this.coords.%action%.x + Random(-5, 5), this.coords.%action%.y + Random(-1, 1), 1, 2)
@@ -2323,7 +2323,7 @@ class TraderBot {
                 sleep 200
                 MouseClick('L', this.coords.trades_opened.x + Random(-5, 5), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
                 sleep 50
-            } else if (A_TickCount - mark_time >= 20000) {
+            } else if (A_TickCount - mark_time >= 10000) {
                 this.trade_opened[1] := false
                 this.active_trade := ''
                 return
