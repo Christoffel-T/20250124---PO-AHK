@@ -360,12 +360,6 @@ class TraderBot {
                     }
                 }
             }
-            if (streak_obj.pause_temp1 = 1) {
-                if (streak = target_streak) {
-                    this.amount := 1
-                    return 1
-                }
-            }
             return 0
         }
 
@@ -799,14 +793,11 @@ class TraderBot {
                 idx1 := Abs(streak) - 6
                 idx2 := idx1
                 this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
-                addition := 0
-                Loop (this.F300.iter_lost5//2) {
-                    if (A_Index = 1) {
-                        addition := 0.01
-                    } else {
-                        addition := addition * 2 + 0.01
-                    }
+                addition := 0.01
+                Loop (idx2) {
+                    addition := addition * 2 + 0.01
                 }
+                addition *= (this.F300.iter_lost5//2)
                 this.amount += addition
 
                 if (streak <= -13) {
