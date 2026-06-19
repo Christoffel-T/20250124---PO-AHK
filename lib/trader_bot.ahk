@@ -726,7 +726,7 @@ class TraderBot {
                         if (k * state < 0) {
                             continue
                         }
-                        if (v.losses > max_loss) {
+                        if (v.losses > max_loss and v.losses > 0) {
                             this.F300.%str_state% := k
                             v.amt := amts[1]
                             v.idx := 0
@@ -735,9 +735,11 @@ class TraderBot {
                             max_loss := v.losses
                         }
                     }
-                    state := this.F300.%str_state%
-                    abs_state := Abs(state) 
-                    this.wl34[state].losses := 0
+                    if (max_loss > 0) {
+                        state := this.F300.%str_state%
+                        abs_state := Abs(state) 
+                        this.wl34[state].losses := 0
+                    }
                 }
 
                 if (abs_state >= 3) {
@@ -754,6 +756,9 @@ class TraderBot {
 
                 if ((abs_streak_prev = 3 or abs_streak_prev = 4) and state * streak_prev > 0) {
                     streak_obj := this.wl34[streak_prev]
+                    if (streak_obj.lose_streak = 0 and streak > streak_prev) {
+                        this.F300.%str_state% := 0
+                    }
                     Helper1_StrPrev(streak_obj, streak_prev)
                 }
                 if (abs_state >= 3 and state = streak) {
