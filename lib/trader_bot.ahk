@@ -823,6 +823,9 @@ class TraderBot {
             
             Helper1_StrPrev(streak_obj, target_streak)
             Helper2_AmtOverride(streak_obj, target_streak)
+            if (streak > target_streak) {
+                this.amount := 1
+            }
         }
 
         AmountOverride7_Win5_old() {
