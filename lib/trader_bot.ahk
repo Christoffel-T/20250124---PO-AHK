@@ -263,8 +263,8 @@ class TraderBot {
             sum_trf := (this.amt_prev[1] * 0.08) / 6
             this.switch_win_loss[1].sum_amt  += sum_trf
             this.switch_win_loss[-1].sum_amt += sum_trf
-            this.wl2[2].sum_amt += sum_trf
-            this.wl2[-2].sum_amt += sum_trf
+            this.wl2_w5_l7[2].sum_amt += sum_trf
+            this.wl2_w5_l7[-2].sum_amt += sum_trf
             if (Abs(this.F300.stateW) >= 3) {
                 this.wl34[this.F300.stateW].sum_amt += sum_trf
             }
@@ -276,8 +276,8 @@ class TraderBot {
             sum_trf := 1 / 6
             this.switch_win_loss[1].sum_amt  += sum_trf
             this.switch_win_loss[-1].sum_amt += sum_trf
-            this.wl2[2].sum_amt += sum_trf
-            this.wl2[-2].sum_amt += sum_trf
+            this.wl2_w5_l7[2].sum_amt += sum_trf
+            this.wl2_w5_l7[-2].sum_amt += sum_trf
             if (Abs(this.F300.stateW) >= 3) {
                 this.wl34[this.F300.stateW].sum_amt += sum_trf
             }
@@ -325,8 +325,8 @@ class TraderBot {
             ResetLoseStreaks() {
                 this.switch_win_loss[1].lose_streak := 0
                 this.switch_win_loss[-1].lose_streak := 0
-                this.wl2[2].lose_streak := 0
-                this.wl2[-2].lose_streak := 0
+                this.wl2_w5_l7[2].lose_streak := 0
+                this.wl2_w5_l7[-2].lose_streak := 0
                 if (Abs(this.F300.stateW) >= 3) {
                     this.wl34[this.F300.stateW].lose_streak := 0
                 }
@@ -500,8 +500,8 @@ class TraderBot {
                         sum_trf := streak_obj.sum_amt / 5
                         this.switch_win_loss[1].sum_amt  += sum_trf
                         this.switch_win_loss[-1].sum_amt += sum_trf
-                        this.wl2[2].sum_amt += sum_trf
-                        this.wl2[-2].sum_amt += sum_trf
+                        this.wl2_w5_l7[2].sum_amt += sum_trf
+                        this.wl2_w5_l7[-2].sum_amt += sum_trf
                         if (Abs(this.F300.stateW) >= 3) {
                             this.wl34[this.F300.stateW].sum_amt += sum_trf
                         }
@@ -527,8 +527,8 @@ class TraderBot {
                 sum_trf := streak_obj.sum_amt / 6
                 this.switch_win_loss[ 1].sum_amt += sum_trf
                 this.switch_win_loss[-1].sum_amt += sum_trf
-                this.wl2[ 2].sum_amt += sum_trf
-                this.wl2[-2].sum_amt += sum_trf
+                this.wl2_w5_l7[ 2].sum_amt += sum_trf
+                this.wl2_w5_l7[-2].sum_amt += sum_trf
                 if (Abs(this.F300.stateW) >= 3) {
                     this.wl34[this.F300.stateW].sum_amt += sum_trf
                 }
@@ -610,7 +610,6 @@ class TraderBot {
                 if HelperPause2_Loss5(streak_obj, target_streak) {
                     return
                 }
-                
                 Helper1_StrPrev(streak_obj, target_streak)
                 Helper2_AmtOverride(streak_obj, target_streak)
 
@@ -772,10 +771,10 @@ class TraderBot {
             Helper(target_streak) {
                 streak := this.stats.streak_real
                 streak_prev := this.streak_prev[1]
-                streak_obj := this.wl2[target_streak]
+                streak_obj := this.wl2_w5_l7[target_streak]
                 idx := streak_obj.lose_streak > 0 ? 0 : Abs(streak_obj.lose_streak)
                 HelperSumAmt(streak_obj, target_streak)
-                if HelperPause1(streak_obj, target_streak, this.wl2[2], this.wl2[-2]) {
+                if HelperPause1(streak_obj, target_streak, this.wl2_w5_l7[2], this.wl2_w5_l7[-2]) {
                     return
                 }
                 if HelperPause2_Loss5(streak_obj, target_streak) {
@@ -788,35 +787,45 @@ class TraderBot {
         }
 
         AmountOverride6_Lose7() {
+            streak_obj := this.wl2_w5_l7[-7]
             streak := this.stats.streak_real
-            if (streak <= -7) {
-                idx1 := Abs(streak) - 6
-                idx2 := idx1
-                this.amount := this.cust_amts[Min(idx2, this.cust_amts.Length)]
-                addition := 0.01
-                Loop (idx2) {
-                    addition := addition * 2 + 0.01
+            streak_prev := this.streak_prev[1]
+            if (streak <= -7 or streak_prev <= -7) {
+                if (streak <= -7) {
+                    target_streak := streak
+                    streak_obj.lose_streak := abs(streak) - 7
+                } else {
+                    target_streak := streak_prev
+                    streak_obj.lose_streak := 0
                 }
-                addition *= (this.F300.iter_lost5//2)
-                this.amount += addition
 
-                if (streak <= -13) {
-                    this.amount := 1
+                if HelperPause2_Loss5(streak_obj, target_streak) {
                     return
                 }
-
-                if (idx1 = 5 and this.pause_temp.pause_temp2 = 0) {
-                    this.pause_temp.pause_temp2 := 1
-                    this.pause_temp.loss7 := 5
-                }
-                if (idx1 != 5 and this.pause_temp.pause_temp2 != 0) {
-                    this.pause_temp.pause_temp2 := 0
-                    this.pause_temp.loss7 := 0
-                }
+                Helper1_StrPrev(streak_obj, target_streak)
+                Helper2_AmtOverride(streak_obj, target_streak)
             }
         }
 
         AmountOverride7_Win5() {
+            target_streak := 5
+            streak := this.stats.streak_real
+            streak_prev := this.streak_prev[1]
+            streak_obj := this.wl2_w5_l7[target_streak]
+            idx := streak_obj.lose_streak > 0 ? 0 : Abs(streak_obj.lose_streak)
+            HelperSumAmt(streak_obj, target_streak)
+            if HelperPause1(streak_obj, target_streak, this.wl2_w5_l7[2], this.wl2_w5_l7[-2]) {
+                return
+            }
+            if HelperPause2_Loss5(streak_obj, target_streak) {
+                return
+            }
+            
+            Helper1_StrPrev(streak_obj, target_streak)
+            Helper2_AmtOverride(streak_obj, target_streak)
+        }
+
+        AmountOverride7_Win5_old() {
             streak := this.stats.streak_real
             streak_prev := this.streak_prev[1]
             amts := [25]
@@ -883,13 +892,13 @@ class TraderBot {
                 }
                 streak_obj.sum_amt += streak_obj.amt
                 if (streak_obj.lose_streak = 7 or streak_obj.lose_streak = 5) {
-                    this.wl2[2].transfers++
+                    this.wl2_w5_l7[2].transfers++
                     sum_trf := streak_obj.sum_amt * 0.4
                     if streak_obj.lose_streak = 7 {
                         sum_trf := streak_obj.sum_amt * 0.8
                     }
-                    this.wl2[2].sum_amt += sum_trf/2
-                    this.wl2[-2].sum_amt += sum_trf/2
+                    this.wl2_w5_l7[2].sum_amt += sum_trf/2
+                    this.wl2_w5_l7[-2].sum_amt += sum_trf/2
                     streak_obj.sum_amt -= sum_trf
                 }
                 if streak_obj.sum_amt >= 200 {
@@ -919,8 +928,8 @@ class TraderBot {
                 if streak_obj.sum_amt < 80 and streak_obj.sum_over20 = 1 {
                     streak_obj.sum_over20 := 0
                     streak_obj.lose_streak := 0
-                    this.wl2[2].sum_amt += streak_obj.sum_amt/2
-                    this.wl2[-2].sum_amt += streak_obj.sum_amt/2
+                    this.wl2_w5_l7[2].sum_amt += streak_obj.sum_amt/2
+                    this.wl2_w5_l7[-2].sum_amt += streak_obj.sum_amt/2
                     streak_obj.sum_amt := 0
                     streak_obj.sum_over200 := 0
                     streak_obj.state_5lost := 0
@@ -1294,8 +1303,8 @@ class TraderBot {
         sum_trf := this.switch_win_loss[1].sum_amt + this.switch_win_loss[-1].sum_amt
         this.switch_win_loss[ 1].sum_amt  := 0
         this.switch_win_loss[-1].sum_amt := 0
-        this.wl2[ 2].sum_amt += sum_trf/2
-        this.wl2[-2].sum_amt += sum_trf/2
+        this.wl2_w5_l7[ 2].sum_amt += sum_trf/2
+        this.wl2_w5_l7[-2].sum_amt += sum_trf/2
         ; this.maxdiff350.stored_4loss_count := this.F300.iter_lost5
         ; this.F300.iter_lost5 := 0
         for k, v in this.maxdiff350.streaks {
@@ -1356,8 +1365,8 @@ class TraderBot {
             v := PropSerializer(v)
         }
         
-        this.wl2 := Map(2, {}, -2, {})
-        for k, v in this.wl2 {
+        this.wl2_w5_l7 := Map(2, {}, -2, {} 5, {} -7, {})
+        for k, v in this.wl2_w5_l7 {
             v := PropSerializer(v)
         }
         
@@ -2175,15 +2184,15 @@ class TraderBot {
             str_i := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_i
         str_i := str_i ' (bet: ' Format('{:.2f}', this.amount) ')'
         if (streak >= 5) {
-            str_i := str_i ' sum=' Format('{:.2f}', this.win5andabove[streak].sum_amt) ')'
+            str_i := str_i ' sum=' Format('{:.2f}', this.wl2_w5_l7[5].sum_amt) ')'
         }
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)
-        str_l := '(-' this.wl2[2].lose_streak ' [wins=' this.wl2[2].wins '|loss=' this.wl2[2].losses ']) sum=' format('{:.2f}', this.wl2[2].sum_amt)
+        str_l := '(-' this.wl2_w5_l7[2].lose_streak ' [wins=' this.wl2_w5_l7[2].wins '|loss=' this.wl2_w5_l7[2].losses ']) sum=' format('{:.2f}', this.wl2_w5_l7[2].sum_amt)
         if (streak = 2) {
             str_l := 'bet: ' format('{:.2f}', this.amount) ' ' str_l
         }
-        str_m := '(-' this.wl2[-2].lose_streak ' [wins=' this.wl2[-2].wins '|loss=' this.wl2[-2].losses ']) sum=' format('{:.2f}', this.wl2[-2].sum_amt)
+        str_m := '(-' this.wl2_w5_l7[-2].lose_streak ' [wins=' this.wl2_w5_l7[-2].wins '|loss=' this.wl2_w5_l7[-2].losses ']) sum=' format('{:.2f}', this.wl2_w5_l7[-2].sum_amt)
         if (streak = -2) {
             str_m := 'bet: ' format('{:.2f}', this.amount) ' ' str_m
         }
