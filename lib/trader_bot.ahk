@@ -2183,7 +2183,7 @@ class TraderBot {
         if this.stats.streak = -1 or this.stats.streak = -2
             str_i := '(' this.qualifiers.loss_amount_modifier.state_2ndloss[-this.stats.streak] ') ' str_i
         str_i := str_i ' (bet: ' Format('{:.2f}', this.amount) ')'
-        if (streak >= 5) {
+        if (streak = 5) {
             str_i := str_i ' sum=' Format('{:.2f}', this.wl2_w5_l7[5].sum_amt) ')'
         }
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
