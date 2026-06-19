@@ -1365,7 +1365,7 @@ class TraderBot {
             v := PropSerializer(v)
         }
         
-        this.wl2_w5_l7 := Map(2, {}, -2, {} 5, {} -7, {})
+        this.wl2_w5_l7 := Map(2, {}, -2, {}, 5, {} -7, {})
         for k, v in this.wl2_w5_l7 {
             v := PropSerializer(v)
         }
