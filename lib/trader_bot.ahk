@@ -1367,7 +1367,7 @@ class TraderBot {
             v := PropSerializer(v)
         }
         
-        this.wl34 := Map(1, {}, -1, {}, 3, {}, 4, {}, -3, {}, -4, {})
+        this.wl34 := Map(0, {}, -0, {}, 1, {}, -1, {}, 3, {}, 4, {}, -3, {}, -4, {})
         for k, v in this.wl34 {
             v := PropSerializer(v)
         }
