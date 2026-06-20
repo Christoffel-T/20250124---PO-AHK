@@ -369,13 +369,30 @@ class TraderBot {
             idx := streak_obj.lose_streak
             if (streak > streak_prev and streak_prev = target_streak) {
                 if (streak_obj.lose_streak = 0) {
+                    streak_obj.disburse7 := 0
                     streak_obj.pause_temp1 := 0
                     streak_obj.pause_temp2 := 0
                     streak_obj.ls_pause_temp := 0
                 }
             } else if (streak < streak_prev and streak_prev = target_streak) {
-                if (streak_obj.lose_streak = 0 and streak_obj.ls_pause_temp > 0) {
-                    streak_obj.ls_pause_temp++
+                if (streak_obj.lose_streak = 0) {
+                    if (streak_obj.ls_pause_temp > 0) {
+                        streak_obj.ls_pause_temp++
+                    }
+                    amt_trf := streak_obj.disburse7 / 7
+                    this.switch_win_loss[1].disburse7  += amt_trf
+                    this.switch_win_loss[-1].disburse7 += amt_trf
+                    this.wl2_w5_l7[2].disburse7 += amt_trf
+                    this.wl2_w5_l7[-2].disburse7 += amt_trf
+                    this.wl2_w5_l7[5].disburse7 += amt_trf
+                    this.wl2_w5_l7[-7].disburse7 += amt_trf
+                    if (Abs(this.F300.stateW) >= 3) {
+                        this.wl34[this.F300.stateW].disburse7 += amt_trf
+                    }
+                    if (Abs(this.F300.stateL) >= 3) {
+                        this.wl34[this.F300.stateL].disburse7 += amt_trf
+                    }
+                    streak_obj.disburse7 := 0
                 }
             }
             if (streak_obj.pause_after_5 = 2 and idx = 0 and streak_prev = target_streak and streak > streak_prev) {
@@ -560,6 +577,7 @@ class TraderBot {
 
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     streak_obj.amt += addition
+                    streak_obj.amt += streak_obj.disburse7
                     if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak != 0) {
                         streak_obj.amt := 1
                     }
@@ -1325,6 +1343,7 @@ class TraderBot {
             pause_temp2: 0,
         }
         PropSerializer(v) {
+            v.disburse7 := 0
             v.pause_after_5 := 0
             v.amt_pause_temp2 := 0
             v.ls_pause_temp := 0
@@ -2205,6 +2224,13 @@ class TraderBot {
         }
         _count_reload := 0
         str_n := this.stats.streak_real ' [bet: ' format('{:.2f}', this.amount) '] ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (H=' this.balance.max ' | L=' this.balance.min ' [' this.balance.min_all '])'
+        this.debug_str := 'disburse7: ' 'W1=' this.switch_win_loss[1].disburse7 ' L1=' this.switch_win_loss[-1].disburse7 ' | W2=' this.wl2_w5_l7[2].disburse7 ' L2=' this.wl2_w5_l7[-2].disburse7 ' | W5=' this.wl2_w5_l7[5].disburse7 ' L7=' this.wl2_w5_l7[-7].disburse7
+        if (Abs(this.F300.stateW) >= 3) {
+            this.debug_str := this.debug_str ' | W' Abs(this.F300.stateW) '=' this.wl34[this.F300.stateW].disburse7
+        }
+        if (Abs(this.F300.stateL) >= 3) {
+            this.debug_str := this.debug_str ' | L' Abs(this.F300.stateL) '=' this.wl34[this.F300.stateL].disburse7
+        }
         loop {
             _count_reload++
             if _count_reload > 1000 {
