@@ -368,6 +368,8 @@ class TraderBot {
             streak_prev := this.streak_prev[1]
             idx := streak_obj.lose_streak
             if (streak > streak_prev and streak_prev = target_streak) {
+                amt_trf := Round(streak_obj.amt * 0.08, 2)
+                HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0) {
                     streak_obj.disburse7 := 0
                     streak_obj.pause_temp1 := 0
@@ -375,24 +377,25 @@ class TraderBot {
                     streak_obj.ls_pause_temp := 0
                 }
             } else if (streak < streak_prev and streak_prev = target_streak) {
-                if (streak_obj.lose_streak = 0) {
-                    if (streak_obj.ls_pause_temp > 0) {
-                        streak_obj.ls_pause_temp++
-                    }
-                    amt_trf := Round(streak_obj.amt / 7, 2)
-                    this.switch_win_loss[1].disburse7  += amt_trf
-                    this.switch_win_loss[-1].disburse7 += amt_trf
-                    this.wl2_w5_l7[2].disburse7 += amt_trf
-                    this.wl2_w5_l7[-2].disburse7 += amt_trf
-                    this.wl2_w5_l7[5].disburse7 += amt_trf
-                    this.wl2_w5_l7[-7].disburse7 += amt_trf
-                    if (Abs(this.F300.stateW) >= 3) {
-                        this.wl34[this.F300.stateW].disburse7 += amt_trf
-                    }
-                    if (Abs(this.F300.stateL) >= 3) {
-                        this.wl34[this.F300.stateL].disburse7 += amt_trf
-                    }
-                    streak_obj.disburse7 := 0
+                amt_trf := Round(streak_obj.amt / 7, 2)
+                HelperDisburse(amt_trf)
+                streak_obj.disburse7 := 0
+                if (streak_obj.lose_streak = 0 and streak_obj.ls_pause_temp > 0) {
+                    streak_obj.ls_pause_temp++
+                }
+            }
+            HelperDisburse(amt_trf) {
+                this.switch_win_loss[1].disburse7  += amt_trf
+                this.switch_win_loss[-1].disburse7 += amt_trf
+                this.wl2_w5_l7[2].disburse7 += amt_trf
+                this.wl2_w5_l7[-2].disburse7 += amt_trf
+                this.wl2_w5_l7[5].disburse7 += amt_trf
+                this.wl2_w5_l7[-7].disburse7 += amt_trf
+                if (Abs(this.F300.stateW) >= 3) {
+                    this.wl34[this.F300.stateW].disburse7 += amt_trf
+                }
+                if (Abs(this.F300.stateL) >= 3) {
+                    this.wl34[this.F300.stateL].disburse7 += amt_trf
                 }
             }
             if (streak_obj.pause_after_5 = 2 and idx = 0 and streak_prev = target_streak and streak > streak_prev) {
