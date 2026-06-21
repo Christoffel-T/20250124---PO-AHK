@@ -379,7 +379,7 @@ class TraderBot {
                     if (streak_obj.ls_pause_temp > 0) {
                         streak_obj.ls_pause_temp++
                     }
-                    amt_trf := streak_obj.amt / 7
+                    amt_trf := Round(streak_obj.amt / 7, 2)
                     this.switch_win_loss[1].disburse7  += amt_trf
                     this.switch_win_loss[-1].disburse7 += amt_trf
                     this.wl2_w5_l7[2].disburse7 += amt_trf
