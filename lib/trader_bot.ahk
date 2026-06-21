@@ -567,7 +567,9 @@ class TraderBot {
                 idx := Max(1, streak_obj.lose_streak+1)
                 if (this.maxdiff350.state = 1) {
                     if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak = 0) {
-                        idx += streak_obj.ls_pause_temp 
+                        if (this.balance.side >= this.balance.starting + 2000) {
+                            idx += streak_obj.ls_pause_temp
+                        }
                     }
                     addition := 0.01
                     Loop (idx) {
@@ -598,13 +600,20 @@ class TraderBot {
                 ; if streak_obj.sum_amt >= 25 {
                 ;     streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
                 ; }
-                if (this.balance.side < this.balance.starting + 2000
-                and streak_obj.lose_streak != 0) {
-                    streak_obj.amt := 1
+                if (this.balance.side < this.balance.starting + 2000) {
+                    if (streak_obj.lose_streak != 0) {
+                        streak_obj.amt := 1
+                    }
                 }
+                Helper2b_disburse7()
                 this.amount := streak_obj.amt
             }
+
+            Helper2b_disburse7() {
+    
+            }
         }
+
         
         AmountOverride1_wl1_win7above() {
             inst := Helper0811_4Loss.Get()
