@@ -2237,12 +2237,12 @@ class TraderBot {
         }
         _count_reload := 0
         str_n := this.stats.streak_real ' [bet: ' format('{:.2f}', this.amount) '] ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (H=' this.balance.max ' | L=' this.balance.min ' [' this.balance.min_all '])'
-        this.debug_str := 'disburse7: ' 'W1=' this.switch_win_loss[1].disburse7 ' L1=' this.switch_win_loss[-1].disburse7 ' | W2=' this.wl2_w5_l7[2].disburse7 ' L2=' this.wl2_w5_l7[-2].disburse7 ' | W5=' this.wl2_w5_l7[5].disburse7 ' L7=' this.wl2_w5_l7[-7].disburse7
+        this.debug_str := 'disburse7: ' 'W1=' format('{:.2f}', this.switch_win_loss[1].disburse7) ' L1=' format('{:.2f}', this.switch_win_loss[-1].disburse7) ' | W2=' format('{:.2f}', this.wl2_w5_l7[2].disburse7) ' L2=' format('{:.2f}', this.wl2_w5_l7[-2].disburse7) ' | W5=' format('{:.2f}', this.wl2_w5_l7[5].disburse7) ' L7=' format('{:.2f}', this.wl2_w5_l7[-7].disburse7)
         if (Abs(this.F300.stateW) >= 3) {
-            this.debug_str := this.debug_str ' | W' Abs(this.F300.stateW) '=' this.wl34[this.F300.stateW].disburse7
+            this.debug_str := this.debug_str ' | W' Abs(this.F300.stateW) '=' format('{:.2f}', this.wl34[this.F300.stateW].disburse7)
         }
         if (Abs(this.F300.stateL) >= 3) {
-            this.debug_str := this.debug_str ' | L' Abs(this.F300.stateL) '=' this.wl34[this.F300.stateL].disburse7
+            this.debug_str := this.debug_str ' | L' Abs(this.F300.stateL) '=' format('{:.2f}', this.wl34[this.F300.stateL].disburse7)
         }
         loop {
             _count_reload++
