@@ -127,7 +127,7 @@ class TraderBot {
         this.amount := 1
 
         if !FileExist(this.log_file) {
-            FileAppend('date,time,active_trade,amount,E,F,G,H,Streak,max_diff,side_bal,new_col2W,new_col2L,balance,next_target,last_trade,payout,Streaks,double_stats,OHLC,debug`n', this.log_file)
+            FileAppend('date,time,active_trade,amount,E,F,G,H,Streak,max_diff,side_bal,new_col2W,new_col2L,balance,next_target,last_trade,payout,Streaks,OHLC,debug`n', this.log_file)
         }
     }
 
@@ -598,6 +598,10 @@ class TraderBot {
                 ; if streak_obj.sum_amt >= 25 {
                 ;     streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
                 ; }
+                if (this.balance.side < this.balance.starting + 2000
+                and streak_obj.lose_streak != 0) {
+                    streak_obj.amt := 1
+                }
                 this.amount := streak_obj.amt
             }
         }
