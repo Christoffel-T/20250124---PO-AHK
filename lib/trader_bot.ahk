@@ -550,7 +550,7 @@ class TraderBot {
             }
         }
 
-        Helper2_AmtOverride(streak_obj, target_streak) {
+        Helper2_AmtOverride(streak_obj, target_streak, disable:=false) {
             amts := [6+(0.5*this.F300.iter_lost5)]
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
@@ -600,15 +600,13 @@ class TraderBot {
                         streak_obj.amt := 1
                     }
                 }
-                Helper2b_disburse7()
+                if (disable) {
+                    streak_obj.amt := 1
+                }
                 this.amount := streak_obj.amt
             }
 
-            Helper2b_disburse7() {
-    
-            }
         }
-
         
         AmountOverride1_wl1_win7above() {
             inst := Helper0811_4Loss.Get()
@@ -789,7 +787,7 @@ class TraderBot {
                 }
                 if (abs_state >= 3 and state = streak) {
                     streak_obj := this.wl34[state]
-                    Helper2_AmtOverride(streak_obj, state)
+                    Helper2_AmtOverride(streak_obj, state, true)
                 }                
             }
         }
@@ -833,7 +831,7 @@ class TraderBot {
                     return
                 }
                 Helper1_StrPrev(streak_obj, target_streak)
-                Helper2_AmtOverride(streak_obj, target_streak)
+                Helper2_AmtOverride(streak_obj, target_streak, true)
             }
         }
 
@@ -852,7 +850,7 @@ class TraderBot {
             }
             
             Helper1_StrPrev(streak_obj, target_streak)
-            Helper2_AmtOverride(streak_obj, target_streak)
+            Helper2_AmtOverride(streak_obj, target_streak, true)
             if (streak > target_streak) {
                 this.amount := 1
             }
