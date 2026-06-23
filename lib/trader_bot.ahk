@@ -371,10 +371,13 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt * 0.08, 2)
                 HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0) {
+                    streak_obj.addition2 := 0
                     streak_obj.disburse7 := 0
                     streak_obj.pause_temp1 := 0
                     streak_obj.pause_temp2 := 0
                     streak_obj.ls_pause_temp := 0
+                } else if (streak_obj.lose_streak > 0) {
+                    streak_obj.addition2 := 1 * (streak_obj.lose_streak - 1)
                 }
             } else if (streak < streak_prev and streak_prev = target_streak) {
                 amt_trf := Round(streak_obj.amt / 7, 2)
@@ -575,6 +578,7 @@ class TraderBot {
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     streak_obj.amt += addition
                     streak_obj.amt += streak_obj.disburse7
+                    streak_obj.amt += streak_obj.addition2
                     if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak != 0) {
                         streak_obj.amt := 1
                     }
@@ -1349,6 +1353,7 @@ class TraderBot {
             pause_temp2: 0,
         }
         PropSerializer(v) {
+            v.addition2 := 0
             v.disburse7 := 0
             v.pause_after_5 := 0
             v.amt_pause_temp2 := 0
