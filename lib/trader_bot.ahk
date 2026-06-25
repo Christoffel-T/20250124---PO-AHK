@@ -371,6 +371,7 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt * 0.08, 2)
                 HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0) {
+                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
                     streak_obj.count_0loss := 0
                     streak_obj.disburse7 := 0
                     streak_obj.pause_temp1 := 0
@@ -383,6 +384,7 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt / 7, 2)
                 if (streak_obj.lose_streak = 0) {
                     amt_trf += 1/4
+                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.75
                     streak_obj.count_0loss++
                     streak_obj.max_count_0loss := Max(streak_obj.count_0loss, streak_obj.max_count_0loss)
                 }
@@ -587,8 +589,8 @@ class TraderBot {
                         streak_obj.amt := 1
                     }
                     if (streak_obj.lose_streak = 0) {
-                        if (streak_obj.amt < streak_obj.last_bet_at_0) {
-                            streak_obj.amt := streak_obj.last_bet_at_0*0.9 + 1
+                        if (streak_obj.next_bet_at_0 > 0) {
+                            streak_obj.amt := streak_obj.next_bet_at_0
                         }
                         streak_obj.last_bet_at_0 := streak_obj.amt
                     }
@@ -1364,7 +1366,7 @@ class TraderBot {
         }
         PropSerializer(v) {
             v.last_bet_at_0 := 0
-            v.next_bet_90 := 0
+            v.next_bet_at_0 := 0
             v.max_count_0loss := 0
             v.count_0loss := 0
             v.addition2 := 0
