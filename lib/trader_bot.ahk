@@ -583,16 +583,16 @@ class TraderBot {
                     addition *= (this.F300.iter_lost5//1)
 
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
+                    if (streak_obj.lose_streak = 0 and streak_obj.next_bet_at_0 > 0) {
+                        streak_obj.amt := streak_obj.next_bet_at_0
+                    }
                     streak_obj.amt += addition
                     streak_obj.amt += streak_obj.disburse7
+                    if (streak_obj.lose_streak = 0) {
+                        streak_obj.last_bet_at_0 := streak_obj.amt
+                    }
                     if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak != 0) {
                         streak_obj.amt := 1
-                    }
-                    if (streak_obj.lose_streak = 0) {
-                        if (streak_obj.next_bet_at_0 > 0) {
-                            streak_obj.amt := streak_obj.next_bet_at_0
-                        }
-                        streak_obj.last_bet_at_0 := streak_obj.amt
                     }
                 } else if (idx >= 1 and streak_obj.state_5lost = 0) {
                     streak_obj.amt := amts[idx]
