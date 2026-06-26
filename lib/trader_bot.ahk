@@ -371,11 +371,7 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt * 0.08, 2)
                 HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0) {
-                    if (this.balance.side < this.balance.starting + 1500) {
-                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.80 + 1
-                    } else {
-                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
-                    }
+                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
                     streak_obj.count_0loss := 0
                     streak_obj.disburse7 := 0
                     streak_obj.pause_temp1 := 0
@@ -388,11 +384,7 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt / 7, 2)
                 if (streak_obj.lose_streak = 0) {
                     amt_trf += 1/4
-                    if (this.balance.side < this.balance.starting + 1500) {
-                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.30
-                    } else {
-                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.75
-                    }
+                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.75
                     streak_obj.count_0loss++
                     streak_obj.max_count_0loss := Max(streak_obj.count_0loss, streak_obj.max_count_0loss)
                 }
@@ -580,7 +572,7 @@ class TraderBot {
                 idx := Max(1, streak_obj.lose_streak+1)
                 if (this.maxdiff350.state = 1) {
                     if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak = 0) {
-                        if (this.balance.side >= this.balance.starting + 3000) {
+                        if (this.balance.side >= this.balance.starting + 2000) {
                             idx += streak_obj.ls_pause_temp
                         }
                     }
@@ -619,7 +611,7 @@ class TraderBot {
                 ; if streak_obj.sum_amt >= 25 {
                 ;     streak_obj.amt := streak_obj.sum_amt * (0.3 + (0.1*idx))
                 ; }
-                if (this.balance.side < this.balance.starting + 3000) {
+                if (this.balance.side < this.balance.starting + 2000) {
                     if (streak_obj.lose_streak != 0) {
                         streak_obj.amt := 1
                     }
