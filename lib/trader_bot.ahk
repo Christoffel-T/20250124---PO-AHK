@@ -301,7 +301,12 @@ class TraderBot {
         RankScenarios()
 
         CheckMaxDiff() {
-            this.extra_str := ''
+            if (this.stats.max_bal_diff >= 400) {
+                this.max_diff_more_than_400 := 1
+            } else if (this.stats.max_bal_diff <= 300) {
+                this.max_diff_more_than_400 := 0
+            }
+            this.extra_str := 'MD400=' this.max_diff_more_than_400 ' '
             ; if (this.stats.max_bal_diff >= 350) {
             ;     this.extra_str := 'maxdiff325'
             ;     this.SubReset1()
@@ -310,13 +315,13 @@ class TraderBot {
                 if (this.maxdiff350.state = 0) {
                     ; ResetLoseStreaks()
                 }
-                this.extra_str := 'maxdiff325'
+                this.extra_str .= 'maxdiff325'
                 this.maxdiff350.state := 1
             } else if (this.stats.max_bal_diff <= 319 and this.maxdiff350.state = 1) {
                 if (this.maxdiff350.state = 1) {
                     ; ResetLoseStreaks()
                 }
-                this.extra_str := 'maxdiff325 END'
+                this.extra_str .= 'maxdiff325 END'
                 ; this.maxdiff350.state := 0
                 ; this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
                 ; this.maxdiff350.stored_4loss_count := 0
@@ -371,7 +376,11 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt * 0.08, 2)
                 HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0) {
-                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
+                    if (this.max_diff_more_than_400 = 0) {
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
+                    } else {
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.40
+                    }
                     streak_obj.count_0loss := 0
                     streak_obj.disburse7 := 0
                     streak_obj.pause_temp1 := 0
@@ -384,7 +393,11 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt / 7, 2)
                 if (streak_obj.lose_streak = 0) {
                     amt_trf += 1/4
-                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.75
+                    if (this.max_diff_more_than_400 = 0) {
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.75
+                    } else {
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.15
+                    }
                     streak_obj.count_0loss++
                     streak_obj.max_count_0loss := Max(streak_obj.count_0loss, streak_obj.max_count_0loss)
                 }
@@ -1360,6 +1373,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
+        this.max_diff_more_than_400 := 0
         this.pause_temp := {
             loss7: 0,
             pause_temp2: 0,
@@ -2209,7 +2223,7 @@ class TraderBot {
         } else {
             str_g := 'regular-OFF: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
         }
-        str_d := str_d ' (' this.extra_str ')' 
+        str_d := '(' this.extra_str ') ' str_d
         str_h := '(W1: 0loss=' this.switch_win_loss[1].count_0loss '[max=' this.switch_win_loss[1].max_count_0loss '] ' '-' this.switch_win_loss[1].lose_streak '[sum=' format('{:.2f}', this.switch_win_loss[1].sum_amt) '])'
         str_h := str_h ' (L1: 0loss=' this.switch_win_loss[-1].count_0loss '[max=' this.switch_win_loss[-1].max_count_0loss '] ' '-' this.switch_win_loss[-1].lose_streak '[sum=' format('{:.2f}', this.switch_win_loss[-1].sum_amt) '])'
 
