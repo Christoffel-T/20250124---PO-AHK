@@ -306,6 +306,9 @@ class TraderBot {
             } else if (this.stats.max_bal_diff <= 300) {
                 this.max_diff_more_than_400 := 0
             }
+            if (this.balance.side - this.balance.starting >= 4500) {
+                this.max_diff_more_than_400 := 0
+            }
             this.extra_str := 'MD400=' this.max_diff_more_than_400 ' '
             ; if (this.stats.max_bal_diff >= 350) {
             ;     this.extra_str := 'maxdiff325'
@@ -379,7 +382,9 @@ class TraderBot {
                     if (this.max_diff_more_than_400 = 0) {
                         streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
                     } else {
-                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.40
+                        _mult := Max((0.41 + this.max_diff_more_than_400_counter*0.10), 1.01)
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * _mult + 1
+                        this.max_diff_more_than_400_counter++
                     }
                     streak_obj.count_0loss := 0
                     streak_obj.disburse7 := 0
@@ -396,7 +401,9 @@ class TraderBot {
                     if (this.max_diff_more_than_400 = 0) {
                         streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.75
                     } else {
-                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.15
+                        _mult := Max((0.15 + this.max_diff_more_than_400_counter*0.10), 0.75)
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * _mult
+                        this.max_diff_more_than_400_counter++
                     }
                     streak_obj.count_0loss++
                     streak_obj.max_count_0loss := Max(streak_obj.count_0loss, streak_obj.max_count_0loss)
@@ -1373,6 +1380,7 @@ class TraderBot {
     }
 
     QualifiersReset() {
+        this.max_diff_more_than_400_counter := 0
         this.max_diff_more_than_400 := 0
         this.pause_temp := {
             loss7: 0,
