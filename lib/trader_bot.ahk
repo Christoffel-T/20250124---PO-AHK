@@ -309,7 +309,7 @@ class TraderBot {
             if (this.balance.side - this.balance.starting >= 4500) {
                 this.max_diff_more_than_400 := 0
             }
-            this.extra_str := 'MD400=' this.max_diff_more_than_400 ' '
+            this.extra_str := 'MD400=' this.max_diff_more_than_400 ' [' this.max_diff_more_than_400_counter '] '
             ; if (this.stats.max_bal_diff >= 350) {
             ;     this.extra_str := 'maxdiff325'
             ;     this.SubReset1()
