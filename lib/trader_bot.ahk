@@ -380,7 +380,9 @@ class TraderBot {
                         this.maxdiff_high.max := this.maxdiff_high.mark
                         this.maxdiff_high.count := 0
                     }
-                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
+                    if (streak_obj.last_bet_at_0 > 0) {
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
+                    }
                     streak_obj.count_0loss := 0
                     streak_obj.disburse7 := 0
                     streak_obj.pause_temp1 := 0
@@ -393,7 +395,9 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt / 7, 2)
                 if (streak_obj.lose_streak = 0) {
                     amt_trf += 1/4
-                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.75
+                    if (streak_obj.last_bet_at_0 > 0) {
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.75
+                    }
                     streak_obj.count_0loss++
                     streak_obj.max_count_0loss := Max(streak_obj.count_0loss, streak_obj.max_count_0loss)
                 }
@@ -533,16 +537,17 @@ class TraderBot {
                     streak_obj.amt += addition
                     streak_obj.amt += streak_obj.disburse7
                     newhigh_diff := this.maxdiff_high.max - this.stats.max_bal_diff
+                    if (streak_obj.lose_streak = 0) {
+                        streak_obj.last_bet_at_0 := streak_obj.amt
+                    }
                     if (streak_obj.lose_streak = 0 and streak_obj.next_bet_at_0 > 0 and newhigh_diff >= 1) {
                         streak_obj.amt := streak_obj.next_bet_at_0
+                        streak_obj.last_bet_at_0 := 0
                         streak_obj.next_bet_at_0 := 0
                         streak_obj.amt += addition
                         streak_obj.amt += streak_obj.disburse7
 
                         streak_obj.amt := Min(streak_obj.amt, (newhigh_diff))
-                    }
-                    if (streak_obj.lose_streak = 0) {
-                        streak_obj.last_bet_at_0 := streak_obj.amt
                     }
                     if (streak_obj.ls_pause_temp > 0 and streak_obj.lose_streak != 0) {
                         streak_obj.amt := 1
