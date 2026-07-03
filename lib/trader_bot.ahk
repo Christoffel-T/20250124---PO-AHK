@@ -547,6 +547,7 @@ class TraderBot {
                         this.maxdiff_high.max := this.stats.max_bal_diff
                     } else if (diff_maxdiff_high >= 1) {
                         this.maxdiff_high.amt := 0
+                        this.maxdiff_high.max := this.stats.max_bal_diff
                     }
                     if (streak_obj.lose_streak = 0) {
                         this.stats.prev_max_bal_diff := this.stats.max_bal_diff
