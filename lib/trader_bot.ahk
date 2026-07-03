@@ -543,11 +543,12 @@ class TraderBot {
                         } else {
                             this.maxdiff_high.amt := (this.maxdiff_high.amt * 2 + 0.2)/0.92
                         }
-                        streak_obj.amt := this.maxdiff_high.amt + Max(0, -diff_maxdiff_high)
+                        streak_obj.amt := this.maxdiff_high.amt + Abs(diff_maxdiff_high)
                     } else if (diff_maxdiff_high >= 1) {
                         this.maxdiff_high.amt := 0
                     }
                     if (streak_obj.lose_streak = 0) {
+                        this.stats.prev_max_bal_diff := this.stats.max_bal_diff
                         streak_obj.last_bet_at_0 := streak_obj.amt
                     }
                     if (streak_obj.lose_streak = 0 and streak_obj.next_bet_at_0 > 0 and diff_maxdiff_high >= 1) {
@@ -2217,8 +2218,8 @@ class TraderBot {
         if (streak = 5) {
             str_i := str_i ' sum=' Format('{:.2f}', this.wl2_w5_l7[5].sum_amt) ')'
         }
-        str_j := format('{:.2f}', this.stats.max_bal_diff) ' (next=' format('{:.2f}', this.stats.next_max_bal_diff) ') (H=' format('{:.2f}', this.maxdiff_high.max) ' | amt=' this.maxdiff_high.amt ')'
-        str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)
+        str_j := format('{:.2f}', this.stats.max_bal_diff) ' (next=' format('{:.2f}', this.stats.next_max_bal_diff) ') (H=' format('{:.2f}', this.maxdiff_high.max) ' | amt=' Format('{:.2f}', this.maxdiff_high.amt) ')'
+        str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)   
         str_l := '(W2: 0loss=' this.wl2_w5_l7[2].count_0loss '[max=' this.wl2_w5_l7[2].max_count_0loss ']) ' '(-' this.wl2_w5_l7[2].lose_streak ' [wins=' this.wl2_w5_l7[2].wins '|loss=' this.wl2_w5_l7[2].losses ']) sum=' format('{:.2f}', this.wl2_w5_l7[2].sum_amt)
         if (streak = 2) {
             str_l := 'bet: ' format('{:.2f}', this.amount) ' ' str_l
