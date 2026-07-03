@@ -1321,7 +1321,7 @@ class TraderBot {
         this.maxdiff_high := {
             mark: 0, 
             max: 0, 
-            count: 0,
+            count: 1,
         }
         this.pause_temp := {
             loss7: 0,
