@@ -2199,7 +2199,7 @@ class TraderBot {
         if (streak = 5) {
             str_i := str_i ' sum=' Format('{:.2f}', this.wl2_w5_l7[5].sum_amt) ')'
         }
-        str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (max=' format('{:.2f}', this.maxdiff_high.max) ' | count=' this.maxdiff_high.count ')'
+        str_j := format('{:.2f}', this.stats.max_bal_diff) ' (next=' format('{:.2f}', this.stats.next_max_bal_diff) ') (H=' format('{:.2f}', this.maxdiff_high.max) ' | count=' this.maxdiff_high.count ')'
         str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)
         str_l := '(W2: 0loss=' this.wl2_w5_l7[2].count_0loss '[max=' this.wl2_w5_l7[2].max_count_0loss ']) ' '(-' this.wl2_w5_l7[2].lose_streak ' [wins=' this.wl2_w5_l7[2].wins '|loss=' this.wl2_w5_l7[2].losses ']) sum=' format('{:.2f}', this.wl2_w5_l7[2].sum_amt)
         if (streak = 2) {
@@ -2606,6 +2606,7 @@ class TraderBot {
                 this.balance.min := Format('{:.2f}', min(cur_bal, this.balance.min))
                 this.balance.min_all := Format('{:.2f}', min(cur_bal, this.balance.min_all))
 
+                this.stats.prev_max_bal_diff := this.stats.max_bal_diff
                 this.stats.max_bal_diff := this.balance.max - this.balance.current
                 this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
                 return real_bal
