@@ -183,6 +183,7 @@ class TraderBot {
             this.active_trade := ''
             this.trade_opened[1] := false
             this.CheckBalance()
+            this.maxdiff_high.max := Max(this.stats.max_bal_diff, this.maxdiff_high.max)
             if this.balance.current > this.balance.last_trade + 0.5 {
                 win := {ps:true}
                 draw := {ps:true}
@@ -1587,7 +1588,6 @@ class TraderBot {
 
         this.CheckStuck()
         this.CheckBalance()
-        this.maxdiff_high.max := Max(this.stats.max_bal_diff, this.maxdiff_high.max)
         this.CheckPayout()
         if not this.PSearch()
             return
