@@ -541,7 +541,7 @@ class TraderBot {
                         if (this.maxdiff_high.amt = 0) {
                             this.maxdiff_high.amt := 1.35
                         } else {
-                            this.maxdiff_high.amt := (this.maxdiff_high.amt * 2 + 0.2)/0.92
+                            this.maxdiff_high.amt := (this.maxdiff_high.amt * 2 + 0.02)/0.92
                         }
                         streak_obj.amt := this.maxdiff_high.amt + Abs(diff_maxdiff_high)
                         this.maxdiff_high.max := this.stats.max_bal_diff
