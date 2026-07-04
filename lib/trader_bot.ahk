@@ -534,8 +534,8 @@ class TraderBot {
                     addition *= (this.F300.iter_lost5//1)
 
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)] * this.maxdiff_high.count
-                    streak_obj.amt += addition
-                    streak_obj.amt += streak_obj.disburse7
+                    ; streak_obj.amt += addition
+                    ; streak_obj.amt += streak_obj.disburse7
                     diff_maxdiff_high := this.maxdiff_high.max - this.stats.max_bal_diff
                     if (streak_obj.lose_streak = 0 and diff_maxdiff_high <= 0) {
                         if (this.maxdiff_high.amt = 0) {
@@ -2630,6 +2630,7 @@ class TraderBot {
                 this.stats.prev_max_bal_diff := this.stats.max_bal_diff
                 this.stats.max_bal_diff := this.balance.max - this.balance.current
                 this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
+                this.maxdiff_high.max := Max(this.stats.max_bal_diff, this.maxdiff_high.max)
                 return real_bal
             }
         }
