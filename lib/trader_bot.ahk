@@ -1587,6 +1587,7 @@ class TraderBot {
 
         this.CheckStuck()
         this.CheckBalance()
+        this.maxdiff_high.max := Max(this.stats.max_bal_diff, this.maxdiff_high.max)
         this.CheckPayout()
         if not this.PSearch()
             return
