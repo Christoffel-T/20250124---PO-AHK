@@ -2630,7 +2630,6 @@ class TraderBot {
                 this.stats.prev_max_bal_diff := this.stats.max_bal_diff
                 this.stats.max_bal_diff := this.balance.max - this.balance.current
                 this.stats.next_max_bal_diff := this.stats.max_bal_diff + this.amount
-                this.maxdiff_high.max := Max(this.stats.max_bal_diff, this.maxdiff_high.max)
                 return real_bal
             }
         }
