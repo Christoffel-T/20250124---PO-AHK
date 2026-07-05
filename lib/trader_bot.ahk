@@ -554,12 +554,11 @@ class TraderBot {
                     }
                     if (streak_obj.lose_streak = 0 and streak_obj.next_bet_at_0 > 0 and diff_maxdiff_high >= 1) {
                         streak_obj.amt := streak_obj.next_bet_at_0
-                        streak_obj.last_bet_at_0 := streak_obj.amt
                         streak_obj.next_bet_at_0 := 0
                         streak_obj.amt += addition
                         streak_obj.amt += streak_obj.disburse7
-
                         streak_obj.amt := Min(streak_obj.amt, (diff_maxdiff_high))
+                        streak_obj.last_bet_at_0 := streak_obj.amt
                     }
                     if (streak_obj.lose_streak != 0) {
                         streak_obj.amt := 1
