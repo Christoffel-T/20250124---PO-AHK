@@ -24,6 +24,6 @@ UpdateVS() {
         Send 'git pull'
         sleep 300
         Send '{Enter}'
-        sleep 3000
+        sleep 5000
     }
 }
