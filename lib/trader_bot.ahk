@@ -177,9 +177,6 @@ class TraderBot {
             }
             sleep 500
             
-            if just_check
-                return 0
-            
             this.active_trade := ''
             this.trade_opened[1] := false
             this.CheckBalance()
@@ -194,6 +191,9 @@ class TraderBot {
                 win := {ps:false}
                 draw := {ps:true}
             }
+            if just_check
+                return 0
+            
 
             this.streak_prev.InsertAt(1, this.stats.streak_real)
             streak_mod := this.stats.streak_real
