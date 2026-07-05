@@ -17,6 +17,8 @@ Start() {
 
 UpdateVS() {
     if (WinActive("ahk_exe VisualStudio.exe")) {
+        WinActivate("ahk_exe VisualStudio.exe")
+        sleep 200
         Send '^+p'
         sleep 300
         Send 'git pull'
