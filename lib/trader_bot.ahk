@@ -178,7 +178,7 @@ class TraderBot {
             sleep 500
             
             if just_check
-                return 1
+                return 0
             
             this.active_trade := ''
             this.trade_opened[1] := false
