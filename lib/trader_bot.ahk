@@ -193,7 +193,6 @@ class TraderBot {
             }
             if just_check
                 return 0
-            
 
             this.streak_prev.InsertAt(1, this.stats.streak_real)
             streak_mod := this.stats.streak_real
