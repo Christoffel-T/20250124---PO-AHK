@@ -16,8 +16,8 @@ Start() {
 }
 
 UpdateVS() {
-    if (WinActive("ahk_exe VisualStudio.exe")) {
-        WinActivate("ahk_exe VisualStudio.exe")
+    if (WinActive("ahk_exe Code.exe")) {
+        WinActivate("ahk_exe Code.exe")
         sleep 200
         Send '^+p'
         sleep 300
