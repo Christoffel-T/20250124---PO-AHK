@@ -16,5 +16,5 @@ Hotkey('F1', obj_trader.StartLoop, 'On')
 ToolTip('Ready. Press F1 to start', 5, 5, 1)
 obj_trader.StartLoop
 $Esc::Pause 1
-$+Esc::Reload
++Esc::Reload
 $^Esc::ExitApp
