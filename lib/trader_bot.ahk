@@ -166,7 +166,7 @@ class TraderBot {
             if not this.trade_opened[1] and not just_check {
                 return 0
             }
-             
+              
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             sleep 50
             loop 3 {
