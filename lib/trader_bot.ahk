@@ -170,13 +170,15 @@ class TraderBot {
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             sleep 50
             loop 3 {
-                if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 30) {
+                if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 10) {
                     return 0
                 }
                 sleep 50
             }
             sleep 500
-            
+            if just_check
+                return 1
+
             this.active_trade := ''
             this.trade_opened[1] := false
             this.CheckBalance()
@@ -191,8 +193,6 @@ class TraderBot {
                 win := {ps:false}
                 draw := {ps:true}
             }
-            if just_check
-                return 0
 
             this.streak_prev.InsertAt(1, this.stats.streak_real)
             streak_mod := this.stats.streak_real
