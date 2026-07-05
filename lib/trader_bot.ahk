@@ -1625,10 +1625,12 @@ class TraderBot {
             sleep 600
             this.ExecuteTrade(['SELL', 'BUY'][Random(1,2)], 'STARTING')
             start_time := A_TickCount
+            ToolTip('Balance reset in progress... ' A_Index, 500, 5, 12)
             while !this.CheckTradeClosed(true) or A_TickCount - start_time <= 6500
                 sleep 100
             this.CheckBalance()
         }
+        ToolTip('Balance reset done', 500, 5, 12)
         
         this.CheckBalance()
         while this.balance.current < this.balance.starting {
