@@ -1,12 +1,13 @@
 #Requires AutoHotkey v2.0
 
-+F2::Start()
+^F1::Start()
 
-+F3::Restart()
+^F2::Restart()
 
 Restart() {
-    Send '+{F1}'
+    Send '+{Esc}'
     MsgBox 'testrestart'
+    reload
 }
 
 Start() {
