@@ -16,9 +16,12 @@ Start() {
 }
 
 UpdateVS() {
-    if (WinActive("ahk_exe Code.exe")) {
-        WinActivate("ahk_exe Code.exe")
-        sleep 200
+    wtitle := "ahk_exe Code.exe"
+    if (WinExist(wtitle)) {
+        if !WinActive(wtitle) {
+            WinActivate("ahk_exe Code.exe")
+            sleep 100
+        }
         Send '^+p'
         sleep 300
         Send 'git pull'
