@@ -169,13 +169,13 @@ class TraderBot {
               
             MouseClick('L', this.coords.trades_opened.x + Random(-2, 2), this.coords.trades_opened.y + Random(-1, 1), 3, 2)
             sleep 50
-            loop 3 {
-                if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 10) {
-                    return 0
-                }
-                sleep 50
-            }
-            sleep 500
+            ; loop 3 {
+            ;     if PixelSearch(&x, &y, this.coords.detect_trade_open1.x, this.coords.detect_trade_open1.y, this.coords.detect_trade_open2.x, this.coords.detect_trade_open2.y, this.colors.green2, 10) {
+            ;         return 0
+            ;     }
+            ;     sleep 50
+            ; }
+            sleep 4000
             if just_check
                 return 1
 
