@@ -1,16 +1,27 @@
 #Requires AutoHotkey v2.0
-
+TraySetIcon("shell32.dll", 3)
 ^F1::Start()
 
 ^F2::Restart()
 
 Restart() {
+    UpdateVS()
     Send '+{Esc}'
-    MsgBox 'testrestart'
     reload
 }
 
 Start() {
+    UpdateVS()
     run 'main.ahk'
-    MsgBox 'teststart'
+}
+
+UpdateVS() {
+    if (WinActive("ahk_exe VisualStudio.exe")) {
+        Send '^+p'
+        sleep 300
+        Send 'git pull'
+        sleep 300
+        Send '{Enter}'
+        sleep 3000
+    }
 }
