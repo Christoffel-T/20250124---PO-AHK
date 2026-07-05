@@ -10,5 +10,6 @@ Restart() {
 }
 
 Start() {
+    run 'main.ahk'
     MsgBox 'teststart'
 }
