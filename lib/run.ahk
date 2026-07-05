@@ -5,6 +5,7 @@
 +F3::Restart()
 
 Restart() {
+    Send '+{F1}'
     MsgBox 'testrestart'
 }
 
