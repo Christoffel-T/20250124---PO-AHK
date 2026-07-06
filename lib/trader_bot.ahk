@@ -290,6 +290,15 @@ class TraderBot {
         
         CheckMaxDiff()
 
+        streak_prev := this.streak_prev[1]
+        if (streak > streak_prev) {
+            amt_trf := Round(this.amt_prev[1] * 0.08, 2)
+            HelperDisburse(amt_trf)
+        }  else if (streak < streak_prev) {
+            amt_trf := Round(this.amt_prev[1], 2)
+            HelperDisburse(amt_trf)            
+        }
+
         AmountOverride1_wl1_win7above()
         AmountOverride5_wl34()
         AmountOverride6_Lose7()
@@ -300,6 +309,14 @@ class TraderBot {
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
+
+        HelperDisburse(amt_trf) {
+            amt_trf /= 4
+            this.switch_win_loss[1].disburse7  += amt_trf
+            this.switch_win_loss[-1].disburse7 += amt_trf
+            this.wl2_w5_l7[2].disburse7 += amt_trf
+            this.wl2_w5_l7[-2].disburse7 += amt_trf
+        }
 
         CheckMaxDiff() {
             this.extra_str := ''
@@ -369,8 +386,6 @@ class TraderBot {
             streak_prev := this.streak_prev[1]
             idx := streak_obj.lose_streak
             if (streak > streak_prev and streak_prev = target_streak) {
-                amt_trf := Round(streak_obj.amt * 0.08, 2)
-                HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0) {
                     if (this.stats.prev_max_bal_diff > this.maxdiff_high.max) {
                         this.maxdiff_high.max := this.stats.prev_max_bal_diff
@@ -402,16 +417,9 @@ class TraderBot {
                     streak_obj.max_count_0loss := Max(streak_obj.count_0loss, streak_obj.max_count_0loss)
                 }
                 streak_obj.disburse7 := 0
-                HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0 and streak_obj.ls_pause_temp > 0) {
                     streak_obj.ls_pause_temp++
                 }
-            }
-            HelperDisburse(amt_trf) {
-                this.switch_win_loss[1].disburse7  += amt_trf
-                this.switch_win_loss[-1].disburse7 += amt_trf
-                this.wl2_w5_l7[2].disburse7 += amt_trf
-                this.wl2_w5_l7[-2].disburse7 += amt_trf
             }
             if (streak_obj.pause_after_5 = 2 and idx = 0 and streak_prev = target_streak and streak > streak_prev) {
                 streak_obj.pause_after_5 := 0
