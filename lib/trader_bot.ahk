@@ -317,7 +317,8 @@ class TraderBot {
                     arr.Push(Max(0, arr[-1] - 0.05))
                 }
             }
-            this.reducer.val := Max(0, Floor((this.stats.max_bal_diff - 300) / 50)) + 1
+            drops := Max(0, Floor((this.stats.max_bal_diff - 300) / 50)) + 1
+            this.reducer.val := arr[drops]
             this.extra_str := ''
             ; if (this.stats.max_bal_diff >= 350) {
             ;     this.extra_str := 'maxdiff325'
