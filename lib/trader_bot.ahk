@@ -293,9 +293,9 @@ class TraderBot {
         AmountOverride5_wl34()
         AmountOverride6_Lose7()
         AmountOverride7_Win5()
-        ; if (this.stats.max_bal_diff >= 325) {
-        ;     this.pause_temp.LM := 1
-        ; }
+        if (this.stats.max_bal_diff >= 325) {
+            this.pause_temp.LM := 1
+        }
         if (this.stats.max_bal_diff < 300) {
             this.pause_temp.LM := 0
         }
