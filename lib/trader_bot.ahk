@@ -309,16 +309,19 @@ class TraderBot {
         RankScenarios()
 
         CheckMaxDiff() {
-            arr := [0]
-            Loop 100 {
-                if (A_Index < 5) {
-                    arr.Push(arr[-1] + 0.05)
+            arr := {W: [1.01, 0.71], L: [0.75, 0.35]}
+            drops := Max(0, Floor((this.stats.max_bal_diff - 300) / 25)) + 1
+            Loop drops {
+                if (arr.L[-1] <= 0.05) {
+                    arr.W.Push(Min(arr.W[1], arr.W[-1] + 0.05))
+                    arr.L.Push(Min(arr.L[1], arr.L[-1] + 0.05))
                 } else {
-                    arr.Push(Max(0, arr[-1] - 0.05))
+                    arr.W.Push(arr.W[-1] - 0.05)
+                    arr.L.Push(arr.L[-1] - 0.05)
                 }
             }
-            drops := Max(0, Floor((this.stats.max_bal_diff - 300) / 50)) + 1
-            this.reducer.val := arr[drops]
+            this.reducer.val_W := arr.W[drops]
+            this.reducer.val_L := arr.L[drops]
             this.extra_str := ''
             ; if (this.stats.max_bal_diff >= 350) {
             ;     this.extra_str := 'maxdiff325'
@@ -389,7 +392,7 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt * 0.08, 2)
                 HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0) {
-                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * (1.01 - this.reducer.val) + 1
+                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * (this.reducer.val_W) + 1
                     streak_obj.count_0loss := 0
                     streak_obj.disburse7 := 0
                     streak_obj.pause_temp1 := 0
@@ -402,7 +405,7 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt / 7, 2)
                 if (streak_obj.lose_streak = 0) {
                     amt_trf += 1/4
-                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * (0.75 - this.reducer.val)
+                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * (this.reducer.val_L)
                     streak_obj.count_0loss++
                     streak_obj.max_count_0loss := Max(streak_obj.count_0loss, streak_obj.max_count_0loss)
                 }
@@ -1379,7 +1382,8 @@ class TraderBot {
 
     QualifiersReset() {
         this.reducer := {
-            val: 0,
+            val_W: 0,
+            val_L: 0,
             state: 0,
         }
         this.pause_temp := {
@@ -2262,7 +2266,7 @@ class TraderBot {
         if (streak = 5) {
             str_i := str_i ' sum=' Format('{:.2f}', this.wl2_w5_l7[5].sum_amt) ')'
         }
-        str_j := format('{:.2f}', this.stats.max_bal_diff) '[' format('{:.0f}', 75-this.reducer.val*100) '% | ' format('{:.0f}', 101-this.reducer.val*100) '%] (next=' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
+        str_j := format('{:.2f}', this.stats.max_bal_diff) '[' format('{:.0f}', this.reducer.val_W*100) '% | ' format('{:.0f}', this.reducer.val_L*100) '%] (next=' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)
         str_l := '(W2: 0loss=' this.wl2_w5_l7[2].count_0loss '[max=' this.wl2_w5_l7[2].max_count_0loss ']) ' '(-' this.wl2_w5_l7[2].lose_streak ' [wins=' this.wl2_w5_l7[2].wins '|loss=' this.wl2_w5_l7[2].losses ']) sum=' format('{:.2f}', this.wl2_w5_l7[2].sum_amt)
         if (streak = 2) {
