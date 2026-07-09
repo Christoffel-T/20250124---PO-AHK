@@ -311,7 +311,7 @@ class TraderBot {
         CheckMaxDiff() {
             arr := [0]
             Loop 100 {
-                if (A_Index < 6) {
+                if (A_Index < 5) {
                     arr.Push(arr[-1] + 0.05)
                 } else {
                     arr.Push(Max(0, arr[-1] - 0.05))
