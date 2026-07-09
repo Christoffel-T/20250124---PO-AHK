@@ -293,9 +293,9 @@ class TraderBot {
         AmountOverride5_wl34()
         AmountOverride6_Lose7()
         AmountOverride7_Win5()
-        if (this.stats.max_bal_diff >= 325) {
-            this.pause_temp.LM := 1
-        }
+        ; if (this.stats.max_bal_diff >= 325) {
+        ;     this.pause_temp.LM := 1
+        ; }
         if (this.stats.max_bal_diff < 300) {
             this.pause_temp.LM := 0
         }
@@ -311,7 +311,7 @@ class TraderBot {
         CheckMaxDiff() {
             arr := [0]
             Loop 100 {
-                if (A_Index < 10) {
+                if (A_Index < 6) {
                     arr.Push(arr[-1] + 0.05)
                 } else {
                     arr.Push(Max(0, arr[-1] - 0.05))
