@@ -384,7 +384,7 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt / 7, 2)
                 if (streak_obj.lose_streak = 0) {
                     amt_trf += 1/4
-                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.75
+                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.25
                     streak_obj.count_0loss++
                     streak_obj.max_count_0loss := Max(streak_obj.count_0loss, streak_obj.max_count_0loss)
                 }
