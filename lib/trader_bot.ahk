@@ -561,6 +561,7 @@ class TraderBot {
                         }
                         if (streak_obj.won_at_0 = 1) {
                             streak_obj.amt := streak_obj.net_since_last_win * 1.01 + 1
+                            streak_obj.net_since_last_win := 0
                             streak_obj.won_at_0 := 0
                         }
                     }
