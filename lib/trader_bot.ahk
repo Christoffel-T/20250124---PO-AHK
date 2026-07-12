@@ -436,6 +436,9 @@ class TraderBot {
         Helper1_StrPrev(streak_obj, target_streak) {
             streak := this.stats.streak_real
             streak_prev := this.streak_prev[1]
+            if (streak_obj.disabled = 1 and streak_prev = target_streak) {
+                return
+            }
             Helper1b() {
                 if (streak_prev = target_streak and streak_obj.lose_streak = 0) {
                     if (streak > streak_prev) {
@@ -530,7 +533,7 @@ class TraderBot {
 
         Helper2_AmtOverride(streak_obj, target_streak, disable:=false) {
             amts := [6+(0.5*this.F300.iter_lost5)]
-            if (streak_obj.disabled = 1) {
+            if (streak_obj.disabled = 1 and streak = target_streak) {
                 this.amount := 1
                 return
             }
@@ -2236,6 +2239,7 @@ class TraderBot {
         _count_reload := 0
         str_n := this.stats.streak_real ' [bet: ' format('{:.2f}', this.amount) '] ' this.balance.current ' (W:' this.stats.bal_win ' | L:' this.stats.bal_lose ') (H=' this.balance.max ' | L=' this.balance.min ' [' this.balance.min_all '])'
         this.debug_str := 'disburse7: ' 'W1=' format('{:.2f}', this.switch_win_loss[1].disburse7) ' L1=' format('{:.2f}', this.switch_win_loss[-1].disburse7) ' | W2=' format('{:.2f}', this.wl2_w5_l7[2].disburse7) ' L2=' format('{:.2f}', this.wl2_w5_l7[-2].disburse7) ' | W5=' format('{:.2f}', this.wl2_w5_l7[5].disburse7) ' L7=' format('{:.2f}', this.wl2_w5_l7[-7].disburse7)
+        this.debug_str .= 'LS0=' this.switch_win_loss[ 1].loss_streak_at_0 '|' this.switch_win_loss[-1].loss_streak_at_0 '|' this.wl2_w5_l7[ 2].loss_streak_at_0 '|' this.wl2_w5_l7[-2].loss_streak_at_0 ' | disabled=' this.switch_win_loss[ 1].disabled '|' this.switch_win_loss[-1].disabled '|' this.wl2_w5_l7[ 2].disabled '|' this.wl2_w5_l7[-2].disabled
         if (Abs(this.F300.stateW) >= 3) {
             this.debug_str := this.debug_str ' | W' Abs(this.F300.stateW) '=' format('{:.2f}', this.wl34[this.F300.stateW].disburse7)
         }
