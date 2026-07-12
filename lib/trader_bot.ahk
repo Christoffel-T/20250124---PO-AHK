@@ -441,7 +441,7 @@ class TraderBot {
             }
             Helper1b() {
                 if (streak_prev = target_streak and streak_obj.lose_streak = 0) {
-                    if (streak > streak_prev) {
+                    if (streak > streak_prev and streak_obj.win_streak >= 1) {
                         streak_obj.won_at_0 := 1
                         streak_obj.loss_streak_at_0 := 0
                         if (this.pause_temp.disabled_others = 1) {
@@ -473,6 +473,7 @@ class TraderBot {
                 if (streak > streak_prev) {
                     streak_obj.wins++
                     streak_obj.lose_streak := 0
+                    streak_obj.win_streak++
                     if (streak_obj.state_5lost = '5lost') {
                         streak_obj.state_5lost := '5lostwon1'
                     } else if (streak_obj.state_5lost = '5lostwon1') {
@@ -482,6 +483,7 @@ class TraderBot {
                 } else if (streak < streak_prev) {
                     streak_obj.losses++
                     streak_obj.lose_streak++
+                    streak_obj.win_streak := 0
                     if (streak_obj.lose_streak = 5) {
                         this.F300.iter_lost5++
                     }
@@ -1351,6 +1353,7 @@ class TraderBot {
             v.won_at_0 := 0
             v.disabled := 0
             v.net_since_last_win := 0
+            v.win_streak := 0
             v.loss_streak_at_0 := 0
             v.last_bet_at_0 := 0
             v.next_bet_at_0 := 0
