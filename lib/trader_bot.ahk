@@ -382,7 +382,11 @@ class TraderBot {
                 amt_trf := Round(streak_obj.amt * 0.08, 2)
                 HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0) {
-                    streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
+                    if (streak_obj.loss_streak_at_0 = 0) {
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.05
+                    } else {
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.20 + 1
+                    }
                     streak_obj.count_0loss := 0
                     streak_obj.pause_temp1 := 0
                     streak_obj.pause_temp2 := 0
