@@ -443,6 +443,7 @@ class TraderBot {
                 if (streak_prev = target_streak and streak_obj.lose_streak = 0) {
                     if (streak > streak_prev and streak_obj.win_streak >= 1) {
                         streak_obj.won_at_0 := 1
+                        streak_obj.net_since_last_win := this.amt_prev[1]
                         streak_obj.loss_streak_at_0 := 0
                         if (this.pause_temp.disabled_others = 1) {
                             this.switch_win_loss[ 1].disabled := 0
