@@ -383,7 +383,7 @@ class TraderBot {
                 HelperDisburse(amt_trf)
                 if (streak_obj.lose_streak = 0) {
                     if (streak_obj.loss_streak_at_0 = 0) {
-                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.05
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
                     } else {
                         streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.20 + 1
                     }
@@ -397,7 +397,7 @@ class TraderBot {
                     if (streak_obj.loss_streak_at_0 = 0) {
                         streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.25
                     } else {
-                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.10
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 0.05
                     }
                     streak_obj.count_0loss++
                     streak_obj.max_count_0loss := Max(streak_obj.count_0loss, streak_obj.max_count_0loss)
