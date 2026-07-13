@@ -2241,7 +2241,7 @@ class TraderBot {
         str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)
         str_l := '(W2: -' this.wl2_w5_l7[ 2].lose_streak ' | 0loss=' this.wl2_w5_l7[ 2].count_0loss '[max=' this.wl2_w5_l7[ 2].max_count_0loss '] ([wins=' this.wl2_w5_l7[ 2].wins '|loss=' this.wl2_w5_l7[ 2].losses ']) sum=' format('{:.2f}', this.wl2_w5_l7[ 2].sum_amt)
         if (streak = 2) {
-                if (this.switch_win_loss[streak].lose_streak = 0) {
+                if (this.wl2_w5_l7[streak].lose_streak = 0) {
                     str_l := 'bet: ' format('{:.2f}', this.amount) '=0 ' str_l
                 } else {
                     str_l := 'bet: ' format('{:.2f}', this.amount) ' ' str_l
@@ -2249,7 +2249,7 @@ class TraderBot {
             }
         str_m := '(L2: -' this.wl2_w5_l7[-2].lose_streak ' | 0loss=' this.wl2_w5_l7[-2].count_0loss '[max=' this.wl2_w5_l7[-2].max_count_0loss '] ([wins=' this.wl2_w5_l7[-2].wins '|loss=' this.wl2_w5_l7[-2].losses ']) sum=' format('{:.2f}', this.wl2_w5_l7[-2].sum_amt)
         if (streak = -2) {
-            if (this.switch_win_loss[streak].lose_streak = 0) {
+            if (this.wl2_w5_l7[streak].lose_streak = 0) {
                 str_m := 'bet: ' format('{:.2f}', this.amount) '=0 ' str_m
             } else {
                 str_m := 'bet: ' format('{:.2f}', this.amount) ' ' str_m
