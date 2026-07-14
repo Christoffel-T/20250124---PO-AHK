@@ -385,7 +385,13 @@ class TraderBot {
                     if (streak_obj.loss_streak_at_0 = 0) {
                         streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.01 + 1
                     } else {
-                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * 1.20 + 1
+                        num := 1.20
+                        if (this.balance.side <= 7000) {
+                            num := 1.07
+                        } else if (this.balance.side <= 10000) {
+                            num := 1.13
+                        }
+                        streak_obj.next_bet_at_0 := streak_obj.last_bet_at_0 * num + 1
                     }
                     streak_obj.count_0loss := 0
                     streak_obj.pause_temp1 := 0
