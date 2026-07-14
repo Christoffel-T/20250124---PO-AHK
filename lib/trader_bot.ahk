@@ -448,7 +448,7 @@ class TraderBot {
                         streak_obj.won_at_0 := 1
                         streak_obj.net_since_last_win := this.amt_prev[1]
                         streak_obj.loss_streak_at_0 := 0
-                        if (this.pause_temp.disabled_others = 1) {
+                        if (Abs(target_streak) <= 2 and this.pause_temp.disabled_others = 1) {
                             this.switch_win_loss[ 1].disabled := 0
                             this.switch_win_loss[-1].disabled := 0
                             this.wl2_w5_l7[ 2].disabled := 0
@@ -460,7 +460,7 @@ class TraderBot {
                         streak_obj.won_at_0 := 0
                         streak_obj.net_since_last_win += this.amt_prev[1]
                         streak_obj.loss_streak_at_0++
-                        if (streak_obj.loss_streak_at_0 >= 3 and this.pause_temp.disabled_others = 0) {
+                        if (Abs(target_streak) <= 2 and streak_obj.loss_streak_at_0 >= 3 and this.pause_temp.disabled_others = 0) {
                             streak_obj.loss_streak_at_0 := 0
                             this.switch_win_loss[ 1].disabled := 1
                             this.switch_win_loss[-1].disabled := 1
@@ -2244,7 +2244,7 @@ class TraderBot {
         }
         str_j := format('{:.2f}', this.stats.max_bal_diff) ' (' format('{:.2f}', this.stats.next_max_bal_diff) ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ')'
         if (this.switch_win_loss[ 1].disabled OR this.switch_win_loss[-1].disabled OR this.wl2_w5_l7[ 2].disabled OR this.wl2_w5_l7[-2].disabled) {
-            str_j := str_j ' PAUSE(' this.switch_win_loss[ 1].disabled ',' this.switch_win_loss[-1].disabled ',' this.wl2_w5_l7[ 2].disabled ',' this.wl2_w5_l7[-2].disabled ')'
+            str_j := str_j ' PAUSE(' this.switch_win_loss[ 1].disabled this.switch_win_loss[-1].disabled this.wl2_w5_l7[ 2].disabled this.wl2_w5_l7[-2].disabled ')'
         }
         str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)
         str_l := '(W2: -' this.wl2_w5_l7[ 2].lose_streak ' | 0loss=' this.wl2_w5_l7[ 2].count_0loss '[max=' this.wl2_w5_l7[ 2].max_count_0loss '] ([wins=' this.wl2_w5_l7[ 2].wins '|loss=' this.wl2_w5_l7[ 2].losses ']) sum=' format('{:.2f}', this.wl2_w5_l7[ 2].sum_amt)
