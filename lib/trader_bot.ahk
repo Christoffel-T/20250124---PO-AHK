@@ -455,22 +455,18 @@ class TraderBot {
                         streak_obj.net_since_last_win := this.amt_prev[1]
                         streak_obj.loss_streak_at_0 := 0
                         if (Abs(target_streak) <= 2 and this.pause_temp.disabled_others = 1) {
-                            this.switch_win_loss[ 1].disabled := 0
-                            this.switch_win_loss[-1].disabled := 0
-                            this.wl2_w5_l7[ 2].disabled := 0
-                            this.wl2_w5_l7[-2].disabled := 0
-                            this.switch_win_loss[ 1].next_bet_at_0 := 0
-                            this.switch_win_loss[-1].next_bet_at_0 := 0
-                            this.wl2_w5_l7[ 2].next_bet_at_0 := 0
-                            this.wl2_w5_l7[-2].next_bet_at_0 := 0
-                            this.switch_win_loss[ 1].won_at_0 := 0
-                            this.switch_win_loss[-1].won_at_0 := 0
-                            this.wl2_w5_l7[ 2].won_at_0 := 0
-                            this.wl2_w5_l7[-2].won_at_0 := 0
-                            this.switch_win_loss[ 1].last_bet_at_0 := 0
-                            this.switch_win_loss[-1].last_bet_at_0 := 0
-                            this.wl2_w5_l7[ 2].last_bet_at_0 := 0
-                            this.wl2_w5_l7[-2].last_bet_at_0 := 0
+                            HelperResetter(prop) {
+                                this.switch_win_loss[ 1].%prop% := 0
+                                this.switch_win_loss[-1].%prop% := 0
+                                this.wl2_w5_l7[ 2].%prop% := 0
+                                this.wl2_w5_l7[-2].%prop% := 0
+                            }
+                            HelperResetter('next_bet_at_0')
+                            HelperResetter('won_at_0')
+                            HelperResetter('last_bet_at_0')
+                            HelperResetter('disburse7')
+                            HelperResetter('')
+                            this.F300.iter_lost5 := 0
                             this.pause_temp.disabled_others := 0
                             this.pause_temp.double_135 := 1
 
