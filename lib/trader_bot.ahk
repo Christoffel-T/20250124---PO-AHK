@@ -459,7 +459,21 @@ class TraderBot {
                             this.switch_win_loss[-1].disabled := 0
                             this.wl2_w5_l7[ 2].disabled := 0
                             this.wl2_w5_l7[-2].disabled := 0
+                            this.switch_win_loss[ 1].next_bet_at_0 := 0
+                            this.switch_win_loss[-1].next_bet_at_0 := 0
+                            this.wl2_w5_l7[ 2].next_bet_at_0 := 0
+                            this.wl2_w5_l7[-2].next_bet_at_0 := 0
+                            this.switch_win_loss[ 1].won_at_0 := 0
+                            this.switch_win_loss[-1].won_at_0 := 0
+                            this.wl2_w5_l7[ 2].won_at_0 := 0
+                            this.wl2_w5_l7[-2].won_at_0 := 0
+                            this.switch_win_loss[ 1].last_bet_at_0 := 0
+                            this.switch_win_loss[-1].last_bet_at_0 := 0
+                            this.wl2_w5_l7[ 2].last_bet_at_0 := 0
+                            this.wl2_w5_l7[-2].last_bet_at_0 := 0
                             this.pause_temp.disabled_others := 0
+                            this.pause_temp.double_135 := 1
+
                         }
                     }
                     if (streak < streak_prev) {
@@ -571,13 +585,15 @@ class TraderBot {
 
                     streak_obj.amt := this.cust_amts[Min(idx, this.cust_amts.Length)]
                     if (streak_obj.lose_streak = 0) {
-                        if (streak_obj.next_bet_at_0 > 0) {
-                            streak_obj.amt := streak_obj.next_bet_at_0
-                        }
+                        if (this.pause_temp.double_135 = 1) {
+                            streak_obj.amt *= 2
+                        } 
                         if (streak_obj.won_at_0 = 1) {
                             streak_obj.amt := streak_obj.net_since_last_win * 1.01 + 1
                             streak_obj.net_since_last_win := 0
                             streak_obj.won_at_0 := 0
+                        } else if (streak_obj.next_bet_at_0 > 0) {
+                            streak_obj.amt := streak_obj.next_bet_at_0
                         }
                     }
                     streak_obj.amt += addition
@@ -1359,6 +1375,7 @@ class TraderBot {
             loss7: 0,
             pause_temp2: 0,
             disabled_others: 0,
+            double_135: 0,
         }
         PropSerializer(v) {
             v.won_at_0 := 0
