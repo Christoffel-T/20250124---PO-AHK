@@ -461,11 +461,11 @@ class TraderBot {
                                 this.wl2_w5_l7[ 2].%prop% := 0
                                 this.wl2_w5_l7[-2].%prop% := 0
                             }
+                            HelperResetter('disabled')
                             HelperResetter('next_bet_at_0')
                             HelperResetter('won_at_0')
                             HelperResetter('last_bet_at_0')
                             HelperResetter('disburse7')
-                            HelperResetter('')
                             this.F300.iter_lost5 := 0
                             this.pause_temp.disabled_others := 0
                             this.pause_temp.double_135 := 1
