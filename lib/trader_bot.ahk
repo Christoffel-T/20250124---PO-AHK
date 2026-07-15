@@ -451,9 +451,10 @@ class TraderBot {
             Helper1b() {
                 if (streak_prev = target_streak and streak_obj.lose_streak = 0) {
                     streak_obj.won_at_0 := 1
-                    if (streak > streak_prev and streak_obj.win_streak >= 1) {
+                    if (streak > streak_prev) {
                         streak_obj.net_since_last_win := this.amt_prev[1]
                         streak_obj.loss_streak_at_0 := 0
+                        streak_obj.win_streak_at_0++
                         if (Abs(target_streak) <= 2 and this.pause_temp.disabled_others = 1) {
                             HelperResetter(prop) {
                                 this.switch_win_loss[ 1].%prop% := 0
@@ -477,6 +478,7 @@ class TraderBot {
                         streak_obj.won_at_0 := 0
                         streak_obj.net_since_last_win += this.amt_prev[1]
                         streak_obj.loss_streak_at_0++
+                        streak_obj.win_streak_at_0 := 0
                         if (Abs(target_streak) <= 2 and streak_obj.loss_streak_at_0 >= 3 and this.pause_temp.disabled_others = 0) {
                             streak_obj.loss_streak_at_0 := 0
                             this.switch_win_loss[ 1].disabled := 1
@@ -489,6 +491,7 @@ class TraderBot {
                     }
                 }
             }
+            Helper1b()
             if (streak_prev = target_streak) {
                 if (streak > streak_prev) {
                     streak_obj.wins++
@@ -530,7 +533,6 @@ class TraderBot {
                     }
                 }
             }
-            Helper1b()
             if streak_obj.sum_amt >= 5 {
                 streak_obj.sum_over20 := 1
             }
@@ -1379,6 +1381,7 @@ class TraderBot {
             v.disabled := 0
             v.net_since_last_win := 0
             v.win_streak := 0
+            v.win_streak_at_0 := 0
             v.loss_streak_at_0 := 0
             v.last_bet_at_0 := 0
             v.next_bet_at_0 := 0
