@@ -642,9 +642,9 @@ class TraderBot {
                     if (streak_obj.max_bet = 30) {
                         streak_obj.perc_107 := 67
                     } else {
-                        streak_obj.perc_107 := Max(157, streak_obj.perc_107 + 10)
+                        streak_obj.perc_107 := Min(157, streak_obj.perc_107 + 10)
                     }
-                    streak_obj.max_bet := Max(130, streak_obj.max_bet + 10)
+                    streak_obj.max_bet := Min(130, streak_obj.max_bet + 10)
                 }
                 this.amount := streak_obj.amt
             }
