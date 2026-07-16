@@ -444,6 +444,12 @@ class TraderBot {
             }
             return 0
         }
+        HelperResetter(prop) {
+            this.wl_12[ 1].%prop% := 0
+            this.wl_12[-1].%prop% := 0
+            this.wl_12[ 2].%prop% := 0
+            this.wl_12[-2].%prop% := 0
+        }
 
         Helper1_StrPrev(streak_obj, target_streak) {
             streak := this.stats.streak_real
@@ -456,12 +462,6 @@ class TraderBot {
                         streak_obj.loss_streak_at_0 := 0
                         streak_obj.win_streak_at_0++
                         if (Abs(target_streak) <= 2 and this.pause_temp.disabled_others = 1) {
-                            HelperResetter(prop) {
-                                this.wl_12[ 1].%prop% := 0
-                                this.wl_12[-1].%prop% := 0
-                                this.wl_12[ 2].%prop% := 0
-                                this.wl_12[-2].%prop% := 0
-                            }
                             HelperResetter('disabled')
                             HelperResetter('loss_streak_at_0')
                             HelperResetter('next_bet_at_0')
@@ -630,6 +630,14 @@ class TraderBot {
                     streak_obj.amt := 1
                 }
                 if (streak_obj.amt >= streak_obj.max_bet) {
+                    HelperResetter('disabled')
+                    HelperResetter('loss_streak_at_0')
+                    HelperResetter('next_bet_at_0')
+                    HelperResetter('won_at_0')
+                    HelperResetter('last_bet_at_0')
+                    HelperResetter('disburse7')
+                    this.F300.iter_lost5 := 0
+                    this.pause_temp.disabled_others := 0
                     streak_obj.amt := streak_obj.max_bet
                     if (streak_obj.max_bet = 30) {
                         streak_obj.perc_107 := 67
