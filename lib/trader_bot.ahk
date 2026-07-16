@@ -2282,9 +2282,9 @@ class TraderBot {
                 continue
             }
             if k > 0 {
-                str_j .= 'W' Abs(k) '=' v.perc_107 '% '
+                str_j .= 'W' Abs(k) '=' v.perc_107 '% ($' v.max_bet ') '
             } else {
-                str_j .= 'L' Abs(k) '=' v.perc_107 '% '
+                str_j .= 'L' Abs(k) '=' v.perc_107 '% ($' v.max_bet ') '
             }
         }
         if (this.wl_12[ 1].disabled OR this.wl_12[-1].disabled OR this.wl_12[ 2].disabled OR this.wl_12[-2].disabled) {
