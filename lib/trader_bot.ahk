@@ -625,7 +625,7 @@ class TraderBot {
                     if (streak_obj.lose_streak != 0) {
                         streak_obj.amt := 1
                     }
-                }
+                } 
                 if (disable) {
                     streak_obj.amt := 1
                 }
