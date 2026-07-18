@@ -22,10 +22,11 @@ UpdateVS() {
             WinActivate("ahk_exe Code.exe")
             sleep 100
         }
+        sleep 200
         Send '^+p'
-        sleep 300
+        sleep 500
         Send 'git pull'
-        sleep 300
+        sleep 500
         Send '{Enter}'
         sleep 5000
     }
