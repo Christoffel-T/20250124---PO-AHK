@@ -629,22 +629,23 @@ class TraderBot {
                 if (disable) {
                     streak_obj.amt := 1
                 }
-                if (streak_obj.amt >= streak_obj.max_bet) {
+                
+                if (streak_obj.sum_amt + streak_obj.amt >= streak_obj.max_sum_amt) {
                     HelperResetter('disabled')
                     HelperResetter('loss_streak_at_0')
                     HelperResetter('next_bet_at_0')
                     HelperResetter('won_at_0')
                     HelperResetter('last_bet_at_0')
-                    HelperResetter('disburse7')
-                    this.F300.iter_lost5 := 0
+                    ; HelperResetter('disburse7')
+                    ; this.F300.iter_lost5 := 0
                     this.pause_temp.disabled_others := 0
-                    streak_obj.amt := streak_obj.max_bet
-                    if (streak_obj.max_bet = 30) {
-                        streak_obj.perc_107 := 67
+                    streak_obj.amt := streak_obj.max_sum_amt - streak_obj.sum_amt
+                    if (streak_obj.max_sum_amt = 30) {
+                        streak_obj.perc_107 := 57
                     } else {
                         streak_obj.perc_107 := Min(157, streak_obj.perc_107 + 10)
                     }
-                    streak_obj.max_bet := Min(130, streak_obj.max_bet + 10)
+                    streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 30)
                 }
                 this.amount := streak_obj.amt
             }
@@ -1394,7 +1395,8 @@ class TraderBot {
             double_135: 0,
         }
         PropSerializer(v) {
-            v.max_bet := 30
+            v.state_bet_max_sum_amt := 0
+            v.max_sum_amt := 30
             v.perc_107 := 107
             v.won_at_0 := 0
             v.disabled := 0
@@ -1526,7 +1528,7 @@ class TraderBot {
         this.amount_override := {lastAmount70: 0, amountAt1: 2, win2: {count:0, count_win:0, count_loss:0, state:0, multiplier:2.25}, lose12: Constants.GetAmounts3(), lose8: Constants.GetAmounts4()}
         this.amount_override.helper3 := {state:0, amtWin1:7, amtLose1:8, countWin1:1, countLose1:1}
         this.amount_override.helper4 := {state:0}
-        this.custom_max_bet := 0
+        this.custom_max_sum_amt := 0
         this.win1_override := {
             state: 0,
             count: 0,
@@ -2290,9 +2292,9 @@ class TraderBot {
                 continue
             }
             if k > 0 {
-                str_j .= 'W' Abs(k) '=' v.perc_107 '% ($' v.max_bet ') '
+                str_j .= 'W' Abs(k) '=' v.perc_107 '% ($' v.max_sum_amt ') '
             } else {
-                str_j .= 'L' Abs(k) '=' v.perc_107 '% ($' v.max_bet ') '
+                str_j .= 'L' Abs(k) '=' v.perc_107 '% ($' v.max_sum_amt ') '
             }
         }
         if (this.wl_12[ 1].disabled OR this.wl_12[-1].disabled OR this.wl_12[ 2].disabled OR this.wl_12[-2].disabled) {
