@@ -479,15 +479,15 @@ class TraderBot {
                         streak_obj.net_since_last_win += this.amt_prev[1]
                         streak_obj.loss_streak_at_0++
                         streak_obj.win_streak_at_0 := 0
-                        if (Abs(target_streak) <= 2 and streak_obj.loss_streak_at_0 >= 3 and this.pause_temp.disabled_others = 0) {
-                            streak_obj.loss_streak_at_0 := 0
-                            this.wl_12[ 1].disabled := 1
-                            this.wl_12[-1].disabled := 1
-                            this.wl_12[ 2].disabled := 1
-                            this.wl_12[-2].disabled := 1
-                            streak_obj.disabled := 0
-                            this.pause_temp.disabled_others := 1
-                        }
+                        ; if (Abs(target_streak) <= 2 and streak_obj.loss_streak_at_0 >= 3 and this.pause_temp.disabled_others = 0) {
+                        ;     streak_obj.loss_streak_at_0 := 0
+                        ;     this.wl_12[ 1].disabled := 1
+                        ;     this.wl_12[-1].disabled := 1
+                        ;     this.wl_12[ 2].disabled := 1
+                        ;     this.wl_12[-2].disabled := 1
+                        ;     streak_obj.disabled := 0
+                        ;     this.pause_temp.disabled_others := 1
+                        ; }
                     }
                 }
             }
