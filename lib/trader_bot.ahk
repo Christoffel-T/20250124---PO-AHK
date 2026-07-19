@@ -2285,7 +2285,7 @@ class TraderBot {
             } else {
                 str_h := '(W1bet: ' format('{:.2f}', this.amount) ') ' str_h
             }
-            str_h := '[sum=' format('{:.2f}', this.wl_12[ 1].sum_amt) ' (' this.wl_12[ 1].max_sum_amt ' -' this.wl_12[ 1].max_sum_amt - this.wl_12[ 1].sum_amt ')]' str_h
+            str_h := '[sum=' format('{:.2f}', this.wl_12[streak].sum_amt) ' (' format('{:.0f}', this.wl_12[streak].max_sum_amt) ' -' format('{:.2f}', this.wl_12[streak].max_sum_amt - this.wl_12[streak].sum_amt) ')]' str_h
         }
         if (streak = -1) {
             if (this.wl_12[streak].lose_streak = 0) {
@@ -2293,7 +2293,7 @@ class TraderBot {
             } else {
                 str_h := '(L1bet: ' format('{:.2f}', this.amount) ') ' str_h
             }
-            str_h := '[sum=' format('{:.2f}', this.wl_12[-1].sum_amt) ' (' this.wl_12[-1].max_sum_amt ' -' this.wl_12[-1].max_sum_amt - this.wl_12[-1].sum_amt ')]' str_h
+            str_h := '[sum=' format('{:.2f}', this.wl_12[streak].sum_amt) ' (' format('{:.0f}', this.wl_12[streak].max_sum_amt) ' -' format('{:.2f}', this.wl_12[streak].max_sum_amt - this.wl_12[streak].sum_amt) ')]' str_h
         }
 
         if (this.pause_except_1.state = 1) {
@@ -2329,7 +2329,7 @@ class TraderBot {
             str_j := str_j ' | PAUSE(' this.wl_12[ 1].disabled this.wl_12[-1].disabled this.wl_12[ 2].disabled this.wl_12[-2].disabled ')'
         }
         str_k := format('{:.2f}', this.balance.side) ' H=' format('{:.2f}', this.balance.side_high) ' L=' format('{:.2f}', this.balance.side_low)
-        str_k .= ' (maxdiff H=' this.max_diff.H - 300 ' | DIFF=' this.max_diff.H - this.max_diff.L ')' 
+        str_k .= ' (maxdiff H=' format('{:.2f}', this.max_diff.H - 300) ' | DIFF=' format('{:.2f}', this.max_diff.H - this.max_diff.L) ')' 
         str_l := '(W2: -' this.wl_12[ 2].lose_streak ' | 0loss=' this.wl_12[ 2].count_0loss '[max=' this.wl_12[ 2].max_count_0loss '] ([wins=' this.wl_12[ 2].wins '|loss=' this.wl_12[ 2].losses ']) sum=' format('{:.2f}', this.wl_12[ 2].sum_amt)
         if (streak = 2) {
                 if (this.wl_12[streak].lose_streak = 0) {
