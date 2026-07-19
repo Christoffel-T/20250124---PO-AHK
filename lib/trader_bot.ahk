@@ -302,7 +302,8 @@ class TraderBot {
             }
         }
         percs := [0.30, 0.40]
-        
+        this.max_diff.H := Max(this.max_diff.H, this.max_diff.C)
+        this.max_diff.L := Min(this.max_diff.L, this.max_diff.C)
         CheckMaxDiff()
 
         AmountOverride1_wl1_win7above()
@@ -2745,8 +2746,6 @@ class TraderBot {
                 this.balance.min_all := Format('{:.2f}', min(cur_bal, this.balance.min_all))
 
                 this.max_diff.C := this.balance.max - this.balance.current
-                this.max_diff.H := Max(this.max_diff.H, this.max_diff.C)
-                this.max_diff.L := Min(this.max_diff.L, this.max_diff.C)
                 this.max_diff.next := this.max_diff.C + this.amount
                 return real_bal
             }
