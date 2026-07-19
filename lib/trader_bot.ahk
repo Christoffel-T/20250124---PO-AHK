@@ -276,8 +276,9 @@ class TraderBot {
         }
         if (streak < this.streak_prev[1]) {
             amt_trf := (this.amt_prev[1]) / 4
-            if (streak_obj.state_bet_max_sum_amt = 'REDUCE_BY_8') {
+            if (this.pause_temp.state_bet_max_sum_amt = 'REDUCE_BY_8') {
                 amt_trf -= 8
+                this.pause_temp.state_bet_max_sum_amt := 0
             }
             amt_trf := amt_trf / 4
             HelperDisburse(amt_trf)
@@ -651,9 +652,9 @@ class TraderBot {
                     }
                     if (streak_obj.max_sum_amt >= 65 and this.balance.side < this.balance.starting + 4000) {
                         streak_obj.amt *= 0.4
-                        streak_obj.state_bet_max_sum_amt := 'REDUCE_BY_8'
+                        this.pause_temp.state_bet_max_sum_amt := 'REDUCE_BY_8'
                     } else {
-                        streak_obj.state_bet_max_sum_amt := 0
+                        this.pause_temp.state_bet_max_sum_amt := 0
                     }
                     streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 15)
                 }
@@ -1406,6 +1407,7 @@ class TraderBot {
             Starting: 300,
         }
         this.pause_temp := {
+            state_bet_max_sum_amt: 0,
             loss7: 0,
             pause_temp2: 0,
             disabled_others: 0,
