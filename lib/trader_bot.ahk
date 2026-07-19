@@ -2333,6 +2333,7 @@ class TraderBot {
         str_k .= ' (maxdiff H=' format('{:.2f}', this.max_diff.H - 300) ' | DIFF=' format('{:.2f}', this.max_diff.H - this.max_diff.L) ')' 
         str_l := '(W2: -' this.wl_12[ 2].lose_streak ' | 0loss=' this.wl_12[ 2].count_0loss '[max=' this.wl_12[ 2].max_count_0loss '] ([wins=' this.wl_12[ 2].wins '|loss=' this.wl_12[ 2].losses ']) sum=' format('{:.2f}', this.wl_12[ 2].sum_amt)
         if (streak = 2) {
+            str_l := '[sum=' format('{:.2f}', this.wl_12[streak].sum_amt) ' (' format('{:.0f}', this.wl_12[streak].max_sum_amt) ' -' format('{:.2f}', this.wl_12[streak].max_sum_amt - this.wl_12[streak].sum_amt) ')]' str_l
                 if (this.wl_12[streak].lose_streak = 0) {
                     str_l := 'BET: ' format('{:.2f}', this.amount) ' ' str_l
                 } else {
@@ -2341,6 +2342,7 @@ class TraderBot {
             }
         str_m := '(L2: -' this.wl_12[-2].lose_streak ' | 0loss=' this.wl_12[-2].count_0loss '[max=' this.wl_12[-2].max_count_0loss '] ([wins=' this.wl_12[-2].wins '|loss=' this.wl_12[-2].losses ']) sum=' format('{:.2f}', this.wl_12[-2].sum_amt)
         if (streak = -2) {
+            str_l := '[sum=' format('{:.2f}', this.wl_12[streak].sum_amt) ' (' format('{:.0f}', this.wl_12[streak].max_sum_amt) ' -' format('{:.2f}', this.wl_12[streak].max_sum_amt - this.wl_12[streak].sum_amt) ')]' str_l
             if (this.wl_12[streak].lose_streak = 0) {
                 str_m := 'BET: ' format('{:.2f}', this.amount) ' ' str_m
             } else {
