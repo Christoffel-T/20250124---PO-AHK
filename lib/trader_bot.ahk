@@ -28,6 +28,13 @@ class TraderBot {
         this.balance.min_all := this.balance.min
         this.stats := {trade_history: [''], bal_mark: 0, bal_win: 0, bal_lose: 0, streak: 0, streak2: 0, win: 0, loss: 0, draw: 0, win_rate: 0, max_win_rate: 0, min_win_rate: 100, reset_date: 0}
         this.stats.bal_win := 0
+        this.max_diff := {
+            H: 300,
+            L: 300,
+            C: 300,
+            next: 300,
+            Starting: 300,
+        }
         this.max_diff.C := 0
         this.max_diff.next := 0
         this.stats.streak_real := 0
