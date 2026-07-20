@@ -664,7 +664,7 @@ class TraderBot {
                     } else {
                         this.pause_temp.state_bet_max_sum_amt := 0
                     }
-                    streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 15)
+                    streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 25)
                 }
                 this.amount := streak_obj.amt
             }
