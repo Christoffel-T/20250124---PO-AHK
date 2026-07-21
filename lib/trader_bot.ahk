@@ -16,6 +16,14 @@ traymenu.Add("Last Modified: " formatted, (*) => '')
 
 class TraderBot {
     __New(settings_obj) {
+        this.max_diff := {
+            H: 300,
+            L: 300,
+            C: 300,
+            next: 300,
+            Starting: 300,
+            max_to_reset: 350,
+        }
         this.settings_obj := settings_obj
         this.wtitle := WinExist(settings_obj.wtitle)
         this.coords := settings_obj.coords
@@ -328,6 +336,10 @@ class TraderBot {
 
         CheckMaxDiff() {
             this.extra_str := ''
+            if (this.max_diff.C >= this.max_diff.max_to_reset) {
+                this.max_diff.max_to_reset += 10
+                this.QualifiersReset()
+            }
             if (this.max_diff.C >= 325) {
                 if (this.maxdiff350.state = 0) {
                     ; ResetLoseStreaks()
@@ -453,13 +465,32 @@ class TraderBot {
                     return 1
                 }
             }
+            if (streak = target_streak and this.pause_2bets != 0) {
+                if (this.pause_2bets > 3) {
+                    this.amount := this.amt_pause_2bets
+                }
+                this.amount := 1
+                return 1
+            }
+            if (streak_prev = target_streak and this.pause_2bets != 0) {
+                this.pause_2bets++
+                if (this.pause_2bets > 3) {
+                    if (streak < streak_prev) {
+                        this.amt_pause_2bets := this.amt_pause_2bets * 2 + 3
+                    } else if (streak > streak_prev) {
+                        this.amt_pause_2bets := 7
+                        this.pause_2bets := 0
+                    }
+                }
+                return 1
+            }
             return 0
         }
-        HelperResetter(prop) {
-            this.wl_12[ 1].%prop% := 0
-            this.wl_12[-1].%prop% := 0
-            this.wl_12[ 2].%prop% := 0
-            this.wl_12[-2].%prop% := 0
+        HelperResetter(prop, value:=0) {
+            this.wl_12[ 1].%prop% := value
+            this.wl_12[-1].%prop% := value
+            this.wl_12[ 2].%prop% := value
+            this.wl_12[-2].%prop% := value
         }
 
         Helper1_StrPrev(streak_obj, target_streak) {
@@ -489,6 +520,9 @@ class TraderBot {
                         streak_obj.won_at_0 := 0
                         streak_obj.net_since_last_win += this.amt_prev[1]
                         streak_obj.loss_streak_at_0++
+                        if (streak_obj.loss_streak_at_0 = 2) {
+                            this.pause_2bets := 1
+                        }
                         streak_obj.win_streak_at_0 := 0
                         ; if (Abs(target_streak) <= 2 and streak_obj.loss_streak_at_0 >= 3 and this.pause_temp.disabled_others = 0) {
                         ;     streak_obj.loss_streak_at_0 := 0
@@ -653,6 +687,8 @@ class TraderBot {
                     streak_obj.amt := streak_obj.max_sum_amt - streak_obj.sum_amt
                     if (streak_obj.max_sum_amt = 40) {
                         streak_obj.perc_107 := 57
+                    } else if (streak_obj.max_sum_amt >= 310) {
+                        streak_obj.perc_107 := streak_obj.perc_107 + 10
                     } else {
                         streak_obj.perc_107 := Min(157, streak_obj.perc_107 + 10)
                     }
@@ -664,6 +700,7 @@ class TraderBot {
                     }
                     streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 25)
                 }
+                streak_obj.amt := Min(streak_obj.amt, this.max_diff.max_to_reset - this.max_diff.C)
                 this.amount := streak_obj.amt
             }
 
@@ -1243,13 +1280,14 @@ class TraderBot {
     }
 
     QualifiersReset() {
-        this.max_diff := {
-            H: 300,
-            L: 300,
-            C: 300,
-            next: 300,
-            Starting: 300,
-        }
+        this.amt_pause_2bets := 7
+        this.pause_2bets := 0
+        this.max_diff.H:= 300,
+        this.max_diff.L:= 300,
+        this.max_diff.C:= 300,
+        this.max_diff.next:= 300,
+        this.max_diff.Starting:= 300,
+
         this.pause_temp := {
             state_bet_max_sum_amt: 0,
             loss7: 0,
