@@ -10,9 +10,7 @@ traymenu.Add("Last Modified: " formatted, (*) => '')
 /*
 
 */
-
 ;}
-
 
 class TraderBot {
     __New(settings_obj) {
@@ -128,6 +126,7 @@ class TraderBot {
             streaks: Map(3, {}, 4, {}, -3, {}, -4, {})
         }
 
+        this.QualifiersInit()
         this.QualifiersReset()
         this.MidNightReset()
         this.amount := 1
@@ -327,37 +326,9 @@ class TraderBot {
 
         CheckMaxDiff() {
             this.extra_str := ''
-            if (this.max_diff.C >= this.max_diff.max_to_reset) {
-                this.max_diff.max_to_reset += 10
+            if (this.max_diff.C >= this.max_diff.max_to_reset and Mod(this.max_diff.C, 10) = 0) {
                 this.QualifiersReset()
-            }
-            if (this.max_diff.C >= 325) {
-                if (this.maxdiff350.state = 0) {
-                    ; ResetLoseStreaks()
-                }
-                this.extra_str := 'maxdiff325'
-                this.maxdiff350.state := 1
-            } else if (this.max_diff.C <= 319 and this.maxdiff350.state = 1) {
-                if (this.maxdiff350.state = 1) {
-                    ; ResetLoseStreaks()
-                }
-                this.extra_str := 'maxdiff325 END'
-                ; this.maxdiff350.state := 0
-                ; this.F300.iter_lost5 := this.maxdiff350.stored_4loss_count
-                ; this.maxdiff350.stored_4loss_count := 0
-            }
-
-            ResetLoseStreaks() {
-                this.wl_12[ 1].lose_streak := 0
-                this.wl_12[-1].lose_streak := 0
-                this.wl_12[ 2].lose_streak := 0
-                this.wl_12[-2].lose_streak := 0
-                if (Abs(this.F300.stateW) >= 3) {
-                    this.wl34[this.F300.stateW].lose_streak := 0
-                }
-                if (Abs(this.F300.stateL) >= 3) {
-                    this.wl34[this.F300.stateL].lose_streak := 0
-                }
+                this.extra_str := 'QUALIFIERS_RESETTED'
             }
         }
 
@@ -691,7 +662,9 @@ class TraderBot {
                     }
                     streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 25)
                 }
-                streak_obj.amt := Min(streak_obj.amt, this.max_diff.max_to_reset - this.max_diff.C)
+                if (this.max_diff.C + streak_obj.amt >= this.max_diff.max_to_reset) {
+                    streak_obj.amt := Min(streak_obj.amt, Ceil(this.max_diff.C/10)*10 - this.max_diff.C)
+                }
                 this.amount := streak_obj.amt
             }
 
@@ -1270,14 +1243,18 @@ class TraderBot {
         }
     }
 
-    QualifiersReset() {
+    QualifiersInit() {
         this.amt_pause_2bets := 7
         this.pause_2bets := 0
-        this.max_diff.H:= 300,
-        this.max_diff.L:= 300,
-        this.max_diff.C:= 300,
-        this.max_diff.next:= 300,
-        this.max_diff.Starting:= 300,
+        this.max_diff.max_to_reset:= 350
+    }
+
+    QualifiersReset() {
+        this.max_diff.H:= 300
+        this.max_diff.L:= 300
+        this.max_diff.C:= 300
+        this.max_diff.next:= 300
+        this.max_diff.Starting:= 300
 
         this.pause_temp := {
             state_bet_max_sum_amt: 0,
