@@ -427,16 +427,16 @@ class TraderBot {
                     return 1
                 }
             }
-            if (streak = target_streak and this.pause_2bets != 0) {
-                if (this.pause_2bets > 3) {
+            if (streak = target_streak and this.pause_2bets > 1) {
+                if (this.pause_2bets > 4) {
                     this.amount := this.amt_pause_2bets
                 }
                 this.amount := 1
                 return 1
             }
-            if (streak_prev = target_streak and this.pause_2bets != 0) {
+            if (streak_prev = target_streak and this.pause_2bets > 1) {
                 this.pause_2bets++
-                if (this.pause_2bets > 3) {
+                if (this.pause_2bets > 4) {
                     if (streak < streak_prev) {
                         this.amt_pause_2bets := this.amt_pause_2bets * 2 + 3
                     } else if (streak > streak_prev) {
@@ -482,9 +482,7 @@ class TraderBot {
                         streak_obj.won_at_0 := 0
                         streak_obj.net_since_last_win += this.amt_prev[1]
                         streak_obj.loss_streak_at_0++
-                        if (streak_obj.loss_streak_at_0 = 2) {
-                            this.pause_2bets := 1
-                        }
+                        this.pause_2bets++
                         streak_obj.win_streak_at_0 := 0
                         ; if (Abs(target_streak) <= 2 and streak_obj.loss_streak_at_0 >= 3 and this.pause_temp.disabled_others = 0) {
                         ;     streak_obj.loss_streak_at_0 := 0
