@@ -437,17 +437,17 @@ class TraderBot {
                     return 1
                 }
             }
-            if (streak = target_streak and this.pause_2bets > 1) {
-                if (this.pause_2bets > 4) {
+            if (streak = target_streak and this.pause_2bets > 1 and streak_obj.lose_streak = 0) {
+                if (this.pause_2bets >= 4) {
                     this.amount := this.amt_pause_2bets
                 } else {
                     this.amount := 1
                 }
                 return 1
             }
-            if (streak_prev = target_streak and this.pause_2bets > 1) {
+            if (streak != streak_prev and streak_prev = target_streak and this.pause_2bets > 1 and streak_obj.lose_streak = 0) {
                 this.pause_2bets++
-                if (this.pause_2bets > 5) {
+                if (this.pause_2bets > 4) {
                     if (streak < streak_prev) {
                         this.amt_pause_2bets := this.amt_pause_2bets * 2 + 3
                     } else if (streak > streak_prev) {
