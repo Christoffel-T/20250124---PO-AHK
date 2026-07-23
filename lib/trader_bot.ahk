@@ -311,6 +311,7 @@ class TraderBot {
         AmountOverride6_Lose7()
         AmountOverride7_Win5()
         AmountOverride8_22()
+        this.extra_str .= 'p2b=' this.pause_2bets '[]' DecimalFormatter(this.amt_pause_2bets)
 
         this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
@@ -339,7 +340,6 @@ class TraderBot {
             if (this.7perc_inc.state325 = 1) {
                 this.extra_str .= '|7%inc active'
             }
-            this.extra_str .= 'p2b=' this.pause_2bets '[]' DecimalFormatter(this.amt_pause_2bets)
         }
 
         HelperSumAmt(streak_obj, target_streak) {
