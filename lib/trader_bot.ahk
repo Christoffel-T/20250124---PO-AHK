@@ -1276,11 +1276,6 @@ class TraderBot {
         this.7perc_inc := {
             state325: 0,
         }
-        this.max_diff.H:= 300
-        this.max_diff.L:= 300
-        this.max_diff.C:= 300
-        this.max_diff.next:= 300
-        this.max_diff.Starting:= 300
 
         this.pause_temp := {
             state_bet_max_sum_amt: 0,
