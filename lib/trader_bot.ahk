@@ -328,7 +328,16 @@ class TraderBot {
             this.extra_str := ''
             if (this.max_diff.C >= this.max_diff.max_to_reset and Mod(this.max_diff.C, 10) = 0) {
                 this.QualifiersReset()
-                this.extra_str := 'QUALIFIERS_RESETTED'
+                this.extra_str := 'Qs_RESET'
+            }
+            if (this.max_diff.C >= 325) {
+                this.7perc_inc.state325 := 1
+            }
+            if (this.max_diff.C <= 275) {
+                this.7perc_inc.state325 := 0
+            }
+            if (this.7perc_inc.state325 = 1) {
+                this.extra_str .= '|7%inc active'
             }
         }
 
@@ -659,6 +668,11 @@ class TraderBot {
                         this.pause_temp.state_bet_max_sum_amt := 0
                     }
                     streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 25)
+                }
+                if (streak_obj.amt > 1) {
+                    if (this.7perc_inc.state325 = 1 and streak_obj.loss_streak_at_0 >= 1) {
+                        streak_obj.amt *= 1.07
+                    }
                 }
                 if (this.max_diff.C + streak_obj.amt >= this.max_diff.max_to_reset) {
                     streak_obj.amt := Min(streak_obj.amt, Ceil(this.max_diff.C/10)*10 - this.max_diff.C)
@@ -1248,6 +1262,9 @@ class TraderBot {
     }
 
     QualifiersReset() {
+        this.7perc_inc := {
+            state325: 0,
+        }
         this.max_diff.H:= 300
         this.max_diff.L:= 300
         this.max_diff.C:= 300
