@@ -473,6 +473,7 @@ class TraderBot {
                 if (streak_prev = target_streak and streak_obj.lose_streak = 0) {
                     streak_obj.won_at_0 := 1
                     if (streak > streak_prev) {
+                        this.pause_2bets := 0
                         streak_obj.net_since_last_win := this.amt_prev[1]
                         streak_obj.loss_streak_at_0 := 0
                         streak_obj.win_streak_at_0++
