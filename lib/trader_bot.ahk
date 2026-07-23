@@ -443,6 +443,9 @@ class TraderBot {
                     Loop (this.pause_2bets - 4) {
                         this.amt_pause_2bets := this.amt_pause_2bets * 2 + 3
                     }
+                    if (this.max_diff.C + this.amt_pause_2bets >= this.max_diff.max_to_reset) {
+                        this.amt_pause_2bets := Min(this.amt_pause_2bets, Max(350, Ceil(this.max_diff.C/10)*10) - this.max_diff.C)
+                    }
                     this.amount := this.amt_pause_2bets
                 } else {
                     this.amount := 1
@@ -683,7 +686,7 @@ class TraderBot {
                     }
                 }
                 if (this.max_diff.C + streak_obj.amt >= this.max_diff.max_to_reset) {
-                    streak_obj.amt := Min(streak_obj.amt, Ceil(this.max_diff.C/10)*10 - this.max_diff.C)
+                    streak_obj.amt := Min(streak_obj.amt, Max(350, Ceil(this.max_diff.C/10)*10) - this.max_diff.C)
                 }
                 this.amount := streak_obj.amt
             }
