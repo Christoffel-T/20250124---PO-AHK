@@ -439,6 +439,10 @@ class TraderBot {
             }
             if (streak = target_streak and this.pause_2bets > 1) {
                 if (this.pause_2bets >= 4 and streak_obj.lose_streak = 0) {
+                    this.amt_pause_2bets := 7
+                    Loop (this.pause_2bets - 4) {
+                        this.amt_pause_2bets := this.amt_pause_2bets * 2 + 3
+                    }
                     this.amount := this.amt_pause_2bets
                 } else {
                     this.amount := 1
@@ -447,11 +451,8 @@ class TraderBot {
             }
             if (streak != streak_prev and streak_prev = target_streak and this.pause_2bets > 1) {
                 if (streak_obj.lose_streak = 0) {
-                    this.pause_2bets++
-                }
-                if (this.pause_2bets > 4) {
                     if (streak < streak_prev) {
-                        this.amt_pause_2bets := this.amt_pause_2bets * 2 + 3
+                        this.pause_2bets++
                     } else if (streak > streak_prev) {
                         this.amt_pause_2bets := 7
                         this.pause_2bets := 0
