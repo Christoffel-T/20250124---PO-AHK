@@ -339,6 +339,7 @@ class TraderBot {
             if (this.7perc_inc.state325 = 1) {
                 this.extra_str .= '|7%inc active'
             }
+            this.extra_str .= 'p2b=' this.pause_2bets '[]' DecimalFormatter(this.amt_pause_2bets)
         }
 
         HelperSumAmt(streak_obj, target_streak) {
@@ -444,7 +445,6 @@ class TraderBot {
                 }
                 return 1
             }
-            this.extra_str .= 'p2b=' this.pause_2bets '[]' DecimalFormatter(this.amt_pause_2bets)
             if (streak_prev = target_streak and this.pause_2bets > 1) {
                 this.pause_2bets++
                 if (this.pause_2bets > 4) {
