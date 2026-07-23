@@ -444,10 +444,11 @@ class TraderBot {
                 }
                 return 1
             }
+            this.extra_str .= 'p2b=' this.pause_2bets '[]' DecimalFormatter(this.amt_pause_2bets)
             if (streak_prev = target_streak and this.pause_2bets > 1) {
                 this.pause_2bets++
                 if (this.pause_2bets > 4) {
-                    if (streak < streak_prev) {
+                    if (streak < streak_prev and this.pause_2bets > 5) {
                         this.amt_pause_2bets := this.amt_pause_2bets * 2 + 3
                     } else if (streak > streak_prev) {
                         this.amt_pause_2bets := 7
