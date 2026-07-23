@@ -438,7 +438,7 @@ class TraderBot {
                 }
             }
             if (streak = target_streak and this.pause_2bets > 1) {
-                if (this.pause_2bets >= 4) {
+                if (this.pause_2bets >= 4 and streak_obj.lose_streak = 0) {
                     this.amount := this.amt_pause_2bets
                 } else {
                     this.amount := 1
