@@ -665,12 +665,12 @@ class TraderBot {
                     ; this.F300.iter_lost5 := 0
                     this.pause_temp.disabled_others := 0
                     streak_obj.amt := streak_obj.max_sum_amt - streak_obj.sum_amt
-                    if (streak_obj.max_sum_amt = 40) {
-                        streak_obj.perc_107 := 57
+                    if (streak_obj.max_sum_amt = 25) {
+                        streak_obj.perc_107 := 65
                     } else if (streak_obj.max_sum_amt >= 310) {
-                        streak_obj.perc_107 := streak_obj.perc_107 + 10
+                        streak_obj.perc_107 := streak_obj.perc_107 + 20
                     } else {
-                        streak_obj.perc_107 := Min(157, streak_obj.perc_107 + 10)
+                        streak_obj.perc_107 := Min(245, streak_obj.perc_107 + 20)
                     }
                     if (streak_obj.max_sum_amt >= 65 and this.balance.side < this.balance.starting + 4000) {
                         streak_obj.amt *= 0.8
@@ -678,7 +678,7 @@ class TraderBot {
                     } else {
                         this.pause_temp.state_bet_max_sum_amt := 0
                     }
-                    streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 25)
+                    streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 30)
                 }
                 if (streak_obj.amt > 1) {
                     if (this.7perc_inc.state325 = 1 and streak_obj.loss_streak_at_0 >= 1) {
@@ -1286,7 +1286,7 @@ class TraderBot {
         }
         PropSerializer(v) {
             v.state_bet_max_sum_amt := 0
-            v.max_sum_amt := 40
+            v.max_sum_amt := 25
             v.perc_107 := 107
             v.won_at_0 := 0
             v.disabled := 0
