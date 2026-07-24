@@ -1273,6 +1273,9 @@ class TraderBot {
         this.wl34 := Map(0, {}, -0, {}, 1, {}, -1, {}, 3, {}, 4, {}, -3, {}, -4, {})
         this.w5_l7 := Map(5, {}, -7, {})
         this.win5andabove := Map()
+        Loop 20 {
+            this.win5andabove[A_Index+3] := {}
+        }
     }
 
     QualifiersReset(exclude_sum:=False) {
@@ -1354,8 +1357,8 @@ class TraderBot {
         for k, v in this.w5_l7 {
             v := PropSerializer(v)
         }
-        Loop 20 {
-            this.win5andabove[A_Index+3] := PropSerializer({})
+        for k, v in this.win5andabove {
+            v := PropSerializer(v)
         }
         this.win5andabove[4].amt := 100
 
