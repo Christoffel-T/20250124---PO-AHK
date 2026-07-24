@@ -1331,7 +1331,9 @@ class TraderBot {
             v.stats.wins := 0
             v.stats.wins_streak := 0
             v.streak := 0
-            if (exclude_sum = False) {
+            if (exclude_sum = True) {
+                v.sum_amt := v.sum_amt
+            } else {
                 v.sum_amt := 0
             }
             v.sum_over20 := 0
