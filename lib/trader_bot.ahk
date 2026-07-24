@@ -328,7 +328,7 @@ class TraderBot {
         CheckMaxDiff() {
             this.extra_str := ''
             if (this.max_diff.C >= this.max_diff.max_to_reset and Mod(this.max_diff.C, 10) = 0) {
-                this.QualifiersReset()
+                this.QualifiersReset(True)
                 this.extra_str := 'Qs_RESET'
             }
             if (this.max_diff.C >= 325) {
@@ -1272,7 +1272,7 @@ class TraderBot {
         this.max_diff.max_to_reset:= 350
     }
 
-    QualifiersReset() {
+    QualifiersReset(exclude_sum:=False) {
         this.7perc_inc := {
             state325: 0,
         }
@@ -1331,7 +1331,9 @@ class TraderBot {
             v.stats.wins := 0
             v.stats.wins_streak := 0
             v.streak := 0
-            v.sum_amt := 0
+            if (exclude_sum = False) {
+                v.sum_amt := 0
+            }
             v.sum_over20 := 0
             v.sum_over200 := 0
             v.transfers := 0
