@@ -1270,6 +1270,9 @@ class TraderBot {
         this.amt_pause_2bets := 7
         this.pause_2bets := 0
         this.max_diff.max_to_reset:= 350
+        this.wl34 := Map(0, {}, -0, {}, 1, {}, -1, {}, 3, {}, 4, {}, -3, {}, -4, {})
+        this.w5_l7 := Map(5, {}, -7, {})
+        this.win5andabove := Map()
     }
 
     QualifiersReset(exclude_sum:=False) {
@@ -1345,18 +1348,12 @@ class TraderBot {
         for k, v in this.wl_12 {
             v := PropSerializer(v)
         }
-        
-        this.wl34 := Map(0, {}, -0, {}, 1, {}, -1, {}, 3, {}, 4, {}, -3, {}, -4, {})
         for k, v in this.wl34 {
             v := PropSerializer(v)
         }
-        
-        this.w5_l7 := Map(5, {}, -7, {})
         for k, v in this.w5_l7 {
             v := PropSerializer(v)
         }
-        
-        this.win5andabove := Map()
         Loop 20 {
             this.win5andabove[A_Index+3] := PropSerializer({})
         }
