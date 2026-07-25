@@ -478,6 +478,9 @@ class TraderBot {
             Helper1b() {
                 if (streak_prev = target_streak and streak_obj.lose_streak = 0) {
                     streak_obj.won_at_0 := 1
+                    if (streak_obj.current_md_level > 0 and streak != streak_prev) {
+                        streak_obj.count_at_current_md_level++
+                    }
                     if (streak > streak_prev) {
                         if (this.pause_2bets < 2) {
                             this.pause_2bets := 0
@@ -661,8 +664,6 @@ class TraderBot {
                     HelperResetter('next_bet_at_0')
                     HelperResetter('won_at_0')
                     HelperResetter('last_bet_at_0')
-                    ; HelperResetter('disburse7')
-                    ; this.F300.iter_lost5 := 0
                     this.pause_temp.disabled_others := 0
                     streak_obj.amt := streak_obj.max_sum_amt - streak_obj.sum_amt
                     for v in this.qmd {
@@ -672,9 +673,14 @@ class TraderBot {
                         if (v.md > this.max_diff.C) {
                             break
                         }
+                        md_level := v.md
                         streak_obj.perc_107 := v.perc + streak_obj.count_at_current_md_level*20
                         streak_obj.max_sum_amt := v.max_sum_amt + streak_obj.count_at_current_md_level*30
                     }
+                    if (md_level != streak_obj.current_md_level) {
+                        streak_obj.count_at_current_md_level := 0
+                    }
+                    streak_obj.current_md_level := md_level
                     if (streak_obj.max_sum_amt >= 65 and this.balance.side < this.balance.starting + 4000) {
                         streak_obj.amt *= 0.8
                         this.pause_temp.state_bet_max_sum_amt := 'REDUCE_BY_8'
