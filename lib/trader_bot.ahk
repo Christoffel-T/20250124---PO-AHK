@@ -1275,7 +1275,7 @@ class TraderBot {
     }
 
     QualifiersInit() {
-        this.qmd := []
+        this.qmd := Map()
         currentKey := 350
         currentMaxSum := 25
         currentPerc := 65
