@@ -665,12 +665,15 @@ class TraderBot {
                     ; this.F300.iter_lost5 := 0
                     this.pause_temp.disabled_others := 0
                     streak_obj.amt := streak_obj.max_sum_amt - streak_obj.sum_amt
-                    if (streak_obj.max_sum_amt = 25) {
-                        streak_obj.perc_107 := 65
-                    } else if (streak_obj.max_sum_amt >= 310) {
-                        streak_obj.perc_107 := streak_obj.perc_107 + 20
-                    } else {
-                        streak_obj.perc_107 := Min(245, streak_obj.perc_107 + 20)
+                    for v in this.qmd {
+                        if (v.md < this.max_diff.C) {
+                            break
+                        }
+                        if (v.md > this.max_diff.C) {
+                            break
+                        }
+                        streak_obj.perc_107 := v.perc + streak_obj.count_at_current_md_level*20
+                        streak_obj.max_sum_amt := v.max_sum_amt + streak_obj.count_at_current_md_level*30
                     }
                     if (streak_obj.max_sum_amt >= 65 and this.balance.side < this.balance.starting + 4000) {
                         streak_obj.amt *= 0.8
@@ -678,7 +681,6 @@ class TraderBot {
                     } else {
                         this.pause_temp.state_bet_max_sum_amt := 0
                     }
-                    streak_obj.max_sum_amt := Min(310, streak_obj.max_sum_amt + 30)
                 }
                 if (streak_obj.amt > 1) {
                     if (this.7perc_inc.state325 = 1 and streak_obj.loss_streak_at_0 >= 1) {
@@ -1267,6 +1269,21 @@ class TraderBot {
     }
 
     QualifiersInit() {
+        this.qmd := []
+        currentKey := 350
+        currentMaxSum := 25
+        currentPerc := 65
+        Loop 100 {
+            this.qmd[A_Index] := {
+                md: currentKey,
+                max_sum_amt: currentMaxSum,
+                perc: currentPerc
+            }
+            ; Increment for the next iteration
+            currentKey += 20
+            currentMaxSum += 30
+            currentPerc += 20
+        }
         this.amt_pause_2bets := 7
         this.pause_2bets := 0
         this.max_diff.max_to_reset:= 350
@@ -1291,9 +1308,11 @@ class TraderBot {
             double_135: 0,
         }
         PropSerializer(v) {
+            v.count_at_current_md_level := 0
+            v.current_md_level := 0
             v.state_bet_max_sum_amt := 0
-            v.max_sum_amt := 25
-            v.perc_107 := 107
+            v.max_sum_amt := this.qmd[1].max_sum_amt
+            v.perc_107 := this.qmd[1].perc
             v.won_at_0 := 0
             v.disabled := 0
             v.net_since_last_win := 0
