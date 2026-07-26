@@ -478,7 +478,7 @@ class TraderBot {
             Helper1b() {
                 if (streak_prev = target_streak and streak_obj.lose_streak = 0) {
                     streak_obj.won_at_0 := 1
-                    if (streak_obj.current_md_level > 0 and streak != streak_prev) {
+                    if (streak != streak_prev) {
                         streak_obj.count_at_current_md_level++
                     }
                     if (streak > streak_prev) {
