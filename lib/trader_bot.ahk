@@ -667,16 +667,15 @@ class TraderBot {
                     this.pause_temp.disabled_others := 0
                     streak_obj.amt := streak_obj.max_sum_amt - streak_obj.sum_amt
                     md_level := 1000
+                    prev_md_level := 350
                     for k, v in this.qmd {
-                        if (v.md < this.max_diff.C) {
+                        if (this.max_diff.C < v.md and this.max_diff.C >= prev_md_level) {
+                            md_level := prev_md_level
+                            streak_obj.perc_107 := v.perc + streak_obj.count_at_current_md_level*20
+                            streak_obj.max_sum_amt := v.max_sum_amt + streak_obj.count_at_current_md_level*30
                             break
                         }
-                        md_level := v.md
-                        streak_obj.perc_107 := v.perc + streak_obj.count_at_current_md_level*20
-                        streak_obj.max_sum_amt := v.max_sum_amt + streak_obj.count_at_current_md_level*30
-                        if (v.md > this.max_diff.C) {
-                            break
-                        }
+                        prev_md_level := v.md
                     }
                     if (md_level != streak_obj.current_md_level) {
                         streak_obj.count_at_current_md_level := 0
