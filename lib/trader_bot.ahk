@@ -667,7 +667,7 @@ class TraderBot {
                     this.pause_temp.disabled_others := 0
                     streak_obj.amt := streak_obj.max_sum_amt - streak_obj.sum_amt
                     md_level := 1000
-                    prev_md_level := 350
+                    prev_md_level := this.qmd[1].md
                     for k, v in this.qmd {
                         if (this.max_diff.C < v.md and this.max_diff.C >= prev_md_level) {
                             md_level := prev_md_level
@@ -1276,7 +1276,7 @@ class TraderBot {
 
     QualifiersInit() {
         this.qmd := Map()
-        currentKey := 350
+        currentKey := 325
         currentMaxSum := 25
         currentPerc := 65
         Loop 100 {
@@ -1286,7 +1286,7 @@ class TraderBot {
                 perc: currentPerc
             }
             ; Increment for the next iteration
-            currentKey += 20
+            currentKey += 40
             currentMaxSum += 30
             currentPerc += 20
         }
