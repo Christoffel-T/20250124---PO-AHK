@@ -671,12 +671,12 @@ class TraderBot {
                         if (v.md < this.max_diff.C) {
                             break
                         }
-                        if (v.md > this.max_diff.C) {
-                            break
-                        }
                         md_level := v.md
                         streak_obj.perc_107 := v.perc + streak_obj.count_at_current_md_level*20
                         streak_obj.max_sum_amt := v.max_sum_amt + streak_obj.count_at_current_md_level*30
+                        if (v.md > this.max_diff.C) {
+                            break
+                        }
                     }
                     if (md_level != streak_obj.current_md_level) {
                         streak_obj.count_at_current_md_level := 0
@@ -2222,6 +2222,8 @@ class TraderBot {
         if (this.wl_12[ 1].disabled OR this.wl_12[-1].disabled OR this.wl_12[ 2].disabled OR this.wl_12[-2].disabled) {
             str_j := str_j ' | PAUSE(' this.wl_12[ 1].disabled this.wl_12[-1].disabled this.wl_12[ 2].disabled this.wl_12[-2].disabled ')'
         }
+        str_j := str_j ' | MDLVL(' this.wl_12[ 1].current_md_level '/' this.wl_12[-1].current_md_level '/' this.wl_12[ 2].current_md_level '/' this.wl_12[-2].current_md_level ')'
+        str_j := str_j ' | MDLVLcount(' this.wl_12[ 1].count_at_current_md_level '/' this.wl_12[-1].count_at_current_md_level '/' this.wl_12[ 2].count_at_current_md_level '/' this.wl_12[-2].count_at_current_md_level ')'
         str_k := DecimalFormatter(this.balance.side)  ' H=' DecimalFormatter(this.balance.side_high)  ' L=' format('{:.2f}', this.balance.side_low)
         str_k .= ' (maxdiff H=' DecimalFormatter(this.max_diff.H - 300)  ' | DIFF=' DecimalFormatter(this.max_diff.H - this.max_diff.L)  ')' 
         str_l := '(W2: -' this.wl_12[ 2].lose_streak ' | 0loss=' this.wl_12[ 2].count_0loss '[max=' this.wl_12[ 2].max_count_0loss '] ([wins=' this.wl_12[ 2].wins '|loss=' this.wl_12[ 2].losses ']) sum=' format('{:.2f}', this.wl_12[ 2].sum_amt)
