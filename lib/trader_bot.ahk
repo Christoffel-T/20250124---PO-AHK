@@ -437,7 +437,7 @@ class TraderBot {
                     return 1
                 }
             }
-            if (streak = target_streak and this.pause_2bets > 1) {
+            if (Abs(streak) <= 2 and streak = target_streak and this.pause_2bets > 1) {
                 if (this.pause_2bets >= 4 and streak_obj.lose_streak = 0) {
                     this.amt_pause_2bets := 7
                     Loop (this.pause_2bets - 4) {
@@ -666,6 +666,7 @@ class TraderBot {
                     HelperResetter('last_bet_at_0')
                     this.pause_temp.disabled_others := 0
                     streak_obj.amt := streak_obj.max_sum_amt - streak_obj.sum_amt
+                    md_level := 1000
                     for k, v in this.qmd {
                         if (v.md < this.max_diff.C) {
                             break
