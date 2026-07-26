@@ -666,7 +666,7 @@ class TraderBot {
                     HelperResetter('last_bet_at_0')
                     this.pause_temp.disabled_others := 0
                     streak_obj.amt := streak_obj.max_sum_amt - streak_obj.sum_amt
-                    for v in this.qmd {
+                    for k, v in this.qmd {
                         if (v.md < this.max_diff.C) {
                             break
                         }
