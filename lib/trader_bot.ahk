@@ -671,16 +671,16 @@ class TraderBot {
                     for k, v in this.qmd {
                         if (this.max_diff.C < v.md and this.max_diff.C >= prev_md_level) {
                             md_level := prev_md_level
+                            if (md_level != streak_obj.current_md_level) {
+                                streak_obj.count_at_current_md_level := 0
+                            }
+                            streak_obj.current_md_level := md_level
                             streak_obj.perc_107 := v.perc + streak_obj.count_at_current_md_level*20
                             streak_obj.max_sum_amt := v.max_sum_amt + streak_obj.count_at_current_md_level*30
                             break
                         }
                         prev_md_level := v.md
                     }
-                    if (md_level != streak_obj.current_md_level) {
-                        streak_obj.count_at_current_md_level := 0
-                    }
-                    streak_obj.current_md_level := md_level
                     if (streak_obj.max_sum_amt >= 65 and this.balance.side < this.balance.starting + 4000) {
                         streak_obj.amt *= 0.8
                         this.pause_temp.state_bet_max_sum_amt := 'REDUCE_BY_8'
