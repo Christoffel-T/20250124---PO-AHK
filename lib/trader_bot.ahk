@@ -480,6 +480,8 @@ class TraderBot {
                     streak_obj.won_at_0 := 1
                     if (streak != streak_prev) {
                         streak_obj.count_at_current_md_level++
+                        streak_obj.perc_107 := streak_obj.stored_perc + streak_obj.count_at_current_md_level*20
+                        streak_obj.max_sum_amt := streak_obj.stored_max_sum_amt + streak_obj.count_at_current_md_level*30
                     }
                     if (streak > streak_prev) {
                         if (this.pause_2bets < 2) {
@@ -675,8 +677,10 @@ class TraderBot {
                                 streak_obj.count_at_current_md_level := 0
                             }
                             streak_obj.current_md_level := md_level
-                            streak_obj.perc_107 := v.perc + streak_obj.count_at_current_md_level*20
-                            streak_obj.max_sum_amt := v.max_sum_amt + streak_obj.count_at_current_md_level*30
+                            streak_obj.stored_perc := v.perc
+                            streak_obj.stored_max_sum_amt := v.max_sum_amt
+                            streak_obj.perc_107 := streak_obj.stored_perc + streak_obj.count_at_current_md_level*20
+                            streak_obj.max_sum_amt := streak_obj.stored_max_sum_amt + streak_obj.count_at_current_md_level*30
                             break
                         }
                         prev_md_level := v.md
@@ -1314,6 +1318,8 @@ class TraderBot {
             double_135: 0,
         }
         PropSerializer(v) {
+            v.stored_max_sum_amt := 0
+            v.stored_perc := 0
             v.count_at_current_md_level := 0
             v.current_md_level := 0
             v.state_bet_max_sum_amt := 0
