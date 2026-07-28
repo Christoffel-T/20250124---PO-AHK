@@ -2148,7 +2148,7 @@ class TraderBot {
         } else if (this.qualifier_221_210.state = 1) {
             sub_str_d := '150/161 ON | '
         }
-        str_d := sub_str_d '|4loss:' this.F300.iter_lost5 ') | ' str_d
+        str_d := sub_str_d '|4loss:' this.F300.iter_lost5 '/' this.temp_4loss_count ') | ' str_d
 
         str_e := ''
         str_f := ''
