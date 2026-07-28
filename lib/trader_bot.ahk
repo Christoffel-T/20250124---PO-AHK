@@ -331,7 +331,7 @@ class TraderBot {
                 this.QualifiersReset(True)
                 this.extra_str := 'Qs_RESET'
             }
-            if (this.max_diff.C >= 325) {
+            if (this.max_diff.C >= 315) {
                 this.7perc_inc.state325 := 1
             }
             if (this.max_diff.C <= 275) {
@@ -354,7 +354,10 @@ class TraderBot {
             streak := this.stats.streak_real
             streak_prev := this.streak_prev[1]
             idx := streak_obj.lose_streak
-            
+            if (this.stats.win_rate < 40) {
+                this.amount := 1.1
+                return 1
+            }
             try {
                 if (obj1.lose_streak >= 3 and obj2.lose_streak >= 3) {
                     streak_obj.pause_temp1 := 1
@@ -1280,7 +1283,7 @@ class TraderBot {
 
     QualifiersInit() {
         this.qmd := Map()
-        currentKey := 325
+        currentKey := 315
         currentMaxSum := 25
         currentPerc := 65
         Loop 100 {
