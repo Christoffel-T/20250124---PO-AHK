@@ -258,6 +258,7 @@ class TraderBot {
         streak := this.stats.streak_real
         if (this.streak_prev[1] = -4 and streak < this.streak_prev[1]) {
             this.F300.iter_lost5++
+            this.temp_4loss_count++
         }
 
         this.amount := 1
@@ -335,6 +336,7 @@ class TraderBot {
                 this.7perc_inc.state325 := 1
             }
             if (this.max_diff.C <= 275) {
+                this.temp_4loss_count := 0
                 this.7perc_inc.state325 := 0
             }
             if (this.7perc_inc.state325 = 1) {
@@ -697,7 +699,7 @@ class TraderBot {
                 }
                 if (streak_obj.amt > 1) {
                     if (this.7perc_inc.state325 = 1 and streak_obj.loss_streak_at_0 >= 1) {
-                        streak_obj.amt *= 1.07
+                        streak_obj.amt *= 1.07 + (0.005 * this.temp_4loss_count)
                     }
                 }
                 if (this.max_diff.C + streak_obj.amt >= this.max_diff.max_to_reset) {
@@ -1282,6 +1284,7 @@ class TraderBot {
     }
 
     QualifiersInit() {
+        this.temp_4loss_count := 0
         this.qmd := Map()
         currentKey := 315
         currentMaxSum := 25
@@ -1404,7 +1407,7 @@ class TraderBot {
         this.extra_str := ''
         this.maxdiff350 := {
             state: 1,
-            stored_4loss_count: 0,
+            stored_temp_4loss_count: 0,
             streaks: Map(1, {}, -1, {})
         }
         for k, v in this.maxdiff350.streaks {
