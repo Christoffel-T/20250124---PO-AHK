@@ -335,7 +335,7 @@ class TraderBot {
             if (this.max_diff.C >= 315) {
                 this.7perc_inc.state325 := 1
             }
-            if (this.max_diff.C <= 275) {
+            if (this.max_diff.C <= 310) {
                 this.temp_4loss_count := 0
                 this.7perc_inc.state325 := 0
             }
@@ -448,8 +448,8 @@ class TraderBot {
                     Loop (this.pause_2bets - 4) {
                         this.amt_pause_2bets := this.amt_pause_2bets * 2 + 3
                     }
-                    if (this.max_diff.C + this.amt_pause_2bets >= this.max_diff.max_to_reset) {
-                        this.amt_pause_2bets := Min(this.amt_pause_2bets, Max(350, Ceil(this.max_diff.C/10)*10) - this.max_diff.C)
+                    if (this.max_diff.C + this.amt_pause_2bets >= streak_obj.current_md_level) {
+                        this.amt_pause_2bets := Min(this.amt_pause_2bets, streak_obj.current_md_level - this.max_diff.C)
                     }
                     this.amount := this.amt_pause_2bets
                 } else {
@@ -593,9 +593,27 @@ class TraderBot {
 
         Helper2_AmtOverride(streak_obj, target_streak, disable:=false) {
             amts := [6+(0.5*this.F300.iter_lost5)]
+            streak_prev := this.streak_prev[1]
             if (streak_obj.disabled = 1 and streak = target_streak) {
                 this.amount := 1
                 return
+            }
+            if (this.max_diff.C >= 315) {
+                HelperOverrider()
+                return 
+            }
+            HelperOverrider() {
+                if (streak = target_streak) {
+                    if (streak_obj.lose_streak = 0) {
+                        this.amount := streak_obj.other_amt
+                    }
+                } else if (streak != streak_prev and streak_prev = target_streak) {
+                    if (streak > streak_prev and streak_obj.lose_streak = 0) {
+                        streak_obj.other_amt := 7
+                    } else if (streak < streak_prev and streak_obj.lose_streak = 1){
+                        streak_obj.other_amt := streak_obj.other_amt * 2 + 3
+                    }
+                }
             }
             Loop 100 {
                 amts.Push(amts[-1]*2+3)
@@ -702,8 +720,8 @@ class TraderBot {
                         streak_obj.amt *= 1.07 + (0.005 * this.temp_4loss_count)
                     }
                 }
-                if (this.max_diff.C + streak_obj.amt >= this.max_diff.max_to_reset) {
-                    streak_obj.amt := Min(streak_obj.amt, Max(350, Ceil(this.max_diff.C/10)*10) - this.max_diff.C)
+                if (this.max_diff.C + streak_obj.amt >= streak_obj.current_md_level) {
+                    streak_obj.amt := Min(streak_obj.amt, streak_obj.current_md_level - this.max_diff.C)
                 }
                 this.amount := streak_obj.amt
             }
@@ -1324,6 +1342,7 @@ class TraderBot {
             double_135: 0,
         }
         PropSerializer(v) {
+            v.other_amt := 7
             v.stored_max_sum_amt := 0
             if v.HasProp('stored_perc') {
                 v.stored_perc := v.stored_perc
