@@ -1350,7 +1350,7 @@ class TraderBot {
                 v.stored_perc := 0
             }
             v.count_at_current_md_level := 0
-            v.current_md_level := 0
+            v.current_md_level := this.qmd[1].md
             v.state_bet_max_sum_amt := 0
             v.max_sum_amt := this.qmd[1].max_sum_amt
             v.perc_107 := this.qmd[1].perc
