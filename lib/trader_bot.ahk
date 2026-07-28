@@ -1319,7 +1319,7 @@ class TraderBot {
         }
         PropSerializer(v) {
             v.stored_max_sum_amt := 0
-            v.stored_perc := 0
+            v.stored_perc := v.stored_perc
             v.count_at_current_md_level := 0
             v.current_md_level := 0
             v.state_bet_max_sum_amt := 0
