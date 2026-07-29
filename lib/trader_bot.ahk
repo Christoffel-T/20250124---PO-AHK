@@ -384,6 +384,7 @@ class TraderBot {
                 if (streak_obj.loss_streak%suff% > streak_obj.max_loss_streak%suff%) {
                     streak_obj.max_loss_streak%suff% := Max(streak_obj.max_loss_streak%suff%, streak_obj.loss_streak%suff%)
                     streak_obj.loss_streak%suff% := 0
+                    streak_obj.started_over%suff%++
                 }
             }
         }
@@ -479,10 +480,16 @@ class TraderBot {
             if (streak = target_streak) {
                 Disabled1()
                 amts := [1.50, 2.71, 6.75, 15.17, 32.75, 1.00, 1.00, 69.44, 146.00, 1.00, 1.00, 305.78, 639.24, 1335.16, 2786.00]
+                addition := [0.01]
+                for v in amts {
+                    addition.Push(addition[-1] * 2 + 0.01)
+                }
                 if (streak_obj.loss_streak = 0) {
                     streak_obj.amt := amts[streak_obj.loss_streak_at_0+1]
+                    streak_obj.amt += addition[streak_obj.loss_streak_at_0+1] * ((streak_obj.started_over_at_0+1)//2)
                 } else {
                     streak_obj.amt := amts[streak_obj.loss_streak+1]
+                    streak_obj.amt += addition[streak_obj.loss_streak+1] * ((streak_obj.started_over+1)//2)
                 }
                 if (disable) {
                     streak_obj.amt := 1
@@ -1153,6 +1160,8 @@ class TraderBot {
             v.net_since_last_win := 0
             v.win_streak := 0
             v.win_streak_at_0 := 0
+            v.started_over_at_0 := 0
+            v.started_over := 0
             v.max_loss_streak_at_0 := 0
             v.loss_streak_at_0 := 0
             v.last_bet_at_0 := 0
