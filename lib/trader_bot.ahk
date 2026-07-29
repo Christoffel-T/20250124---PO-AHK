@@ -310,7 +310,7 @@ class TraderBot {
         AmountOverride5_wl34()
         AmountOverride6_Lose7()
         AmountOverride7_Win5()
-        AmountOverride8_22()
+        AmountOverride8_234()
         this.extra_str .= 'p2b=' this.pause_2bets '[]' DecimalFormatter(this.amt_pause_2bets)
 
         this.balance.last_trade := this.balance.current
@@ -349,7 +349,7 @@ class TraderBot {
             }
         }
 
-        HelperPause1(streak_obj, target_streak, obj1, obj2) {
+        HelperPause1(streak_obj, target_streak, obj1:={}, obj2:={}) {
             return 0
         }
 
@@ -704,9 +704,13 @@ class TraderBot {
             }
         }
         
-        AmountOverride8_22() {
-            Helper(2)
+        AmountOverride8_234() {
+            Helper( 2)
+            Helper( 3)
+            Helper( 4)
             Helper(-2)
+            Helper(-3)
+            Helper(-4)
             
             Helper(target_streak) {
                 streak := this.stats.streak_real
@@ -714,7 +718,7 @@ class TraderBot {
                 streak_obj := this.wl_12[target_streak]
                 idx := streak_obj.loss_streak > 0 ? 0 : Abs(streak_obj.loss_streak)
                 HelperSumAmt(streak_obj, target_streak)
-                if HelperPause1(streak_obj, target_streak, this.wl_12[ 2], this.wl_12[-2]) {
+                if HelperPause1(streak_obj, target_streak, this.wl_12[ target_streak], this.wl_12[-target_streak]) {
                     return
                 }
                 if HelperPause2(streak_obj, target_streak) {
