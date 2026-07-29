@@ -1970,8 +1970,8 @@ class TraderBot {
             str_e .= 'W' A_Index ':-' this.wl_12[ A_Index].loss_streak '[-' this.wl_12[ A_Index].max_loss_streak '] | '
             str_f .= 'W' A_Index ':-' this.wl_12[-A_Index].loss_streak '[-' this.wl_12[-A_Index].max_loss_streak '] | '
         }
-        str_e := RTrim(str_e, '|')
-        str_f := RTrim(str_f, '|')
+        str_e := RTrim(str_e, '| ')
+        str_f := RTrim(str_f, '| ')
         if (this.stats.streak_real <= -7) {
             str_g := 'regular-ON: [' this.stats.streak_real '] max=[' this.stats.max_streak_real ']'
             if (this.F300.stateW = 0) {
