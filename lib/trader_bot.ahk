@@ -327,10 +327,6 @@ class TraderBot {
 
         CheckMaxDiff() {
             this.extra_str := ''
-            if (this.max_diff.C >= this.max_diff.max_to_reset and Mod(this.max_diff.C, 10) = 0) {
-                this.QualifiersReset(True)
-                this.extra_str := 'Qs_RESET'
-            }
             if (this.max_diff.C >= 315) {
                 this.7perc_inc.state325 := 1
             }
