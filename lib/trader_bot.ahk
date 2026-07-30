@@ -1973,11 +1973,11 @@ class TraderBot {
         str_f := ''
         Loop 2 {
             str_e .= '0W' A_Index ':-' this.wl_12[ A_Index].loss_streak_at_0 '[-' this.wl_12[ A_Index].max_loss_streak_at_0 '] | '
-            str_f .= '0W' A_Index ':-' this.wl_12[-A_Index].loss_streak_at_0 '[-' this.wl_12[-A_Index].max_loss_streak_at_0 '] | '
+            str_f .= '0L' A_Index ':-' this.wl_12[-A_Index].loss_streak_at_0 '[-' this.wl_12[-A_Index].max_loss_streak_at_0 '] | '
         }
         Loop 4 {
             str_e .= 'W' A_Index ':-' this.wl_12[ A_Index].loss_streak '[-' this.wl_12[ A_Index].max_loss_streak '] | '
-            str_f .= 'W' A_Index ':-' this.wl_12[-A_Index].loss_streak '[-' this.wl_12[-A_Index].max_loss_streak '] | '
+            str_f .= 'L' A_Index ':-' this.wl_12[-A_Index].loss_streak '[-' this.wl_12[-A_Index].max_loss_streak '] | '
         }
         str_e := RTrim(str_e, '| ')
         str_f := RTrim(str_f, '| ')
