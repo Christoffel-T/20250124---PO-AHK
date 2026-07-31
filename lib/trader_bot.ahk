@@ -311,13 +311,23 @@ class TraderBot {
         AmountOverride6_Lose7()
         AmountOverride7_Win5()
         AmountOverride8_234()
+        AmountOverride_Maxdiff()
+        
         this.extra_str .= 'p2b=' this.pause_2bets '[]' DecimalFormatter(this.amt_pause_2bets)
-
+        
         this.balance.last_trade := this.balance.current
         this.SetTradeAmount()
         this.stats.%this.executed_trades[1]%.win_rate := Round(this.stats.%this.executed_trades[1]%.win / max(this.stats.%this.executed_trades[1]%.win + this.stats.%this.executed_trades[1]%.lose, 1) * 100, 1)
         RankScenarios()
         
+        AmountOverride_Maxdiff() {
+             if (this.max_diff.C > 302) {
+                this.amount := (this.max_diff.C - 300)/0.92 + 0.01
+             } else if (this.amount + this.max_diff.C > 302) {
+                this.amount := 302 - this.max_diff.C
+             }
+        }
+
         HelperDisburse(amt_trf) {
             this.wl_12[ 1].disburse7 += amt_trf
             this.wl_12[-1].disburse7 += amt_trf
