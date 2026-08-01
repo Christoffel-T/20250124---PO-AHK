@@ -321,11 +321,24 @@ class TraderBot {
         RankScenarios()
         
         AmountOverride_Maxdiff() {
-             if (this.max_diff.C > 302) {
-                this.amount := (this.max_diff.C - 300)/0.92 + 0.01
-             } else if (this.amount + this.max_diff.C > 302) {
+            if (this.max_diff.C < 302) {
+                this.md_302.state := 0
+            }
+            if (this.max_diff.C > 302) {
+                if (streak > streak_prev) {
+                    this.md_302.loss_streak := 0
+                } else if (streak < streak_prev and this.md_302.state = 1) {
+                    this.md_302.loss_streak++
+                }
+                this.md_302.state := 1
+                if (this.md_302.loss_streak >= 2) {
+                    this.amount := 1
+                } else {
+                    this.amount := (this.max_diff.C - 300)/0.92 + 0.01
+                }
+            } else if (this.amount + this.max_diff.C > 302) {
                 this.amount := 302 - this.max_diff.C
-             }
+            }
         }
 
         HelperDisburse(amt_trf) {
@@ -1111,6 +1124,10 @@ class TraderBot {
     }
 
     QualifiersInit() {
+        this.md_302 := {
+            state: 0,
+            loss_streak: 0,
+        }
         this.temp_4loss_count := 0
         this.qmd := Map()
         currentKey := 315
