@@ -331,7 +331,7 @@ class TraderBot {
                     this.md_302.loss_streak++
                 }
                 this.md_302.state := 1
-                if (this.md_302.loss_streak >= 2) {
+                if (this.md_302.loss_streak >= 2 or streak > 0) {
                     this.amount := 1
                 } else {
                     this.amount := (this.max_diff.C - 300)/0.92 + 0.01
