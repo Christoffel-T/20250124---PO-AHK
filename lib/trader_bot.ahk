@@ -335,6 +335,12 @@ class TraderBot {
                     this.amount := 1
                 } else {
                     this.amount := (this.max_diff.C - 300)/0.92 + 0.01
+                    if (this.max_diff.C + this.amount >= 350 and this.md_302.more_than_350 = 0) {
+                        this.amount *= 0.03
+                        this.md_302.more_than_350 := 1
+                    } else {
+                        this.md_302.more_than_350 := 0
+                    }
                 }
             } else if (this.amount + this.max_diff.C > 302) {
                 this.amount := 302 - this.max_diff.C
@@ -1127,6 +1133,7 @@ class TraderBot {
         this.md_302 := {
             state: 0,
             loss_streak: 0,
+            more_than_350: 0
         }
         this.temp_4loss_count := 0
         this.qmd := Map()
@@ -2072,7 +2079,7 @@ class TraderBot {
         }
         str_j := str_j ' | MDLVL(' this.wl_12[ 1].current_md_level '/' this.wl_12[-1].current_md_level '/' this.wl_12[ 2].current_md_level '/' this.wl_12[-2].current_md_level ')'
         str_j := str_j ' | MDLVLcount(' this.wl_12[ 1].count_at_current_md_level '/' this.wl_12[-1].count_at_current_md_level '/' this.wl_12[ 2].count_at_current_md_level '/' this.wl_12[-2].count_at_current_md_level ')'
-        str_k := DecimalFormatter(this.balance.side)  ' H=' DecimalFormatter(this.balance.side_high)  ' L=' format('{:.2f}', this.balance.side_low)
+        str_k := '([' this.stats.streak_real '] bet: ' DecimalFormatter(this.amount) ') ' DecimalFormatter(this.balance.side) ' H=' DecimalFormatter(this.balance.side_high)  ' L=' format('{:.2f}', this.balance.side_low)
         str_k .= ' (maxdiff H=' DecimalFormatter(this.max_diff.H - 300)  ' | DIFF=' DecimalFormatter(this.max_diff.H - this.max_diff.L)  ')' 
         str_l := '(W2: -' this.wl_12[ 2].loss_streak ' | 0loss=' this.wl_12[ 2].count_0loss '[max=' this.wl_12[ 2].max_count_0loss '] ([wins=' this.wl_12[ 2].wins '|loss=' this.wl_12[ 2].losses ']) sum=' format('{:.2f}', this.wl_12[ 2].sum_amt)
         if (streak = 2) {
