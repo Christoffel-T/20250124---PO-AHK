@@ -401,6 +401,9 @@ class TraderBot {
                     return
                 }
             }
+            if (streak_obj.loss_streak%suff% = streak_obj.max_loss_streak%suff%) {
+                streak_obj.started_over%suff%++
+            }
             if (W_or_L = 'W') {
                 streak_obj.loss_streak%suff% := 0
             }
@@ -409,7 +412,6 @@ class TraderBot {
                 if (streak_obj.loss_streak%suff% > streak_obj.max_loss_streak%suff%) {
                     streak_obj.max_loss_streak%suff% := Max(streak_obj.max_loss_streak%suff%, streak_obj.loss_streak%suff%)
                     streak_obj.loss_streak%suff% := 0
-                    streak_obj.started_over%suff%++
                 }
             }
         }
@@ -938,12 +940,6 @@ class TraderBot {
                 }
             }
 
-
-            if this.max_diff.C <= this.qualifiers.pause_temp1.reset_F {
-                this.qualifiers.win_after_31 := false
-                this.QualifiersReset()
-            }
-
             if this.amount >= 31 and this.max_diff.C <= 100 {
                 this.qualifiers.win_after_31 := true
                 this.qualifiers.pause_temp1.amount := this.max_diff.C
@@ -1347,7 +1343,6 @@ class TraderBot {
                 state: false,
                 count: 0,
                 amount: 1,         ; Consolidated from later update
-                reset_F: 0        ; Consolidated from later update
             },
             double_trade: {
                 state: false,
