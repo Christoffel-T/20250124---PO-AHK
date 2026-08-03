@@ -340,6 +340,25 @@ class TraderBot {
                     } else {
                         this.md_302.more_than_350 := 0
                     }
+                    if (this.max_diff.C > 350) {
+                        this.bet_intermittent.more_than_350 := 1
+                    } else if (this.max_diff.C < 300) {
+                        this.bet_intermittent.more_than_350 := 0
+                    }
+                    if (this.bet_intermittent.more_than_350 = 1) {
+                        switch (this.bet_intermittent.which) {
+                            case 'normal':
+                                this.amount := (this.max_diff.C - 300)/0.92 + 0.01
+                                this.bet_intermittent.which := '10'
+                            case '10':
+                                this.amount := 10
+                                this.bet_intermittent.which := '3perc'
+                            case '3perc':
+                                this.amount := 0.03 * ((this.max_diff.C - 300)/0.92 + 0.01)
+                                this.bet_intermittent.which := 'normal'
+                        }
+                    }
+
                 }
             } else if (this.amount + this.max_diff.C > 302) {
                 this.amount := 302 - this.max_diff.C
@@ -1163,6 +1182,10 @@ class TraderBot {
     }
 
     QualifiersReset(exclude_sum:=False) {
+        this.bet_intermittent := {
+            more_than_350: 0,
+            which: '10'
+        }
         this.7perc_inc := {
             state325: 0,
         }
