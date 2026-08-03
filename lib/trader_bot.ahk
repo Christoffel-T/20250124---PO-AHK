@@ -62,7 +62,6 @@ class TraderBot {
             this.amounts_tresholds.InsertAt(1, [_tresh, _index+1])
         }
 
-        this.start_time := A_TickCount
         this.log_file := 'log.csv'
         this.trade_opened := [false, A_TickCount]
         this.crossovers_arr := []
@@ -375,6 +374,10 @@ class TraderBot {
         }
 
         HelperPause1(streak_obj, target_streak, obj1:={}, obj2:={}) {
+            if (this.stats.win_rate < 40 and A_TickCount > this.start_time + 60000) {
+                this.amount := 1
+                return 1
+            }
             return 0
         }
 
@@ -1126,6 +1129,7 @@ class TraderBot {
     }
 
     QualifiersInit() {
+        this.start_time := A_TickCount
         this.md_302 := {
             state: 0,
             loss_streak: 0,
