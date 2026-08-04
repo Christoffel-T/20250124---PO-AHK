@@ -533,15 +533,22 @@ class TraderBot {
                 for v in amts {
                     addition.Push(addition[-1] * 2 + 0.01)
                 }
+                suff := ''
                 if (streak_obj.loss_streak = 0) {
-                    streak_obj.amt := amts[streak_obj.loss_streak_at_0+1]
-                    streak_obj.amt += addition[streak_obj.loss_streak_at_0+1] * ((streak_obj.started_over_at_0+1)//2)
-                } else {
-                    streak_obj.amt := amts[streak_obj.loss_streak+1]
-                    streak_obj.amt += addition[streak_obj.loss_streak+1] * ((streak_obj.started_over+1)//2)
+                    suff := '_at_0'
                 }
+                streak_obj.amt := amts[streak_obj.loss_streak%suff%+1]
+                streak_obj.amt += addition[streak_obj.loss_streak%suff%+1] * ((streak_obj.started_over%suff%+1)//2)
                 if (disable) {
                     streak_obj.amt := 1
+                }
+                if (streak_obj.loss_streak%suff% >= 5 and streak_obj.loss_streak%suff% = streak_obj.max_loss_streak%suff%) {
+                    streak_obj.amt *= 0.5
+                }
+                if (streak_obj.amt + this.max_diff.C > 302 and streak_obj.amt > 30) {
+                    streak_obj.loss_streak := 0
+                    streak_obj.amt := amts[streak_obj.loss_streak%suff%+1]
+                    streak_obj.amt += addition[streak_obj.loss_streak%suff%+1] * ((streak_obj.started_over%suff%+1)//2)
                 }
                 this.amount := streak_obj.amt
             }
