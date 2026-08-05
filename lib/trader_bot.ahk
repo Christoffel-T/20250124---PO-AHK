@@ -369,7 +369,7 @@ class TraderBot {
             } else {
                 this.wl1_addition.amt := 0
             }
-            if (streak != streak_prev and Abs(streak) = 1) {
+            if (streak != streak_prev and Abs(streak_prev) = 1) {
                 if (streak > streak_prev or this.wl1_addition.last_amt = 0) {
                     this.wl1_addition.last_amt := 4
                 } else if (streak < streak_prev) {
