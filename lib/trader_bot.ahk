@@ -2121,8 +2121,8 @@ class TraderBot {
                 pref := '0' pref
                 suff := '_at_0'
             }
-            str_j .= pref Abs(streak) ':-' this.wl_12[streak].loss_streak%suff% '[-' this.wl_12[ A_Index].max_loss_streak%suff% '] | '
-            str_k .= pref Abs(streak) ':-' this.wl_12[streak].loss_streak%suff% '[-' this.wl_12[ A_Index].max_loss_streak%suff% '] | '
+            str_j .= pref Abs(streak) ':-' this.wl_12[streak].loss_streak%suff% '[-' this.wl_12[streak].max_loss_streak%suff% '] | '
+            str_k .= pref Abs(streak) ':-' this.wl_12[streak].loss_streak%suff% '[-' this.wl_12[streak].max_loss_streak%suff% '] | '
         }
         str_j .= DecimalFormatter(this.max_diff.C)  ' (' DecimalFormatter(this.max_diff.next)  ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ') '
         for k, v in this.wl_12 {
