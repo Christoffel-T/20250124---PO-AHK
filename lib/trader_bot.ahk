@@ -2114,13 +2114,15 @@ class TraderBot {
 
         str_j := ''
         str_k := ''
-        Loop 2 {
-            str_j .= '0W' A_Index ':-' this.wl_12[ A_Index].loss_streak_at_0 '[-' this.wl_12[ A_Index].max_loss_streak_at_0 '] | '
-            str_k .= '0L' A_Index ':-' this.wl_12[-A_Index].loss_streak_at_0 '[-' this.wl_12[-A_Index].max_loss_streak_at_0 '] | '
-        }
-        Loop 4 {
-            str_j .= 'W' A_Index ':-' this.wl_12[ A_Index].loss_streak '[-' this.wl_12[ A_Index].max_loss_streak '] | '
-            str_k .= 'L' A_Index ':-' this.wl_12[-A_Index].loss_streak '[-' this.wl_12[-A_Index].max_loss_streak '] | '
+        pref := streak > 0 ? 'W' : 'L'
+        suff := ''
+        if (Abs(streak) <= 4 and streak != 0) {
+            if (Abs(streak) <= 2 and this.wl_12[streak].loss_streak = 0) {
+                pref := '0' pref
+                suff := '_at_0'
+            }
+            str_j .= pref Abs(streak) ':-' this.wl_12[streak].loss_streak%suff% '[-' this.wl_12[ A_Index].max_loss_streak%suff% '] | '
+            str_k .= pref Abs(streak) ':-' this.wl_12[streak].loss_streak%suff% '[-' this.wl_12[ A_Index].max_loss_streak%suff% '] | '
         }
         str_j .= DecimalFormatter(this.max_diff.C)  ' (' DecimalFormatter(this.max_diff.next)  ') (' this.qualifiers.streak_reset.count '|' this.qualifiers.streak_reset.count2 ') '
         for k, v in this.wl_12 {
