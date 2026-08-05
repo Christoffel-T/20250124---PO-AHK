@@ -367,7 +367,9 @@ class TraderBot {
                 if (streak > streak_prev or this.wl1_addition.last_amt = 0) {
                     this.wl1_addition.last_amt := 4
                 } else if (streak < streak_prev) {
-                    this.wl1_addition.last_amt *= 2
+                    if (this.wl1_addition.last_amt < 256) {
+                        this.wl1_addition.last_amt *= 2
+                    }
                 }
             }
             if (Abs(streak) = 1) {
