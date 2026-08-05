@@ -363,18 +363,18 @@ class TraderBot {
             } else if (this.amount + this.max_diff.C > 302) {
                 this.amount := 302 - this.max_diff.C
             }
-            if (Abs(streak) = 1) {
-                this.wl1_addition.amt := this.wl1_addition.last_amt
-                this.amount += this.wl1_addition.amt
-            } else {
-                this.wl1_addition.amt := 0
-            }
             if (streak != streak_prev and Abs(streak_prev) = 1) {
                 if (streak > streak_prev or this.wl1_addition.last_amt = 0) {
                     this.wl1_addition.last_amt := 4
                 } else if (streak < streak_prev) {
                     this.wl1_addition.last_amt *= 2
                 }
+            }
+            if (Abs(streak) = 1) {
+                this.wl1_addition.amt := this.wl1_addition.last_amt
+                this.amount += this.wl1_addition.amt
+            } else {
+                this.wl1_addition.amt := 0
             }
         }
 
