@@ -365,6 +365,7 @@ class TraderBot {
             }
             if (Abs(streak) = 1) {
                 this.wl1_addition.amt := this.wl1_addition.last_amt
+                this.amount += this.wl1_addition.amt
             } else {
                 this.wl1_addition.amt := 0
             }
