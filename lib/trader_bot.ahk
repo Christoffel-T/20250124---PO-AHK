@@ -362,14 +362,20 @@ class TraderBot {
             } else if (this.amount + this.max_diff.C > 302) {
                 this.amount := 302 - this.max_diff.C
             }
+
             if (streak != streak_prev and Abs(streak_prev) = 1) {
-                if (this.wl1_addition.amt = 'SKIP') {
-                    this.wl1_addition.amt := 0
-                } else if (streak > streak_prev or this.wl1_addition.last_amt = 0) {
-                    this.wl1_addition.last_amt := 4
+                if (streak > streak_prev or this.wl1_addition.last_amt = 0) {
+                    this.wl1_addition.sum -= this.wl1_addition.amt*0.92
+                    if (this.wl1_addition.sum <= 0) {
+                        this.wl1_addition.sum := 0
+                        this.wl1_addition.level := 4
+                    }
+                    this.wl1_addition.loss_streak := 0
                 } else if (streak < streak_prev) {
-                    if (this.wl1_addition.last_amt < 256) {
-                        this.wl1_addition.last_amt *= 2
+                    this.wl1_addition.sum += this.wl1_addition.amt
+                    this.wl1_addition.loss_streak++
+                    if Mod(this.wl1_addition.loss_streak, 6) = 0 {
+                        this.wl1_addition.level *= 2
                     }
                 }
             }
@@ -378,12 +384,11 @@ class TraderBot {
                 if (this.wl_1234[streak].loss_streak = 0) {
                     suff := '_at_0'
                 }
-                if (this.wl_1234[streak].loss_streak%suff% = this.wl_1234[streak].max_loss_streak%suff%) {
-                    this.wl1_addition.amt := 'SKIP'
-                } else {
-                    this.wl1_addition.amt := this.wl1_addition.last_amt
-                    this.amount += this.wl1_addition.amt
+                this.wl1_addition.amt := this.wl1_addition.level
+                loop Mod(this.wl1_addition.loss_streak, 6) {
+                    this.wl1_addition.amt *= 2
                 }
+                this.amount += this.wl1_addition.amt
             } else {
                 this.wl1_addition.amt := 0
             }
@@ -1216,6 +1221,9 @@ class TraderBot {
         this.wl1_addition := {
             amt: 0,
             last_amt: 0,
+            level: 4,
+            loss_streak: 0,
+            sum: 0,
         }
         this.bet_intermittent := {
             more_than_350: 0,
@@ -2149,7 +2157,7 @@ class TraderBot {
         }
         str_j .= ' | MDLVL(' this.wl_1234[ 1].current_md_level '/' this.wl_1234[-1].current_md_level '/' this.wl_1234[ 2].current_md_level '/' this.wl_1234[-2].current_md_level ')'
         str_j .= ' | MDLVLcount(' this.wl_1234[ 1].count_at_current_md_level '/' this.wl_1234[-1].count_at_current_md_level '/' this.wl_1234[ 2].count_at_current_md_level '/' this.wl_1234[-2].count_at_current_md_level ')'
-        str_k .= '([' this.stats.streak_real '] bet: ' DecimalFormatter(this.amount) '[+' DecimalFormatter(this.wl1_addition.amt, 0) ']) ' DecimalFormatter(this.balance.side) ' H=' DecimalFormatter(this.balance.side_high)  ' L=' format('{:.2f}', this.balance.side_low)
+        str_k .= '([' this.stats.streak_real '] bet: ' DecimalFormatter(this.amount) '[+' DecimalFormatter(this.wl1_addition.amt, 0) ' | -' this.wl1_addition.loss_streak ' | sum=' DecimalFormatter(this.wl1_addition.sum) ']) ' DecimalFormatter(this.balance.side) ' H=' DecimalFormatter(this.balance.side_high)  ' L=' format('{:.2f}', this.balance.side_low)
         str_k .= ' (maxdiff H=' DecimalFormatter(this.max_diff.H - 300)  ' | DIFF=' DecimalFormatter(this.max_diff.H - this.max_diff.L)  ')' 
         
         str_l := '(W2: -' this.wl_1234[ 2].loss_streak ' | 0loss=' this.wl_1234[ 2].count_0loss '[max=' this.wl_1234[ 2].max_count_0loss '] ([wins=' this.wl_1234[ 2].wins '|loss=' this.wl_1234[ 2].losses ']) sum=' format('{:.2f}', this.wl_1234[ 2].sum_amt)
