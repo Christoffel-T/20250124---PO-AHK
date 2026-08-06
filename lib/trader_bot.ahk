@@ -364,7 +364,7 @@ class TraderBot {
             }
 
             if (streak != streak_prev and Abs(streak_prev) = 1) {
-                if (streak > streak_prev or this.wl1_addition.last_amt = 0) {
+                if (streak > streak_prev) {
                     this.wl1_addition.sum -= this.wl1_addition.amt*0.92
                     if (this.wl1_addition.sum <= 0) {
                         this.wl1_addition.sum := 0
