@@ -349,6 +349,10 @@ class TraderBot {
                 } else if (streak < streak_prev) {
                     this.wl1_addition.sum += this.wl1_addition.amt
                     this.wl1_addition.loss_streak++
+                    if (this.wl1_addition.restrict = 1) {
+                        this.wl1_addition.restrict := 0
+                        this.wl1_addition.loss_streak := 0
+                    }
                     if Mod(this.wl1_addition.loss_streak, 6) = 0 {
                         this.wl1_addition.level *= 2
                     }
@@ -362,6 +366,16 @@ class TraderBot {
                 this.wl1_addition.amt := this.wl1_addition.level
                 loop Mod(this.wl1_addition.loss_streak, 6) {
                     this.wl1_addition.amt *= 2
+                }
+                if (this.balance.side < 5000) {
+                    this.wl1_addition.bal_restrict := 5000
+                }
+                if (this.balance.side >= this.wl1_addition.bal_restrict + 50) {
+                    if (this.wl1_addition.sum + this.wl1_addition.amt > 0.5 * (this.balance.side - this.wl1_addition.bal_restrict)) {
+                        this.wl1_addition.restrict := 1
+                        this.wl1_addition.amt := 200 - this.wl1_addition.sum
+                        this.wl1_addition.bal_restrict := this.balance.side + 50
+                    }
                 }
                 this.amount += this.wl1_addition.amt
             } else {
@@ -1198,6 +1212,8 @@ class TraderBot {
             level: 4,
             loss_streak: 0,
             sum: 0,
+            bal_restrict: 5000,
+            restrict: 0,
         }
         this.7perc_inc := {
             state325: 0,
