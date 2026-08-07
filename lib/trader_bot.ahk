@@ -2143,7 +2143,7 @@ class TraderBot {
         }
         str_j .= ' | MDLVL(' this.wl_1234[ 1].current_md_level '/' this.wl_1234[-1].current_md_level '/' this.wl_1234[ 2].current_md_level '/' this.wl_1234[-2].current_md_level ')'
         str_j .= ' | MDLVLcount(' this.wl_1234[ 1].count_at_current_md_level '/' this.wl_1234[-1].count_at_current_md_level '/' this.wl_1234[ 2].count_at_current_md_level '/' this.wl_1234[-2].count_at_current_md_level ')'
-        str_k .= '([' this.stats.streak_real '] bet: ' DecimalFormatter(this.amount) '[+' DecimalFormatter(this.wl1_addition.amt, 0) ' | -' this.wl1_addition.loss_streak ' | sum=' DecimalFormatter(this.wl1_addition.sum) ']) ' DecimalFormatter(this.balance.side) ' H=' DecimalFormatter(this.balance.side_high)  ' L=' format('{:.2f}', this.balance.side_low)
+        str_k .= '([' this.stats.streak_real '] bet: ' DecimalFormatter(this.amount) '[+' DecimalFormatter(this.wl1_addition.amt, 0) ' | -' this.wl1_addition.loss_streak ' | sum=' DecimalFormatter(this.wl1_addition.sum) ' | bal_restrict=' DecimalFormatter(this.wl1_addition.bal_restrict) ']) ' DecimalFormatter(this.balance.side) ' H=' DecimalFormatter(this.balance.side_high)  ' L=' format('{:.2f}', this.balance.side_low)
         str_k .= ' (maxdiff H=' DecimalFormatter(this.max_diff.H - 300)  ' | DIFF=' DecimalFormatter(this.max_diff.H - this.max_diff.L)  ')' 
         
         str_l := '(W2: -' this.wl_1234[ 2].loss_streak ' | 0loss=' this.wl_1234[ 2].count_0loss '[max=' this.wl_1234[ 2].max_count_0loss '] ([wins=' this.wl_1234[ 2].wins '|loss=' this.wl_1234[ 2].losses ']) sum=' format('{:.2f}', this.wl_1234[ 2].sum_amt)
