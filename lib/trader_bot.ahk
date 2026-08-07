@@ -333,31 +333,6 @@ class TraderBot {
                     this.amount := 1
                 } else {
                     this.amount := (this.max_diff.C - 300)/0.92 + 0.01
-                    if (this.max_diff.C + this.amount >= 350 and this.md_302.more_than_350 = 0) {
-                        this.amount *= 0.03
-                        this.md_302.more_than_350 := 1
-                    } else {
-                        this.md_302.more_than_350 := 0
-                    }
-                    if (this.max_diff.C > 350) {
-                        this.bet_intermittent.more_than_350 := 1
-                    } else if (this.max_diff.C < 300) {
-                        this.bet_intermittent.more_than_350 := 0
-                    }
-                    if (this.bet_intermittent.more_than_350 = 1) {
-                        switch (this.bet_intermittent.which) {
-                            case 'normal':
-                                this.amount := (this.max_diff.C - 300)/0.92 + 0.01
-                                this.bet_intermittent.which := '10'
-                            case '10':
-                                this.amount := 10
-                                this.bet_intermittent.which := '3perc'
-                            case '3perc':
-                                this.amount := 0.03 * ((this.max_diff.C - 300)/0.92 + 0.01)
-                                this.bet_intermittent.which := 'normal'
-                        }
-                    }
-
                 }
             } else if (this.amount + this.max_diff.C > 302) {
                 this.amount := 302 - this.max_diff.C
@@ -1188,7 +1163,6 @@ class TraderBot {
         this.md_302 := {
             state: 0,
             loss_streak: 0,
-            more_than_350: 0
         }
         this.temp_4loss_count := 0
         this.qmd := Map()
@@ -1224,10 +1198,6 @@ class TraderBot {
             level: 4,
             loss_streak: 0,
             sum: 0,
-        }
-        this.bet_intermittent := {
-            more_than_350: 0,
-            which: '10'
         }
         this.7perc_inc := {
             state325: 0,
