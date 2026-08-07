@@ -371,9 +371,9 @@ class TraderBot {
                     this.wl1_addition.bal_restrict := 5000
                 }
                 if (this.balance.side >= this.wl1_addition.bal_restrict + 50) {
-                    if (this.wl1_addition.sum + this.wl1_addition.amt > 0.5 * (this.balance.side - this.wl1_addition.bal_restrict)) {
+                    if ((this.wl1_addition.sum + this.wl1_addition.amt) > 0.5 * (this.balance.side - this.wl1_addition.bal_restrict)) {
                         this.wl1_addition.restrict := 1
-                        this.wl1_addition.amt := 200 - this.wl1_addition.sum
+                        this.wl1_addition.amt := 0.5 * (this.balance.side - this.wl1_addition.bal_restrict) - this.wl1_addition.sum
                         this.wl1_addition.bal_restrict := this.balance.side + 50
                     }
                 }
