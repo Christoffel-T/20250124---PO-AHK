@@ -358,14 +358,20 @@ class TraderBot {
                 if (this.balance.side < 5000) {
                     this.wl1_addition.bal_restrict := 5000
                 }
-                if (this.balance.side >= this.wl1_addition.bal_restrict + 50) {
-                    if ((this.wl1_addition.sum + this.wl1_addition.amt) > 0.5 * (this.balance.side - this.wl1_addition.bal_restrict)) {
+                profit_restrict := 0.5 * (this.balance.side - this.wl1_addition.bal_restrict)
+                if (this.balance.side >= this.wl1_addition.bal_restrict + 40) {
+                    if ((this.wl1_addition.sum + this.wl1_addition.amt) > profit_restrict) {
                         this.wl1_addition.restrict := 1
-                        this.wl1_addition.amt := 0.5 * (this.balance.side - this.wl1_addition.bal_restrict) - this.wl1_addition.sum
+                        this.wl1_addition.amt := profit_restrict - this.wl1_addition.sum
                         this.wl1_addition.bal_restrict := this.balance.side + 50
                     }
+                    this.amount += this.wl1_addition.amt
+                    if ((this.amount) > profit_restrict) {
+                        this.amount := profit_restrict
+                    }
+                } else {
+                    this.amount += this.wl1_addition.amt
                 }
-                this.amount += this.wl1_addition.amt
             } else {
                 this.wl1_addition.amt := 0
             }
