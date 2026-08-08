@@ -343,6 +343,7 @@ class TraderBot {
                     }
                     if Mod(this.wl1_addition.loss_streak, 6) = 0 {
                         this.wl1_addition.level *= 2
+                        this.wl1_addition.loss_streak := 0
                     }
                 }
             }
