@@ -322,19 +322,7 @@ class TraderBot {
             if (this.max_diff.C < 302) {
                 this.md_302.state := 0
             }
-            if (this.max_diff.C > 302) {
-                if (streak > streak_prev) {
-                    this.md_302.loss_streak := 0
-                } else if (streak < streak_prev and this.md_302.state = 1) {
-                    this.md_302.loss_streak++
-                }
-                this.md_302.state := 1
-                if (this.md_302.loss_streak >= 2 or streak > 0) {
-                    this.amount := 1
-                } else {
-                    this.amount := (this.max_diff.C - 300)/0.92 + 0.01
-                }
-            } else if (this.amount + this.max_diff.C > 302) {
+            if (this.max_diff.C < 302 and this.amount + this.max_diff.C > 302) {
                 this.amount := 302 - this.max_diff.C
             }
 
